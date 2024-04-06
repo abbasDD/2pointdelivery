@@ -1,0 +1,384 @@
+/* Define color variables */
+:root {
+    --primary-color: #038164;
+    --primary-dark: #004938;
+    --primary-light: #32aa8e ;
+    --gray-color: #6b6b6b;
+    --light-gray-color: #f9f9f9;
+    --black: #000000;
+    --white: #ffffff;
+}
+
+/* This file is to add custom css for FRONTEND of this website */
+
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Generic CSS */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.form-control{
+    padding: 10px 25px;
+    /* border: none; */
+}
+
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.bg-primary-dark {
+    background-color: var(--primary-dark) !important;
+}
+
+.bg-primary-light {
+    background-color: var(--primary-light) !important;
+}
+
+.bg-gray {
+    background-color: var(--gray-color) !important;
+}
+
+.bg-light-gray {
+    background-color: var(--light-gray-color) !important;
+}
+
+.bg-gradient {
+    background-color: var(--primary-color);
+    /* background: linear-gradient(to right, var(--primary-color) 100%, var(--primary-color) 60%); */
+}
+
+.btn {
+    padding: 10px 25px;
+    border: none;
+}
+
+.btn-sm{
+    padding: 5px 10px;
+}
+
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+.btn-white {
+    background-color: var(--white);
+    color: var(--black);
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active  .btn-primary:focus-visible  {
+    background-color: var(--primary-dark);
+    border: none;
+}
+
+
+.btn-primary-outline {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+
+.btn-primary-outline:hover {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+.heading h2{
+    color: var(--primary-color);
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+/* .heading h2:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px; 
+    width: 50px; 
+    height: 2px;
+    background-color: black; 
+} */
+
+.heading p{
+    font-size: 16px;
+    /* font-weight: 500; */
+    margin-bottom: 15px;
+}
+
+.vertical-line {
+    width: 2px; /* Adjust the width as needed */
+    height: 100px; /* Adjust the height as needed */
+    background-color: black; /* Adjust the color as needed */
+}
+
+.rounded-10{
+    border-radius: 25px;
+}
+
+.border-left{
+    border-left: 1px solid var(--black);
+}
+
+/* Navbar Section */
+.nav-link {
+    color: var(--black);
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: #878787;
+    font-size: 16px;
+    padding: 10px 20px;
+    font-weight: 600;
+}
+
+.navbar-light .navbar-nav .nav-link.active {
+    color: var(--primary-color);
+}
+
+.navbar-light .navbar-nav .nav-link:hover {
+    color: var(--primary-color);
+}
+
+.dropdown-menu[data-bs-popper] {
+    top: 100%;
+    left: -50px;
+    margin-top: 0.125rem;
+}
+
+/* Header Section */
+#pageheader {
+    height: 500px;
+    color: var(--white);
+    background-size: cover;
+    background-position: center;
+}
+
+#pageheader .content {
+    width: 400px;
+}
+
+#pageheader .content h3 {
+    font-size: 36px;
+    padding-bottom: 10px;
+}
+
+#pageheader .content p {
+    font-size: 16px;
+    padding-bottom: 20px;
+}
+
+/* About Us Section  */
+
+#aboutus .content h2{
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* How It Works Section */
+
+.howitworks {
+    padding: 50px 0;
+    margin: 50px 0;
+}
+
+/* Chat Button CSS */
+.chat-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--primary-color);
+    color: var(--white);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 9999;
+}
+
+.chat-button i {
+    font-size: 24px;
+}
+
+
+/* Auth Pages CSS  */
+
+.authpage{
+overflow-x: hidden;
+}
+
+.authpage .switch-user a{
+    float: right;
+    color: var(--primary-color);
+    margin: 10px 15px;
+}
+
+.authpage .switch-user a:hover{
+    color: var(--primary-dark);
+}
+
+.authpage .card{
+    margin: auto 50px;
+    border: none;
+}
+
+.authpage .card .card-body img{
+    height: 50px;
+    margin-bottom: 20px;
+}
+
+.authpage .card .card-body h3{
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.authpage .card .card-body p{
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.authpage .card .card-body .forgot-password a{
+    float: right;
+    font-size: 12px;
+}
+
+.authpage .card .card-body .toggle-password{
+    position: absolute;
+    right: 30px;
+    top: 13px;
+}
+.authpage .card .card-body .toggle-confirm-password{
+    position: absolute;
+    right: 30px;
+    top: 13px;
+}
+
+.authpage .card .card-body .image-selection img{
+    height: 100px; 
+    width: 100px; 
+    object-fit: cover;
+}
+
+.authpage .card .card-body .image-selection a{
+    position: absolute; 
+    right: 5px; 
+    bottom: 10px; 
+    padding: 5px; 
+    height: 35px; 
+    width: 35px;
+    color: var(--primary-color);
+}
+
+
+.authpage .card .card-body .image-selection a:hover{
+    color: white;
+    background-color: var(--primary-color);
+}
+
+
+/* User Side Bar  */
+
+    .navbar-left,
+    .footer-left, .main-left {
+        margin-left: 250px;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 250px;
+        height: 100%;
+        background-color: #f8f9fa;
+        /* color: #fff; */
+        padding: 20px;
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar .navbar-brand{
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .sidebar-hidden {
+        transform: translateX(-250px);
+    }
+
+    .sidebar .nav-link {
+        color: var(--gray-color);
+        font-size: 16px;
+        padding: 10px 20px;
+        font-weight: 600;
+    }
+
+    .sidebar .nav-link:hover {
+        color: var(--primary-color);
+    }
+
+    .sidebar .nav-link:active {
+        color: var(--primary-color);
+    }
+
+    .sidebar .nav-link a {
+        padding-left: 5px;
+        color: var(--gray-color);
+        text-decoration: none;
+    }
+
+    .sidebar .nav-link a:hover {
+        color: var(--primary-color);
+    }
+    .sidebar .nav-link a:active {
+        color: var(--primary-color);
+    }
+
+    /* Accordin CSS  */
+
+    .accordion-button:not(.collapsed){
+        color: var(--primary-color);
+    }
+
+/* Responsive CSS */
+/* For mobile phones: */
+@media only screen and (max-width: 768px) {
+    #pageheader {
+        height: 300px;
+    }
+    #pageheader .content h3 {
+        font-size: 24px;
+        padding-bottom: 10px;
+    }
+}
+
+/* For tablets and small desktops: */
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    #pageheader {
+        height: 500px;
+    }
+}
+
+/* For large desktops and laptops: */
+@media only screen and (min-width: 1025px) {
+    #pageheader {
+        height: 500px;
+    }
+}
