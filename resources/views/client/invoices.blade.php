@@ -1,6 +1,6 @@
 @extends('client.layouts.app')
 
-@section('title', 'Orders')
+@section('title', 'Invoices')
 
 @section('content')
 
@@ -8,7 +8,7 @@
         <div class="container">
             <div class="section-header mb-2">
                 <div class="d-flex justify-content-between">
-                    <h4>Orders History</h4>
+                    <h4>Invoices History</h4>
                     <div class="dropdown mr-2">
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -26,7 +26,7 @@
                     <thead class="thead-primary">
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Pickup</th>
+                            <th scope="col">Company</th>
                             <th scope="col">Dropoff</th>
                             <th scope="col">Driver</th>
                             <th scope="col">Amount</th>
@@ -37,7 +37,7 @@
                     <tbody>
                         <tr>
                             <th scope="row">1</th>
-                            <td>London Bridge, London, England</td>
+                            <td>ABC Transport</td>
                             <td>Big Ben, London, England</td>
                             <td>200$</td>
                             <td>@mdo</td>
@@ -46,7 +46,7 @@
                         </tr>
                         <tr>
                             <th scope="row">2</th>
-                            <td>Hyde Park, London, England</td>
+                            <td>XYZ Logistics</td>
                             <td>Westminster Abbey, London, England</td>
                             <td>100$</td>
                             <td>@fat</td>
@@ -55,7 +55,7 @@
                         </tr>
                         <tr>
                             <th scope="row">3</th>
-                            <td>Tower of London, London, England</td>
+                            <td>BestRide Inc.</td>
                             <td>Buckingham Palace, London, England</td>
                             <td>50$</td>
                             <td>@twitter</td>
@@ -64,7 +64,7 @@
                         </tr>
                         <tr>
                             <th scope="row">4</th>
-                            <td>St. Paul's Cathedral, London, England</td>
+                            <td>Swift Transport</td>
                             <td>The Shard, London, England</td>
                             <td>150$</td>
                             <td>@random</td>
@@ -73,7 +73,7 @@
                         </tr>
                         <tr>
                             <th scope="row">5</th>
-                            <td>The British Museum, London, England</td>
+                            <td>Speedy Couriers</td>
                             <td>London Eye, London, England</td>
                             <td>75$</td>
                             <td>@johndoe</td>
@@ -82,7 +82,7 @@
                         </tr>
                         <tr>
                             <th scope="row">6</th>
-                            <td>Trafalgar Square, London, England</td>
+                            <td>London Transfers</td>
                             <td>Covent Garden, London, England</td>
                             <td>120$</td>
                             <td>@alice</td>
@@ -91,7 +91,7 @@
                         </tr>
                         <tr>
                             <th scope="row">7</th>
-                            <td>Kensington Palace, London, England</td>
+                            <td>CityLink Transport</td>
                             <td>Camden Market, London, England</td>
                             <td>90$</td>
                             <td>@bob</td>
@@ -100,7 +100,7 @@
                         </tr>
                         <tr>
                             <th scope="row">8</th>
-                            <td>Regent's Park, London, England</td>
+                            <td>London Shuttles</td>
                             <td>Victoria and Albert Museum, London, England</td>
                             <td>180$</td>
                             <td>@eva</td>
@@ -109,7 +109,7 @@
                         </tr>
                         <tr>
                             <th scope="row">9</th>
-                            <td>St. James's Park, London, England</td>
+                            <td>Urban Express</td>
                             <td>Millennium Bridge, London, England</td>
                             <td>95$</td>
                             <td>@michael</td>
@@ -118,7 +118,7 @@
                         </tr>
                         <tr>
                             <th scope="row">10</th>
-                            <td>Leicester Square, London, England</td>
+                            <td>London Movers</td>
                             <td>Piccadilly Circus, London, England</td>
                             <td>110$</td>
                             <td>@samantha</td>
@@ -127,6 +127,7 @@
                         </tr>
                     </tbody>
                 </table>
+
             </div>
         </div>
     </section>

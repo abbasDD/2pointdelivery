@@ -64,4 +64,24 @@ class ClientController extends Controller
     {
         return view('client.orders');
     }
+
+    public function invoices()
+    {
+        return view('client.invoices');
+    }
+
+    public function referrals()
+    {
+        return view('client.referrals');
+    }
+
+    public function settings()
+    {
+        return view('client.settings');
+    }
+
+    public function edit_profile()
+    {
+        return view('client.edit');
+    }
 }

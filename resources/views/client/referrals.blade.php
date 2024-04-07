@@ -1,6 +1,6 @@
 @extends('client.layouts.app')
 
-@section('title', 'Orders')
+@section('title', 'Referrals')
 
 @section('content')
 
@@ -8,7 +8,7 @@
         <div class="container">
             <div class="section-header mb-2">
                 <div class="d-flex justify-content-between">
-                    <h4>Orders History</h4>
+                    <h4>Referrals History</h4>
                     <div class="dropdown mr-2">
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -26,10 +26,9 @@
                     <thead class="thead-primary">
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Pickup</th>
-                            <th scope="col">Dropoff</th>
-                            <th scope="col">Driver</th>
-                            <th scope="col">Amount</th>
+                            <th scope="col">User</th>
+                            <th scope="col">User Type</th>
+                            <th scope="col">Points</th>
                             <th scope="col">Status</th>
                             <th scope="col">Action</th>
                         </tr>
@@ -37,96 +36,87 @@
                     <tbody>
                         <tr>
                             <th scope="row">1</th>
-                            <td>London Bridge, London, England</td>
-                            <td>Big Ben, London, England</td>
-                            <td>200$</td>
-                            <td>@mdo</td>
+                            <td>@john123</td>
+                            <td>Company Client</td>
+                            <td>200</td>
                             <td><span class="badge bg-success">Completed</span></td>
                             <td><a href="#" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a></td>
                         </tr>
                         <tr>
                             <th scope="row">2</th>
-                            <td>Hyde Park, London, England</td>
-                            <td>Westminster Abbey, London, England</td>
-                            <td>100$</td>
-                            <td>@fat</td>
+                            <td>@emma456</td>
+                            <td>Individual Helper</td>
+                            <td>100</td>
                             <td><span class="badge bg-warning">Pending</span></td>
                             <td><a href="#" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a></td>
                         </tr>
                         <tr>
                             <th scope="row">3</th>
-                            <td>Tower of London, London, England</td>
-                            <td>Buckingham Palace, London, England</td>
-                            <td>50$</td>
-                            <td>@twitter</td>
+                            <td>@mark789</td>
+                            <td>Individual Client</td>
+                            <td>50</td>
                             <td><span class="badge bg-danger">Cancelled</span></td>
                             <td><a href="#" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a></td>
                         </tr>
                         <tr>
                             <th scope="row">4</th>
-                            <td>St. Paul's Cathedral, London, England</td>
-                            <td>The Shard, London, England</td>
-                            <td>150$</td>
-                            <td>@random</td>
+                            <td>@sarah_12</td>
+                            <td>Company Helper</td>
+                            <td>150</td>
                             <td><span class="badge bg-info">Processing</span></td>
                             <td><a href="#" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a></td>
                         </tr>
                         <tr>
                             <th scope="row">5</th>
-                            <td>The British Museum, London, England</td>
-                            <td>London Eye, London, England</td>
-                            <td>75$</td>
-                            <td>@johndoe</td>
+                            <td>@alex456</td>
+                            <td>Individual Helper</td>
+                            <td>75</td>
                             <td><span class="badge bg-success">Completed</span></td>
                             <td><a href="#" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a></td>
                         </tr>
                         <tr>
                             <th scope="row">6</th>
-                            <td>Trafalgar Square, London, England</td>
-                            <td>Covent Garden, London, England</td>
-                            <td>120$</td>
-                            <td>@alice</td>
+                            <td>@lisa_89</td>
+                            <td>Company Client</td>
+                            <td>120</td>
                             <td><span class="badge bg-warning">Pending</span></td>
                             <td><a href="#" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a></td>
                         </tr>
                         <tr>
                             <th scope="row">7</th>
-                            <td>Kensington Palace, London, England</td>
-                            <td>Camden Market, London, England</td>
-                            <td>90$</td>
-                            <td>@bob</td>
+                            <td>@robertm</td>
+                            <td>Individual Helper</td>
+                            <td>90</td>
                             <td><span class="badge bg-danger">Cancelled</span></td>
                             <td><a href="#" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a></td>
                         </tr>
                         <tr>
                             <th scope="row">8</th>
-                            <td>Regent's Park, London, England</td>
-                            <td>Victoria and Albert Museum, London, England</td>
-                            <td>180$</td>
-                            <td>@eva</td>
+                            <td>@eva_99</td>
+                            <td>Company Helper</td>
+                            <td>180</td>
                             <td><span class="badge bg-info">Processing</span></td>
                             <td><a href="#" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a></td>
                         </tr>
                         <tr>
                             <th scope="row">9</th>
-                            <td>St. James's Park, London, England</td>
-                            <td>Millennium Bridge, London, England</td>
-                            <td>95$</td>
-                            <td>@michael</td>
+                            <td>@mike_22</td>
+                            <td>Individual Client</td>
+                            <td>95</td>
                             <td><span class="badge bg-success">Completed</span></td>
                             <td><a href="#" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a></td>
                         </tr>
                         <tr>
                             <th scope="row">10</th>
-                            <td>Leicester Square, London, England</td>
-                            <td>Piccadilly Circus, London, England</td>
-                            <td>110$</td>
-                            <td>@samantha</td>
+                            <td>@sammy</td>
+                            <td>Company Client</td>
+                            <td>110</td>
                             <td><span class="badge bg-warning">Pending</span></td>
                             <td><a href="#" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a></td>
                         </tr>
                     </tbody>
                 </table>
+
             </div>
         </div>
     </section>

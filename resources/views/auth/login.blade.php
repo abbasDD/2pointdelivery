@@ -7,7 +7,7 @@
         <div class="row align-content-center vh-100">
             <div class="col-md-6 d-none d-md-block">
                 <div class="bg-gradient vh-100 d-flex align-items-center justify-content-center">
-                    <img src="{{ asset('images/auth/image-1.png') }}" alt="auth image">
+                    <img src="{{ asset('images/auth/client-bg.png') }}" width="400" alt="auth image">
                 </div>
             </div>
             <div class="col-md-6 d-grid align-items-center justify-content-center">

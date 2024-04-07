@@ -7,6 +7,10 @@
     --light-gray-color: #f9f9f9;
     --black: #000000;
     --white: #ffffff;
+
+    --card-gradient-1:linear-gradient(170deg, #01E4F8 0%, #1D3EDE 100%);
+    --card-gradient-2:linear-gradient(170deg, #B4EC51 0%, #429321 100%);
+    --card-gradient-3:linear-gradient(170deg, #C86DD7 0%, #3023AE 100%);
 }
 
 /* This file is to add custom css for FRONTEND of this website */
@@ -24,6 +28,10 @@ h1, h2, h3, h4, h5, h6 {
 p {
     font-size: 14px;
     margin-bottom: 10px;
+}
+
+label{
+    margin-bottom: 15px;
 }
 
 .form-control{
@@ -53,7 +61,19 @@ p {
 
 .bg-gradient {
     background-color: var(--primary-color);
-    /* background: linear-gradient(to right, var(--primary-color) 100%, var(--primary-color) 60%); */
+    /* background-image: linear-gradient(to right, var(--primary-color) 100%, var(--primary-color) 60%); */
+}
+
+.text-primary{
+    color: var(--primary-color) !important;
+}
+
+.fs-xs{
+    font-size: 1rem;
+}
+
+.fs-xxs{
+    font-size: 0.75rem;
 }
 
 .btn {
@@ -68,6 +88,27 @@ p {
 
 .btn-primary {
     background-color: var(--primary-color);
+    color: var(--white);
+}
+
+.btn-google{
+    background-color: #EB4335;
+    color: var(--white);
+}
+
+.btn-google:hover {
+    background-color: #f32b18;
+    color: var(--white);
+}
+
+
+.btn-facebook{
+    background-color: #0075FF;
+    color: var(--white);
+}
+
+.btn-facebook:hover {
+    background-color: #005ac2;
     color: var(--white);
 }
 
@@ -129,6 +170,11 @@ p {
 
 .border-left{
     border-left: 1px solid var(--black);
+}
+
+.table .thead-primary{
+    background-color: var(--primary-color);
+    color: var(--white);
 }
 
 /* Navbar Section */
@@ -219,6 +265,10 @@ p {
     font-size: 24px;
 }
 
+.clickable-card{
+    height: 200px;
+}
+
 
 /* Auth Pages CSS  */
 
@@ -294,6 +344,15 @@ overflow-x: hidden;
     background-color: var(--primary-color);
 }
 
+/* Footer CSS  */
+footer p a {
+    text-decoration: none;
+}
+
+footer hr{
+    width: 60px; 
+    height: 2px;
+}
 
 /* User Side Bar  */
 
@@ -356,6 +415,16 @@ overflow-x: hidden;
     .accordion-button:not(.collapsed){
         color: var(--primary-color);
     }
+
+
+    /* CUSTOM STATISTICS CARDS CSS */
+
+    .statistics{
+        padding: 10px 0;
+        /* margin: 50px 0; */
+    }
+
+    
 
 /* Responsive CSS */
 /* For mobile phones: */

@@ -1,6 +1,6 @@
 @extends('client.layouts.app')
 
-@section('title', 'User Dashboard')
+@section('title', 'Client Dashboard')
 
 @section('content')
 
@@ -12,6 +12,8 @@
             </p>
         </div>
     @endif
+
+
     {{-- Overall Statistics  --}}
     <div class="statistics">
         <div class="row">

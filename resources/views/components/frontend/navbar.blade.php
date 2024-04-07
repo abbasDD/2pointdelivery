@@ -12,19 +12,22 @@
         <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{ route('index') }}">Home</a>
+                    <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ route('index') }}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('services') }}">Services</a>
+                    <a class="nav-link {{ request()->is('services') ? 'active' : '' }}"
+                        href="{{ route('services') }}">Services</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('about-us') }}">About Us</a>
+                    <a class="nav-link {{ request()->is('about-us') ? 'active' : '' }}"
+                        href="{{ route('about-us') }}">About Us</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('help') }}">Help</a>
+                    <a class="nav-link {{ request()->is('help') ? 'active' : '' }}" href="{{ route('help') }}">Help</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('join_helper') }}">Join as Helper</a>
+                    <a class="nav-link {{ request()->is('join-helper') ? 'active' : '' }}"
+                        href="{{ route('join_helper') }}">Join as Helper</a>
                 </li>
             </ul>
 

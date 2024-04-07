@@ -1,153 +1,134 @@
 <!-- Remove the container if you want to extend the Footer to full width. -->
-<div class="my-5">
+<div class="mt-5">
 
     <!-- Footer -->
-    <footer
-            class="text-center text-lg-start text-white"
-            style="background-color: #1c2331"
-            >
-      <!-- Section: Social media -->
-      <section class="bg-primary">
-        <div class="container d-flex justify-content-between p-4">
-            <!-- Left -->
-            <div class="me-5">
-            <span>Get connected with us on social networks:</span>
+    <footer class="text-center text-lg-start text-white bg-dark">
+        <!-- Section: Social media -->
+        <section class="bg-primary">
+            <div class="container d-flex justify-content-between p-4">
+                <!-- Left -->
+                <div class="me-5">
+                    <span>Get connected with us on social networks:</span>
+                </div>
+                <!-- Left -->
+
+                <!-- Right -->
+                <div>
+                    <a href="" class="text-white me-4">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="" class="text-white me-4">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="" class="text-white me-4">
+                        <i class="fab fa-google"></i>
+                    </a>
+                    <a href="" class="text-white me-4">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="" class="text-white me-4">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="" class="text-white me-4">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+                <!-- Right -->
             </div>
-            <!-- Left -->
-    
-            <!-- Right -->
-            <div>
-            <a href="" class="text-white me-4">
-                <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="" class="text-white me-4">
-                <i class="fab fa-twitter"></i>
-            </a>
-            <a href="" class="text-white me-4">
-                <i class="fab fa-google"></i>
-            </a>
-            <a href="" class="text-white me-4">
-                <i class="fab fa-instagram"></i>
-            </a>
-            <a href="" class="text-white me-4">
-                <i class="fab fa-linkedin"></i>
-            </a>
-            <a href="" class="text-white me-4">
-                <i class="fab fa-github"></i>
-            </a>
+        </section>
+        <!-- Section: Social media -->
+
+        <!-- Section: Links  -->
+        <section class="">
+            <div class="container text-center text-md-start mt-5">
+                <!-- Grid row -->
+                <div class="row mt-3">
+                    <!-- Grid column -->
+                    <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+                        <!-- Content -->
+                        <div class="mb-3">
+                            <img src="{{ asset('images/logo/logo-white.png') }}" alt="2 Point" height="40">
+                        </div>
+                        <p>
+                            Let us shoulder the weight of delivering your cherished possessions with ease. Entrust us
+                            with the responsibility of ensuring your items reach their destination stress-free.
+                        </p>
+                    </div>
+                    <!-- Grid column -->
+
+                    <!-- Grid column -->
+                    <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+                        <!-- Links -->
+                        <h6 class="text-uppercase fw-bold">Quick Links</h6>
+                        <hr class="mb-4 bg-primary mt-0 d-inline-block mx-auto" />
+                        <p>
+                            <a href="{{ route('services') }}" class="text-white">Services</a>
+                        </p>
+                        <p>
+                            <a href="{{ route('about-us') }}" class="text-white">About Us</a>
+                        </p>
+                        <p>
+                            <a href="{{ route('helper.register') }}" class="text-white">Join as Helper</a>
+                        </p>
+                        <p>
+                            <a href="{{ route('help') }}" class="text-white">Help</a>
+                        </p>
+                    </div>
+                    <!-- Grid column -->
+
+                    <!-- Grid column -->
+                    <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+                        <!-- Links -->
+                        <h6 class="text-uppercase fw-bold">Useful links</h6>
+                        <hr class="mb-4 bg-primary mt-0 d-inline-block mx-auto" />
+                        <p>
+                            <a href="#!" class="text-white">Contact Us</a>
+                        </p>
+                        <p>
+                            <a href="#!" class="text-white">Terms & Conditions</a>
+                        </p>
+                        <p>
+                            <a href="#!" class="text-white">Privacy Policy</a>
+                        </p>
+                    </div>
+                    <!-- Grid column -->
+
+                    <!-- Grid column -->
+                    <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+                        <!-- Links -->
+                        <h6 class="text-uppercase fw-bold">Contact</h6>
+                        <hr class="mb-4 bg-primary mt-0 d-inline-block mx-auto" />
+                        <p><i class="fas fa-home mr-3"></i> New York, NY 10012, US</p>
+                        <p><i class="fas fa-envelope mr-3"></i> info@2pointdelivery.com</p>
+                        <p><i class="fas fa-phone mr-3"></i> + 01 234 567 88</p>
+                        <p><i class="fas fa-print mr-3"></i> + 01 234 567 89</p>
+                    </div>
+                    <!-- Grid column -->
+                </div>
+                <!-- Grid row -->
             </div>
-            <!-- Right -->
+        </section>
+        <!-- Section: Links  -->
+
+        <!-- Copyright -->
+        <div class="bg-primary">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center p-3">
+                    <div>
+                        © 2024 Copyright:
+                        <a class="text-white" href="">2 Point Delivery Inc</a>
+                    </div>
+                    <div>
+                        <span class="text-white ml-5">Designed by <a class="text-white"
+                                href="https://elabdtech.com/">Elabd Technologies</a></span>
+                    </div>
+                </div>
+            </div>
         </div>
-      </section>
-      <!-- Section: Social media -->
-  
-      <!-- Section: Links  -->
-      <section class="">
-        <div class="container text-center text-md-start mt-5">
-          <!-- Grid row -->
-          <div class="row mt-3">
-            <!-- Grid column -->
-            <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
-              <!-- Content -->
-              <h6 class="text-uppercase fw-bold"><img src="{{ asset('images/logo/logo.png') }}" alt="2 Point" height="30"></h6>
-              <hr
-                  class="mb-4 bg-primary mt-0 d-inline-block mx-auto"
-                  style="width: 60px; height: 2px"
-                  />
-              <p>
-                Here you can use rows and columns to organize your footer
-                content. Lorem ipsum dolor sit amet, consectetur adipisicing
-                elit.
-              </p>
-            </div>
-            <!-- Grid column -->
-  
-            <!-- Grid column -->
-            <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
-              <!-- Links -->
-              <h6 class="text-uppercase fw-bold">Products</h6>
-              <hr
-                  class="mb-4 bg-primary mt-0 d-inline-block mx-auto"
-                  style="width: 60px; height: 2px"
-                  />
-              <p>
-                <a href="#!" class="text-white">MDBootstrap</a>
-              </p>
-              <p>
-                <a href="#!" class="text-white">MDWordPress</a>
-              </p>
-              <p>
-                <a href="#!" class="text-white">BrandFlow</a>
-              </p>
-              <p>
-                <a href="#!" class="text-white">Bootstrap Angular</a>
-              </p>
-            </div>
-            <!-- Grid column -->
-  
-            <!-- Grid column -->
-            <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
-              <!-- Links -->
-              <h6 class="text-uppercase fw-bold">Useful links</h6>
-              <hr
-                  class="mb-4 bg-primary mt-0 d-inline-block mx-auto"
-                  style="width: 60px; height: 2px"
-                  />
-              <p>
-                <a href="#!" class="text-white">Your Account</a>
-              </p>
-              <p>
-                <a href="#!" class="text-white">Become an Affiliate</a>
-              </p>
-              <p>
-                <a href="#!" class="text-white">Shipping Rates</a>
-              </p>
-              <p>
-                <a href="#!" class="text-white">Help</a>
-              </p>
-            </div>
-            <!-- Grid column -->
-  
-            <!-- Grid column -->
-            <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
-              <!-- Links -->
-              <h6 class="text-uppercase fw-bold">Contact</h6>
-              <hr
-                  class="mb-4 bg-primary mt-0 d-inline-block mx-auto"
-                  style="width: 60px; height: 2px"
-                  />
-              <p><i class="fas fa-home mr-3"></i> New York, NY 10012, US</p>
-              <p><i class="fas fa-envelope mr-3"></i> info@example.com</p>
-              <p><i class="fas fa-phone mr-3"></i> + 01 234 567 88</p>
-              <p><i class="fas fa-print mr-3"></i> + 01 234 567 89</p>
-            </div>
-            <!-- Grid column -->
-          </div>
-          <!-- Grid row -->
-        </div>
-      </section>
-      <!-- Section: Links  -->
-  
-      <!-- Copyright -->
-      <div class="bg-primary">
-        <div class="container">
-          <div class="d-flex justify-content-between align-items-center p-3">
-            <div>
-                © 2024 Copyright:
-                <a class="text-white" href="">2 Point Delivery Inc</a>
-            </div>
-            <div>
-                <a class="text-white mr-5" href="https://elabdtech.com/">Privacy Policy</a>
-                <span class="text-white">|</span>
-                <span class="text-white ml-5">Designed by <a class="text-white" href="https://elabdtech.com/">Elabd Technologies</a></span>
-            </div>
-          </div>
-        </div>
-      </div>
-    
-      <!-- Copyright -->
+
+        <!-- Copyright -->
     </footer>
     <!-- Footer -->
-  
-  </div>
-  <!-- End of .container -->
+
+</div>
+<!-- End of .container -->

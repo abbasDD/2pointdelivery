@@ -89,8 +89,22 @@
 
                             </div>
                         </form>
-                        <div class="mb-3">
 
+                        {{-- Google Login Button  --}}
+                        <div class="mb-3">
+                            <a href="#" class="btn btn-google w-100">
+                                Continue with Google | <i class="fa-brands fa-google"></i>
+                            </a>
+                        </div>
+
+                        {{-- Facebook Login Button  --}}
+                        <div class="mb-3">
+                            <a href="#" class="btn btn-facebook w-100">
+                                Continue with Google | <i class="fa-brands fa-facebook"></i>
+                            </a>
+                        </div>
+
+                        <div class="mb-3">
                             <p>
                                 Dont have an account?
                                 <a class="" href="{{ route('helper.register') }}">

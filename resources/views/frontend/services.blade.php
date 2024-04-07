@@ -5,84 +5,148 @@
 @section('content')
 
     {{-- Header Section  --}}
-    <section class="py-5 bg-light-gray">
+    <section class="py-3 bg-light-gray">
         <div class="container my-5">
-            <div class="row justify-content-center">
-                <div class="col-md-8 px-5 heading">
-                    <h2 class="text-center">Seervices</h2>
-                    <h5 class="text-center">"we specialize in providing reliable moving and delivery services to customers
-                        around the world."
-                    </h5>
-                    <p class="mb-3 text-center">Our mission is to make the moving and delivery process stress-free for you.
-                    </p>
-                </div>
-                <div class="col-md-12 text-center">
-                    <img src="{{ asset('frontend/images/about/about-header.png') }}" alt="About Image" class="img-fluid">
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-    {{-- + 7800 Successful deliveries --}}
-
-    <section class="py-5 bg-light-gray">
-        <div class="container">
             <div class="row align-items-center">
-                <div class="col-md-9">
-                    <div class="heading">
-                        <h2 class="mb-1">+ 7800 Successful deliveries</h2>
-                        <p class="mb-2">Our successful deliveries are a testament to our dedication and precision in every
-                            move. With meticulous planning and a commitment to excellence, we ensure each item reaches its
-                            destination safely and on time. From fragile antiques to bulky furniture, our team handles every
-                            shipment with care and expertise. Trust us to deliver your belongings with confidence and
-                            reliability.</p>
-                        <p>Our global team of helpers brings expertise and dedication to every corner of the world, ensuring
-                            seamless relocations and deliveries. With local knowledge and a commitment to excellence, they
-                            provide reliable assistance wherever you need it.</p>
-                    </div>
+                <div class="col-md-7 px-5">
+                    <h2>Discover the Comprehensive <span class="text-primary">Range of Services</span> We Offer</h2>
+                    <p>Embark on a journey with us as we unveil a plethora of services tailored to meet your every need. At
+                        2 Point Delivery, we take pride in delivering excellence at every touchpoint, ensuring that each
+                        interaction leaves you not just satisfied, but delighted. </p>
+                    <a href="#" class="btn btn-primary mt-3">Book a Service</a>
                 </div>
-                <div class="col-md-3">
-                    <div class="border-left p-5 text-center">
-                        <div class="mb-2">
-                            <h3>2009</h3>
-                            <p>Established</p>
-                        </div>
-                        <div class="mb-2">
-                            <h3>7500 +</h3>
-                            <p>Current Helpers</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-5">
-                <div class="col-md-4">
-                    <img src="{{ asset('frontend/images/about/mission-img.png') }}" alt="mission Image" class="img-fluid">
-                </div>
-                <div class="col-md-8">
-                    <div class="heading">
-                        <h2 class="mb-3">Our Mission and Goals</h2>
-                        <p class="mb-2">At our core, we aim to redefine the moving and delivery experience, driven by a
-                            mission to provide seamless, stress-free services. Our approach combines cutting-edge technology
-                            with personalized care, ensuring every client receives the attention they deserve. </p>
-                        <p class="mb-2">With a focus on efficiency and reliability, we meticulously plan and execute each
-                            task, striving
-                            to exceed expectations at every turn. Our team of skilled professionals works collaboratively,
-                            leveraging their expertise to tackle challenges and deliver exceptional results. </p>
-                        <p class="mb-2">Trust us to handle your relocation or delivery with precision, integrity, and a
-                            dedication to excellence.</p>
-                    </div>
+                <div class="col-md-5 text-center">
+                    <img src="{{ asset('frontend/images/services/service-bg.png') }}" alt="Image" class="img-fluid">
                 </div>
             </div>
         </div>
     </section>
 
 
+    {{-- Services Section  --}}
+
+    <section class="py-5">
+        <div class="container mt-5">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-8 text-center">
+                    <div class="heading">
+                        <h2>Our Services</h2>
+                        <p>In the realm of logistics delivery, efficiency and reliability are paramount. Our logistics
+                            delivery services are meticulously designed to streamline the transportation of goods from point
+                            A to point B seamlessly. With a focus on precision timing and route optimization, we ensure that
+                            your packages arrive at their destination promptly and intact. </p>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Small Service 01 --}}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <img src="{{ asset('frontend/images/services/service-1.png') }}" alt="Image"
+                                class="img-fluid mx-auto">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="heading p-3">
+                                <h2 class="mb-2">Small</h2>
+                                <p class="mb-1">Introducing our Small Item Delivery Service - because we understand the
+                                    importance of life's little essentials. Whether it's your phone, keys, or glasses that
+                                    you've left behind, we're here to swiftly deliver them to your doorstep. With our
+                                    reliable and efficient service, you can rest assured that your essentials will be safely
+                                    returned to you, allowing you to carry on with your day without missing a beat. Simply
+                                    reach out to us, and consider it delivered!</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="bg-light-gray py-5 text-center">
+                                <div class="mb-1">
+                                    <h3 class="mb-1 text-primary">$9.99 </h3>
+                                    <p class="text-muted fs-xs">per km</p>
+                                    <a href="#" class="btn btn-primary mt-3">Book Now</a>
+                                </div>
+                                <a href="#" class="text-muted fs-xxs">Terms & Conditions Apply</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Medium Service 02 --}}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <img src="{{ asset('frontend/images/services/service-2.png') }}" alt="Image"
+                                class="img-fluid mx-auto">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="heading p-3">
+                                <h2 class="mb-2">Medium</h2>
+                                <p class="mb-1">Introducing our Medium Item Delivery Service, catering to your everyday
+                                    needs beyond the basics. From groceries to laptops and clothes, we've got you covered.
+                                    No need to worry about hauling bulky bags or navigating crowded stores – simply leave it
+                                    to us. Our dedicated team ensures prompt and secure delivery of your medium-sized
+                                    essentials right to your doorstep. Whether it's a weekly grocery run or a new outfit for
+                                    that special occasion, count on us to deliver with efficiency and care. Sit back, relax,
+                                    and let us handle the heavy lifting while you focus on what matters most</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="bg-light-gray py-5 text-center">
+                                <div class="mb-1">
+                                    <h3 class="mb-1 text-primary">$24.99 </h3>
+                                    <p class="text-muted fs-xs">per km</p>
+                                    <a href="#" class="btn btn-primary mt-3">Book Now</a>
+                                </div>
+                                <a href="#" class="text-muted fs-xxs">Terms & Conditions Apply</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Large Service 01 --}}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <img src="{{ asset('frontend/images/services/service-3.png') }}" alt="Image"
+                                class="img-fluid mx-auto">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="heading p-3">
+                                <h2 class="mb-2">Large</h2>
+                                <p class="mb-1">Introducing our Heavy Item Delivery Service, designed to handle your most
+                                    substantial deliveries with ease. Whether it's industrial equipment, furniture, or large
+                                    appliances weighing 50+ kgs, we've got the expertise and resources to ensure safe and
+                                    efficient transportation. Our team of experienced professionals will carefully handle
+                                    your items from pick-up to drop-off, providing peace of mind throughout the process.
+                                    With our reliable service, you can trust that your large items will reach their
+                                    destination securely and on time. Say goodbye to the hassle of logistics and hello to
+                                    seamless delivery solutions.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="bg-light-gray py-5 text-center">
+                                <div class="mb-1">
+                                    <h3 class="mb-1 text-primary">$39.99 </h3>
+                                    <p class="text-muted fs-xs">per km</p>
+                                    <a href="#" class="btn btn-primary mt-3">Book Now</a>
+                                </div>
+                                <a href="#" class="text-muted fs-xxs">Terms & Conditions Apply</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
 
     {{-- Still looking for help ? --}}
 
     <section>
-
         <div class="container my-5">
             <div class="row align-items-center bg-primary-light text-white p-5 rounded-10">
                 <div class="col-md-8">
@@ -101,80 +165,41 @@
 
     </section>
 
-    {{-- Team Section  --}}
 
-    <section class="py-5 bg-light-gray">
+    {{-- How It Works Section  --}}
+
+    <section id="howitworks" class="howitworks bg-light-gray">
         <div class="container mt-5">
-            <div class="row justify-content-center">
-                <div class="col-lg-8 text-center">
+            <div class="row">
+                <div class="col-lg-12 text-center">
                     <div class="heading">
-                        <h2>Our Team</h2>
-                        <p>Our team is a dynamic blend of talent and dedication. With a collaborative spirit and unwavering
-                            commitment, we tackle every challenge with enthusiasm and expertise. From customer service to
-                            logistics and operations.</p>
+                        <h2>How it works</h2>
+                        <p>Anything can more or deliver with in 3 easy steps</p>
                     </div>
                 </div>
             </div>
             <div class="row mt-4">
-                <div class="col-md-3">
-                    <div class="team-member text-center mb-3">
-                        <img src="{{ asset('frontend/images/team/team-1.png') }}" alt="Team Member 1"
-                            class="img-fluid rounded-circle mb-3">
-                        <h5 class="mb-2">Shankar Jai</h5>
-                        <p class="mb-1">Founder</p>
-                        <a href="https://twitter.com/jai_shan" target="_blank"
-                            class="btn btn-primary btn-sm rounded-pill mt-3"
-                            style="background-color: #1DA1F2; border-color: #1DA1F2;">
-                            <i class="fab fa-twitter fa-fw" aria-hidden="true"></i>
-                            <span class="d-none d-md-inline">Follow @jai_shan</span>
-                        </a>
-                    </div>
+                <div class="col-md-4 mb-4 text-center">
+                    <img src="{{ asset('frontend/images/howitworks/image-1.png') }}" alt="Image 1" class="img-fluid mb-3">
+                    <h3>Select our service</h3>
+                    <p>First select the service which you want to avail, either you want our delivery or moving service.</p>
                 </div>
-                <div class="col-md-3">
-                    <div class="team-member text-center mb-3">
-                        <img src="{{ asset('frontend/images/team/team-2.png') }}" alt="Team Member 1"
-                            class="img-fluid rounded-circle mb-3">
-                        <h5 class="mb-2">Jhon Carlos</h5>
-                        <p class="mb-1">Founder</p>
-                        <a href="https://twitter.com/jai_shan" target="_blank"
-                            class="btn btn-primary btn-sm rounded-pill mt-3"
-                            style="background-color: #1DA1F2; border-color: #1DA1F2;">
-                            <i class="fab fa-twitter fa-fw" aria-hidden="true"></i>
-                            <span class="d-none d-md-inline">Follow @jai_shan</span>
-                        </a>
-                    </div>
+                <div class="col-md-4 mb-4 text-center">
+                    <img src="{{ asset('frontend/images/howitworks/image-2.png') }}" alt="Image 2"
+                        class="img-fluid mb-3">
+                    <h3>Book Service</h3>
+                    <p>Set your pickup & drop-off location, select time and select the vehicle that is right for you, </p>
                 </div>
-                <div class="col-md-3">
-                    <div class="team-member text-center mb-3">
-                        <img src="{{ asset('frontend/images/team/team-3.png') }}" alt="Team Member 1"
-                            class="img-fluid rounded-circle mb-3">
-                        <h5 class="mb-2">Sam Carlos</h5>
-                        <p class="mb-1">CEO</p>
-                        <a href="https://twitter.com/jai_shan" target="_blank"
-                            class="btn btn-primary btn-sm rounded-pill mt-3"
-                            style="background-color: #1DA1F2; border-color: #1DA1F2;">
-                            <i class="fab fa-twitter fa-fw" aria-hidden="true"></i>
-                            <span class="d-none d-md-inline">Follow @jai_shan</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="team-member text-center mb-3">
-                        <img src="{{ asset('frontend/images/team/team-4.png') }}" alt="Team Member 1"
-                            class="img-fluid rounded-circle mb-3">
-                        <h5 class="mb-2">Natalia portman</h5>
-                        <p class="mb-1">CEO</p>
-                        <a href="https://twitter.com/jai_shan" target="_blank"
-                            class="btn btn-primary btn-sm rounded-pill mt-3"
-                            style="background-color: #1DA1F2; border-color: #1DA1F2;">
-                            <i class="fab fa-twitter fa-fw" aria-hidden="true"></i>
-                            <span class="d-none d-md-inline">Follow @jai_shan</span>
-                        </a>
-                    </div>
+                <div class="col-md-4 mb-4 text-center">
+                    <img src="{{ asset('frontend/images/howitworks/image-3.png') }}" alt="Image 3"
+                        class="img-fluid mb-3">
+                    <h3>Ley Us Take Care</h3>
+                    <p>Let us take the responsibility of your items to get delivered & l move for you.</p>
                 </div>
             </div>
         </div>
     </section>
+
 
     {{-- Get Apps Section  --}}
     <section id="getapps" class="container mt-5">

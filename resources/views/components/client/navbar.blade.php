@@ -46,11 +46,13 @@
                 <li class="nav-link"><i class="fa fa-users"></i> <a href="#">Teams</a></li>
             @endif
             <li class="nav-link"><i class="fa fa-dolly"></i> <a href="{{ route('client.orders') }}">Orders</a></li>
-            <li class="nav-link"><i class="fa fa-file-invoice"></i> <a href="#">Invoices</a></li>
+            <li class="nav-link"><i class="fa fa-file-invoice"></i> <a
+                    href="{{ route('client.invoices') }}">Invoices</a></li>
             <li class="nav-link"><i class="fa fa-comment"></i> <a href="#">Chat</a></li>
-            <li class="nav-link"><i class="fa-solid fa-repeat"></i> <a href="#">Referrals</a></li>
-            <li class="nav-link"><i class="fa fa-edit"></i> <a href="#">Edit Profile</a></li>
-            <li class="nav-link"><i class="fa fa-cog"></i> <a href="#">Settings</a></li>
+            <li class="nav-link"><i class="fa-solid fa-repeat"></i> <a
+                    href="{{ route('client.referrals') }}">Referrals</a></li>
+            <li class="nav-link"><i class="fa fa-edit"></i> <a href="{{ route('client.edit') }}">Edit Profile</a></li>
+            <li class="nav-link"><i class="fa fa-cog"></i> <a href="{{ route('client.settings') }}">Settings</a></li>
             <li class="nav-link"><i class="fa-solid fa-arrow-right-from-bracket"></i> <a href="{{ route('logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
             </li>
