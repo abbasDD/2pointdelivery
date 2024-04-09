@@ -2,7 +2,7 @@
     <div class="container-fluid">
 
         <div class="d-flex align-items-center ">
-            <button id="sidebarToggle" class="btn btn-outline">
+            <button id="sidebarToggle" class="btn btn-sm btn-outline mx-3">
                 <i class="fas fa-bars"></i>
             </button>
 

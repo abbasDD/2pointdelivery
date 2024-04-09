@@ -22,7 +22,7 @@
 
                             <input type="hidden" name="token" value="{{ $token }}">
 
-                            <div class="row mb-3">
+                            <div class="row">
                                 <label for="email"
                                     class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
 
@@ -39,7 +39,7 @@
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
+                            <div class="row">
                                 <label for="password"
                                     class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
 
@@ -56,7 +56,7 @@
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
+                            <div class="row">
                                 <label for="password-confirm"
                                     class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
 

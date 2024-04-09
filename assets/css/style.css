@@ -2,15 +2,15 @@
 :root {
     --primary-color: #038164;
     --primary-dark: #004938;
-    --primary-light: #32aa8e ;
+    --primary-light: #32aa8e;
     --gray-color: #6b6b6b;
     --light-gray-color: #f9f9f9;
     --black: #000000;
     --white: #ffffff;
 
-    --card-gradient-1:linear-gradient(170deg, #01E4F8 0%, #1D3EDE 100%);
-    --card-gradient-2:linear-gradient(170deg, #B4EC51 0%, #429321 100%);
-    --card-gradient-3:linear-gradient(170deg, #C86DD7 0%, #3023AE 100%);
+    --card-gradient-1: linear-gradient(170deg, #01E4F8 0%, #1D3EDE 100%);
+    --card-gradient-2: linear-gradient(170deg, #B4EC51 0%, #429321 100%);
+    --card-gradient-3: linear-gradient(170deg, #C86DD7 0%, #3023AE 100%);
 }
 
 /* This file is to add custom css for FRONTEND of this website */
@@ -30,13 +30,17 @@ p {
     margin-bottom: 10px;
 }
 
-label{
+label {
     margin-bottom: 15px;
 }
 
-.form-control{
+.form-control {
     padding: 10px 25px;
     /* border: none; */
+}
+
+.row {
+    margin-bottom: 1rem;
 }
 
 .bg-primary {
@@ -64,15 +68,19 @@ label{
     /* background-image: linear-gradient(to right, var(--primary-color) 100%, var(--primary-color) 60%); */
 }
 
-.text-primary{
+.text-primary {
     color: var(--primary-color) !important;
 }
 
-.fs-xs{
+.text-right {
+    text-align: right;
+}
+
+.fs-xs {
     font-size: 1rem;
 }
 
-.fs-xxs{
+.fs-xxs {
     font-size: 0.75rem;
 }
 
@@ -81,7 +89,7 @@ label{
     border: none;
 }
 
-.btn-sm{
+.btn-sm {
     padding: 5px 10px;
 }
 
@@ -91,7 +99,7 @@ label{
     color: var(--white);
 }
 
-.btn-google{
+.btn-google {
     background-color: #EB4335;
     color: var(--white);
 }
@@ -102,7 +110,7 @@ label{
 }
 
 
-.btn-facebook{
+.btn-facebook {
     background-color: #0075FF;
     color: var(--white);
 }
@@ -117,7 +125,7 @@ label{
     color: var(--black);
 }
 
-.btn-primary:hover, .btn-primary:focus, .btn-primary:active  .btn-primary:focus-visible  {
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active .btn-primary:focus-visible {
     background-color: var(--primary-dark);
     border: none;
 }
@@ -134,7 +142,7 @@ label{
     color: var(--white);
 }
 
-.heading h2{
+.heading h2 {
     color: var(--primary-color);
     font-size: 32px;
     font-weight: 700;
@@ -152,27 +160,30 @@ label{
     background-color: black; 
 } */
 
-.heading p{
+.heading p {
     font-size: 16px;
     /* font-weight: 500; */
     margin-bottom: 15px;
 }
 
 .vertical-line {
-    width: 2px; /* Adjust the width as needed */
-    height: 100px; /* Adjust the height as needed */
-    background-color: black; /* Adjust the color as needed */
+    width: 2px;
+    /* Adjust the width as needed */
+    height: 100px;
+    /* Adjust the height as needed */
+    background-color: black;
+    /* Adjust the color as needed */
 }
 
-.rounded-10{
+.rounded-10 {
     border-radius: 25px;
 }
 
-.border-left{
+.border-left {
     border-left: 1px solid var(--black);
 }
 
-.table .thead-primary{
+.table .thead-primary {
     background-color: var(--primary-color);
     color: var(--white);
 }
@@ -207,6 +218,20 @@ label{
     margin-top: 0.125rem;
 }
 
+.card {
+    min-width: 100px;
+}
+
+.card .card-header {
+    background-color: var(--primary-color);
+    padding: 15px;
+    color: var(--white);
+}
+
+.alert-trim {
+    display: inline-block;
+}
+
 /* Header Section */
 #pageheader {
     height: 500px;
@@ -231,7 +256,7 @@ label{
 
 /* About Us Section  */
 
-#aboutus .content h2{
+#aboutus .content h2 {
     font-size: 36px;
     font-weight: 700;
     margin-bottom: 20px;
@@ -265,81 +290,82 @@ label{
     font-size: 24px;
 }
 
-.clickable-card{
+.clickable-card {
     height: 200px;
 }
 
 
 /* Auth Pages CSS  */
 
-.authpage{
-overflow-x: hidden;
+.authpage {
+    overflow-x: hidden;
 }
 
-.authpage .switch-user a{
+.authpage .switch-user a {
     float: right;
     color: var(--primary-color);
     margin: 10px 15px;
 }
 
-.authpage .switch-user a:hover{
+.authpage .switch-user a:hover {
     color: var(--primary-dark);
 }
 
-.authpage .card{
+.authpage .card {
     margin: auto 50px;
     border: none;
 }
 
-.authpage .card .card-body img{
+.authpage .card .card-body img {
     height: 50px;
     margin-bottom: 20px;
 }
 
-.authpage .card .card-body h3{
+.authpage .card .card-body h3 {
     font-size: 24px;
     margin-bottom: 10px;
 }
 
-.authpage .card .card-body p{
+.authpage .card .card-body p {
     font-size: 14px;
     margin-bottom: 20px;
 }
 
-.authpage .card .card-body .forgot-password a{
+.authpage .card .card-body .forgot-password a {
     float: right;
     font-size: 12px;
 }
 
-.authpage .card .card-body .toggle-password{
-    position: absolute;
-    right: 30px;
-    top: 13px;
-}
-.authpage .card .card-body .toggle-confirm-password{
+.authpage .card .card-body .toggle-password {
     position: absolute;
     right: 30px;
     top: 13px;
 }
 
-.authpage .card .card-body .image-selection img{
-    height: 100px; 
-    width: 100px; 
+.authpage .card .card-body .toggle-confirm-password {
+    position: absolute;
+    right: 30px;
+    top: 13px;
+}
+
+.authpage .card .card-body .image-selection img {
+    height: 100px;
+    width: 100px;
     object-fit: cover;
 }
 
-.authpage .card .card-body .image-selection a{
-    position: absolute; 
-    right: 5px; 
-    bottom: 10px; 
-    padding: 5px; 
-    height: 35px; 
+.authpage .card .card-body .image-selection a {
+    position: absolute;
+    right: 5px;
+    bottom: 10px;
+    padding: 5px;
+    height: 35px;
     width: 35px;
     color: var(--primary-color);
 }
 
 
-.authpage .card .card-body .image-selection a:hover{
+.authpage .card .card-body .image-selection a:hover {
     color: white;
     background-color: var(--primary-color);
 }
@@ -349,82 +375,260 @@ footer p a {
     text-decoration: none;
 }
 
-footer hr{
-    width: 60px; 
+footer hr {
+    width: 60px;
     height: 2px;
 }
 
 /* User Side Bar  */
 
-    .navbar-left,
-    .footer-left, .main-left {
-        margin-left: 250px;
-    }
+.navbar-left,
+.footer-left, .main-left {
+    margin-left: 250px;
+}
 
-    .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 250px;
-        height: 100%;
-        background-color: #f8f9fa;
-        /* color: #fff; */
-        padding: 20px;
-        transition: transform 0.3s ease;
-    }
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    background-color: #f8f9fa;
+    /* color: #fff; */
+    padding: 20px;
+    transition: transform 0.3s ease;
+    z-index: 9999;
+}
 
-    .sidebar .navbar-brand{
-        color: var(--primary-color);
-        font-weight: 600;
-    }
+.sidebar .navbar-brand {
+    color: var(--primary-color);
+    font-weight: 600;
+}
 
-    .sidebar-hidden {
-        transform: translateX(-250px);
-    }
+.sidebar-hidden {
+    transform: translateX(-250px);
+}
 
-    .sidebar .nav-link {
-        color: var(--gray-color);
-        font-size: 16px;
-        padding: 10px 20px;
-        font-weight: 600;
-    }
+.sidebar .nav-link {
+    color: var(--gray-color);
+    font-size: 16px;
+    padding: 10px 20px;
+    font-weight: 600;
+}
 
-    .sidebar .nav-link:hover {
-        color: var(--primary-color);
-    }
+.sidebar .nav-link:hover {
+    color: var(--primary-color);
+}
 
-    .sidebar .nav-link:active {
-        color: var(--primary-color);
-    }
+.sidebar .nav-link:active {
+    color: var(--primary-color);
+}
 
-    .sidebar .nav-link a {
-        padding-left: 5px;
-        color: var(--gray-color);
-        text-decoration: none;
-    }
+.sidebar .nav-link a {
+    padding-left: 5px;
+    color: var(--gray-color);
+    text-decoration: none;
+}
 
-    .sidebar .nav-link a:hover {
-        color: var(--primary-color);
-    }
-    .sidebar .nav-link a:active {
-        color: var(--primary-color);
-    }
+.sidebar .nav-link a:hover {
+    color: var(--primary-color);
+}
 
-    /* Accordin CSS  */
+.sidebar .nav-link a:active {
+    color: var(--primary-color);
+}
 
-    .accordion-button:not(.collapsed){
-        color: var(--primary-color);
-    }
+/* Accordin CSS  */
+
+.accordion-button:not(.collapsed) {
+    color: var(--primary-color);
+}
 
 
-    /* CUSTOM STATISTICS CARDS CSS */
+/* CUSTOM STATISTICS CARDS CSS */
 
-    .statistics{
-        padding: 10px 0;
-        /* margin: 50px 0; */
-    }
+.statistics {
+    padding: 10px 0;
+    /* margin: 50px 0; */
+}
 
-    
+
+/* Edit Profile Tabs CSS  */
+
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    background-color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+
+.nav-pills .nav-link {
+    border: 1px solid var(--primary-light);
+    color: var(--primary-light);
+    margin-bottom: 0.5rem;
+}
+
+
+/* Booking Form Stepper Page CSS  */
+
+.booking-form .card .card-body .calculated-amount .item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.booking-form .location-div {
+    position: absolute;
+    bottom: 0;
+    left: 35px;
+    width: 100%;
+}
+
+.booking-form .parcels .parcel-type {
+    padding: 15px;
+    background-color: var(--light-gray-color);
+    color: var(--black);
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+
+.booking-form .parcels .active-parcel {
+    padding: 15px;
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+.booking-form #regForm {
+    background-color: #ffffff;
+    margin: 0px auto;
+    font-family: Raleway;
+    padding: 40px;
+    border-radius: 10px
+}
+
+
+
+.booking-form input.invalid {
+    background-color: #ffdddd
+}
+
+.booking-form .tab {
+    display: none
+}
+
+
+.booking-form button:hover {
+    opacity: 0.8
+}
+
+.booking-form #prevBtn {
+    background-color: var(--primary-light)
+}
+
+.booking-form .step {
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 50%;
+    display: inline-block;
+    opacity: 0.25;
+}
+
+.booking-form .step.active {
+    opacity: 1
+}
+
+.booking-form .step.finish {
+    background-color: var(--primary-dark);
+}
+
+.booking-form .all-steps {
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 30px
+}
+
+.booking-form .thanks-message {
+    display: none
+}
+
+.booking-form .container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+/* Hide the browser's default radio button */
+
+.booking-form .container input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+
+/* Create a custom radio button */
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+    border-radius: 50%;
+}
+
+
+/* On mouse-over, add a grey background color */
+
+.container:hover input~.checkmark {
+    background-color: #ccc;
+}
+
+
+/* When the radio button is checked, add a blue background */
+
+.container input:checked~.checkmark {
+    background-color: #2196F3;
+}
+
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+
+/* Show the indicator (dot/circle) when checked */
+
+.container input:checked~.checkmark:after {
+    display: block;
+}
+
+
+/* Style the indicator (dot/circle) */
+
+.container .checkmark:after {
+    top: 9px;
+    left: 9px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+}
+
 
 /* Responsive CSS */
 /* For mobile phones: */
@@ -432,9 +636,14 @@ footer hr{
     #pageheader {
         height: 300px;
     }
+
     #pageheader .content h3 {
         font-size: 24px;
         padding-bottom: 10px;
+    }
+
+    .footer-left, .main-left {
+        margin-left: 10px;
     }
 }
 

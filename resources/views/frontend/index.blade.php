@@ -24,24 +24,46 @@
             <h2>Move or Deliver Anything</h2>
             <p>Efficient logistics solutions to transport or deliver any item, anywhere, anytime.</p>
         </div>
-        <form>
+        <form action="{{ route('new_booking') }}" method="GET">
             <div class="row">
                 <div class="col-md-5">
                     <div class="mb-3">
-                        <input type="text" class="form-control" id="pickupLocation" placeholder="Enter pickup location">
+                        <input id="pickupLocation" class="form-control" type="text" name="pickup_location"
+                            placeholder="Enter pickup location" required>
+                        <input type="hidden" id="pickup_lat" name="pickup_lat" />
+                        <input type="hidden" id="pickup_lng" name="pickup_lng" />
                     </div>
                 </div>
                 <div class="col-md-5">
                     <div class="mb-3">
-                        <input type="text" class="form-control" id="deliveryLocation"
-                            placeholder="Enter delivery location">
+                        <input id="deliveryLocation" class="form-control" type="text" name="delivery_location"
+                            placeholder="Enter delivery location" required>
+                        <input type="hidden" id="delivery_lat" name="delivery_lat" />
+                        <input type="hidden" id="delivery_lng" name="delivery_lng" />
                     </div>
                 </div>
                 <div class="col-md-2">
-                    <button type="button" class="btn btn-primary w-100">Get Estimate</button>
+                    <button type="submit" class="btn btn-primary w-100">Get Estimate</button>
                 </div>
             </div>
         </form>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-jXtk8qCpcwUwFn-7Q3VazeneJJ46g00&libraries=places">
+        </script>
+        <script>
+            var pickupAutocomplete = new google.maps.places.Autocomplete(document.getElementById('pickupLocation'));
+            var deliveryAutocomplete = new google.maps.places.Autocomplete(document.getElementById('deliveryLocation'));
+
+            pickupAutocomplete.addListener('place_changed', function() {
+                var place = pickupAutocomplete.getPlace();
+                document.getElementById('pickup_lat').value = place.geometry.location.lat();
+                document.getElementById('pickup_lng').value = place.geometry.location.lng();
+            });
+            deliveryAutocomplete.addListener('place_changed', function() {
+                var place = deliveryAutocomplete.getPlace();
+                document.getElementById('delivery_lat').value = place.geometry.location.lat();
+                document.getElementById('delivery_lng').value = place.geometry.location.lng();
+            });
+        </script>
     </section>
 
     {{-- About Us Section  --}}

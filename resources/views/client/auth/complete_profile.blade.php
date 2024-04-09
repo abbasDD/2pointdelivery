@@ -44,7 +44,7 @@
 
 
 
-                            <div class="row mb-3">
+                            <div class="row">
                                 <div class="col-md-4">
                                     <input id="first_name" type="text"
                                         class="form-control @error('first_name') is-invalid @enderror" name="first_name"
@@ -84,7 +84,7 @@
                             </div>
 
 
-                            <div class="row mb-3">
+                            <div class="row">
                                 <div class="col-md-6">
                                     <select name="gender" id="gender"
                                         class="form-control @error('gender') is-invalid @enderror" required>
@@ -113,7 +113,7 @@
 
 
 
-                            <div class="row mb-3">
+                            <div class="row">
                                 <div class="col-md-6">
                                     <input id="tax_id" type="text" name="tax_id"
                                         class="form-control @error('tax_id') is-invalid @enderror" placeholder="Tax ID"
@@ -138,7 +138,7 @@
 
 
 
-                            <div class="row mb-3">
+                            <div class="row">
                                 <div class="col-md-4">
                                     <input id="suite" type="text"
                                         class="form-control @error('suite') is-invalid @enderror" name="suite"
@@ -174,7 +174,7 @@
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
+                            <div class="row">
                                 <div class="col-md-4">
                                     <input id="state" type="text"
                                         class="form-control @error('state') is-invalid @enderror" name="state"
@@ -213,7 +213,7 @@
                             </div>
 
 
-                            <div class="row mb-3">
+                            <div class="row">
                                 <div class="col-md-12">
                                     <button type="submit" class="btn btn-primary w-100">
                                         Complete Profile

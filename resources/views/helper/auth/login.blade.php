@@ -28,7 +28,7 @@
                             {{-- Hidden field for helper --}}
                             <input type="hidden" name="user_type" value="helper">
 
-                            <div class="row mb-3">
+                            <div class="row">
                                 <div class="col-md-12">
                                     <input id="email" type="email"
                                         class="form-control @error('email') is-invalid @enderror" name="email"
@@ -58,7 +58,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="row mb-3">
+                            <div class="row">
                                 <div class="col-12 forgot-password">
                                     @if (Route::has('password.request'))
                                         <p>
@@ -70,7 +70,7 @@
                                 </div>
                             </div>
 
-                            {{-- <div class="row mb-3">
+                            {{-- <div class="row">
                             <div class="col-md-12">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>

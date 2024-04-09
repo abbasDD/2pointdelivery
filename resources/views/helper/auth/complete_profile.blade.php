@@ -22,7 +22,7 @@
                         <form method="POST" action="{{ route('helper.complete_profile') }}">
                             @csrf
 
-                            <div class="row mb-3">
+                            <div class="row">
                                 <div class="col-md-12">
                                     <select id="account_type" class="form-control @error('name') is-invalid @enderror"
                                         name="account_type" required autocomplete="account_type" autofocus>
@@ -40,7 +40,7 @@
                             </div>
 
 
-                            <div class="row mb-3">
+                            <div class="row">
                                 <div class="col-md-12">
                                     <input id="email" type="email"
                                         class="form-control @error('email') is-invalid @enderror" name="email"
@@ -55,7 +55,7 @@
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
+                            <div class="row">
                                 <div class="col-md-12 position-relative">
                                     <input id="password" type="password"
                                         class="form-control @error('password') is-invalid @enderror" name="password"
@@ -71,7 +71,7 @@
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
+                            <div class="row">
                                 <div class="col-md-12 position-relative">
                                     <input id="password-confirm" type="password" class="form-control"
                                         name="password_confirmation" placeholder="Confirm Password" required
@@ -82,7 +82,7 @@
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
+                            <div class="row">
                                 <div class="col-md-12">
                                     <button type="submit" class="btn btn-primary w-100">
                                         {{ __('Register') }}

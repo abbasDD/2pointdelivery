@@ -2,7 +2,7 @@
     <div class="container-fluid">
 
         <div class="d-flex align-items-center ">
-            <button id="sidebarToggle" class="btn btn-outline">
+            <button id="sidebarToggle" class="btn btn-sm btn-outline mx-3">
                 <i class="fas fa-bars"></i>
             </button>
 
@@ -42,7 +42,7 @@
             <li class="nav-link"><i class="fa fa-home"></i> <a href="{{ route('client.index') }}">Dashboard</a></li>
             <li class="nav-link"><i class="fa fa-bank"></i> <a href="#">KYC Detail</a></li>
             <li class="nav-link"><i class="fa fa-users"></i> <a href="#">Teams</a></li>
-            <li class="nav-link"><i class="fa fa-dolly"></i> <a href="#">Orders</a></li>
+            <li class="nav-link"><i class="fa fa-dolly"></i> <a href="#">Bookings</a></li>
             <li class="nav-link"><i class="fa fa-file-invoice"></i> <a href="#">Invoices</a></li>
             <li class="nav-link"><i class="fa fa-comment"></i> <a href="#">Chat</a></li>
             <li class="nav-link"><i class="fa-solid fa-repeat"></i> <a href="#">Referrals</a></li>
