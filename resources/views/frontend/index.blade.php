@@ -9,9 +9,10 @@
         <div class="container h-100">
             <div class="d-flex align-items-center h-100">
                 <div class="content">
-                    <h3>PrestigeParcel Plus</h3>
-                    <p>Elevate your shipping experience with our premium courier service, known for precision and
-                        professionalism.</p>
+                    <h3 class="mb-2">Booking & Moving Simplified: Your Journey, Our Priority!</h3>
+                    <p>From the first click to the final destination, we make booking and moving effortless. Trust us to
+                        handle your logistics with precision and care, ensuring a smooth and stress-free experience every
+                        step of the way!</p>
                     <a href="{{ route('helper.register') }}" class="btn btn-primary">Join as Helper</a>
                 </div>
             </div>
@@ -69,7 +70,7 @@
     {{-- About Us Section  --}}
 
     <section id="aboutus" class="container mt-5">
-        <div class="row">
+        <div class="row align-items-center">
             <div class="col-lg-6 content">
                 <div class="heading">
                     <h2>Delightful delivery & moving</h2>

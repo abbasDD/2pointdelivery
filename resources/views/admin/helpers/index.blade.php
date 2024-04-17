@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Clients')
+@section('title', 'Helpers')
 
 @section('content')
 
@@ -8,14 +8,14 @@
         <div class="container">
             <div class="section-header mb-2">
                 <div class="d-flex justify-content-between">
-                    <h4 class="mb-0">Clients</h4>
-                    <a href="{{ route('admin.client.create') }}" class="btn btn-sm btn-primary"><i class="fas fa-plus"></i> Add
-                        Client</a>
+                    <h4 class="mb-0">Helpers</h4>
+                    <a href="{{ route('admin.helper.create') }}" class="btn btn-sm btn-primary"><i class="fas fa-plus"></i> Add
+                        Helper</a>
                 </div>
             </div>
             <div class="section-body">
-                <div id="clientTable">
-                    @include('admin.clients.partials.list')
+                <div id="helperTable">
+                    @include('admin.helpers.partials.list')
                 </div>
             </div>
         </div>
@@ -31,9 +31,9 @@
 
             function fetch_data(page) {
                 $.ajax({
-                    url: "/clients?page=" + page,
+                    url: "/helpers?page=" + page,
                     success: function(data) {
-                        $('#clientTable').html(data);
+                        $('#helperTable').html(data);
                     }
                 });
             }

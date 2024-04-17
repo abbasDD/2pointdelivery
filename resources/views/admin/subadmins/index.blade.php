@@ -34,7 +34,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($subadmins as $subadmin)
+                        @forelse ($subadmins as $subadmin)
                             <tr>
                                 <th scope="row">{{ $subadmin->id }}</th>
                                 <td>{{ $subadmin->first_name }}</td>
@@ -55,7 +55,11 @@
                                     </a>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center">No data found</td>
+                            </tr>
+                        @endforelse
 
                     </tbody>
                 </table>

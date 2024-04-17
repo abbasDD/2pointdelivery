@@ -7,13 +7,17 @@
         </tr>
     </thead>
     <tbody>
-        @foreach ($clients as $client)
+        @forelse ($clients as $client)
             <tr>
                 <td>{{ $client->id }}</td>
                 <td>{{ $client->first_name }}</td>
                 <td>{{ $client->account_type }}</td>
             </tr>
-        @endforeach
+        @empty
+            <tr>
+                <td colspan="3" class="text-center">No data found</td>
+            </tr>
+        @endforelse
     </tbody>
 </table>
 
