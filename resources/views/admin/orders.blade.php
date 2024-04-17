@@ -1,4 +1,4 @@
-@extends('client.layouts.app')
+@extends('admin.layouts.app')
 
 @section('title', 'Orders')
 

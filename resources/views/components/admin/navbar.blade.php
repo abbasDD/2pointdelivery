@@ -6,7 +6,7 @@
                 <i class="fas fa-bars"></i>
             </button>
 
-            <h5 class="m-0 d-none d-md-block">Helper Dashboard</h5>
+            <h5 class="m-0 d-none d-md-block">Admin Dashboard</h5>
         </div>
 
         <div class="d-flex">
@@ -33,29 +33,30 @@
     </div>
 </nav>
 
-{{-- Sidebar Code --}}
+{{-- Sidebar Code her --}}
 <div class="sidebar">
     <a class="navbar-brand" href="{{ route('index') }}">
         <img src="{{ asset('images/logo/icon.png') }}" alt="2 Point" height="30">
-        2 Point Helper
+        2 Point Admin
     </a>
     <nav class="mt-5">
         <ul class="p-0">
-            <li class="nav-link"><i class="fa fa-home"></i> <a href="{{ route('helper.index') }}">Dashboard</a></li>
-            <li class="nav-link"><i class="fa fa-bank"></i> <a href="{{ route('helper.kyc_details') }}">KYC Detail</a>
+            <li class="nav-link"><i class="fa fa-home"></i> <a href="{{ route('admin.index') }}">Dashboard</a></li>
+            <li class="nav-link"><i class="fa fa-bank"></i> <a href="{{ route('admin.subadmins') }}">Sub Admins</a>
             </li>
-            <li class="nav-link"><i class="fa fa-users"></i> <a href="{{ route('helper.teams') }}">Teams</a></li>
-            <li class="nav-link"><i class="fa fa-dolly"></i> <a href="{{ route('helper.bookings') }}">Bookings</a></li>
-            <li class="nav-link"><i class="fa fa-file-invoice"></i> <a href="{{ route('helper.trackOrder') }}">Track
-                    Order</a></li>
+            <li class="nav-link"><i class="fa fa-bank"></i> <a href="{{ route('admin.clients') }}">Clients</a>
+            </li>
+            <li class="nav-link"><i class="fa fa-bank"></i> <a href="{{ route('admin.helpers') }}">Helpers</a>
+            </li>
+            <li class="nav-link"><i class="fa fa-dolly"></i> <a href="{{ route('admin.orders') }}">Orders</a></li>
             <li class="nav-link"><i class="fa fa-comment"></i> <a href="#">Chat</a></li>
-            <li class="nav-link"><i class="fa fa-edit"></i> <a href="{{ route('helper.edit') }}">Edit Profile</a></li>
-            <li class="nav-link"><i class="fa fa-cog"></i> <a href="{{ route('helper.settings') }}">Settings</a></li>
+            <li class="nav-link"><i class="fa fa-edit"></i> <a href="{{ route('admin.services') }}">Services</a></li>
+            <li class="nav-link"><i class="fa fa-edit"></i> <a href="{{ route('admin.vehicles') }}">Vehicles</a></li>
+            <li class="nav-link"><i class="fa fa-cog"></i> <a href="{{ route('admin.settings') }}">Settings</a></li>
             <li class="nav-link"><i class="fa-solid fa-arrow-right-from-bracket"></i> <a href="{{ route('logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
             </li>
         </ul>
-        <a href="{{ route('client.index') }}" class="btn btn-primary">Login as Client</a>
     </nav>
 </div>
 

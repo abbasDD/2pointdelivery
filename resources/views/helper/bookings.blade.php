@@ -1,4 +1,4 @@
-@extends('client.layouts.app')
+@extends('helper.layouts.app')
 
 @section('title', 'Orders')
 
@@ -28,8 +28,8 @@
                             <th scope="col">#</th>
                             <th scope="col">Pickup</th>
                             <th scope="col">Dropoff</th>
-                            <th scope="col">Amount</th>
                             <th scope="col">Driver</th>
+                            <th scope="col">Amount</th>
                             <th scope="col">Status</th>
                             <th scope="col">Action</th>
                         </tr>

@@ -48,4 +48,36 @@ class HelperController extends Controller
     {
         return view('helper.index');
     }
+
+
+    public function kyc_details()
+    {
+        return view('helper.kyc_details');
+    }
+
+    public function bookings()
+    {
+        return view('helper.bookings');
+    }
+
+
+    public function settings()
+    {
+        return view('helper.settings');
+    }
+
+    public function edit_profile()
+    {
+        return view('helper.edit');
+    }
+
+    public function teams()
+    {
+        return view('helper.teams');
+    }
+
+    public function track_order()
+    {
+        return view('helper.track_order');
+    }
 }

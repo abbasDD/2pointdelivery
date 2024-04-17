@@ -84,4 +84,9 @@ class ClientController extends Controller
     {
         return view('client.edit');
     }
+
+    public function track_order()
+    {
+        return view('helper.track_order');
+    }
 }

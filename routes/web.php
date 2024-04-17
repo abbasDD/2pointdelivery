@@ -43,3 +43,7 @@ Route::get('/join-helper', function () {
 Route::get('/new-booking', function () {
     return view('frontend.new_booking');
 })->name('new_booking');
+
+Route::get('/booking-detail', function () {
+    return view('frontend.booking_detail');
+})->name('booking_detail');

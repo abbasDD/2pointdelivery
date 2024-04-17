@@ -32,6 +32,8 @@
         </div>
     </div>
 </nav>
+
+{{-- Sidebar Code her --}}
 <div class="sidebar">
     <a class="navbar-brand" href="{{ route('index') }}">
         <img src="{{ asset('images/logo/icon.png') }}" alt="2 Point" height="30">
@@ -51,12 +53,15 @@
             <li class="nav-link"><i class="fa fa-comment"></i> <a href="#">Chat</a></li>
             <li class="nav-link"><i class="fa-solid fa-repeat"></i> <a
                     href="{{ route('client.referrals') }}">Referrals</a></li>
+            <li class="nav-link"><i class="fa fa-map"></i> <a href="{{ route('client.trackOrder') }}">Track
+                    Order</a></li>
             <li class="nav-link"><i class="fa fa-edit"></i> <a href="{{ route('client.edit') }}">Edit Profile</a></li>
             <li class="nav-link"><i class="fa fa-cog"></i> <a href="{{ route('client.settings') }}">Settings</a></li>
             <li class="nav-link"><i class="fa-solid fa-arrow-right-from-bracket"></i> <a href="{{ route('logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
             </li>
         </ul>
+        <a href="{{ route('helper.index') }}" class="btn btn-primary">Login as Helper</a>
     </nav>
 </div>
 

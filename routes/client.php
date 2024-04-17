@@ -35,3 +35,6 @@ Route::get('/client/settings', [App\Http\Controllers\ClientController::class, 's
 
 //Edit Profile
 Route::get('/client/edit', [App\Http\Controllers\ClientController::class, 'edit_profile'])->name('client.edit');
+
+//Track Order
+Route::get('/client/track-order', [App\Http\Controllers\ClientController::class, 'track_order'])->name('client.trackOrder');
