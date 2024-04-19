@@ -41,20 +41,37 @@
     </a>
     <nav class="mt-5">
         <ul class="p-0">
-            <li class="nav-link"><i class="fa fa-home"></i> <a href="{{ route('admin.index') }}">Dashboard</a></li>
-            <li class="nav-link"><i class="fa fa-bank"></i> <a href="{{ route('admin.subadmins') }}">Sub Admins</a>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.index') }}"><i class="fa fa-home"></i>
+                    Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.subadmins') }}"><i class="fa fa-bank"></i>
+                    Sub Admins</a>
             </li>
-            <li class="nav-link"><i class="fa fa-bank"></i> <a href="{{ route('admin.clients') }}">Clients</a>
+            <li class="nav-item has-submenu">
+                <a class="nav-link" href="#"> <i class="fa fa-users"></i> Users </a>
+                <ul class="submenu collapse">
+                    <li><a class="nav-link" href="{{ route('admin.clients') }}">Clients </a></li>
+                    <li><a class="nav-link" href="{{ route('admin.helpers') }}">Helpers </a></li>
+                    <li><a class="nav-link" href="{{ route('admin.requestedHelpers') }}">Requested Helpers </a></li>
+                </ul>
             </li>
-            <li class="nav-link"><i class="fa fa-bank"></i> <a href="{{ route('admin.helpers') }}">Helpers</a>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.bookings') }}"><i class="fa fa-dolly"></i>
+                    Bookings</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-comment"></i> Chat</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.vehicleTypes') }}"><i
+                        class="fa fa-edit"></i> Vehicles</a>
             </li>
-            <li class="nav-link"><i class="fa fa-dolly"></i> <a href="{{ route('admin.orders') }}">Orders</a></li>
-            <li class="nav-link"><i class="fa fa-comment"></i> <a href="#">Chat</a></li>
-            <li class="nav-link"><i class="fa fa-edit"></i> <a href="{{ route('admin.services') }}">Services</a></li>
-            <li class="nav-link"><i class="fa fa-edit"></i> <a href="{{ route('admin.vehicles') }}">Vehicles</a></li>
-            <li class="nav-link"><i class="fa fa-cog"></i> <a href="{{ route('admin.settings') }}">Settings</a></li>
-            <li class="nav-link"><i class="fa-solid fa-arrow-right-from-bracket"></i> <a href="{{ route('logout') }}"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+            <li class="nav-item has-submenu">
+                <a class="nav-link" href="#"> <i class="fa fa-cog"></i> Settings </a>
+                <ul class="submenu collapse">
+                    <li><a class="nav-link" href="{{ route('admin.systemSettings') }}">System </a></li>
+                    <li><a class="nav-link" href="{{ route('admin.taxSettings') }}">Tax </a></li>
+                    <li><a class="nav-link" href="{{ route('admin.systemSettings') }}">Payment </a> </li>
+                    <li><a class="nav-link" href="{{ route('admin.systemSettings') }}">Priority </a> </li>
+                </ul>
+            </li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('logout') }}"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
+                        class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
             </li>
         </ul>
     </nav>
@@ -74,4 +91,34 @@
         document.querySelector('footer').classList.toggle('footer-left');
         document.querySelector('main').classList.toggle('main-left');
     });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('.sidebar .nav-link').forEach(function(element) {
+
+            element.addEventListener('click', function(e) {
+
+                let nextEl = element.nextElementSibling;
+                let parentEl = element.parentElement;
+
+                if (nextEl) {
+                    e.preventDefault();
+                    let mycollapse = new bootstrap.Collapse(nextEl);
+
+                    if (nextEl.classList.contains('show')) {
+                        mycollapse.hide();
+                    } else {
+                        mycollapse.show();
+                        // find other submenus with class=show
+                        var opened_submenu = parentEl.parentElement.querySelector(
+                            '.submenu.show');
+                        // if it exists, then close all of them
+                        if (opened_submenu) {
+                            new bootstrap.Collapse(opened_submenu);
+                        }
+                    }
+                }
+            }); // addEventListener
+        }) // forEach
+    });
+    // DOMContentLoaded  end
 </script>

@@ -5,10 +5,10 @@
 @section('content')
 
     <section class="section">
-        <div class="container">
+        <div class="container-fluid">
             <div class="section-header mb-2">
                 <div class="d-flex justify-content-between">
-                    <h4 class="mb-0">Helpers</h4>
+                    <h4>Helpers</h4>
                     <a href="{{ route('admin.helper.create') }}" class="btn btn-sm btn-primary"><i class="fas fa-plus"></i> Add
                         Helper</a>
                 </div>

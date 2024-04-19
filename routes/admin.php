@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\HelperController;
+use App\Http\Controllers\Admin\SystemSettingController;
+use App\Http\Controllers\Admin\TaxSettingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
-
-
+use App\Http\Controllers\Admin\VehicleTypeController;
 
 //Admin Routes
 
@@ -36,10 +38,36 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
 
     // Helpers Page Routes
     Route::get('/helpers', [HelperController::class, 'index'])->name('admin.helpers');
+    Route::get('/requested-helpers', [HelperController::class, 'requestedHelpers'])->name('admin.requestedHelpers');
     Route::get('/helpers/create', [HelperController::class, 'create'])->name('admin.helper.create');
     Route::post('/helpers/store', [HelperController::class, 'store'])->name('admin.helper.store');
     Route::get('/helpers/edit/{id}', [HelperController::class, 'edit'])->name('admin.helper.edit');
     Route::post('/helpers/update', [HelperController::class, 'update'])->name('admin.helper.update');
+
+    // Bookings Page Routes
+    Route::get('/bookings', [BookingController::class, 'index'])->name('admin.bookings');
+    Route::get('/bookings/view/{id}', [BookingController::class, 'show'])->name('admin.booking.show');
+
+    // Vehicle Types Page Routes
+    Route::get('/vehicle-types', [VehicleTypeController::class, 'index'])->name('admin.vehicleTypes');
+    Route::get('/vehicle-type/create', [VehicleTypeController::class, 'create'])->name('admin.vehicleType.create');
+    Route::post('/vehicle-type/store', [VehicleTypeController::class, 'store'])->name('admin.vehicleType.store');
+    Route::get('/vehicle-type/edit/{id}', [VehicleTypeController::class, 'edit'])->name('admin.vehicleType.edit');
+    Route::post('/vehicle-type/update', [VehicleTypeController::class, 'update'])->name('admin.vehicleType.update');
+
+
+    // Settings Page Routes
+    Route::get('/system-settings', [SystemSettingController::class, 'index'])->name('admin.systemSettings');
+    Route::post('/system-setting/update', [SystemSettingController::class, 'update'])->name('admin.systemSetting.update');
+    // Tax
+    Route::get('/tax-setting', [TaxSettingController::class, 'index'])->name('admin.taxSettings');
+    Route::get('/tax-setting/create', [TaxSettingController::class, 'create'])->name('admin.taxSetting.create');
+    Route::post('/tax-setting/store', [TaxSettingController::class, 'store'])->name('admin.taxSetting.store');
+    Route::get('/tax-setting/edit/{id}', [TaxSettingController::class, 'edit'])->name('admin.taxSetting.edit');
+    Route::post('/tax-setting/update', [TaxSettingController::class, 'update'])->name('admin.taxSetting.update');
+
+
+    // End of Admin Routes
 });
 
 
@@ -48,11 +76,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
 
 Route::get('/admin/orders', [App\Http\Controllers\AdminController::class, 'orders'])->name('admin.orders');
 
-Route::get('/admin/settings', [App\Http\Controllers\AdminController::class, 'settings'])->name('admin.settings');
 
-// Services Route
-
-Route::get('/admin/services', [App\Http\Controllers\AdminController::class, 'services'])->name('admin.services');
 
 // Vehicle Types Route
 

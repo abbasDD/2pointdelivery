@@ -29,6 +29,19 @@
                     <a class="nav-link {{ request()->is('join-helper') ? 'active' : '' }}"
                         href="{{ route('join_helper') }}">Join as Helper</a>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        {{ app()->getLocale() }}
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item"
+                                href="{{ route('change-language', ['lang' => 'en']) }}">English</a></li>
+                        <li><a class="dropdown-item" href="{{ route('change-language', ['lang' => 'fr']) }}">French</a>
+                        </li>
+                        <!-- Add other languages here -->
+                    </ul>
+                </li>
             </ul>
 
             <div class="d-flex">

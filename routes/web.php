@@ -47,3 +47,14 @@ Route::get('/new-booking', function () {
 Route::get('/booking-detail', function () {
     return view('frontend.booking_detail');
 })->name('booking_detail');
+
+
+// Change Language Routes
+Route::get('/change-language/{lang}', function ($lang) {
+    // session(['applocale' => $lang]);
+    session()->put('applocale', $lang);
+    // app()->setLocale($lang);
+    // dd(session('applocale'));
+    session()->save();
+    return back();
+})->name('change-language');

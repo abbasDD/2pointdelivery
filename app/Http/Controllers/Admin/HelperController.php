@@ -13,9 +13,18 @@ class HelperController extends Controller
     {
         $helpers = Helper::paginate(10); // 10 items per page
         if (request()->ajax()) {
-            return response()->json(view('helpers.partials.helper_list', compact('helpers'))->render());
+            return response()->json(view('helpers.partials.list', compact('helpers'))->render());
         }
         return view('admin.helpers.index', compact('helpers'));
+    }
+
+    public function requestedHelpers(Request $request)
+    {
+        $helpers = Helper::paginate(10); // 10 items per page
+        if (request()->ajax()) {
+            return response()->json(view('helpers.partials.list', compact('helpers'))->render());
+        }
+        return view('admin.helpers.requested', compact('helpers'));
     }
 
     public function create()

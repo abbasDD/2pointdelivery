@@ -13,7 +13,7 @@
                     <p>From the first click to the final destination, we make booking and moving effortless. Trust us to
                         handle your logistics with precision and care, ensuring a smooth and stress-free experience every
                         step of the way!</p>
-                    <a href="{{ route('helper.register') }}" class="btn btn-primary">Join as Helper</a>
+                    <a href="{{ route('helper.register') }}" class="btn btn-primary">{{ __('frontend.join_as_helper') }}</a>
                 </div>
             </div>
         </div>

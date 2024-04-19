@@ -468,33 +468,42 @@ footer hr {
     transform: translateX(-250px);
 }
 
-.sidebar .nav-link {
+.sidebar .nav-item {
+    list-style: none;
+}
+
+.sidebar .nav-item .nav-link {
+    display: inline-table;
     color: var(--gray-color);
     font-size: 16px;
-    padding: 10px 20px;
+    padding: 10px;
     font-weight: 600;
 }
 
-.sidebar .nav-link:hover {
+.sidebar .nav-item .nav-link:hover {
     color: var(--primary-color);
 }
 
-.sidebar .nav-link:active {
+.sidebar .nav-item .nav-link:active {
     color: var(--primary-color);
 }
 
-.sidebar .nav-link a {
+.sidebar .nav-item .nav-link a {
     padding-left: 5px;
     color: var(--gray-color);
     text-decoration: none;
 }
 
-.sidebar .nav-link a:hover {
+.sidebar .nav-item .nav-link a:hover {
     color: var(--primary-color);
 }
 
-.sidebar .nav-link a:active {
+.sidebar .nav-item .nav-link a:active {
     color: var(--primary-color);
+}
+
+.sidebar .nav-item .nav-link i {
+    padding-right: 0.5rem;
 }
 
 /* Accordin CSS  */

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\LanguageMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -12,20 +13,22 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
         then: function () {
             //Client Routes
-            Route::middleware('web')
+            Route::middleware('web', 'app_language')
                 ->group(base_path('routes/client.php'));
 
             // Helper Routes
-            Route::middleware('web')
+            Route::middleware('web', 'app_language')
                 ->group(base_path('routes/helper.php'));
 
             // Admin Routes
-            Route::middleware('web')
+            Route::middleware('web', 'app_language')
                 ->group(base_path('routes/admin.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'app_language' => LanguageMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
