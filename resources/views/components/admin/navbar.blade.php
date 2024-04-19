@@ -60,6 +60,8 @@
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.vehicleTypes') }}"><i
                         class="fa fa-edit"></i> Vehicles</a>
             </li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.serviceCategories') }}"><i
+                        class="fa fa-user"></i> Service Categories </a></li>
             <li class="nav-item has-submenu">
                 <a class="nav-link" href="#"> <i class="fa fa-cog"></i> Settings </a>
                 <ul class="submenu collapse">

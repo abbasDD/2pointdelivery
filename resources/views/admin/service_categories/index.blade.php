@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Clients')
+@section('title', 'Service Categories')
 
 @section('content')
 
@@ -8,14 +8,15 @@
         <div class="container-fluid">
             <div class="section-header mb-2">
                 <div class="d-flex justify-content-between">
-                    <h4 class="mb-0">Clients</h4>
-                    <a href="{{ route('admin.client.create') }}" class="btn btn-sm btn-primary"><i class="fas fa-plus"></i> Add
-                        Client</a>
+                    <h4 class="mb-0">Service Categories</h4>
+                    <a href="{{ route('admin.serviceCategory.create') }}" class="btn btn-sm btn-primary"><i
+                            class="fas fa-plus"></i> Add
+                        New</a>
                 </div>
             </div>
             <div class="section-body">
                 <div id="clientTable">
-                    @include('admin.clients.partials.list')
+                    @include('admin.service_categories.partials.list')
                 </div>
             </div>
         </div>

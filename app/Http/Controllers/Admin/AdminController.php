@@ -118,83 +118,19 @@ class AdminController extends Controller
         return view('admin.subadmins.edit', compact('subadmin'));
     }
 
-    public function clients(Request $request)
+
+    public function updateSubadmin(Request $request)
     {
-        $clients = Client::paginate(10); // 10 items per page
-        if (request()->ajax()) {
-            return response()->json(view('clients.partials.client_list', compact('clients'))->render());
-        }
-        return view('admin.clients.index', compact('clients'));
+        return redirect()->route('admin.subadmins')->with('success', 'Client updated successfully!');
     }
 
-    public function createClient()
+    public function updateStatusSubadmin(Request $request)
     {
-        return view('admin.clients.create');
-    }
-    public function storeClient(Request $request)
-    {
-        // Validate the request
-        $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        // Create the user first
-        $user = new User([
-            'account_type' => 'client',
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        $user->save();
-
-        // Create the admin
-        $client = new Client([
-            'user_id' => $user->id,
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'admin_type' => $request->admin_type,
-        ]);
-
-        $client->save();
-
-        // Redirect with a success message
-        return redirect()->route('admin.clients')->with('success', 'Sub-admin created successfully!');
-    }
-
-    public function editClient(Request $request)
-    {
-        $client = Client::select('clients.*', 'users.email', 'users.is_active')
-            ->join('users', 'clients.user_id', '=', 'users.id')
-            ->where('clients.id', $request->id)
+        $serviceCategory = Admin::where('id', $request->id)
             ->first();
-        return view('admin.clients.edit', compact('client'));
+        $serviceCategory->update(['is_active' => !$serviceCategory->is_active]);
+        return redirect()->route('admin.serviceCategories')->with('success', 'Service Category Status updated successfully!');
     }
-
-
-    public function orders()
-    {
-        return view('admin.orders');
-    }
-
-    public function settings()
-    {
-        return view('admin.settings');
-    }
-
-    public function services()
-    {
-        return view('admin.services');
-    }
-
-    public function vehicles()
-    {
-        return view('admin.vehicles');
-    }
-
-
 
     //Code ends here
 }

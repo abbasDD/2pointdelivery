@@ -19,10 +19,19 @@ class ServiceType extends Model
         'name',
         'image',
         'description',
+        'is_active'
     ];
 
     public function vehicle_types()
     {
         return $this->belongsToMany(VehicleType::class, 'service_vehicle');
+    }
+
+    /**
+     * The service categories that belong to the service type.
+     */
+    public function serviceCategories()
+    {
+        return $this->hasMany('App\Models\ServiceCategory', 'service_type_id');
     }
 }

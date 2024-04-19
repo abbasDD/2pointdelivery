@@ -5,7 +5,7 @@
 @section('content')
 
     <section class="section">
-        <div class="container">
+        <div class="container-fluid">
             <div class="section-header mb-2">
                 <div class="d-flex justify-content-between">
                     <h4>Clients</h4>

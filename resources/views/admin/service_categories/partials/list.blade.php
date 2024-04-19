@@ -2,29 +2,37 @@
     <thead class="thead-primary">
         <tr>
             <th>ID</th>
-            <th>First Name</th>
-            <th>Account Type</th>
+            <th>Service Name</th>
+            <th>Category Name</th>
+            <th>Base Price</th>
+            <th>Price Per KM</th>
             <th>Status</th>
             <th>Action</th>
         </tr>
     </thead>
     <tbody>
-        @forelse ($clients as $client)
+        @forelse ($service_categories as $service_category)
             <tr>
-                <td>{{ $client->id }}</td>
-                <td>{{ $client->first_name }}</td>
-                <td>{{ $client->account_type }}</td>
+                <td>{{ $service_category->id }}</td>
+                <td>{{ $service_category->serviceType->name }}</td>
+                <td>{{ $service_category->name }}</td>
+                <td>{{ $service_category->base_price }}</td>
+                <td>{{ $service_category->price_per_km }}</td>
                 <td>
-                    <button type="button" class="btn  {{ $client->is_active ? 'btn-primary' : 'btn-danger' }} btn-sm"
-                        onclick="updateStatus({{ $client->id }})">
-                        {{ $client->is_active == 1 ? 'Active' : 'Inactive' }}
+                    <button type="button"
+                        class="btn  {{ $service_category->is_active ? 'btn-primary' : 'btn-danger' }} btn-sm"
+                        onclick="updateStatus({{ $service_category->id }})">
+                        {{ $service_category->is_active == 1 ? 'Active' : 'Inactive' }}
                     </button>
+
+
                 </td>
-                <td><a href="{{ route('admin.client.edit', $client->id) }}"><i class="fa fa-edit"></i></a></td>
+                <td><a href="{{ route('admin.serviceCategory.edit', $service_category->id) }}"><i
+                            class="fa fa-edit"></i></a></td>
             </tr>
         @empty
             <tr>
-                <td colspan="5" class="text-center">No data found</td>
+                <td colspan="3" class="text-center">No data found</td>
             </tr>
         @endforelse
     </tbody>
@@ -48,14 +56,13 @@
     </div>
 </div>
 
-{{ $clients->links() }}
-
+{{ $service_categories->links() }}
 
 
 <script>
     function updateStatus(id) {
         $('#statusModal').modal('show');
-        var baseUrl = "{{ url('admin/tax-setting/update-status') }}"; // Use `url()` to get the base part
+        var baseUrl = "{{ url('admin/service-category/update-status') }}"; // Use `url()` to get the base part
         $('#updateStatusLink').attr('href', baseUrl + '/' + id);
         $('#updateStatusLink').innerHTML = "Active";
     }

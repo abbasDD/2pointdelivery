@@ -37,6 +37,20 @@
     <x-admin.navbar />
 
     <main class="main-left p-3">
+        {{-- Show message component --}}
+        @if (session('success'))
+            <div class="container-fluid">
+                <div class="alert alert-success alert-dismissible fade show d-flex justify-content-between align-items-center"
+                    role="alert">
+                    <p class="mb-0">{{ session('success') }}</p>
+                    <button class="btn btn-sm" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        @endif
+
+        {{-- Show content --}}
         @yield('content')
     </main>
 

@@ -65,4 +65,12 @@ class TaxSettingController extends Controller
         // $taxCountry->update($request->all());
         return redirect()->route('admin.taxSettings')->with('success', 'Tax Country updated successfully!');
     }
+
+    public function updateStatus(Request $request)
+    {
+        $taxCountry = TaxSetting::where('id', $request->id)
+            ->first();
+        $taxCountry->update(['is_active' => !$taxCountry->is_active]);
+        return redirect()->route('admin.taxSettings')->with('success', 'Tax Country Status updated successfully!');
+    }
 }

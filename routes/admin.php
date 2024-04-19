@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\HelperController;
+use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Admin\TaxSettingController;
 use Illuminate\Support\Facades\Route;
@@ -56,15 +57,26 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::post('/vehicle-type/update', [VehicleTypeController::class, 'update'])->name('admin.vehicleType.update');
 
 
+    // Service Categories Page Routes
+    Route::get('/service-categories', [ServiceCategoryController::class, 'index'])->name('admin.serviceCategories');
+    Route::get('/service-category/create', [ServiceCategoryController::class, 'create'])->name('admin.serviceCategory.create');
+    Route::post('/service-category/store', [ServiceCategoryController::class, 'store'])->name('admin.serviceCategory.store');
+    Route::get('/service-category/edit/{id}', [ServiceCategoryController::class, 'edit'])->name('admin.serviceCategory.edit');
+    Route::post('/service-category/update', [ServiceCategoryController::class, 'update'])->name('admin.serviceCategory.update');
+    Route::get('/service-category/update-status/{id}', [ServiceCategoryController::class, 'updateStatus'])->name('admin.serviceCategory.updateStatus');
+
     // Settings Page Routes
-    Route::get('/system-settings', [SystemSettingController::class, 'index'])->name('admin.systemSettings');
-    Route::post('/system-setting/update', [SystemSettingController::class, 'update'])->name('admin.systemSetting.update');
-    // Tax
-    Route::get('/tax-setting', [TaxSettingController::class, 'index'])->name('admin.taxSettings');
-    Route::get('/tax-setting/create', [TaxSettingController::class, 'create'])->name('admin.taxSetting.create');
-    Route::post('/tax-setting/store', [TaxSettingController::class, 'store'])->name('admin.taxSetting.store');
-    Route::get('/tax-setting/edit/{id}', [TaxSettingController::class, 'edit'])->name('admin.taxSetting.edit');
-    Route::post('/tax-setting/update', [TaxSettingController::class, 'update'])->name('admin.taxSetting.update');
+    Route::prefix('settings')->middleware(['auth'])->group(function () {
+        Route::get('/system', [SystemSettingController::class, 'index'])->name('admin.systemSettings');
+        Route::post('/system/update', [SystemSettingController::class, 'update'])->name('admin.systemSetting.update');
+        // Tax
+        Route::get('/tax', [TaxSettingController::class, 'index'])->name('admin.taxSettings');
+        Route::get('/tax/create', [TaxSettingController::class, 'create'])->name('admin.taxSetting.create');
+        Route::post('/tax/store', [TaxSettingController::class, 'store'])->name('admin.taxSetting.store');
+        Route::get('/tax/edit/{id}', [TaxSettingController::class, 'edit'])->name('admin.taxSetting.edit');
+        Route::post('/tax/update', [TaxSettingController::class, 'update'])->name('admin.taxSetting.update');
+        Route::get('/tax/update-status/{id}', [TaxSettingController::class, 'updateStatus'])->name('admin.taxSetting.updateStatus');
+    });
 
 
     // End of Admin Routes
