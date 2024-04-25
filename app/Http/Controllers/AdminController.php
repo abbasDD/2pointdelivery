@@ -60,63 +60,7 @@ class AdminController extends Controller
     }
 
 
-    public function subadmins()
-    {
-        // Get list of all admins
-        $subadmins = Admin::select('admins.*', 'users.email', 'users.is_active')
-            ->join('users', 'admins.user_id', '=', 'users.id')
-            ->get();
 
-        return view('admin.subadmins.index', compact('subadmins'));
-    }
-
-    public function createSubadmin()
-    {
-        return view('admin.subadmins.create');
-    }
-
-    public function storeSubadmin(Request $request)
-    {
-        // Validate the request
-        $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'admin_type' => 'required|string|in:super,sub',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        // Create the user first
-        $user = new User([
-            'account_type' => 'admin',
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        $user->save();
-
-        // Create the admin
-        $admin = new Admin([
-            'user_id' => $user->id,
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'admin_type' => $request->admin_type,
-        ]);
-
-        $admin->save();
-
-        // Redirect with a success message
-        return redirect()->route('admins.index')->with('success', 'Sub-admin created successfully!');
-    }
-
-    public function editSubadmin(Request $request)
-    {
-        $subadmin = Admin::select('admins.*', 'users.email', 'users.is_active')
-            ->join('users', 'admins.user_id', '=', 'users.id')
-            ->where('admins.id', $request->id)
-            ->first();
-        return view('admin.subadmins.edit', compact('subadmin'));
-    }
 
     public function clients(Request $request)
     {

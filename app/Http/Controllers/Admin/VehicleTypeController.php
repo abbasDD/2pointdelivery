@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ServiceType;
 use App\Models\VehicleType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class VehicleTypeController extends Controller
 {
@@ -40,6 +41,7 @@ class VehicleTypeController extends Controller
 
         // Create the admin
         $vehicle = new VehicleType([
+            'uuid' => Str::random(32),
             'name' => $request->name,
             'description' => $request->description,
         ]);

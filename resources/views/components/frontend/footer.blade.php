@@ -119,7 +119,7 @@
                         <a class="text-white" href="">2 Point Delivery Inc</a>
                     </div>
                     <div>
-                        <span class="text-white ml-5">Designed by <a class="text-white"
+                        <span class="text-white ml-3">Designed by <a class="text-white"
                                 href="https://elabdtech.com/">Elabd Technologies</a></span>
                     </div>
                 </div>

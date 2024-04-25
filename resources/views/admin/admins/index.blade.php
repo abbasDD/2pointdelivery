@@ -5,19 +5,11 @@
 @section('content')
 
     <section class="section">
-        <div class="container">
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button class="btn btn-sm" type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            @endif
+        <div class="container-fluid">
             <div class="section-header mb-2">
                 <div class="d-flex justify-content-between my-3">
                     <h4 class="mb-0">Sub Admins</h4>
-                    <a href="{{ route('admin.subadmin.create') }}" class="btn btn-primary btn-sm">Add</a>
+                    <a href="{{ route('admin.admin.create') }}" class="btn btn-primary btn-sm">Add</a>
                 </div>
             </div>
             <div class="section-body">
@@ -34,23 +26,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($subadmins as $subadmin)
+                        @forelse ($admins as $admin)
                             <tr>
-                                <th scope="row">{{ $subadmin->id }}</th>
-                                <td>{{ $subadmin->first_name }}</td>
-                                <td>{{ $subadmin->last_name }}</td>
-                                <td>{{ $subadmin->email }}</td>
-                                <td>{{ $subadmin->admin_type }}</td>
+                                <th scope="row">{{ $admin->id }}</th>
+                                <td>{{ $admin->first_name }}</td>
+                                <td>{{ $admin->last_name }}</td>
+                                <td>{{ $admin->email }}</td>
+                                <td>{{ $admin->admin_type }}</td>
                                 <td>
-                                    @if ($subadmin->is_active)
+                                    @if ($admin->is_active)
                                         <span class="badge bg-success">Active</span>
                                     @else
                                         <span class="badge bg-danger">Inactive</span>
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{ route('admin.subadmin.edit', $subadmin->id) }}"
-                                        class="btn btn-sm btn-primary">
+                                    <a href="{{ route('admin.admin.edit', $admin->id) }}" class="btn btn-sm btn-primary">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                 </td>

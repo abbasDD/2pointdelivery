@@ -6,8 +6,10 @@ use Illuminate\Support\Facades\Route;
 //Client Routes
 
 //Client Auth Routes
-Route::get('client/login', 'App\Http\Controllers\Auth\LoginController@showLoginFormClient')->name('client.login');
-Route::post('client/login', 'App\Http\Controllers\Auth\LoginController@login')->name('client.login');
+// Route::get('client/login', 'App\Http\Controllers\Auth\LoginController@showLoginFormClient')->name('client.login');
+Route::get('/client/login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginFormClient'])->name('client.login');
+Route::post('/client/login', [App\Http\Controllers\Auth\LoginController::class, 'postClientLoginForm'])->name('client.login');
+// Route::post('client/login', 'App\Http\Controllers\Auth\LoginController@login')->name('client.login');
 
 Route::get('client/register', 'App\Http\Controllers\Auth\RegisterController@showRegistrationFormClient')->name('client.register');
 Route::post('client/register', 'App\Http\Controllers\Auth\RegisterController@register')->name('client.register');

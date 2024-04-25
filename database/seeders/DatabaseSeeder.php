@@ -16,5 +16,7 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
         // This will create admin, client and helper
         $this->call(UsersTableSeeder::class);
+        $this->call(ServiceTypeSeeder::class);
+        $this->call(SystemSettingSeeder::class);
     }
 }

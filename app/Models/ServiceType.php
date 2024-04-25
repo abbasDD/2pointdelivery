@@ -16,6 +16,7 @@ class ServiceType extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'uuid',
         'name',
         'image',
         'description',

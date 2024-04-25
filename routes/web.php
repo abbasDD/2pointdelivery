@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FrontendController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -13,36 +14,23 @@ Route::get('/login', function () {
     // redirect('/');
 })->name('login');
 
-Route::get('/', function () {
-    return view('frontend.index');
-})->name('index');
+// Home Page
+Route::get('/', [FrontendController::class, 'index'])->name('index');
+Route::get('/index', [FrontendController::class, 'index'])->name('index');
 
-Route::get('/index', function () {
-    return view('frontend.index');
-})->name('index');
-
-Route::get('/services', function () {
-    return view('frontend.services');
-})->name('services');
-
-Route::get('/about-us', function () {
-    return view('frontend.about_us');
-})->name('about-us');
-
-Route::get('/help', function () {
-    return view('frontend.help');
-})->name('help');
-
-
-Route::get('/join-helper', function () {
-    return view('frontend.join_helper');
-})->name('join_helper');
-
+// Service Page
+Route::get('/services', [FrontendController::class, 'services'])->name('services');
+// About Us Page
+Route::get('/about-us', [FrontendController::class, 'about_us'])->name('about-us');
+// Help Page
+Route::get('/help', [FrontendController::class, 'help'])->name('help');
+// Join Helper Page
+Route::get('/join-helper', [FrontendController::class, 'join_helper'])->name('join_helper');
 
 //Booking Routes
-Route::get('/new-booking', function () {
-    return view('frontend.new_booking');
-})->name('new_booking');
+Route::get('/new-booking', [FrontendController::class, 'new_booking'])->name('new_booking');
+Route::get('/fetch/service-categories', [FrontendController::class, 'fetch_services_categories'])->name('fetch.service.categories');
+
 
 Route::get('/booking-detail', function () {
     return view('frontend.booking_detail');

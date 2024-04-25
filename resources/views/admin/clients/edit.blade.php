@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Sub Admins')
+@section('title', 'Client ')
 
 @section('content')
 
@@ -8,13 +8,13 @@
         <div class="container">
             <div class="section-header mb-2">
                 <div class="d-flex justify-content-between">
-                    <h4>Edit Sub Admin</h4>
+                    <h4>Edit Client</h4>
                 </div>
             </div>
             <div class="section-body">
-                <form action="{{ route('admin.subadmin.store') }}" method="POST">
+                <form action="{{ route('admin.client.update') }}" method="POST">
                     @csrf
-                    @include('admin.subadmins.form')
+                    @include('admin.clients.form')
                 </form>
 
             </div>

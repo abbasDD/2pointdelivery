@@ -4,6 +4,10 @@
     <div class="col-md-6">
         <div class="form-group mb-3">
             <label for="first_name">First Name</label>
+            {{-- Add hidden field of id in form if not empty --}}
+            @isset($client)
+                <input type="hidden" name="id" value="{{ $client['id'] }}">
+            @endisset
             <input type="text" class="form-control @error('first_name') is-invalid @enderror" id="first_name"
                 name="first_name" value="{{ old('first_name', $client['first_name'] ?? '') }}"
                 placeholder="Enter First Name" required>
@@ -42,28 +46,58 @@
             @enderror
         </div>
     </div>
-    {{-- Email --}}
-    <div class="col-md-6">
-        <div class="form-group mb-3">
-            <label for="email">Email</label>
-            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email"
-                name="email" value="{{ old('email', $client['email'] ?? '') }}" placeholder="Enter Email" required>
-            @error('email')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
+    @if (!isset($client))
+        {{-- Email --}}
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label for="email">Email</label>
+                <input type="email" class="form-control @error('email') is-invalid @enderror" id="email"
+                    name="email" value="{{ old('email') }}" placeholder="Enter Email" required>
+                @error('email')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
         </div>
-    </div>
+
+        {{-- Password --}}
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label for="password">Password</label>
+                <input type="password" class="form-control @error('password') is-invalid @enderror" id="password"
+                    name="password" placeholder="Enter Password" {{ isset($client) ? '' : 'required' }}>
+                @error('password')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
+        </div>
+        {{-- Confirm Password --}}
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label for="password_confirmation">Confirm Password</label>
+                <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror"
+                    id="password_confirmation" name="password_confirmation" placeholder="Confirm Password"
+                    {{ isset($client) ? '' : 'required' }}>
+                @error('password_confirmation')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
+        </div>
+    @endif
     {{-- Gender --}}
     <div class="col-md-6">
         <div class="form-group mb-3">
             <label for="gender">Gender</label>
             <select class="form-control @error('gender') is-invalid @enderror" id="gender" name="gender" required>
                 <option value="" selected disabled>Choose Gender</option>
-                <option value="male" {{ old('gender', $client['gender'] ?? '') == 'male' ? 'selected' : '' }}>
+                <option value="Male" {{ old('gender', $client['gender'] ?? '') == 'male' ? 'selected' : '' }}>
                     Male</option>
-                <option value="female" {{ old('gender', $client['gender'] ?? '') == 'female' ? 'selected' : '' }}>
+                <option value="Female" {{ old('gender', $client['gender'] ?? '') == 'female' ? 'selected' : '' }}>
                     Female</option>
             </select>
             @error('gender')
@@ -86,49 +120,23 @@
             @enderror
         </div>
     </div>
-    {{-- Password --}}
-    <div class="col-md-6">
-        <div class="form-group mb-3">
-            <label for="password">Password</label>
-            <input type="password" class="form-control @error('password') is-invalid @enderror" id="password"
-                name="password" placeholder="Enter Password" {{ isset($client) ? '' : 'required' }}>
-            @error('password')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
-        </div>
-    </div>
-    {{-- Confirm Password --}}
-    <div class="col-md-6">
-        <div class="form-group mb-3">
-            <label for="password_confirmation">Confirm Password</label>
-            <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror"
-                id="password_confirmation" name="password_confirmation" placeholder="Confirm Password"
-                {{ isset($client) ? '' : 'required' }}>
-            @error('password_confirmation')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
-        </div>
-    </div>
     {{-- Account Type --}}
     <div class="col-md-6">
         <div class="form-group mb-3">
-            <label for="account_type">Account Type</label>
-            <select class="form-control @error('account_type') is-invalid @enderror" id="account_type"
-                name="account_type" required>
+            <label for="company_enabled">Account Type</label>
+            <select class="form-control @error('company_enabled') is-invalid @enderror" id="company_enabled"
+                name="company_enabled" required>
                 <option value="" selected disabled>Choose Account Type</option>
-                <option value="company"
-                    {{ old('account_type', $client['account_type'] ?? '') == 'company' ? 'selected' : '' }}>Company
+                <option value="1"
+                    {{ old('company_enabled', $client['company_enabled'] ?? '') == 1 ? 'selected' : '' }}>
+                    Company
                 </option>
-                <option value="individual"
-                    {{ old('account_type', $client['account_type'] ?? '') == 'individual' ? 'selected' : '' }}>
+                <option value="0"
+                    {{ old('company_enabled', $client['company_enabled'] ?? '') == 0 ? 'selected' : '' }}>
                     Individual
                 </option>
             </select>
-            @error('account_type')
+            @error('company_enabled')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>

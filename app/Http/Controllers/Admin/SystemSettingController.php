@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\SystemSetting;
 use App\Models\TaxSetting;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class SystemSettingController extends Controller
 {
@@ -13,33 +14,24 @@ class SystemSettingController extends Controller
     {
         $systemSettings = [];
 
-        // Get website_logo and assign null if does not exist
-        $website_logo = SystemSetting::where('name', 'website_logo')->first();
-        $systemSettings['website_logo'] = $website_logo ? $website_logo->value : null;
+        try {
+            // Retrieve settings from the database if the table exists
+            $settings = SystemSetting::all();
 
-        // Get website_favicon and assign null if does not exist
-        $website_favicon = SystemSetting::where('name', 'website_favicon')->first();
-        $systemSettings['website_favicon'] = $website_favicon ? $website_favicon->value : null;
+            // Set each setting as a configuration value
+            foreach ($settings as $setting) {
+                // config([$setting->key => $setting->value]);
+                $systemSettings[$setting->key] = $setting->value ? $setting->value : null;
+            }
 
-        // Get website_name and assign null if does not exist
-        $website_name = SystemSetting::where('name', 'website_name')->first();
-        $systemSettings['website_name'] = $website_name ? $website_name->value : null;
+            // dd($systemSettings);
+        } catch (QueryException $e) {
+            // Handle the case where the table does not exist
+            // For now, we can just log the error
+            // \Log::error("Error retrieving system settings: {$e->getMessage()}");
 
-        // Get currency and assign null if does not exist
-        $currency = SystemSetting::where('name', 'currency')->first();
-        $systemSettings['currency'] = $currency ? $currency->value : null;
-
-        // Get auto_assign_driver and assign null if does not exist
-        $auto_assign_driver = SystemSetting::where('name', 'auto_assign_driver')->first();
-        $systemSettings['auto_assign_driver'] = $auto_assign_driver ? $auto_assign_driver->value : null;
-
-        // Get language and assign null if does not exist
-        $language = SystemSetting::where('name', 'language')->first();
-        $systemSettings['language'] = $language ? $language->value : null;
-
-        // Get primary_color and assign null if does not exist
-        $primary_color = SystemSetting::where('name', 'primary_color')->first();
-        $systemSettings['primary_color'] = $primary_color ? $primary_color->value : null;
+            $systemSettings = [];
+        }
 
 
         // dd($systemSettings);
@@ -58,33 +50,50 @@ class SystemSettingController extends Controller
             'language' => 'required|string|max:255',
         ]);
 
+        // Store values in updated data array
+        $systemSetting = $request->only('website_name', 'currency', 'auto_assign_driver', 'language');
+
+
         // Upload the website logo
         if ($request->hasFile('website_logo')) {
             $file = $request->file('website_logo');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $destinationPath = public_path('/assets/images');
+            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            // $destinationPath = asset('images/logo/');
+            $destinationPath = public_path('images/logo');
 
-            // Check if the directory exists, if not create it
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0777, true);
-            }
+            // dd($updatedFilename);
+            $systemSetting['website_logo'] = $updatedFilename ?? 'default.png';
+
 
             // Move the file
-            $file->move($destinationPath, $filename);
+            $file->move($destinationPath, $updatedFilename);
+        }
+
+        // Upload the website website_favicon
+        if ($request->hasFile('website_favicon')) {
+            $file = $request->file('website_favicon');
+            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            // $destinationPath = asset('images/logo/');
+            $destinationPath = public_path('images/logo');
+
+            // dd($updatedFilename);
+            $systemSetting['website_favicon'] = $updatedFilename ?? 'default.png';
+
+
+            // Move the file
+            $file->move($destinationPath, $updatedFilename);
         }
 
 
-        $request['website_logo'] = $filename ?? null;
-
         // Update the system settings
-        foreach ($request->all() as $name => $value) {
-            $systemSetting = SystemSetting::where('name', $name)->first();
+        foreach ($systemSetting as $key => $value) {
+            $systemSetting = SystemSetting::where('key', $key)->first();
             if ($systemSetting) {
                 $systemSetting->value = $value;
                 $systemSetting->save();
             } else {
                 $systemSetting = new SystemSetting();
-                $systemSetting->name = $name;
+                $systemSetting->key = $key;
                 $systemSetting->value = $value;
                 $systemSetting->save();
             }

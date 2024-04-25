@@ -15,6 +15,7 @@ class ServiceCategory extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'uuid',
         'service_type_id',
         'name',
         'description',

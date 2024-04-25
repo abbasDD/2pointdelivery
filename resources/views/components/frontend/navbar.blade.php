@@ -1,7 +1,9 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
     <div class="container">
         <a class="navbar-brand" href="{{ route('index') }}">
-            <img src="{{ asset('images/logo/logo.png') }}" alt="2 Point" height="30">
+            <img src="{{ asset('images/logo/' . config('website_logo')) ?: asset('images/logo/icon.png') }}"
+                alt="2 Point" height="50">
+            <span class="text-logo ml-2">{{ config('website_name') ?: 'Website Name' }} </span>
         </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03"

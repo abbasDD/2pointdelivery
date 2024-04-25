@@ -27,7 +27,25 @@
         </div>
         <form action="{{ route('new_booking') }}" method="GET">
             <div class="row">
-                <div class="col-md-5">
+                {{-- Select Service --}}
+                <div class="col-md-2">
+                    <div class="mb-3">
+                        <select class="form-control" name="serviceType">
+                            <option value="" disabled>Select Service</option>
+                            @if (!isset($serviceTypes))
+                                <option value="delivery">Delivery</option>
+                                {{-- <option value="moving" selected>Moving</option> --}}
+                            @else
+                                @foreach ($serviceTypes as $serviceType)
+                                    <option value="{{ $serviceType->id }}"
+                                        {{ isset($serviceType) && $serviceType->id == old('serviceType', $serviceType->id) ? 'selected' : '' }}>
+                                        {{ $serviceType->name }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
                     <div class="mb-3">
                         <input id="pickupLocation" class="form-control" type="text" name="pickup_location"
                             placeholder="Enter pickup location" required>
@@ -35,7 +53,7 @@
                         <input type="hidden" id="pickup_lng" name="pickup_lng" />
                     </div>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-4">
                     <div class="mb-3">
                         <input id="deliveryLocation" class="form-control" type="text" name="delivery_location"
                             placeholder="Enter delivery location" required>

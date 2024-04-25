@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 
 class LoginController extends Controller
@@ -45,7 +46,37 @@ class LoginController extends Controller
 
     public function showLoginFormClient()
     {
+        Session::put('intended_url', url()->previous());
         return view('client.auth.login');
+    }
+
+    public function postClientLoginForm(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $credentials = $request->only('email', 'password');
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || $user->user_type != 'client') {
+            return back()->withErrors([
+                'email' => 'The provided credentials do not match our records.',
+            ]);
+        }
+
+        if (Auth::attempt($credentials, $request->filled('remember'))) {
+            // Retrieve the intended URL after successful login
+            $intendedUrl = Session::pull('intended_url');
+            // Redirect the user back to the intended URL
+            return redirect()->to($intendedUrl)->with('success', 'Login Successful');
+        }
+
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
     }
 
     //Routes for the Helpers

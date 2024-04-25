@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('service_categories', function (Blueprint $table) {
             $table->id();
+            // Random generated alpha numeric unique id
+            $table->string('uuid')->unique()->index();
             $table->unsignedBigInteger('service_type_id');
             $table->string('name');
             $table->string('description')->nullable();

@@ -12,6 +12,5 @@ class ServiceCategorySeeder extends Seeder
      */
     public function run(): void
     {
-        //
     }
 }

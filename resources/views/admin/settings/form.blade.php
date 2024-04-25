@@ -6,11 +6,10 @@
             <div class="image-selection">
                 <div class="mx-auto" style="max-width: 150px;">
                     <img id="website_logo_preview"
-                        src="{{ isset($systemSettings['website_logo']) && $systemSettings['website_logo'] !== null ? asset('storage/' . $systemSettings['website_logo']) : asset('images/default-user.jpg') }}"
+                        src="{{ isset($systemSettings['website_logo']) && $systemSettings['website_logo'] !== null ? asset('images/logo/' . $systemSettings['website_logo']) : asset('images/logo/default.png') }}"
                         alt="website_logo" class=" border w-100"
                         onclick="document.getElementById('website_logo').click()">
-                    <input type="file" name="website_logo" id="website_logo" class="d-none" accept="image/*"
-                        required>
+                    <input type="file" name="website_logo" id="website_logo" class="d-none" accept="image/*">
                 </div>
             </div>
             @if ($errors->has('website_logo'))
@@ -27,11 +26,10 @@
             <div class="image-selection">
                 <div class="mx-auto" style="max-width: 150px;">
                     <img id="website_favicon_preview"
-                        src="{{ isset($systemSettings['website_favicon']) && $systemSettings['website_favicon'] !== null ? asset('storage/' . $systemSettings['website_favicon']) : asset('images/default-user.jpg') }}"
+                        src="{{ isset($systemSettings['website_favicon']) && $systemSettings['website_favicon'] !== null ? asset('images/logo/' . $systemSettings['website_favicon']) : asset('images/logo/default.png') }}"
                         alt="website_favicon" class=" border w-100"
                         onclick="document.getElementById('website_favicon').click()">
-                    <input type="file" name="website_favicon" id="website_favicon" class="d-none" accept="image/*"
-                        required>
+                    <input type="file" name="website_favicon" id="website_favicon" class="d-none" accept="image/*">
                 </div>
             </div>
             @if ($errors->has('website_favicon'))
@@ -62,7 +60,7 @@
             <label for="currency">Currency</label>
             <select class="form-control @error('currency') is-invalid @enderror" id="currency" name="currency"
                 required>
-                <option value="" selected disabled>Select Currency</option>
+                <option value="" disabled>Select Currency</option>
                 <option value="usd"
                     {{ old('currency', $systemSettings['currency'] ?? '') == 'usd' ? 'selected' : '' }}>USD
                 </option>
@@ -85,7 +83,7 @@
             <label for="auto_assign_driver">Auto Assign Driver</label>
             <select class="form-control @error('auto_assign_driver') is-invalid @enderror" id="auto_assign_driver"
                 name="auto_assign_driver" required>
-                <option value="" selected disabled>Select Auto Assign Driver</option>
+                <option value="" disabled>Select Auto Assign Driver</option>
                 <option value="1"
                     {{ old('auto_assign_driver', $systemSettings['auto_assign_driver'] ?? '') == '1' ? 'selected' : '' }}>
                     Yes
@@ -109,7 +107,7 @@
             <label for="language">Default Language</label>
             <select class="form-control @error('language') is-invalid @enderror" id="language" name="language"
                 required>
-                <option value="" selected disabled>Select Language</option>
+                <option value="" disabled>Select Language</option>
                 <option value="en"
                     {{ old('language', $systemSettings['language'] ?? '') == 'en' ? 'selected' : '' }}>
                     English

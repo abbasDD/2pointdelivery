@@ -43,7 +43,7 @@
         <ul class="p-0">
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.index') }}"><i class="fa fa-home"></i>
                     Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.subadmins') }}"><i class="fa fa-bank"></i>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.admins') }}"><i class="fa fa-bank"></i>
                     Sub Admins</a>
             </li>
             <li class="nav-item has-submenu">

@@ -1,13 +1,14 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\HelperController;
+use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Admin\TaxSettingController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\VehicleTypeController;
 
 //Admin Routes
@@ -19,63 +20,67 @@ Route::post('/admin/login', [App\Http\Controllers\Auth\LoginController::class, '
 
 
 // Admin Routes Group
-Route::prefix('admin')->middleware(['auth'])->group(function () {
+Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () {
     // Dashboard Route
-    Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/', [HomeController::class, 'index'])->name('index');
 
-    // Sub Admins Page Routes
-    Route::get('/subadmins', [AdminController::class, 'subadmins'])->name('admin.subadmins');
-    Route::get('/subadmins/create', [AdminController::class, 'createSubadmin'])->name('admin.subadmin.create');
-    Route::post('/subadmins/store', [AdminController::class, 'storeSubadmin'])->name('admin.subadmin.store');
-    Route::get('/subadmins/edit/{id}', [AdminController::class, 'editSubadmin'])->name('admin.subadmin.edit');
-    Route::post('/subadmins/update', [AdminController::class, 'updateSubadmin'])->name('admin.subadmin.update');
+    // Admin Page Routes
+    Route::get('/admins', [AdminController::class, 'index'])->name('admins');
+    Route::get('/admins/create', [AdminController::class, 'create'])->name('admin.create');
+    Route::post('/admins/store', [AdminController::class, 'store'])->name('admin.store');
+    Route::get('/admins/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
+    Route::post('/admins/update', [AdminController::class, 'update'])->name('admin.update');
 
     // Clients Page Routes
-    Route::get('/clients', [ClientController::class, 'index'])->name('admin.clients');
-    Route::get('/clients/create', [ClientController::class, 'create'])->name('admin.client.create');
-    Route::post('/clients/store', [ClientController::class, 'store'])->name('admin.client.store');
-    Route::get('/clients/edit/{id}', [ClientController::class, 'edit'])->name('admin.client.edit');
-    Route::post('/clients/update', [ClientController::class, 'update'])->name('admin.client.update');
+    Route::get('/clients', [ClientController::class, 'index'])->name('clients');
+    Route::get('/clients/create', [ClientController::class, 'create'])->name('client.create');
+    Route::get('/clients/show/{id}', [ClientController::class, 'show'])->name('client.show');
+    Route::post('/clients/store', [ClientController::class, 'store'])->name('client.store');
+    Route::get('/clients/edit/{id}', [ClientController::class, 'edit'])->name('client.edit');
+    Route::post('/clients/update', [ClientController::class, 'update'])->name('client.update');
+    Route::post('/clients/update-status', [ClientController::class, 'updateStatus'])->name('client.updateStatus');
 
     // Helpers Page Routes
-    Route::get('/helpers', [HelperController::class, 'index'])->name('admin.helpers');
-    Route::get('/requested-helpers', [HelperController::class, 'requestedHelpers'])->name('admin.requestedHelpers');
-    Route::get('/helpers/create', [HelperController::class, 'create'])->name('admin.helper.create');
-    Route::post('/helpers/store', [HelperController::class, 'store'])->name('admin.helper.store');
-    Route::get('/helpers/edit/{id}', [HelperController::class, 'edit'])->name('admin.helper.edit');
-    Route::post('/helpers/update', [HelperController::class, 'update'])->name('admin.helper.update');
+    Route::get('/helpers', [HelperController::class, 'index'])->name('helpers');
+    Route::get('/requested-helpers', [HelperController::class, 'requestedHelpers'])->name('requestedHelpers');
+    Route::get('/helpers/create', [HelperController::class, 'create'])->name('helper.create');
+    Route::get('/helpers/show/{id}', [HelperController::class, 'show'])->name('helper.show');
+    Route::post('/helpers/store', [HelperController::class, 'store'])->name('helper.store');
+    Route::get('/helpers/edit/{id}', [HelperController::class, 'edit'])->name('helper.edit');
+    Route::post('/helpers/update', [HelperController::class, 'update'])->name('helper.update');
+    Route::post('/helpers/update-status', [HelperController::class, 'updateStatus'])->name('helper.updateStatus');
 
     // Bookings Page Routes
-    Route::get('/bookings', [BookingController::class, 'index'])->name('admin.bookings');
-    Route::get('/bookings/view/{id}', [BookingController::class, 'show'])->name('admin.booking.show');
+    Route::get('/bookings', [BookingController::class, 'index'])->name('bookings');
+    Route::get('/bookings/view/{id}', [BookingController::class, 'show'])->name('booking.show');
 
     // Vehicle Types Page Routes
-    Route::get('/vehicle-types', [VehicleTypeController::class, 'index'])->name('admin.vehicleTypes');
-    Route::get('/vehicle-type/create', [VehicleTypeController::class, 'create'])->name('admin.vehicleType.create');
-    Route::post('/vehicle-type/store', [VehicleTypeController::class, 'store'])->name('admin.vehicleType.store');
-    Route::get('/vehicle-type/edit/{id}', [VehicleTypeController::class, 'edit'])->name('admin.vehicleType.edit');
-    Route::post('/vehicle-type/update', [VehicleTypeController::class, 'update'])->name('admin.vehicleType.update');
+    Route::get('/vehicle-types', [VehicleTypeController::class, 'index'])->name('vehicleTypes');
+    Route::get('/vehicle-type/create', [VehicleTypeController::class, 'create'])->name('vehicleType.create');
+    Route::post('/vehicle-type/store', [VehicleTypeController::class, 'store'])->name('vehicleType.store');
+    Route::get('/vehicle-type/edit/{id}', [VehicleTypeController::class, 'edit'])->name('vehicleType.edit');
+    Route::post('/vehicle-type/update', [VehicleTypeController::class, 'update'])->name('vehicleType.update');
 
 
     // Service Categories Page Routes
-    Route::get('/service-categories', [ServiceCategoryController::class, 'index'])->name('admin.serviceCategories');
-    Route::get('/service-category/create', [ServiceCategoryController::class, 'create'])->name('admin.serviceCategory.create');
-    Route::post('/service-category/store', [ServiceCategoryController::class, 'store'])->name('admin.serviceCategory.store');
-    Route::get('/service-category/edit/{id}', [ServiceCategoryController::class, 'edit'])->name('admin.serviceCategory.edit');
-    Route::post('/service-category/update', [ServiceCategoryController::class, 'update'])->name('admin.serviceCategory.update');
-    Route::get('/service-category/update-status/{id}', [ServiceCategoryController::class, 'updateStatus'])->name('admin.serviceCategory.updateStatus');
+    Route::get('/service-categories', [ServiceCategoryController::class, 'index'])->name('serviceCategories');
+    Route::get('/service-category/create', [ServiceCategoryController::class, 'create'])->name('serviceCategory.create');
+    Route::post('/service-category/store', [ServiceCategoryController::class, 'store'])->name('serviceCategory.store');
+    Route::get('/service-category/edit/{id}', [ServiceCategoryController::class, 'edit'])->name('serviceCategory.edit');
+    Route::post('/service-category/update', [ServiceCategoryController::class, 'update'])->name('serviceCategory.update');
+    Route::get('/service-category/update-status/{id}', [ServiceCategoryController::class, 'updateStatus'])->name('serviceCategory.updateStatus');
 
     // Settings Page Routes
     Route::prefix('settings')->middleware(['auth'])->group(function () {
-        Route::get('/system', [SystemSettingController::class, 'index'])->name('admin.systemSettings');
-        Route::post('/system/update', [SystemSettingController::class, 'update'])->name('admin.systemSetting.update');
+        Route::get('/system', [SystemSettingController::class, 'index'])->name('systemSettings');
+        Route::post('/system/update', [SystemSettingController::class, 'update'])->name('systemSetting.update');
         // Tax
-        Route::get('/tax', [TaxSettingController::class, 'index'])->name('admin.taxSettings');
-        Route::get('/tax/create', [TaxSettingController::class, 'create'])->name('admin.taxSetting.create');
-        Route::post('/tax/store', [TaxSettingController::class, 'store'])->name('admin.taxSetting.store');
-        Route::get('/tax/edit/{id}', [TaxSettingController::class, 'edit'])->name('admin.taxSetting.edit');
-        Route::post('/tax/update', [TaxSettingController::class, 'update'])->name('admin.taxSetting.update');
-        Route::get('/tax/update-status/{id}', [TaxSettingController::class, 'updateStatus'])->name('admin.taxSetting.updateStatus');
+        Route::get('/tax', [TaxSettingController::class, 'index'])->name('taxSettings');
+        Route::get('/tax/create', [TaxSettingController::class, 'create'])->name('taxSetting.create');
+        Route::post('/tax/store', [TaxSettingController::class, 'store'])->name('taxSetting.store');
+        Route::get('/tax/edit/{id}', [TaxSettingController::class, 'edit'])->name('taxSetting.edit');
+        Route::post('/tax/update', [TaxSettingController::class, 'update'])->name('taxSetting.update');
+        Route::get('/tax/update-status/{id}', [TaxSettingController::class, 'updateStatus'])->name('taxSetting.updateStatus');
     });
 
 

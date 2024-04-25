@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ServiceCategory;
 use App\Models\ServiceType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ServiceCategoryController extends Controller
 {
@@ -38,6 +39,9 @@ class ServiceCategoryController extends Controller
             'is_active' => 'sometimes|boolean'
         ]);
 
+        $request->request->add([
+            'uuid' => Str::random(32),
+        ]);
 
         // Create the serviceCategory
         $serviceCategory = new ServiceCategory($request->all());

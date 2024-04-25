@@ -1,81 +1,31 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Admin;
-use App\Http\Requests\StoreAdminRequest;
-use App\Http\Requests\UpdateAdminRequest;
-use App\Models\Client;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function index()
     {
-        // Top Helpers List
-        $topHelpers = [
-            [
-                'name' => 'John Doe',
-                'image' => 'https://via.placeholder.com/50x50',
-                'email' => 'johndoe@gmail.com',
-            ],
-            [
-                'name' => 'Ghulam Abbas',
-                'image' => 'https://via.placeholder.com/50x50',
-                'email' => 'ghulamabbas@gmailcom',
-            ],
-            [
-                'name' => 'Bob Smith',
-                'image' => 'https://via.placeholder.com/50x50',
-                'email' => 'bobsmith@gmailcom',
-            ],
-            [
-                'name' => 'Abdul Shakoor',
-                'image' => 'https://via.placeholder.com/50x50',
-                'email' => 'abdulshakoor@gmailcom',
-            ]
-        ];
-
-        // Dummy Data for Chart
-        $chartData = [
-            'labels' => ['January', 'February', 'March', 'April', 'May'],
-            'delivery' => [65, 59, 20, 71, 56],
-            'moving' => [55, 9, 40, 51, 76],
-        ];
-
-        return view('admin.index', compact('topHelpers', 'chartData'));
-
-        // return view('admin.index', compact('chartData'));
-    }
-
-
-    public function subadmins()
-    {
         // Get list of all admins
-        $subadmins = Admin::select('admins.*', 'users.email', 'users.is_active')
+        $admins = Admin::select('admins.*', 'users.email', 'users.is_active')
             ->join('users', 'admins.user_id', '=', 'users.id')
             ->get();
 
-        return view('admin.subadmins.index', compact('subadmins'));
+        return view('admin.admins.index', compact('admins'));
     }
 
-    public function createSubadmin()
+    public function create()
     {
-        return view('admin.subadmins.create');
+        return view('admin.admins.create');
     }
 
-    public function storeSubadmin(Request $request)
+    public function store(Request $request)
     {
         // Validate the request
         $request->validate([
@@ -90,7 +40,7 @@ class AdminController extends Controller
         $user = new User([
             'account_type' => 'admin',
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($value = $request->password),
         ]);
 
         $user->save();
@@ -106,31 +56,38 @@ class AdminController extends Controller
         $admin->save();
 
         // Redirect with a success message
-        return redirect()->route('admins.index')->with('success', 'Sub-admin created successfully!');
+        return redirect()->route('admin.admins')->with('success', 'Sub-admin created successfully!');
     }
 
-    public function editSubadmin(Request $request)
+    public function edit(Request $request)
     {
-        $subadmin = Admin::select('admins.*', 'users.email', 'users.is_active')
+        $admin = Admin::select('admins.*', 'users.email', 'users.is_active')
             ->join('users', 'admins.user_id', '=', 'users.id')
             ->where('admins.id', $request->id)
             ->first();
-        return view('admin.subadmins.edit', compact('subadmin'));
+        return view('admin.admins.edit', compact('admin'));
     }
 
-
-    public function updateSubadmin(Request $request)
+    public function update(Request $request)
     {
-        return redirect()->route('admin.subadmins')->with('success', 'Client updated successfully!');
-    }
+        // Validate the request
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'admin_type' => 'required|string|in:super,sub',
+        ]);
+        // dd($request->all());
+        $admin = Admin::find($request->id); // Using find() instead of where()->first()
 
-    public function updateStatusSubadmin(Request $request)
-    {
-        $serviceCategory = Admin::where('id', $request->id)
-            ->first();
-        $serviceCategory->update(['is_active' => !$serviceCategory->is_active]);
-        return redirect()->route('admin.serviceCategories')->with('success', 'Service Category Status updated successfully!');
+        if ($admin) {
+            // If the admin is found, update its attributes
+            $admin->update($request->all());
+            // Optionally, return a success response or do other actions
+            return redirect()->route('admin.admins')->with('success', 'Admin updated successfully!');
+        } else {
+            // If the admin is not found, handle the error
+            // For example, return a response indicating the admin was not found
+            return redirect()->back()->with('error', 'Admin not found or not authorized!');
+        }
     }
-
-    //Code ends here
 }

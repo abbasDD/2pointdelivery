@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('last_name')->nullable();
             $table->string('gender')->nullable();
             $table->string('date_of_birth')->nullable();
-            $table->enum('account_type', ['company', 'individual']);
+            $table->boolean('company_enabled')->default(false);
             $table->string('tax_id')->nullable();
             $table->string('phone_no')->nullable();
             $table->timestamp('phone_verified_at')->nullable();

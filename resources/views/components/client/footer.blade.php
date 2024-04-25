@@ -11,9 +11,9 @@
                         <a class="text-white" href="">2 Point Delivery Inc</a>
                     </div>
                     <div>
-                        <a class="text-white mr-5" href="https://elabdtech.com/">Privacy Policy</a>
+                        <a class="text-white mr-3" href="https://elabdtech.com/">Privacy Policy</a>
                         <span class="text-white">|</span>
-                        <span class="text-white ml-5">Designed by <a class="text-white"
+                        <span class="text-white ml-3">Designed by <a class="text-white"
                                 href="https://elabdtech.com/">Elabd Technologies</a></span>
                     </div>
                 </div>

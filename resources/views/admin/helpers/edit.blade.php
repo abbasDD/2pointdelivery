@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="section-body">
-                <form action="{{ route('admin.helper.store') }}" method="POST">
+                <form action="{{ route('admin.helper.update') }}" method="POST">
                     @csrf
                     @include('admin.helpers.form')
                 </form>

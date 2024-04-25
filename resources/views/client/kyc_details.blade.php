@@ -52,9 +52,9 @@
                 </div>
                 <div class="col-md-6 mb-3">
                     <div class="form-group">
-                        <label for="policyNumber">Policy Number:</label>
-                        <input class="form-control" type="text" id="policyNumber" name="policyNumber"
-                            placeholder="Enter Policy Number" required>
+                        <label for="countryName">Country Name:</label>
+                        <input class="form-control" type="text" id="policyNumber" name="countryName"
+                            placeholder="Enter Country Name" required>
                     </div>
                 </div>
                 <div class="col-md-6 mb-3">
