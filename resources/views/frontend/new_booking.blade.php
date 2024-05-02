@@ -8,6 +8,22 @@
         // Base URL
         const base_url = "{{ url('/') }}";
 
+        // Define some javascript variables to be used in JS
+        var csrf_token = "{{ csrf_token() }}";
+        var distance_price = 0;
+        var service_price = 0;
+        var per_km_price = 0;
+        var service_charges = 0;
+
+        // Store $serviceCategories to JS array
+        var selectedparceluuid = '';
+        var serviceCategories = {!! json_encode($serviceCategories) !!};
+        if (serviceCategories.length > 0) {
+
+            selectedparceluuid = serviceCategories[0].uuid;
+        }
+
+
         // Map Variables
         var map;
         var directionsService;
@@ -84,6 +100,34 @@
             "isDocumentsOnly": true,
             "isStopinOnly": true
         };
+
+        // Update the Payment Amount Card
+
+        function updatePaymentAmount() {
+            console.log('Distance: ' + distance_in_km);
+
+            // If selectedparceluuid is empty
+            if (selectedparceluuid == '') {
+                // Get from first service type from serviceCategories
+                selectedparceluuid = serviceCategories[0].uuid;
+            }
+
+            // Get data on selected uuid
+            for (let i = 0; i < serviceCategories.length; i++) {
+                if (serviceCategories[i].uuid === selectedparceluuid) {
+                    console.log(serviceCategories[i].base_price);
+                    distance_price = serviceCategories[i].base_price * distance_in_km;
+                    service_price = serviceCategories[i].price_per_km;
+                    per_km_price = serviceCategories[i].min_km_price;
+                    service_charges = 50;
+                }
+            }
+            var serviceType = document.querySelector('select[name="serviceType"]').value;
+            document.getElementById('distance-price-value').innerHTML = distance_price;
+            document.getElementById('service-price-value').innerHTML = service_price;
+            document.getElementById('vehicle-price-value').innerHTML = per_km_price;
+            console.log('Function calling ' + selectedparceluuid);
+        }
     </script>
     <div class="container py-5">
         <div class="row d-flex justify-content-center align-items-center">
@@ -105,32 +149,33 @@
                                     <div class="calculated-amount">
                                         <div class="item">
                                             <h6>Distance Price</h6>
-                                            <p>$25</p>
+                                            <p>$<span id="distance-price-value">0</span></p>
                                         </div>
                                         <div class="item">
                                             <h6>Service Price</h6>
-                                            <p>$5</p>
+                                            <p>$<span id="service-price-value">0</span></p>
                                         </div>
                                         <div class="item">
                                             <h6>Vehicle Price</h6>
-                                            <p>$15</p>
+                                            <p>$<span id="vehicle-price-value">0</span></p>
                                         </div>
                                         <div class="item">
                                             <h6>Floor Price</h6>
-                                            <p>$0</p>
+                                            <p>$<span id="floor-price-value">0</span></p>
                                         </div>
                                         <div class="item">
                                             <h6>Service Charges</h6>
-                                            <p>$0</p>
+                                            <p>$<sapn id="service-charge-value">0</sapn>
+                                            </p>
                                         </div>
                                         <div class="item">
                                             <h6>Platform Charges</h6>
-                                            <p>$0</p>
+                                            <p>$<span id="platform-charge-value">0</span></p>
                                         </div>
                                         <hr>
                                         <div class="item">
                                             <h6>Amount to Pay</h6>
-                                            <p>$45</p>
+                                            <p>$<span id="amount-to-pay-value">45</span></p>
                                         </div>
                                     </div>
                                 </div>
@@ -209,6 +254,9 @@
                                                 // console.log(distance_in_km);
                                                 // console.log(distance_in_miles);
 
+                                                // Update payment amount
+                                                updatePaymentAmount();
+
                                                 // document.getElementById('distance').value = distance;
                                                 // document.getElementById('distance_in_km').value = distance_in_km.toFixed(2);
                                                 // document.getElementById('distance_in_miles').value = distance_in_miles.toFixed(2);
@@ -238,7 +286,7 @@
                                             if (status === google.maps.GeocoderStatus.OK) {
                                                 if (results[0]) {
                                                     // callback(results[0]);
-                                                    console.log(results[0]);
+                                                    // console.log(results[0]);
                                                     result = results[0];
                                                     shippingData.fromAddress.addr1 = result.formatted_address;
                                                     shippingData.fromAddress.countryCode = getAddressComponent(result, 'country');
@@ -279,6 +327,7 @@
                                                 // callback(null);
                                             }
                                             // console.log(shippingData);
+
                                         });
 
                                         // console.log(shippingData);
@@ -332,9 +381,9 @@
                                 {{-- Service Type --}}
                                 <div class="col-md-6">
                                     <label for="serviceType">Service Type</label>
-                                    <select class="form-control" name="serviceType" id="serviceType" required>
-                                        {{-- <select class="form-control" name="serviceType" id="serviceType"
-                                        onchange="parcelCategoriesDiv()" required> --}}
+                                    {{-- <select class="form-control" name="serviceType" id="serviceType" required> --}}
+                                    <select class="form-control" name="serviceType" id="serviceType"
+                                        onchange="parcelCategoriesDiv()" required>
                                         <option value="" disabled>Select Service</option>
                                         @if (!isset($serviceTypes))
                                             <option value="delivery">Delivery</option>
@@ -352,7 +401,8 @@
                                 <div class="col-md-6">
                                     <label for="priority">Priority</label>
                                     <div class="mb-3">
-                                        <select class="form-control h-100" name="priority" aria-label="Priority" required>
+                                        <select class="form-control h-100" name="priority" aria-label="Priority"
+                                            onchange="updatePaymentAmount()" required>
                                             <option value="express">Express</option>
                                             <option value="same_day">Same Day</option>
                                             <option value="standard">Standard</option>
@@ -360,7 +410,7 @@
                                     </div>
                                 </div>
                                 {{-- Parcel Types --}}
-                                {{-- <div class="col-md-12">
+                                <div class="col-md-12">
                                     <label for="parcelType">Parcel Type</label>
                                     <div class="row h-50 parcels" id="parcelCategoriesDiv">
                                         @if (isset($serviceCategories))
@@ -375,7 +425,7 @@
                                                                     onclick="toggleBackground('{{ $serviceCategory->uuid }}')">
                                                             </span>
                                                         </div>
-                                                        <div class="text-center parcel-type"
+                                                        <div class="text-center parcel-type w-100"
                                                             id="{{ $serviceCategory->uuid }}">
                                                             <i class="fa fa-users fa-2x"></i>
                                                             <h5 class="mb-1">{{ $serviceCategory->name }}</h5>
@@ -386,13 +436,13 @@
                                             @endforeach
                                         @endif
                                     </div>
-                                </div> --}}
+                                </div>
                                 {{-- Booking Date  --}}
                                 <div class="col-md-6">
                                     <label for="bookingDate">Booking Date</label>
                                     <div class="mb-3">
                                         <input type="date" class="form-control" id="bookingDate" name="booking_date"
-                                            value="<?php echo date('Y-m-d'); ?>" required>
+                                            value="<?php echo date('Y-m-d'); ?>" onchange="updatePaymentAmount()" required>
                                     </div>
                                 </div>
                                 {{-- Booking Time --}}
@@ -400,7 +450,7 @@
                                     <label for="bookingTime">Booking Time</label>
                                     <div class="mb-3">
                                         <input type="time" class="form-control" id="bookingTime" name="booking_time"
-                                            value="<?php echo date('H:i'); ?>" required>
+                                            value="<?php echo date('H:i'); ?>" onchange="updatePaymentAmount()" required>
                                     </div>
                                 </div>
                                 {{-- Package Height  --}}
@@ -409,7 +459,8 @@
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control" placeholder="Height"
                                             name="package_height" aria-describedby="package_height"
-                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                            onchange="updatePaymentAmount()" required>
                                         <span class="input-group-text" id="package_height">INCH</span>
                                     </div>
                                 </div>
@@ -419,7 +470,8 @@
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control" placeholder="Width"
                                             name="package_width" aria-describedby="package_width"
-                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                            onchange="updatePaymentAmount()" required>
                                         <span class="input-group-text" id="package_width">INCH</span>
                                     </div>
                                 </div>
@@ -429,7 +481,8 @@
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control" placeholder="Weight"
                                             name="package_weight" aria-describedby="package_weight"
-                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                            onchange="updatePaymentAmount()" required>
                                         <span class="input-group-text" id="package_weight">KG</span>
                                     </div>
                                 </div>
@@ -439,7 +492,8 @@
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control" placeholder="Value"
                                             name="package_value" aria-describedby="package_value"
-                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                            onchange="updatePaymentAmount()" required>
                                         <span class="input-group-text" id="package_value">$</span>
                                     </div>
                                 </div>
@@ -480,10 +534,18 @@
 
                     </div>
                     <div class="row">
-                        <div class="col-md-12 text-right">
-                            <button type="submit" class="btn btn-primary btn-block">Get
-                                Estimate</button>
-                        </div>
+
+                        @auth
+                            <div class="col-md-12 text-right">
+                                <button type="submit" class="btn btn-primary btn-block">Get
+                                    Estimate</button>
+                            </div>
+                        @else
+                            <div class="col-md-12 text-right">
+                                <button type="button" class="btn btn-primary"
+                                    onclick="window.location='{{ route('client.login') }}'">Login to Book</button>
+                            </div>
+                        @endauth
                     </div>
                 </form>
             </div>
@@ -493,66 +555,90 @@
 
     {{-- Custom JS for Form Page --}}
     <script>
-        // // Parcel Type changes background color function
-        // function toggleBackground(id) {
-        //     var divs = document.querySelectorAll('.parcel-type');
-        //     divs.forEach(function(div) {
-        //         if (div.id === id) {
-        //             div.classList.add('active-parcel');
-        //         } else {
-        //             div.classList.remove('active-parcel');
-        //         }
-        //     });
-        //     // console.log(id);
-        // }
+        // Parcel Type changes background color function
+        function toggleBackground(id) {
+            var divs = document.querySelectorAll('.parcel-type');
+            divs.forEach(function(div) {
+                if (div.id === id) {
+                    div.classList.add('active-parcel');
+                } else {
+                    div.classList.remove('active-parcel');
+                }
+            });
+            console.log('Here id is:' + id);
+            selectedparceluuid = id;
+            // Call the function to update the payment amount
+            updatePaymentAmount();
+        }
 
 
-        // // Udpate the categories as per the service type selected
+        // Udpate the categories as per the service type selected
 
-        // function parcelCategoriesDiv() {
-        //     // console.log('Function Called');
-        //     var serviceType = document.querySelector('select[name="serviceType"]').value;
-        //     // console.log(serviceType);
-        //     var url =
-        //         '{{ route('fetch.service.categories') }}' +
-        //         '?serviceType=' + serviceType; // Replace 'fetch.service.categories' with your actual route name
-        //     // var formData = new FormData();
-        //     // formData.append('serviceType', serviceType);
+        function parcelCategoriesDiv() {
+            // console.log('Function Called');
+            var serviceType = document.querySelector('select[name="serviceType"]').value;
+            // Get type of ServiceType from serviceTypes
+            var serviceTypes = {!! json_encode($serviceTypes) !!};
+            console.log(serviceTypes);
+            if (serviceTypes.length > 0) {
+                for (let i = 0; i < serviceTypes.length; i++) {
+                    if (serviceTypes[i].id == serviceType) {
+                        console.log('Service Type: ' + serviceTypes[i].type);
+                    }
+                }
+            }
+            // console.log(serviceType);
+            var url =
+                '{{ route('fetch.service.categories') }}' +
+                '?serviceType=' + serviceType; // Replace 'fetch.service.categories' with your actual route name
+            // var formData = new FormData();
+            // formData.append('serviceType', serviceType);
 
-        //     fetch(url, {
-        //             method: 'GET'
-        //         })
-        //         .then(response => response.json())
-        //         .then(data => {
-        //             // Update parcel categories div based on received data
-        //             var parcelCategoriesDiv = document.getElementById('parcelCategoriesDiv');
-        //             parcelCategoriesDiv.innerHTML = ''; // Clear previous content
-        //             data.forEach(category => {
-        //                 var categoryDiv = document.createElement('div');
-        //                 categoryDiv.classList.add('col-md-4');
-        //                 categoryDiv.innerHTML = `
-    //             <div class="d-flex align-items-center cursor-pointer" onclick="toggleBackground('${category.uuid}')">
-    //                 <div class="me-3">
-    //                     <span class="form-check-input" style="display: none;">
-    //                         <input type="radio" class="form-check-input" name="parcelType"
-    //                             value="${category.uuid}">
-    //                     </span>
-    //                 </div>
-    //                 <div class="text-center parcel-type"
-    //                     id="${category.uuid}">
-    //                     <i class="fa fa-users fa-2x"></i>
-    //                     <h5 class="mb-1">${category.name}</h5>
-    //                     <p class="fs-xxs">${category.description}</p>
-    //                 </div>
-    //             </div>
-    //         `;
-        //                 parcelCategoriesDiv.appendChild(categoryDiv);
-        //             });
-        //         })
-        //         .catch(error => {
-        //             console.error('Error:', error);
-        //         });
-        // }
+            fetch(url, {
+                    method: 'GET'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Update parcel categories div based on received data
+                    var parcelCategoriesDiv = document.getElementById('parcelCategoriesDiv');
+                    parcelCategoriesDiv.innerHTML = ''; // Clear previous content
+                    // Store updated service categories in serviceCategories variable
+                    serviceCategories = data;
+                    // console.log(serviceCategories);
+                    // Loop through each category and create a new div
+                    data.forEach(category => {
+                        var categoryDiv = document.createElement('div');
+                        categoryDiv.classList.add('col-md-4');
+                        categoryDiv.innerHTML = `
+                <div class="d-flex align-items-center cursor-pointer" onclick="toggleBackground('${category.uuid}')">
+                    <div class="me-3">
+                        <span class="form-check-input" style="display: none;">
+                            <input type="radio" class="form-check-input" name="parcelType"
+                                value="${category.uuid}">
+                        </span>
+                    </div>
+                    <div class="text-center parcel-type w-100"
+                        id="${category.uuid}">
+                        <i class="fa fa-users fa-2x"></i>
+                        <h5 class="mb-1">${category.name}</h5>
+                        <p class="fs-xxs">${category.description}</p>
+                    </div>
+                </div>
+            `;
+                        parcelCategoriesDiv.appendChild(categoryDiv);
+                    });
+
+                    // Get first item uuid and set it as default
+                    if (data.length > 0) {
+                        selectedparceluuid = data[0].uuid;
+                        console.log('Selected Parcel UUID: ' + selectedparceluuid);
+                        toggleBackground(selectedparceluuid);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
 
 
 
@@ -599,6 +685,14 @@
                     // Handle errors
                 });
         }
+
+
+
+
+        // Update the payment card
+        // updatePaymentAmount();
+        // Select the selected parcel uuid
+        toggleBackground(selectedparceluuid);
     </script>
 
 @endsection

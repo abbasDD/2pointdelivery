@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             // Random generated alpha numeric unique id
             $table->string('uuid')->unique()->index();
+            $table->enum('type', ['delivery', 'moving']);
             $table->string('name');
             $table->string('description');
             $table->string('image')->nullable();

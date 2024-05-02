@@ -22,6 +22,10 @@
     <div class="col-md-12">
         <div class="form-group mb-3">
             <label for="name">Vehicle Name</label>
+            {{-- Add hidden field of id in form if not empty --}}
+            @isset($vehicle_type)
+                <input type="hidden" name="id" value="{{ $vehicle_type['id'] }}">
+            @endisset
             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"
                 value="{{ old('name', $vehicle_type['name'] ?? '') }}" placeholder="Enter Vehicle Name" required>
             @error('name')

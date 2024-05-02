@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Edit Vehicle')
+@section('title', 'Service Categories')
 
 @section('content')
 
@@ -8,13 +8,14 @@
         <div class="container">
             <div class="section-header mb-2">
                 <div class="d-flex justify-content-between">
-                    <h4>Edit Vehicle Type</h4>
+                    <h4>Edit Service Category</h4>
                 </div>
             </div>
             <div class="section-body">
-                <form action="{{ route('admin.vehicleType.update') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.serviceType.update') }}" method="POST">
                     @csrf
-                    @include('admin.vehicle_types.form')
+                    <input type="hidden" name="id" value="{{ $serviceType->id }}">
+                    @include('admin.service_types.form')
                 </form>
 
             </div>

@@ -19,8 +19,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('description')->nullable();
             $table->string('image')->nullable();
-            $table->string('base_price')->default(100);
-            $table->string('price_per_km')->default(10);
+            $table->boolean('is_secureship_enabled')->default(false);
+            $table->string('base_price')->default(0);
+            $table->string('price_per_km')->default(0);
+            $table->string('min_km_price')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 

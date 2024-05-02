@@ -23,7 +23,7 @@ class ServiceCategoryController extends Controller
 
     public function create()
     {
-        $serviceTypes = ServiceType::all();
+        $serviceTypes = ServiceType::where('is_active', 1)->get();
         return view('admin.service_categories.create', compact('serviceTypes'));
     }
     public function store(Request $request)
@@ -36,6 +36,7 @@ class ServiceCategoryController extends Controller
             'image' => 'nullable|string|max:255',        // allows null or string values
             'base_price' => 'nullable|string|max:255',        // allows null or string values
             'price_per_km' => 'nullable|string|max:255',        // allows null or string values
+            'min_km_price' => 'nullable|string|max:255',        // allows null or string values
             'is_active' => 'sometimes|boolean'
         ]);
 
@@ -54,7 +55,7 @@ class ServiceCategoryController extends Controller
 
     public function edit(Request $request)
     {
-        $serviceTypes = ServiceType::all();
+        $serviceTypes = ServiceType::where('is_active', 1)->get();
 
         $serviceCategory = ServiceCategory::with('serviceType')->where('service_categories.id', $request->id)
             ->first();
@@ -72,7 +73,8 @@ class ServiceCategoryController extends Controller
             'description' => 'nullable|string|max:255',  // allows null or string values
             'image' => 'nullable|string|max:255',        // allows null or string values
             'base_price' => 'nullable|string|max:255',        // allows null or string values
-            'price_per_km' => 'nullable|string|max:255',        // allows null or string values
+            'price_per_km' => 'nullable|string|max:255',         // allows null or string values
+            'min_km_price' => 'nullable|string|max:255',       // allows null or string values
             'is_active' => 'sometimes|boolean'
         ]);
 
@@ -87,7 +89,12 @@ class ServiceCategoryController extends Controller
     public function updateStatus(Request $request)
     {
         $serviceCategory = ServiceCategory::where('id', $request->id)->first();
-        $serviceCategory->update(['is_active' => !$serviceCategory->is_active]);
-        return redirect()->route('admin.serviceCategories')->with('success', 'Service Category Status updated successfully!');
+        if ($serviceCategory) {
+            $serviceCategory->update(['is_active' => !$serviceCategory->is_active]);
+            return json_encode(['status' => 'success', 'is_active' => !$serviceCategory->is_active, 'message' => 'Service Category status updated successfully!']);
+        }
+        // return redirect()->route('admin.taxSettings')->with('success', 'Tax Country Status updated successfully!');
+
+        return json_encode(['status' => 'error', 'message' => 'Category not found']);
     }
 }

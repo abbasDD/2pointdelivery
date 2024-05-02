@@ -23,7 +23,7 @@ class VehicleTypeController extends Controller
     public function create()
     {
         // Get all services to show on form
-        $services = ServiceType::all();
+        $services = ServiceType::where('is_active', 1)->get();
         return view('admin.vehicle_types.create', compact('services'));
     }
     public function store(Request $request)
@@ -60,11 +60,51 @@ class VehicleTypeController extends Controller
     public function edit(Request $request)
     {
         // Get all services to show on form
-        $services = ServiceType::all();
+        $services = ServiceType::where('is_active', 1)->get();
 
         $vehicle_type = VehicleType::where('vehicle_types.id', $request->id)->with('service_types')
             ->first();
 
         return view('admin.vehicle_types.edit', compact('vehicle_type', 'services'));
+    }
+
+    public function update(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'services' => 'required|array',
+        ]);
+
+        // Find the existing vehicle type
+        $vehicle = VehicleType::findOrFail($request->id);
+
+        // Update the vehicle type attributes
+        $vehicle->name = $request->name;
+        $vehicle->description = $request->description;
+
+        // Save the changes
+        $vehicle->save();
+
+        // Sync services for the vehicle type
+        $vehicle->service_types()->sync($request->services);
+
+        // Redirect with a success message
+        return redirect()->route('admin.vehicleTypes')->with('success', 'Vehicle updated successfully!');
+    }
+
+
+
+    public function updateStatus(Request $request)
+    {
+        $vehicleType = VehicleType::where('id', $request->id)->first();
+        if ($vehicleType) {
+            $vehicleType->update(['is_active' => !$vehicleType->is_active]);
+            return json_encode(['status' => 'success', 'is_active' => !$vehicleType->is_active, 'message' => 'Vehicle Type status updated successfully!']);
+        }
+        // return redirect()->route('admin.taxSettings')->with('success', 'Tax Country Status updated successfully!');
+
+        return json_encode(['status' => 'error', 'message' => 'User not found']);
     }
 }

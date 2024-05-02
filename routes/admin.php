@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\HelperController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
+use App\Http\Controllers\Admin\ServiceTypeController;
 use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Admin\TaxSettingController;
 use Illuminate\Support\Facades\Route;
@@ -20,7 +21,7 @@ Route::post('/admin/login', [App\Http\Controllers\Auth\LoginController::class, '
 
 
 // Admin Routes Group
-Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () {
+Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(function () {
     // Dashboard Route
     Route::get('/', [HomeController::class, 'index'])->name('index');
 
@@ -50,17 +51,13 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::post('/helpers/update', [HelperController::class, 'update'])->name('helper.update');
     Route::post('/helpers/update-status', [HelperController::class, 'updateStatus'])->name('helper.updateStatus');
 
-    // Bookings Page Routes
-    Route::get('/bookings', [BookingController::class, 'index'])->name('bookings');
-    Route::get('/bookings/view/{id}', [BookingController::class, 'show'])->name('booking.show');
-
-    // Vehicle Types Page Routes
-    Route::get('/vehicle-types', [VehicleTypeController::class, 'index'])->name('vehicleTypes');
-    Route::get('/vehicle-type/create', [VehicleTypeController::class, 'create'])->name('vehicleType.create');
-    Route::post('/vehicle-type/store', [VehicleTypeController::class, 'store'])->name('vehicleType.store');
-    Route::get('/vehicle-type/edit/{id}', [VehicleTypeController::class, 'edit'])->name('vehicleType.edit');
-    Route::post('/vehicle-type/update', [VehicleTypeController::class, 'update'])->name('vehicleType.update');
-
+    // Service Types Page Routes
+    Route::get('/service-types', [ServiceTypeController::class, 'index'])->name('serviceTypes');
+    Route::get('/service-type/create', [ServiceTypeController::class, 'create'])->name('serviceType.create');
+    Route::post('/service-type/store', [ServiceTypeController::class, 'store'])->name('serviceType.store');
+    Route::get('/service-type/edit/{id}', [ServiceTypeController::class, 'edit'])->name('serviceType.edit');
+    Route::post('/service-type/update', [ServiceTypeController::class, 'update'])->name('serviceType.update');
+    Route::post('/service-type/update-status', [ServiceTypeController::class, 'updateStatus'])->name('serviceType.updateStatus');
 
     // Service Categories Page Routes
     Route::get('/service-categories', [ServiceCategoryController::class, 'index'])->name('serviceCategories');
@@ -68,10 +65,22 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::post('/service-category/store', [ServiceCategoryController::class, 'store'])->name('serviceCategory.store');
     Route::get('/service-category/edit/{id}', [ServiceCategoryController::class, 'edit'])->name('serviceCategory.edit');
     Route::post('/service-category/update', [ServiceCategoryController::class, 'update'])->name('serviceCategory.update');
-    Route::get('/service-category/update-status/{id}', [ServiceCategoryController::class, 'updateStatus'])->name('serviceCategory.updateStatus');
+    Route::post('/service-category/update-status', [ServiceCategoryController::class, 'updateStatus'])->name('serviceCategory.updateStatus');
+
+    // Vehicle Types Page Routes
+    Route::get('/vehicle-types', [VehicleTypeController::class, 'index'])->name('vehicleTypes');
+    Route::get('/vehicle-type/create', [VehicleTypeController::class, 'create'])->name('vehicleType.create');
+    Route::post('/vehicle-type/store', [VehicleTypeController::class, 'store'])->name('vehicleType.store');
+    Route::get('/vehicle-type/edit/{id}', [VehicleTypeController::class, 'edit'])->name('vehicleType.edit');
+    Route::post('/vehicle-type/update', [VehicleTypeController::class, 'update'])->name('vehicleType.update');
+    Route::post('/vehicle-type/update-status', [VehicleTypeController::class, 'updateStatus'])->name('vehicleType.updateStatus');
+
+    // Bookings Page Routes
+    Route::get('/bookings', [BookingController::class, 'index'])->name('bookings');
+    Route::get('/bookings/view/{id}', [BookingController::class, 'show'])->name('booking.show');
 
     // Settings Page Routes
-    Route::prefix('settings')->middleware(['auth'])->group(function () {
+    Route::prefix('settings')->group(function () {
         Route::get('/system', [SystemSettingController::class, 'index'])->name('systemSettings');
         Route::post('/system/update', [SystemSettingController::class, 'update'])->name('systemSetting.update');
         // Tax

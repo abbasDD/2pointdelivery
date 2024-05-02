@@ -36,29 +36,39 @@
 {{-- Sidebar Code her --}}
 <div class="sidebar">
     <a class="navbar-brand" href="{{ route('index') }}">
-        <img src="{{ asset('images/logo/icon.png') }}" alt="2 Point" height="30">
+        <img src="{{ asset('images/logo/' . config('website_logo')) ?: asset('images/logo/icon.png') }}" alt="2 Point"
+            height="50">
         2 Point Client
     </a>
     <nav class="mt-5">
         <ul class="p-0">
-            <li class="nav-link"><i class="fa fa-home"></i> <a href="{{ route('client.index') }}">Dashboard</a></li>
-            <li class="nav-link"><i class="fa fa-bank"></i> <a href="{{ route('client.kyc_details') }}">KYC Detail</a>
+            <li class="nav-item"><a class="nav-link" href="{{ route('client.index') }}"><i class="fa fa-home"></i>
+                    Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('client.kyc_details') }}"><i class="fa fa-bank"></i>
+                    KYC Detail</a>
             </li>
             @if (Auth::user()->account_type == 'company')
-                <li class="nav-link"><i class="fa fa-users"></i> <a href="#">Teams</a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-users"></i> Teams</a></li>
             @endif
-            <li class="nav-link"><i class="fa fa-dolly"></i> <a href="{{ route('client.orders') }}">Orders</a></li>
-            <li class="nav-link"><i class="fa fa-file-invoice"></i> <a
-                    href="{{ route('client.invoices') }}">Invoices</a></li>
-            <li class="nav-link"><i class="fa fa-comment"></i> <a href="#">Chat</a></li>
-            <li class="nav-link"><i class="fa-solid fa-repeat"></i> <a
-                    href="{{ route('client.referrals') }}">Referrals</a></li>
-            <li class="nav-link"><i class="fa fa-map"></i> <a href="{{ route('client.trackOrder') }}">Track
+            <li class="nav-item"><a class="nav-link" href="{{ route('client.orders') }}"><i class="fa fa-dolly"></i>
+                    Orders</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('client.invoices') }}"><i
+                        class="fa fa-file-invoice"></i>
+                    Invoices</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-comment"></i> Chat</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('client.referrals') }}"><i
+                        class="fa-solid fa-repeat"></i>
+                    Referrals</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('client.trackOrder') }}"><i class="fa fa-map"></i>
+                    Track
                     Order</a></li>
-            <li class="nav-link"><i class="fa fa-edit"></i> <a href="{{ route('client.edit') }}">Edit Profile</a></li>
-            <li class="nav-link"><i class="fa fa-cog"></i> <a href="{{ route('client.settings') }}">Settings</a></li>
-            <li class="nav-link"><i class="fa-solid fa-arrow-right-from-bracket"></i> <a href="{{ route('logout') }}"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+            <li class="nav-item"><a class="nav-link" href="{{ route('client.edit') }}"><i class="fa fa-edit"></i> Edit
+                    Profile</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('client.settings') }}"><i class="fa fa-cog"></i>
+                    Settings</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('logout') }}"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
+                        class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
             </li>
         </ul>
         <a href="{{ route('helper.index') }}" class="btn btn-primary">Login as Helper</a>

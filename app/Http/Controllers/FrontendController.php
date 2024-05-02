@@ -13,7 +13,7 @@ class FrontendController extends Controller
     public function index()
     {
         // Get all services 
-        $serviceTypes = ServiceType::all();
+        $serviceTypes = ServiceType::where('is_active', 1)->get();
 
         return view('frontend.index', compact('serviceTypes'));
         // return view('frontend.index');
@@ -47,10 +47,10 @@ class FrontendController extends Controller
     public function new_booking(Request $request)
     {
         // Get all services Types
-        $serviceTypes = ServiceType::all();
+        $serviceTypes = ServiceType::where('is_active', 1)->get();
 
         // service Categories of selected service type
-        $serviceCategories = ServiceCategory::with('serviceType')->where('service_type_id', $request->serviceType)->get();
+        $serviceCategories = ServiceCategory::with('serviceType')->where('service_type_id', $request->serviceType)->where('is_active', 1)->get();
 
         // return view 
         return view('frontend.new_booking', compact('serviceTypes', 'serviceCategories'));

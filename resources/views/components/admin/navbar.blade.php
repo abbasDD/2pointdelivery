@@ -36,7 +36,8 @@
 {{-- Sidebar Code her --}}
 <div class="sidebar">
     <a class="navbar-brand" href="{{ route('index') }}">
-        <img src="{{ asset('images/logo/icon.png') }}" alt="2 Point" height="30">
+        <img src="{{ asset('images/logo/' . config('website_logo')) ?: asset('images/logo/icon.png') }}" alt="2 Point"
+            height="50">
         2 Point Admin
     </a>
     <nav class="mt-5">
@@ -54,14 +55,17 @@
                     <li><a class="nav-link" href="{{ route('admin.requestedHelpers') }}">Requested Helpers </a></li>
                 </ul>
             </li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.serviceTypes') }}"><i
+                        class="fa fa-dolly"></i>
+                    Services</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.serviceCategories') }}"><i
+                        class="fa fa-user"></i> Service Categories </a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.vehicleTypes') }}"><i
+                        class="fa fa-edit"></i> Vehicles</a>
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.bookings') }}"><i class="fa fa-dolly"></i>
                     Bookings</a></li>
             <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-comment"></i> Chat</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.vehicleTypes') }}"><i
-                        class="fa fa-edit"></i> Vehicles</a>
             </li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.serviceCategories') }}"><i
-                        class="fa fa-user"></i> Service Categories </a></li>
             <li class="nav-item has-submenu">
                 <a class="nav-link" href="#"> <i class="fa fa-cog"></i> Settings </a>
                 <ul class="submenu collapse">

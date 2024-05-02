@@ -2,49 +2,33 @@
     <thead class="thead-primary">
         <tr>
             <th>ID</th>
-            <th>Profile Image</th>
-            <th>Full Name</th>
-            <th>Account Type</th>
+            <th>Service Name</th>
+            <th>Service Type</th>
+            <th>Description</th>
             <th>Status</th>
             <th>Action</th>
         </tr>
     </thead>
     <tbody>
-        @forelse ($clients as $client)
+        @forelse ($service_types as $service_type)
             <tr>
-                <td>{{ $client->id }}</td>
-                <td><img src="{{ $client->profile_image ? asset($client->profile_image) : asset('images/users/default.png') }}"
-                        alt="Profile Image" width="50">
-                </td>
-                <td>{{ $client->first_name . ' ' . $client->last_name }}</td>
-                <td>{{ $client->company_enabled ? 'Company' : 'Individual' }}</td>
+                <td>{{ $service_type->id }}</td>
+                <td>{{ $service_type->name }}</td>
+                <td>{{ $service_type->type }}</td>
+                <td>{{ $service_type->description }}</td>
                 <td>
-                    <button type="button" id="statusButton_{{ $client->id }}"
-                        class="btn  {{ $client->is_active ? 'btn-primary' : 'btn-danger' }} btn-sm"
-                        onclick="showStatusDialog({{ $client->id }}, '{{ $client->is_active }}')">
-                        {{ $client->is_active == 1 ? 'Active' : 'Inactive' }}
+                    <button type="button" id="statusButton_{{ $service_type->id }}"
+                        class="btn  {{ $service_type->is_active ? 'btn-primary' : 'btn-danger' }} btn-sm"
+                        onclick="showStatusDialog({{ $service_type->id }}, '{{ $service_type->is_active }}')">
+                        {{ $service_type->is_active == 1 ? 'Active' : 'Inactive' }}
                     </button>
                 </td>
-                {{-- <td>
-                    <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="statusButton_{{ $client->id }}"
-                            onclick="showStatusDialog({{ $client->id }}, {{ $client->is_active }})"
-                            {{ $client->is_active ? 'checked' : '' }}>
-                        <label class="custom-control-label" for="statusButton_{{ $client->id }}"></label>
-                    </div>
-                </td> --}}
-                <td>
-                    {{-- View Route --}}
-                    <a class="btn btn-sm btn-primary" href="{{ route('admin.client.show', $client->id) }}"><i
-                            class="fa fa-eye"></i></a>
-                    {{-- Edit Route --}}
-                    <a class="btn btn-sm btn-primary" href="{{ route('admin.client.edit', $client->id) }}"><i
-                            class="fa fa-edit"></i></a>
+                <td><a href="{{ route('admin.serviceType.edit', $service_type->id) }}"><i class="fa fa-edit"></i></a>
                 </td>
             </tr>
         @empty
             <tr>
-                <td colspan="5" class="text-center">No data found</td>
+                <td colspan="7" class="text-center">No data found</td>
             </tr>
         @endforelse
     </tbody>
@@ -62,21 +46,20 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                {{-- <a id="updateStatusLink" href="#" class="btn btn-primary">Update</a> --}}
-                <button type="button" id="updateStatusLink" class="btn btn-primary">Update</button>
+                <a id="updateStatusLink" href="#" class="btn btn-primary">Update</a>
             </div>
         </div>
     </div>
 </div>
 
-{{ $clients->links() }}
+{{ $service_types->links() }}
 
 
 
 <script>
     function showStatusDialog(id, status) {
         $('#statusModal').modal('show');
-        var baseUrl = "{{ url('admin/clients/update-status') }}"; // Use `url()` to get the base part
+        var baseUrl = "{{ url('admin/service-type/update-status') }}"; // Use `url()` to get the base part
         // $('#updateStatusLink').attr('href', baseUrl + '/' + id);
 
         // Remove previous click event handler from #updateStatusLink
@@ -100,7 +83,7 @@
 
     function updateStatus(id) {
         console.log(id);
-        var baseUrl = "{{ url('admin/clients/update-status') }}";
+        var baseUrl = "{{ url('admin/service-type/update-status') }}";
         var csrfToken = $('meta[name="csrf-token"]').attr('content'); // Get CSRF token from the meta tag
 
         $.ajax({
@@ -128,6 +111,7 @@
                         $('#statusButton_' + id).removeClass('btn-danger');
                         $('#statusButton_' + id).addClass('btn-primary');
                     }
+
                     // Trigger Notification
                     triggerToast('Success', 'Status updated succcessfully');
                     // Remove function from button
@@ -143,6 +127,7 @@
             },
             error: function(xhr, status, error) {
                 // Handle errors
+                triggerToast('Error', 'Something went wrong');
                 console.error(error); // Log the error for debugging
                 // Show an error message to the user
             }

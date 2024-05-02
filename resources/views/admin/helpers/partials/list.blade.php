@@ -131,6 +131,8 @@
                         $('#statusButton_' + id).addClass('btn-primary');
                     }
 
+                    // Trigger Notification
+                    triggerToast('Success', 'Status updated succcessfully');
                     // Remove function from button
                     $('updateStatusLink').off('click');
                     console.log(jsonResponse.message); // Print the message from the response

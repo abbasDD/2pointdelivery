@@ -4,6 +4,7 @@
             <th>ID</th>
             <th>Service Name</th>
             <th>Category Name</th>
+            <th>Secureship API</th>
             <th>Base Price</th>
             <th>Price Per KM</th>
             <th>Status</th>
@@ -16,16 +17,21 @@
                 <td>{{ $service_category->id }}</td>
                 <td>{{ $service_category->serviceType->name }}</td>
                 <td>{{ $service_category->name }}</td>
+                <td>
+                    <p class="badge {{ $service_category->is_secureship_enabled ? 'bg-primary' : 'bg-danger' }}">
+                        {{ $service_category->is_secureship_enabled == 1 ? 'Enabled' : 'Disabled' }}
+                    </p>
+
+
+                </td>
                 <td>{{ $service_category->base_price }}</td>
                 <td>{{ $service_category->price_per_km }}</td>
                 <td>
-                    <button type="button"
+                    <button type="button" id="statusButton_{{ $service_category->id }}"
                         class="btn  {{ $service_category->is_active ? 'btn-primary' : 'btn-danger' }} btn-sm"
-                        onclick="updateStatus({{ $service_category->id }})">
+                        onclick="showStatusDialog({{ $service_category->id }}, '{{ $service_category->is_active }}')">
                         {{ $service_category->is_active == 1 ? 'Active' : 'Inactive' }}
                     </button>
-
-
                 </td>
                 <td><a href="{{ route('admin.serviceCategory.edit', $service_category->id) }}"><i
                             class="fa fa-edit"></i></a></td>
@@ -59,11 +65,82 @@
 {{ $service_categories->links() }}
 
 
+
 <script>
-    function updateStatus(id) {
+    function showStatusDialog(id, status) {
         $('#statusModal').modal('show');
         var baseUrl = "{{ url('admin/service-category/update-status') }}"; // Use `url()` to get the base part
-        $('#updateStatusLink').attr('href', baseUrl + '/' + id);
-        $('#updateStatusLink').innerHTML = "Active";
+        // $('#updateStatusLink').attr('href', baseUrl + '/' + id);
+
+        // Remove previous click event handler from #updateStatusLink
+        $('#updateStatusLink').off('click');
+        // add onclick to updateStatusLink here
+        $('#updateStatusLink').click(function() {
+            updateStatus(id);
+        });
+        // console.log($('#statusButton_' + id).text());
+        if ($('#statusButton_' + id).text() == 'Active') {
+            $('#updateStatusLink').text("Decactivate");
+            $('#updateStatusLink').removeClass('btn-primary');
+            $('#updateStatusLink').addClass('btn-danger');
+        } else {
+            $('#updateStatusLink').text("Activate");
+            $('#updateStatusLink').removeClass('btn-danger');
+            $('#updateStatusLink').addClass('btn-primary');
+        }
+
+    }
+
+    function updateStatus(id) {
+        console.log(id);
+        var baseUrl = "{{ url('admin/service-category/update-status') }}";
+        var csrfToken = $('meta[name="csrf-token"]').attr('content'); // Get CSRF token from the meta tag
+
+        $.ajax({
+            url: baseUrl,
+            data: {
+                id: id,
+                _token: csrfToken
+            },
+            type: 'POST', // or 'GET' depending on your route definition
+            success: function(response) {
+                // Handle the response
+                console.log(response); // Log the response for debugging
+                var jsonResponse = JSON.parse(response); //Parse the JSON string into an object
+                if (jsonResponse.status == 'success') {
+                    // Hide modal
+                    $('#statusModal').modal('hide');
+                    // Change text on bbutton as per response
+                    if (jsonResponse.is_active == 1) {
+                        $('#statusButton_' + id).text('Inactive');
+                        $('#statusButton_' + id).removeClass('btn-primary');
+                        $('#statusButton_' + id).addClass('btn-danger');
+                    }
+                    if (jsonResponse.is_active == 0) {
+                        $('#statusButton_' + id).text('Active');
+                        $('#statusButton_' + id).removeClass('btn-danger');
+                        $('#statusButton_' + id).addClass('btn-primary');
+                    }
+
+                    // Trigger Notification
+                    triggerToast('Success', 'Status updated succcessfully');
+                    // Remove function from button
+                    $('updateStatusLink').off('click');
+                    console.log(jsonResponse.message); // Print the message from the response
+                } else {
+                    // Hide modal
+                    $('#statusModal').modal('hide');
+                    // Remove function from button
+                    $('updateStatusLink').off('click');
+                    console.log('Failed'); // Or any other message you want to print for failed status
+                }
+            },
+            error: function(xhr, status, error) {
+                // Handle errors
+                console.error(error); // Log the error for debugging
+                // Show an error message to the user
+            }
+        });
+
     }
 </script>
