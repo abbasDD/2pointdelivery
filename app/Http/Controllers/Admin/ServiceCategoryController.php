@@ -24,7 +24,8 @@ class ServiceCategoryController extends Controller
     public function create()
     {
         $serviceTypes = ServiceType::where('is_active', 1)->get();
-        return view('admin.service_categories.create', compact('serviceTypes'));
+        $serviceCategory = new ServiceCategory();
+        return view('admin.service_categories.create', compact('serviceTypes', 'serviceCategory'));
     }
     public function store(Request $request)
     {
@@ -36,7 +37,7 @@ class ServiceCategoryController extends Controller
             'image' => 'nullable|string|max:255',        // allows null or string values
             'base_price' => 'nullable|string|max:255',        // allows null or string values
             'price_per_km' => 'nullable|string|max:255',        // allows null or string values
-            'min_km_price' => 'nullable|string|max:255',        // allows null or string values
+            'base_price_distance' => 'nullable|string|max:255',        // allows null or string values
             'is_active' => 'sometimes|boolean'
         ]);
 
@@ -74,7 +75,7 @@ class ServiceCategoryController extends Controller
             'image' => 'nullable|string|max:255',        // allows null or string values
             'base_price' => 'nullable|string|max:255',        // allows null or string values
             'price_per_km' => 'nullable|string|max:255',         // allows null or string values
-            'min_km_price' => 'nullable|string|max:255',       // allows null or string values
+            'base_price_distance' => 'nullable|string|max:255',       // allows null or string values
             'is_active' => 'sometimes|boolean'
         ]);
 

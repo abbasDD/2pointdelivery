@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Models\Client;
+use App\Models\Helper;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
@@ -89,5 +92,67 @@ class AdminController extends Controller
             // For example, return a response indicating the admin was not found
             return redirect()->back()->with('error', 'Admin not found or not authorized!');
         }
+    }
+
+    public function users(Request $request)
+    {
+        $user = User::where('id', $request->id)->first();
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found or not authorized!');
+        }
+
+        if ($user->client_enabled == 1) {
+            $client = Client::where('user_id', $user->id)->first();
+            if ($client) {
+                return redirect()->route('admin.client.show', ['id' => $client->id]);
+            }
+        }
+
+        if ($user->helper_enabled == 1) {
+            $helper = Helper::where('user_id', $user->id)->first();
+            if ($helper) {
+                return redirect()->route('admin.helper.show', ['id' => $helper->id]);
+            }
+        }
+
+        return redirect()->back()->with('error', 'User not found or not authorized!');
+    }
+    public function searchUsers(Request $request)
+    {
+        $search = $request->input('search');
+        $currentUserId = auth()->id(); // Get the ID of the current authenticated user
+
+        // Get list of all admins, excluding the current user
+        $admins = DB::table('admins')
+            ->select('user_id', 'first_name', 'last_name')
+            ->where('user_id', '!=', $currentUserId) // Exclude current user
+            ->where(function ($query) use ($search) {
+                $query->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%");
+            });
+
+        // Get list of all clients, excluding the current user
+        $clients = DB::table('clients')
+            ->select('user_id', 'first_name', 'last_name')
+            ->where('user_id', '!=', $currentUserId) // Exclude current user
+            ->where(function ($query) use ($search) {
+                $query->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%");
+            });
+
+        // Get list of all helpers, excluding the current user
+        $helpers = DB::table('helpers')
+            ->select('user_id', 'first_name', 'last_name')
+            ->where('user_id', '!=', $currentUserId) // Exclude current user
+            ->where(function ($query) use ($search) {
+                $query->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%");
+            });
+
+        // Union all query results
+        $users = $clients->union($helpers)->union($admins)->get();
+
+        return response()->json($users);
     }
 }

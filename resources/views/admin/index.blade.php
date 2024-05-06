@@ -5,6 +5,9 @@
 @section('content')
 
 
+    {{-- Loading Chat JS Library --}}
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     {{-- Overall Statistics  --}}
     <div class="statistics">

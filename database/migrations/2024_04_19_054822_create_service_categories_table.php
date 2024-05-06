@@ -22,7 +22,7 @@ return new class extends Migration
             $table->boolean('is_secureship_enabled')->default(false);
             $table->string('base_price')->default(0);
             $table->string('price_per_km')->default(0);
-            $table->string('min_km_price')->default(0);
+            $table->string('base_price_distance')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 

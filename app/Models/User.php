@@ -49,4 +49,37 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function chats()
+    {
+        // Chats where the user is user1
+        $chats1 = $this->hasMany(Chat::class, 'user1_id');
+
+        // Chats where the user is user2
+        $chats2 = $this->hasMany(Chat::class, 'user2_id');
+
+        // Merge the results
+        return $chats1->union($chats2);
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
+    /**
+     * Get the client profile associated with the user.
+     */
+    public function client()
+    {
+        return $this->hasOne(Client::class);
+    }
+
+    /**
+     * Get the client profile associated with the user.
+     */
+    public function helper()
+    {
+        return $this->hasOne(Helper::class);
+    }
 }

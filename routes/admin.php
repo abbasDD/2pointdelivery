@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\BookingController;
+use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\HelperController;
 use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\ServiceTypeController;
 use App\Http\Controllers\Admin\SystemSettingController;
@@ -32,6 +34,12 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     Route::get('/admins/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
     Route::post('/admins/update', [AdminController::class, 'update'])->name('admin.update');
 
+    // Create a route to redirect to user page as per user type
+    Route::get('/users/{id}', [AdminController::class, 'users'])->name('users');
+
+    // Search Users Route
+    Route::post('/users/search', [AdminController::class, 'searchUsers'])->name('users.search');
+
     // Clients Page Routes
     Route::get('/clients', [ClientController::class, 'index'])->name('clients');
     Route::get('/clients/create', [ClientController::class, 'create'])->name('client.create');
@@ -50,6 +58,8 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     Route::get('/helpers/edit/{id}', [HelperController::class, 'edit'])->name('helper.edit');
     Route::post('/helpers/update', [HelperController::class, 'update'])->name('helper.update');
     Route::post('/helpers/update-status', [HelperController::class, 'updateStatus'])->name('helper.updateStatus');
+    Route::post('/helpers/approve', [HelperController::class, 'approve'])->name('helper.approve');
+    Route::post('/helpers/reject', [HelperController::class, 'reject'])->name('helper.reject');
 
     // Service Types Page Routes
     Route::get('/service-types', [ServiceTypeController::class, 'index'])->name('serviceTypes');
@@ -78,6 +88,12 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     // Bookings Page Routes
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings');
     Route::get('/bookings/view/{id}', [BookingController::class, 'show'])->name('booking.show');
+
+    // Chat Page Routes
+    Route::get('/chats', [ChatController::class, 'index'])->name('chats');
+    Route::post('/chat/create', [ChatController::class, 'create'])->name('chat.create');
+    Route::get('/chat/messages/{id}', [MessageController::class, 'index'])->name('chat.messages');
+    Route::post('/chat/messages/store', [MessageController::class, 'store'])->name('chat.messages.store');
 
     // Settings Page Routes
     Route::prefix('settings')->group(function () {

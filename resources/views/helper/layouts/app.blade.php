@@ -9,7 +9,8 @@
     <meta name="author" content="Elabd Technologies" />
     <title>@yield('title')</title>
 
-    <link rel="icon" type="image/x-icon" href="{{ asset('images/logo/favicon.png') }}">
+    <link rel="icon" type="image/x-icon"
+        href="{{ asset('images/logo/' . config('website_favicon')) ?: asset('images/logo/icon.png') }}">
 
     {{-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"> --}}
     <link rel="stylesheet"

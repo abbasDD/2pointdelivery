@@ -6,6 +6,7 @@
             <th>Category Name</th>
             <th>Secureship API</th>
             <th>Base Price</th>
+            <th>Base Price Distance</th>
             <th>Price Per KM</th>
             <th>Status</th>
             <th>Action</th>
@@ -24,8 +25,12 @@
 
 
                 </td>
-                <td>{{ $service_category->base_price }}</td>
-                <td>{{ $service_category->price_per_km }}</td>
+                <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->base_price : 'N/A' }}
+                </td>
+                <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->base_price_distance : 'N/A' }}
+                </td>
+                <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->price_per_km : 'N/A' }}
+                </td>
                 <td>
                     <button type="button" id="statusButton_{{ $service_category->id }}"
                         class="btn  {{ $service_category->is_active ? 'btn-primary' : 'btn-danger' }} btn-sm"
@@ -79,7 +84,7 @@
             updateStatus(id);
         });
         // console.log($('#statusButton_' + id).text());
-        if ($('#statusButton_' + id).text() == 'Active') {
+        if ($('#statusButton_' + id).text().trim() == 'Active') {
             $('#updateStatusLink').text("Decactivate");
             $('#updateStatusLink').removeClass('btn-primary');
             $('#updateStatusLink').addClass('btn-danger');

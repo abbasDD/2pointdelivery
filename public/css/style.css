@@ -25,8 +25,12 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 20px;
 }
 
+.h6, h6 {
+    font-size: .85rem;
+}
+
 p {
-    font-size: 14px;
+    font-size: 12px;
     margin-bottom: 10px;
 }
 
@@ -360,6 +364,244 @@ svg {
 }
 
 
+/* Chat Page CSS */
+
+
+
+.people-list {}
+
+.people-list .search {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.people-list input {
+    border-radius: 3px;
+    border: none;
+    padding: 12px;
+    color: var(--white);
+    background: var(--primary-light);
+    width: 100%;
+    padding-right: 35px;
+}
+
+.people-list .fa-search {
+    position: relative;
+    left: -30px;
+    color: var(--white);
+}
+
+.people-list .list .item {
+    cursor: pointer;
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+}
+
+.people-list .list .item p {
+    color: #808080;
+}
+
+.people-list .list .active {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+.people-list .list .active p {
+    color: #ffffff;
+}
+
+.people-list ul {
+    padding: 20px;
+    height: 550px;
+}
+
+.people-list ul li {
+    padding-bottom: 20px;
+    list-style: none;
+}
+
+.people-list img {
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+}
+
+.people-list .about {
+    padding-left: 8px;
+}
+
+.people-list .status {
+    color: #92959E;
+}
+
+.chat {
+    background: #F2F5F8;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    color: #434651;
+}
+
+.chat .chat-header {
+    padding: 20px;
+    border-bottom: 2px solid white;
+    display: flex;
+    justify-content: space-between;
+}
+
+.chat .chat-header img {
+    float: left;
+}
+
+.chat .chat-header .chat-about {
+    float: left;
+    padding-left: 10px;
+    margin-top: 6px;
+}
+
+.chat .chat-header .chat-with {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.chat .chat-header .chat-num-messages {
+    color: #92959E;
+}
+
+.chat .chat-header .fa-star {
+    float: right;
+    color: #D8DADF;
+    font-size: 20px;
+    margin-top: 12px;
+}
+
+.chat .chat-history {
+    padding: 30px 30px 20px;
+    border-bottom: 2px solid white;
+    overflow-y: scroll;
+    height: 475px;
+}
+
+.chat .chat-history .message-data {
+    margin-bottom: 15px;
+}
+
+.chat .chat-history .message-text {
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+.chat .chat-history .message-data-time {
+    color: var(--light-gray-color);
+    padding-left: 6px;
+    margin-bottom: 0;
+}
+
+.chat .chat-history .message {
+    color: white;
+    padding: 18px 20px;
+    line-height: 26px;
+    font-size: 16px;
+    border-radius: 7px;
+    margin-bottom: 10px;
+    width: 80%;
+    /* position: relative; */
+}
+
+.chat .chat-history .message:after {
+    bottom: 100%;
+    left: 7%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-bottom-color: var(--primary-light);
+    border-width: 10px;
+    margin-left: -10px;
+}
+
+.chat .chat-history .my-message {
+    background: var(--primary-light);
+}
+
+.chat .chat-history .other-message {
+    background: var(--gray-color);
+}
+
+.chat .chat-history .other-message:after {
+    border-bottom-color: var(--gray-color);
+    left: 93%;
+}
+
+.chat .chat-message {
+    padding: 30px;
+}
+
+.chat .chat-message textarea {
+    width: 100%;
+    border: none;
+    padding: 10px 20px;
+    font-size: 12px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    resize: none;
+}
+
+.chat .chat-message .fa-file-o,
+.chat .chat-message .fa-file-image-o {
+    font-size: 16px;
+    color: gray;
+    cursor: pointer;
+}
+
+.chat .chat-history li {
+    list-style: none;
+}
+
+.online,
+.offline,
+.me {
+    margin-right: 3px;
+    font-size: 10px;
+}
+
+.online {
+    color: var(--primary-light);
+}
+
+.offline {
+    color: #E38968;
+}
+
+.me {
+    color: var(--gray-color);
+}
+
+.align-left {
+    text-align: left;
+}
+
+.align-right {
+    text-align: right;
+}
+
+.float-right {
+    float: right;
+}
+
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
+
+
+
 /* Auth Pages CSS  */
 
 .authpage {
@@ -383,7 +625,7 @@ svg {
 
 .authpage .card .card-body img {
     height: 50px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .authpage .card .card-body h3 {
@@ -795,7 +1037,15 @@ footer hr {
 
 /* Chat Page CSS */
 
+.searchResults .result-item {
+    cursor: pointer;
+    padding: 5px 10px;
+}
 
+.searchResults .result-item:hover {
+    background-color: var(--primary-light);
+    color: var(--white);
+}
 
 
 /* For tablets and small desktops: */

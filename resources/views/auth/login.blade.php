@@ -4,9 +4,9 @@
 
 @section('content')
     <div class="authpage">
-        <div class="row align-content-center vh-100">
-            <div class="col-md-6 d-none d-md-block">
-                <div class="bg-gradient vh-100 d-flex align-items-center justify-content-center">
+        <div class="row align-content-center m-0">
+            <div class="bg-gradient col-md-6 d-none d-md-block align-content-center">
+                <div class="d-flex align-items-center justify-content-center">
                     <img src="{{ asset('images/auth/client-bg.png') }}" width="400" alt="auth image">
                 </div>
             </div>
@@ -14,7 +14,8 @@
                 <div class="card">
 
                     <div class="card-body text-center">
-                        <img src="{{ asset('images/logo/icon.png') }}" alt="logo">
+                        <img src="{{ asset('images/logo/' . config('website_logo')) ?: asset('images/logo/icon.png') }}"
+                            alt="2 Point" height="50">
                         <h3>2 Point Client</h3>
                         <p>Please enter your detail to login</p>
                         <form method="POST" action="{{ route('client.login') }}">

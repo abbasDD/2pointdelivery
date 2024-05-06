@@ -21,7 +21,7 @@ class ServiceCategory extends Model
         'description',
         'image',
         'is_secureship_enabled',
-        'min_km_price',
+        'base_price_distance',
         'base_price',
         'price_per_km',
         'is_active'

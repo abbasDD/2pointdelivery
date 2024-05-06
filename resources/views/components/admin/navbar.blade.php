@@ -64,7 +64,8 @@
                         class="fa fa-edit"></i> Vehicles</a>
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.bookings') }}"><i class="fa fa-dolly"></i>
                     Bookings</a></li>
-            <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-comment"></i> Chat</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.chats') }}"><i class="fa fa-comment"></i>
+                    Chat</a></li>
             </li>
             <li class="nav-item has-submenu">
                 <a class="nav-link" href="#"> <i class="fa fa-cog"></i> Settings </a>

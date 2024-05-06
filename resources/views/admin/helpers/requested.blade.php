@@ -8,12 +8,12 @@
         <div class="container-fluid">
             <div class="section-header mb-2">
                 <div class="d-flex justify-content-between">
-                    <h4>Requested Helpers</h4>
+                    <h4 class="mb-0">Requested Helpers</h4>
                 </div>
             </div>
             <div class="section-body">
                 <div id="helperTable">
-                    @include('admin.helpers.partials.list')
+                    @include('admin.helpers.partials.requested_list')
                 </div>
             </div>
         </div>

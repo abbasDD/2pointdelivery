@@ -25,7 +25,7 @@ class HelperController extends Controller
     {
         $helpers = Helper::select('helpers.*', 'users.email', 'users.is_active')
             ->join('users', 'helpers.user_id', '=', 'users.id')
-            ->where('users.is_updated', 0)
+            ->where('helpers.is_approved', 0)
             ->paginate(10); // 10 items per page
         if (request()->ajax()) {
             return response()->json(view('helpers.partials.list', compact('helpers'))->render());
@@ -154,5 +154,36 @@ class HelperController extends Controller
         // return redirect()->route('admin.taxSettings')->with('success', 'Tax Country Status updated successfully!');
 
         return json_encode(['status' => 'error', 'message' => 'User not found']);
+    }
+
+    public function approve(Request $request)
+    {
+        $helper = Helper::where('id', $request->id)
+            ->first();
+        if ($helper) {
+            $helper->update(['is_approved' => 1]);
+            // Update user status is_active to 1
+            $user = User::where('id', $helper->user_id)->first();
+            $user->update(['is_active' => 1]);
+
+            // Reuurn json with success
+            return json_encode(['status' => 'success', 'message' => 'Helper approved successfully!']);
+        }
+        // return redirect()->route('admin.taxSettings')->with('success', 'Tax Country Status updated successfully!');
+
+        return json_encode(['status' => 'error', 'message' => 'Helper not found']);
+    }
+
+    public function reject(Request $request)
+    {
+        $helper = Helper::where('id', $request->id)
+            ->first();
+        if ($helper) {
+            $helper->update(['is_approved' => 2]); // 2 is rejected
+            return json_encode(['status' => 'success', 'message' => 'Helper rejected successfully!']);
+        }
+        // return redirect()->route('admin.taxSettings')->with('success', 'Tax Country Status updated successfully!');
+
+        return json_encode(['status' => 'error', 'message' => 'Helper not found']);
     }
 }

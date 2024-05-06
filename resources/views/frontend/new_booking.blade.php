@@ -118,7 +118,7 @@
                     console.log(serviceCategories[i].base_price);
                     distance_price = serviceCategories[i].base_price * distance_in_km;
                     service_price = serviceCategories[i].price_per_km;
-                    per_km_price = serviceCategories[i].min_km_price;
+                    per_km_price = serviceCategories[i].base_price_distance;
                     service_charges = 50;
                 }
             }

@@ -84,12 +84,12 @@
             <select class="form-control @error('auto_assign_driver') is-invalid @enderror" id="auto_assign_driver"
                 name="auto_assign_driver" required>
                 <option value="" disabled>Select Auto Assign Driver</option>
-                <option value="1"
-                    {{ old('auto_assign_driver', $systemSettings['auto_assign_driver'] ?? '') == '1' ? 'selected' : '' }}>
+                <option value="yes"
+                    {{ old('auto_assign_driver', $systemSettings['auto_assign_driver'] ?? '') == 'yes' ? 'selected' : '' }}>
                     Yes
                 </option>
-                <option value="0"
-                    {{ old('auto_assign_driver', $systemSettings['auto_assign_driver'] ?? '') == '0' ? 'selected' : '' }}>
+                <option value="no"
+                    {{ old('auto_assign_driver', $systemSettings['auto_assign_driver'] ?? '') == 'no' ? 'selected' : '' }}>
                     No
                 </option>
             </select>
@@ -125,6 +125,99 @@
         </div>
     </div>
 
+
+    {{-- Dimension Selection --}}
+    <div class="col-md-6">
+        <div class="form-group mb-3">
+            <label for="dimension">Dimension</label>
+            <select class="form-control @error('dimension') is-invalid @enderror" id="dimension" name="dimension"
+                required>
+                <option value="" disabled>Select Dimension</option>
+                <option value="cm"
+                    {{ old('dimension', $systemSettings['dimension'] ?? '') == 'cm' ? 'selected' : '' }}>
+                    Metric (cm)
+                </option>
+                <option value="inch"
+                    {{ old('dimension', $systemSettings['dimension'] ?? '') == 'inch' ? 'selected' : '' }}>
+                    Imperial (inch)
+                </option>
+            </select>
+            @error('dimension')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
+    {{-- Wight Selection --}}
+    <div class="col-md-6">
+        <div class="form-group mb-3">
+            <label for="weight">Weight</label>
+            <select class="form-control @error('weight') is-invalid @enderror" id="weight" name="weight" required>
+                <option value="" disabled>Select Weight</option>
+                <option value="kg" {{ old('weight', $systemSettings['weight'] ?? '') == 'kg' ? 'selected' : '' }}>
+                    Kg
+                </option>
+                <option value="lbs" {{ old('weight', $systemSettings['weight'] ?? '') == 'lbs' ? 'selected' : '' }}>
+                    Lbs
+                </option>
+            </select>
+            @error('weight')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
+    {{-- Package Value Declare --}}
+    <div class="col-md-6">
+        <div class="form-group mb-3">
+            <label for="declare_package_value">Declare Package Value</label>
+            <select class="form-control @error('declare_package_value') is-invalid @enderror"
+                id="declare_package_value" name="declare_package_value" required>
+                <option value="" disabled>Select Declare Package Value</option>
+                <option value="yes"
+                    {{ old('declare_package_value', $systemSettings['declare_package_value'] ?? '') == 'yes' ? 'selected' : '' }}>
+                    Yes
+                </option>
+                <option value="no"
+                    {{ old('declare_package_value', $systemSettings['declare_package_value'] ?? '') == 'no' ? 'selected' : '' }}>
+                    No
+                </option>
+            </select>
+            @error('declare_package_value')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
+    {{-- Insurance Value Declare --}}
+    <div class="col-md-6">
+        <div class="form-group mb-3">
+            <label for="insurance">Insurance</label>
+            <select class="form-control @error('insurance') is-invalid @enderror" id="insurance" name="insurance"
+                required>
+                <option value="" disabled>Select Insurance</option>
+                <option value="enabled"
+                    {{ old('insurance', strval($systemSettings['insurance']) ?? '') == 'enabled' ? 'selected' : '' }}>
+                    Enabled
+                </option>
+                <option value="disabled"
+                    {{ old('insurance', strval($systemSettings['insurance']) ?? '') == 'disabled' ? 'selected' : '' }}>
+                    Disabled
+                </option>
+            </select>
+            @error('insurance')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
 
     {{-- Submit Button --}}
     <div class="col-md-12 text-right">

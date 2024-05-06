@@ -48,10 +48,14 @@ class SystemSettingController extends Controller
             'currency' => 'required|string|max:255',
             'auto_assign_driver' => 'required|string|max:255',
             'language' => 'required|string|max:255',
+            'dimension' => 'required|string|max:255',
+            'weight' => 'required|string|max:255',
+            'declare_package_value' => 'required|string|max:255',
+            'enable_insurance' => 'required|string|max:255',
         ]);
 
         // Store values in updated data array
-        $systemSetting = $request->only('website_name', 'currency', 'auto_assign_driver', 'language');
+        $systemSetting = $request->only('website_name', 'currency', 'auto_assign_driver', 'language', 'dimension', 'weight', 'declare_package_value', 'enable_insurance');
 
 
         // Upload the website logo

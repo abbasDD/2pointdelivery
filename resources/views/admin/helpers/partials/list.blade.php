@@ -46,7 +46,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="5" class="text-center">No data found</td>
+                <td colspan="7" class="text-center">No data found</td>
             </tr>
         @endforelse
     </tbody>
@@ -87,8 +87,8 @@
         $('#updateStatusLink').click(function() {
             updateStatus(id);
         });
-        // console.log($('#statusButton_' + id).text());
-        if ($('#statusButton_' + id).text() == 'Active') {
+        console.log($('#statusButton_' + id).text().trim());
+        if ($('#statusButton_' + id).text().trim() == 'Active') {
             $('#updateStatusLink').text("Decactivate");
             $('#updateStatusLink').removeClass('btn-primary');
             $('#updateStatusLink').addClass('btn-danger');

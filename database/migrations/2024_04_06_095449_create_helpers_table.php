@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('state')->nullable();
             $table->string('country')->nullable();
             $table->string('zip_code')->nullable();
+            $table->boolean('is_approved')->default(false);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

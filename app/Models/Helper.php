@@ -34,5 +34,6 @@ class Helper extends Model
         'state',
         'country',
         'zip_code',
+        'is_approved',
     ];
 }

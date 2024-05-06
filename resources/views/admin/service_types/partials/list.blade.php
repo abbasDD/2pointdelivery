@@ -69,7 +69,7 @@
             updateStatus(id);
         });
         // console.log($('#statusButton_' + id).text());
-        if ($('#statusButton_' + id).text() == 'Active') {
+        if ($('#statusButton_' + id).text().trim() == 'Active') {
             $('#updateStatusLink').text("Decactivate");
             $('#updateStatusLink').removeClass('btn-primary');
             $('#updateStatusLink').addClass('btn-danger');

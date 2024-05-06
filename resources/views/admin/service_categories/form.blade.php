@@ -76,7 +76,7 @@
     </div>
 
     {{-- Base Price --}}
-    <div class="col-md-6">
+    <div class="col-md-6 {{ $serviceCategory['is_secureship_enabled'] ? 'd-none' : '' }}" id="base_price_div">
         <div class="form-group mb-3">
             <label for="base_price">Base Price</label>
             <input type="text" class="form-control @error('base_price') is-invalid @enderror" id="base_price"
@@ -90,14 +90,15 @@
         </div>
     </div>
 
-    {{-- Minimum KM Price --}}
-    <div class="col-md-6">
+    {{-- Base Price Distance --}}
+    <div class="col-md-6 {{ $serviceCategory['is_secureship_enabled'] ? 'd-none' : '' }}" id="base_price_distance_div">
         <div class="form-group mb-3">
-            <label for="min_km_price">Minimum KM Price</label>
-            <input type="text" class="form-control @error('min_km_price') is-invalid @enderror" id="min_km_price"
-                name="min_km_price" value="{{ old('min_km_price', $serviceCategory['min_km_price'] ?? '') }}"
+            <label for="base_price_distance">Base Price Distance</label>
+            <input type="text" class="form-control @error('base_price_distance') is-invalid @enderror"
+                id="base_price_distance" name="base_price_distance"
+                value="{{ old('base_price_distance', $serviceCategory['base_price_distance'] ?? '') }}"
                 placeholder="Enter Price Per KM" required pattern="[0-9]*">
-            @error('min_km_price')
+            @error('base_price_distance')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>
@@ -106,7 +107,7 @@
     </div>
 
     {{-- Price Per KM --}}
-    <div class="col-md-6">
+    <div class="col-md-6 {{ $serviceCategory['is_secureship_enabled'] ? 'd-none' : '' }}" id="price_per_km_div">
         <div class="form-group mb-3">
             <label for="price_per_km">Price Per KM</label>
             <input type="text" class="form-control @error('price_per_km') is-invalid @enderror" id="price_per_km"
@@ -156,14 +157,24 @@
 
 <script>
     function secureshipAPI(element) {
-        if (element.value == 1) {
-            document.getElementById("base_price").disabled = false;
-            document.getElementById("price_per_km").disabled = false;
-            document.getElementById("min_km_price").disabled = false;
+        if (element.value == 0) {
+            // Remove Prices fields DIV
+            $("#base_price_div").removeClass("d-none");
+            $("#price_per_km_div").removeClass("d-none");
+            $("#base_price_distance_div").removeClass("d-none");
+            // Add Required Attributes
+            $("#base_price").attr("required", "required");
+            $("#base_price_distance").attr("required", "required");
+            $("#price_per_km").attr("required", "required");
         } else {
-            document.getElementById("base_price").disabled = true;
-            document.getElementById("price_per_km").disabled = true;
-            document.getElementById("min_km_price").disabled = true;
+            // Add Prices fields DIV
+            $("#base_price_div").addClass("d-none");
+            $("#price_per_km_div").addClass("d-none");
+            $("#base_price_distance_div").addClass("d-none");
+            // Remove Required Attributes
+            $("#base_price").removeAttr("required");
+            $("#base_price_distance").removeAttr("required");
+            $("#price_per_km").removeAttr("required");
         }
     }
 </script>
