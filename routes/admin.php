@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\HelperController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\MessageController;
@@ -94,6 +95,14 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     Route::post('/chat/create', [ChatController::class, 'create'])->name('chat.create');
     Route::get('/chat/messages/{id}', [MessageController::class, 'index'])->name('chat.messages');
     Route::post('/chat/messages/store', [MessageController::class, 'store'])->name('chat.messages.store');
+
+    // FAQs Page Routes
+    Route::get('/faqs', [FaqController::class, 'index'])->name('faqs');
+    Route::get('/faq/create', [FaqController::class, 'create'])->name('faq.create');
+    Route::post('faq/store', [FaqController::class, 'store'])->name('faq.store');
+    Route::get('/faq/edit/{id}', [FaqController::class, 'edit'])->name('faq.edit');
+    Route::post('/faq/update', [FaqController::class, 'update'])->name('faq.update');
+    Route::post('/faq/update-status', [FaqController::class, 'updateStatus'])->name('faq.updateStatus');
 
     // Settings Page Routes
     Route::prefix('settings')->group(function () {

@@ -76,6 +76,9 @@
                     <li><a class="nav-link" href="{{ route('admin.systemSettings') }}">Priority </a> </li>
                 </ul>
             </li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.faqs') }}"><i class="fa fa-comment"></i>
+                    FAQs</a></li>
+            </li>
             <li class="nav-item"><a class="nav-link" href="{{ route('logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
                         class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>

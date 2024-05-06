@@ -15,11 +15,13 @@
         var per_km_price = 0;
         var service_charges = 0;
 
+        // Check Service Type
+        var selectedServiceType = "delivery";
+
         // Store $serviceCategories to JS array
         var selectedparceluuid = '';
         var serviceCategories = {!! json_encode($serviceCategories) !!};
         if (serviceCategories.length > 0) {
-
             selectedparceluuid = serviceCategories[0].uuid;
         }
 
@@ -115,17 +117,35 @@
             // Get data on selected uuid
             for (let i = 0; i < serviceCategories.length; i++) {
                 if (serviceCategories[i].uuid === selectedparceluuid) {
-                    console.log(serviceCategories[i].base_price);
-                    distance_price = serviceCategories[i].base_price * distance_in_km;
-                    service_price = serviceCategories[i].price_per_km;
-                    per_km_price = serviceCategories[i].base_price_distance;
-                    service_charges = 50;
+                    // console.log(serviceCategories[i].base_price);
+                    if (distance_in_km > parseFloat(serviceCategories[i].base_price_distance)) {
+                        distance_price = parseFloat(serviceCategories[i].base_price) + (distance_in_km - parseFloat(
+                            serviceCategories[i].base_price_distance)) * parseFloat(serviceCategories[i].price_per_km);
+                    } else {
+                        distance_price = parseFloat(serviceCategories[i].base_price);
+                    }
+
+                    service_price = 50;
+                    vehicle_price = 100;
                 }
             }
+
+            // Get value of priority option
+            var priorityValue = document.querySelector('select[name="priority"]').value;
+
             var serviceType = document.querySelector('select[name="serviceType"]').value;
-            document.getElementById('distance-price-value').innerHTML = distance_price;
-            document.getElementById('service-price-value').innerHTML = service_price;
-            document.getElementById('vehicle-price-value').innerHTML = per_km_price;
+            document.getElementById('distance-price-value').innerHTML = Math.round(distance_price * 100) / 100;
+            document.getElementById('service-price-value').innerHTML = Math.round(service_price * 100) / 100;
+            document.getElementById('vehicle-price-value').innerHTML = Math.round(vehicle_price * 100) / 100;
+            document.getElementById('priority-price-value').innerHTML = priorityValue;
+
+            // Ge total amount
+            var amountToPay = parseFloat(distance_price) +
+                parseFloat(service_price) +
+                parseFloat(priorityValue) +
+                parseFloat(vehicle_price);
+            document.getElementById('amount-to-pay-value').innerHTML = Math.round(amountToPay * 100) / 100;
+
             console.log('Function calling ' + selectedparceluuid);
         }
     </script>
@@ -156,17 +176,20 @@
                                             <p>$<span id="service-price-value">0</span></p>
                                         </div>
                                         <div class="item">
+                                            <h6>Priority Price</h6>
+                                            <p>$<span id="priority-price-value">0</span></p>
+                                        </div>
+                                        <div class="item">
                                             <h6>Vehicle Price</h6>
                                             <p>$<span id="vehicle-price-value">0</span></p>
                                         </div>
-                                        <div class="item">
+                                        <div class="item moving d-none">
                                             <h6>Floor Price</h6>
                                             <p>$<span id="floor-price-value">0</span></p>
                                         </div>
-                                        <div class="item">
-                                            <h6>Service Charges</h6>
-                                            <p>$<sapn id="service-charge-value">0</sapn>
-                                            </p>
+                                        <div class="item delivery d-none">
+                                            <h6>Weight Price</h6>
+                                            <p>$<span id="weight-price-value">0</span></p>
                                         </div>
                                         <div class="item">
                                             <h6>Platform Charges</h6>
@@ -390,6 +413,13 @@
                                             {{-- <option value="moving" selected>Moving</option> --}}
                                         @else
                                             @foreach ($serviceTypes as $serviceType)
+                                                {{-- Check if service type is selected --}}
+                                                @if ($serviceType->id == request()->get('serviceType'))
+                                                    <script>
+                                                        selectedServiceType = '{{ $serviceType->type }}';
+                                                    </script>
+                                                @endif
+                                                {{-- Select Option --}}
                                                 <option value="{{ $serviceType->id }}"
                                                     {{ isset($serviceType) && $serviceType->id == request()->get('serviceType') ? 'selected' : '' }}>
                                                     {{ $serviceType->name }}</option>
@@ -403,9 +433,9 @@
                                     <div class="mb-3">
                                         <select class="form-control h-100" name="priority" aria-label="Priority"
                                             onchange="updatePaymentAmount()" required>
-                                            <option value="express">Express</option>
-                                            <option value="same_day">Same Day</option>
-                                            <option value="standard">Standard</option>
+                                            <option value="0">Standard</option>
+                                            <option value="75">Same Day</option>
+                                            <option value="130">Express</option>
                                         </select>
                                     </div>
                                 </div>
@@ -427,7 +457,7 @@
                                                         </div>
                                                         <div class="text-center parcel-type w-100"
                                                             id="{{ $serviceCategory->uuid }}">
-                                                            <i class="fa fa-users fa-2x"></i>
+                                                            {{-- <i class="fa fa-users fa-2x"></i> --}}
                                                             <h5 class="mb-1">{{ $serviceCategory->name }}</h5>
                                                             <p class="fs-xxs">{{ $serviceCategory->description }}</p>
                                                         </div>
@@ -453,6 +483,10 @@
                                             value="<?php echo date('H:i'); ?>" onchange="updatePaymentAmount()" required>
                                     </div>
                                 </div>
+                            </div>
+
+                            {{-- Delivery Package Details --}}
+                            <div id="deliveryPackageDetails" class="row d-none">
                                 {{-- Package Height  --}}
                                 <div class="col-md-6">
                                     <label for="packageHeight">Package Height</label>
@@ -460,8 +494,9 @@
                                         <input type="text" class="form-control" placeholder="Height"
                                             name="package_height" aria-describedby="package_height"
                                             oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                                            onchange="updatePaymentAmount()" required>
-                                        <span class="input-group-text" id="package_height">INCH</span>
+                                            onchange="updatePaymentAmount()">
+                                        <span class="input-group-text text-uppercase"
+                                            id="package_height">{{ config('dimension') ?: 'INCH' }}</span>
                                     </div>
                                 </div>
                                 {{-- Package Width --}}
@@ -471,10 +506,24 @@
                                         <input type="text" class="form-control" placeholder="Width"
                                             name="package_width" aria-describedby="package_width"
                                             oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                                            onchange="updatePaymentAmount()" required>
-                                        <span class="input-group-text" id="package_width">INCH</span>
+                                            onchange="updatePaymentAmount()">
+                                        <span class="input-group-text text-uppercase"
+                                            id="package_width">{{ config('dimension') ?: 'INCH' }}</span>
                                     </div>
                                 </div>
+                                {{-- Package Length --}}
+                                <div class="col-md-6">
+                                    <label for="packageLength">Package Length</label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Length"
+                                            name="package_length" aria-describedby="package_length"
+                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                            onchange="updatePaymentAmount()">
+                                        <span class="input-group-text text-uppercase"
+                                            id="package_length">{{ config('dimension') ?: 'INCH' }}</span>
+                                    </div>
+                                </div>
+
                                 {{-- Package Weight  --}}
                                 <div class="col-md-6">
                                     <label for="packageWeight">Package Weight</label>
@@ -482,21 +531,118 @@
                                         <input type="text" class="form-control" placeholder="Weight"
                                             name="package_weight" aria-describedby="package_weight"
                                             oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                                            onchange="updatePaymentAmount()" required>
-                                        <span class="input-group-text" id="package_weight">KG</span>
+                                            onchange="updatePaymentAmount()">
+                                        <span class="input-group-text text-uppercase"
+                                            id="package_weight">{{ config('weight') ?: 'Kg' }}</span>
                                     </div>
                                 </div>
-                                {{-- Package Value --}}
+                                {{-- Check if package value decalared --}}
+                                @if (config('declare_package_value') == 1)
+                                    {{-- Package Value --}}
+                                    <div class="col-md-6">
+                                        <label for="packageValue">Package Value</label>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" placeholder="Value"
+                                                name="package_value" aria-describedby="package_value"
+                                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                                onchange="updatePaymentAmount()">
+                                            <span class="input-group-text text-uppercase" id="package_value">$</span>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                {{-- Check if insurance is enabled --}}
+                                @if (config('insurance') == 1)
+                                    {{-- Insurance --}}
+                                    <div class="col-md-6">
+                                        <label for="insurance">Insurance</label>
+                                        <div class="input-group mb-3">
+                                            <select class="form-control" name="insurance" aria-label="Insurance"
+                                                onchange="updatePaymentAmount()">
+                                                <option value="0">No</option>
+                                                <option value="1">Yes</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
+                            {{-- Moving Package Details --}}
+                            <div id="movingPackageDetails" class="row d-none">
+                                {{-- Floor Size --}}
                                 <div class="col-md-6">
-                                    <label for="packageValue">Package Value</label>
+                                    <label for="packageHeight">Floor Size</label>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" placeholder="Value"
-                                            name="package_value" aria-describedby="package_value"
+                                        <input type="text" class="form-control moving-field" placeholder="Floor Size"
+                                            name="floor_size" aria-describedby="floor_size"
                                             oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                                            onchange="updatePaymentAmount()" required>
-                                        <span class="input-group-text" id="package_value">$</span>
+                                            onchange="updatePaymentAmount()">
+                                        <span class="input-group-text text-uppercase" id="floor_size">SQ FT</span>
                                     </div>
                                 </div>
+                                {{-- Floor Plan --}}
+                                <div class="col-md-6">
+                                    <label for="floorPlan">Floor Plan</label>
+                                    <div class="input-group mb-3">
+                                        <select class="form-control moving-field" name="floor_plan"
+                                            aria-label="Floor Plan" onchange="updatePaymentAmount()">
+                                            <option value="ground">Ground Floor</option>
+                                            <option value="1st">1st Floor</option>
+                                            <option value="2nd">2nd Floor</option>
+                                            <option value="3rd">3rd Floor</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                {{-- Floor Assess --}}
+                                <div class="col-md-6">
+                                    <label for="floorAssess">Floor Assess</label>
+                                    <div class="input-group mb-3">
+                                        <select class="form-control moving-field" name="floor_assess"
+                                            aria-label="Floor Assess" onchange="updatePaymentAmount()">
+                                            <option value="elevator">Elevator</option>
+                                            <option value="stairs">Stairs</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                {{-- Job Details --}}
+                                <div class="col-md-12">
+                                    <label for="jobDetails">Job Details</label>
+                                    <div class="row form-group mx-3 mb-3">
+                                        <div class="col-md-4 form-check">
+                                            <input class="form-check-input" type="checkbox" name="job_details[]"
+                                                value="packing" id="packing">
+                                            <label class="form-check-label" for="packing">
+                                                Packing
+                                            </label>
+                                        </div>
+                                        <div class="col-md-4 form-check">
+                                            <input class="form-check-input" type="checkbox" name="job_details[]"
+                                                value="loading" id="loading">
+                                            <label class="form-check-label" for="loading">
+                                                Loading
+                                            </label>
+                                        </div>
+                                        <div class="col-md-4 form-check">
+                                            <input class="form-check-input" type="checkbox" name="job_details[]"
+                                                value="off_loading" id="off_loading">
+                                            <label class="form-check-label" for="off_loading">
+                                                Off Loading
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- Moving Details --}}
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label for="movingDetails">Moving Details</label>
+                                        <textarea class="form-control moving-field" name="moving_details" id="movingDetails" rows="3"
+                                            placeholder="Enter moving details"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Receiver Details --}}
+                            <div class="row">
                                 {{-- Receiver Name --}}
                                 <div class="col-md-6">
                                     <div class="mb-3">
@@ -583,10 +729,13 @@
             if (serviceTypes.length > 0) {
                 for (let i = 0; i < serviceTypes.length; i++) {
                     if (serviceTypes[i].id == serviceType) {
+                        selectedServiceType = serviceTypes[i].type;
                         console.log('Service Type: ' + serviceTypes[i].type);
                     }
                 }
             }
+            // Update form data as per the service type
+            updateServiceFormData();
             // console.log(serviceType);
             var url =
                 '{{ route('fetch.service.categories') }}' +
@@ -619,7 +768,6 @@
                     </div>
                     <div class="text-center parcel-type w-100"
                         id="${category.uuid}">
-                        <i class="fa fa-users fa-2x"></i>
                         <h5 class="mb-1">${category.name}</h5>
                         <p class="fs-xxs">${category.description}</p>
                     </div>
@@ -686,13 +834,46 @@
                 });
         }
 
+        // Update the form data as per the service type
+        function updateServiceFormData() {
+            console.log(selectedServiceType);
+            if (selectedServiceType == 'moving') {
+                // Hide and Show Div
+                $("#deliveryPackageDetails").addClass("d-none");
+                $("#movingPackageDetails").removeClass("d-none");
+
+                // Add and Remove required attribute
+                $("#movingPackageDetails input").prop("required", true);
+                $("#deliveryPackageDetails input").prop("required", false);
+
+                // Hide and Show Prices
+                $(".calculated-amount .moving").removeClass("d-none");
+                $(".calculated-amount .delivery").addClass("d-none");
+            } else {
+                // Hide and Show Div
+                $("#deliveryPackageDetails").removeClass("d-none");
+                $("#movingPackageDetails").addClass("d-none");
+
+                // Add and Remove required attribute
+                $("#movingPackageDetails input").prop("required", false);
+                $("#deliveryPackageDetails input").prop("required", true);
+
+                // Hide and Show Prices
+                $(".calculated-amount .moving").addClass("d-none");
+                $(".calculated-amount .delivery").removeClass("d-none");
+            }
+        }
 
 
-
+        // Call window.onload function
+        window.onload = function() {
+            // Call the function
+            updateServiceFormData();
+            toggleBackground(selectedparceluuid);
+        }
         // Update the payment card
         // updatePaymentAmount();
         // Select the selected parcel uuid
-        toggleBackground(selectedparceluuid);
     </script>
 
 @endsection

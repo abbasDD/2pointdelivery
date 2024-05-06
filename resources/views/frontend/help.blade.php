@@ -110,55 +110,43 @@
             <div class="row mt-4">
                 <div class="col-lg-12">
                     <div class="accordion" id="accordionFAQs">
-                        <div class="accordion-item mb-3">
-                            <h2 class="accordion-header" id="heading1">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
-                                    What hours does 2 point operate?
-                                </button>
-                            </h2>
-                            <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="heading1"
-                                data-bs-parent="#accordionFAQs">
-                                <div class="accordion-body">
-                                    2 Point operates on a 24/7 basis, catering to your delivery needs at any hour of the day
-                                    or night. Whether you're craving a midnight snack, need groceries in the early morning,
-                                    or require urgent document delivery during off-peak hours, we've got you covered. Our
-                                    commitment to round-the-clock service ensures that you can rely on us whenever you need
-                                    fast, efficient, and convenient delivery solutions. With 2 Point, convenience knows no
-                                    time constraints.
+                        {{-- If $faqs are not empty and loop thorugh --}}
+                        @forelse($faqs as $faq)
+                            <div class="accordion-item mb-3">
+                                <h2 class="accordion-header" id="faq_{{ $faq->id }}">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapse{{ $faq->id }}" aria-expanded="true"
+                                        aria-controls="collapse{{ $faq->id }}">
+                                        {{ $faq->question }}
+                                    </button>
+                                </h2>
+                                <div id="collapse{{ $faq->id }}" class="accordion-collapse collapse"
+                                    aria-labelledby="faq_{{ $faq->id }}" data-bs-parent="#accordionFAQs">
+                                    <div class="accordion-body">
+                                        {{ $faq->answer }}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="accordion-item mb-3">
-                            <h2 class="accordion-header" id="heading2">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapse2" aria-expanded="true" aria-controls="collapse2">
-                                    Will you bring my items inside?
-                                </button>
-                            </h2>
-                            <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="heading2"
-                                data-bs-parent="#accordionFAQs">
-                                <div class="accordion-body">
-                                    Our delivery service includes up to 2 items in the delivery price, with additional items
-                                    costing £5 per item.
+                        @empty
+                            {{-- <p>No FAQs Found</p> --}}
+                            <div class="accordion-item mb-3">
+                                <h2 class="accordion-header" id="heading3">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapse3" aria-expanded="true" aria-controls="collapse3">
+                                        How many items are include in the price of delivery?
+                                    </button>
+                                </h2>
+                                <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="heading3"
+                                    data-bs-parent="#accordionFAQs">
+                                    <div class="accordion-body">
+                                        2 items are included in the price of delivery with our 24/7 delivery service, with
+                                        additional items costing £5 per item.
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="accordion-item mb-3">
-                            <h2 class="accordion-header" id="heading3">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapse3" aria-expanded="true" aria-controls="collapse3">
-                                    How many items are include in the price of delivery?
-                                </button>
-                            </h2>
-                            <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="heading3"
-                                data-bs-parent="#accordionFAQs">
-                                <div class="accordion-body">
-                                    2 items are included in the price of delivery with our 24/7 delivery service, with
-                                    additional items costing £5 per item.
-                                </div>
-                            </div>
-                        </div>
+                        @endforelse
+
+
                     </div>
                 </div>
             </div>

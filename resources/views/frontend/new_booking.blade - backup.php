@@ -303,7 +303,7 @@
                             <label for="packageHeight">Package Height</label>
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" placeholder="Height" name="package_height" aria-describedby="package_height">
-                                <span class="input-group-text" id="package_height">INCH</span>
+                                <span class="input-group-text" id="package_height">{{ config('dimension') ?: 'INCH' }}</span>
                             </div>
                         </div>
                         {{-- Package Width --}}
@@ -311,7 +311,7 @@
                             <label for="packageWidth">Package Width</label>
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" placeholder="Width" name="package_width" aria-describedby="package_width">
-                                <span class="input-group-text" id="package_width">INCH</span>
+                                <span class="input-group-text" id="package_width">{{ config('dimension') ?: 'INCH' }}</span>
                             </div>
                         </div>
                     </div>
@@ -322,7 +322,7 @@
                             <label for="packageWeight">Package Weight</label>
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" placeholder="Weight" name="package_weight" aria-describedby="package_weight">
-                                <span class="input-group-text" id="package_weight">KG</span>
+                                <span class="input-group-text" id="package_weight">{{ config('weight') ?: 'Kgs' }}</span>
                             </div>
                         </div>
                         {{-- Package Value --}}

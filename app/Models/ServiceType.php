@@ -34,6 +34,6 @@ class ServiceType extends Model
      */
     public function serviceCategories()
     {
-        return $this->hasMany('App\Models\ServiceCategory', 'service_type_id');
+        return $this->hasMany(ServiceCategory::class);
     }
 }
