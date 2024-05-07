@@ -18,8 +18,12 @@
                             width="35" height="35" alt="User">
                     </p>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
-                        <li><a class="dropdown-item" href="#">Messages</a></li>
+                        @if (auth()->user()->user_type == 'admin')
+                            <li><a class="dropdown-item" href="{{ route('admin.index') }}">Admin</a></li>
+                        @else
+                            <li><a class="dropdown-item" href="{{ route('client.index') }}">Dashboard</a></li>
+                        @endif
+                        <li><a class="dropdown-item" href="{{ route('chat') }}">Chat</a></li>
                         <li><a class="dropdown-item" href="{{ route('logout') }}"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
                         </li>
@@ -27,7 +31,8 @@
                 </div>
             @else
                 <!-- If user is not logged in, show sign in button -->
-                <a href="{{ route('client.login') }}" class="nav-link"><i class="fa-regular fa-user mx-2"></i>Sign In</a>
+                <a href="{{ route('client.login') }}" class="nav-link"><i class="fa-regular fa-user mx-2"></i>Sign
+                    In</a>
             @endauth
         </div>
     </div>

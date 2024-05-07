@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Booking;
 use App\Models\Faq;
+use App\Models\PrioritySetting;
 use App\Models\ServiceCategory;
 use App\Models\ServiceType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FrontendController extends Controller
 {
@@ -19,7 +22,7 @@ class FrontendController extends Controller
                 $query->where('is_active', 1);
             })
             ->get();
-
+        // dd($serviceTypes);
         return view('frontend.index', compact('serviceTypes'));
         // return view('frontend.index');
     }
@@ -74,8 +77,29 @@ class FrontendController extends Controller
         }
 
         // dd($serviceCategories);
+
+        // Get priority settings
+        $prioritySettings = PrioritySetting::where('is_active', 1)->get();
+
+        if ($prioritySettings->count() == 0) {
+            // Create a dummy object with option id, name, description, and price
+            $prioritySetting = new PrioritySetting();
+            $prioritySetting->id = 1;
+            $prioritySetting->name = 'Standard';
+            $prioritySetting->description = 'Standard description';
+            $prioritySetting->price = 10;
+            $prioritySetting->is_active = 1;
+        }
+
+        $draftBooking = null;
+
+        if (Auth::check()) {
+            // Check if draft biooking exist
+            $draftBooking = Booking::where('user_id', auth()->user()->id)->where('status', 'draft')->first();
+        }
+
         // return view 
-        return view('frontend.new_booking', compact('serviceTypes', 'serviceCategories'));
+        return view('frontend.new_booking', compact('serviceTypes', 'serviceCategories', 'prioritySettings', 'draftBooking'));
     }
 
     public function fetch_services_categories(Request $request)

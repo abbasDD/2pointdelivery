@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\HelperController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\MessageController;
+use App\Http\Controllers\Admin\PrioritySettingController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\ServiceTypeController;
 use App\Http\Controllers\Admin\SystemSettingController;
@@ -114,7 +115,17 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
         Route::post('/tax/store', [TaxSettingController::class, 'store'])->name('taxSetting.store');
         Route::get('/tax/edit/{id}', [TaxSettingController::class, 'edit'])->name('taxSetting.edit');
         Route::post('/tax/update', [TaxSettingController::class, 'update'])->name('taxSetting.update');
-        Route::get('/tax/update-status/{id}', [TaxSettingController::class, 'updateStatus'])->name('taxSetting.updateStatus');
+        Route::post('/tax/update-status', [TaxSettingController::class, 'updateStatus'])->name('taxSetting.updateStatus');
+
+        // Priority
+        Route::get('/priority', [PrioritySettingController::class, 'index'])->name('prioritySettings');
+        Route::get('/priority/create', [PrioritySettingController::class, 'create'])->name('prioritySetting.create');
+        Route::post('/priority/store', [PrioritySettingController::class, 'store'])->name('prioritySetting.store');
+        Route::get('/priority/edit/{id}', [PrioritySettingController::class, 'edit'])->name('prioritySetting.edit');
+        Route::post('/priority/update', [PrioritySettingController::class, 'update'])->name('prioritySetting.update');
+        Route::post('/priority/update-status', [PrioritySettingController::class, 'updateStatus'])->name('prioritySetting.updateStatus');
+
+        // End of Settings Prefix Route
     });
 
 

@@ -1,8 +1,10 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Booking')
+@section('title', 'New Booking')
 
 @section('content')
+
+
     {{-- Define some javascript variables to be used in JS --}}
     <script>
         // Base URL
@@ -16,24 +18,29 @@
         var service_charges = 0;
 
         // Check Service Type
-        var selectedServiceType = "delivery";
+        var selectedServiceType = 'delivery';
 
         // Store $serviceCategories to JS array
         var selectedparceluuid = '';
+        var selectedParcelTypeSecureshipEnable = false;
         var serviceCategories = {!! json_encode($serviceCategories) !!};
         if (serviceCategories.length > 0) {
             selectedparceluuid = serviceCategories[0].uuid;
+            selectedParcelTypeSecureshipEnable = serviceCategories[0].is_secureship_enabled;
         }
-
+        // Store $prioritySettings to JS array
+        var prioritySettings = {!! json_encode($prioritySettings) !!};
+        var selectedPriorityID = prioritySettings[0].id;
+        console.log('Selected Priority ID: ' + selectedPriorityID);
 
         // Map Variables
         var map;
         var directionsService;
         var directionsRenderer;
-        var defaultPickupLat = {{ request()->get('pickup_lat', 33.33) }};
-        var defaultPickupLng = {{ request()->get('pickup_lng', 74.44) }};
-        var defaultDeliveryLat = {{ request()->get('delivery_lat', 33.33) }};
-        var defaultDeliveryLng = {{ request()->get('delivery_lng', 74.44) }};
+        var defaultPickupLat = {{ request()->get('pickup_latitude', 33.33) }};
+        var defaultPickupLng = {{ request()->get('pickup_longitude', 74.44) }};
+        var defaultDeliveryLat = {{ request()->get('dropoff_latitude', 33.33) }};
+        var defaultDeliveryLng = {{ request()->get('dropoff_longitude', 74.44) }};
 
         // Distance
         var distance = 0;
@@ -104,7 +111,6 @@
         };
 
         // Update the Payment Amount Card
-
         function updatePaymentAmount() {
             console.log('Distance: ' + distance_in_km);
 
@@ -131,7 +137,16 @@
             }
 
             // Get value of priority option
-            var priorityValue = document.querySelector('select[name="priority"]').value;
+            var priorityID = document.querySelector('select[name="priority"]').value;
+            // Get price of priority from prioritySettings
+            for (let i = 0; i < prioritySettings.length; i++) {
+                if (prioritySettings[i].id == priorityID) {
+                    priorityValue = prioritySettings[i].price;
+                }
+            }
+
+            // Calculate Weight Price Value
+            calculateWeightPrice();
 
             var serviceType = document.querySelector('select[name="serviceType"]').value;
             document.getElementById('distance-price-value').innerHTML = Math.round(distance_price * 100) / 100;
@@ -146,10 +161,54 @@
                 parseFloat(vehicle_price);
             document.getElementById('amount-to-pay-value').innerHTML = Math.round(amountToPay * 100) / 100;
 
-            console.log('Function calling ' + selectedparceluuid);
+            // console.log('Function calling ' + selectedparceluuid);
+        }
+
+        // Calculate Weight Price
+        function calculateWeightPrice() {
+            var weight = document.querySelector('input[name="package_weight"]').value;
+            if (weight == '') {
+                weight = 1;
+            }
+            var length = document.querySelector('input[name="package_length"]').value;
+            if (length == '') {
+                length = 1;
+            }
+            var width = document.querySelector('input[name="package_width"]').value;
+            if (width == '') {
+                width = 1;
+            }
+            var height = document.querySelector('input[name="package_height"]').value;
+            if (height == '') {
+                height = 1;
+            }
+            var cubicVolume = parseFloat(length) * parseFloat(width) * parseFloat(height);
+            var cubicVolumeWeight = 0;
+            var dimension = '{{ config('dimension') }}';
+
+            if (dimension == 'INCH') {
+                cubicVolumeWeight = cubicVolume / 1728;
+            } else {
+                cubicVolumeWeight = cubicVolume / 35.3147;
+            }
+
+            if (weight < cubicVolumeWeight) {
+                document.getElementById('weight-price-value').innerHTML = Math.round((cubicVolumeWeight) * 100) /
+                    100;
+            } else {
+                document.getElementById('weight-price-value').innerHTML = parseFloat(weight);
+            }
         }
     </script>
     <div class="container py-5">
+        {{-- Show Link to Draft Booking --}}
+        @if (isset($draftBooking))
+            <div class="bg-primary p-2 text-center text-white mb-3">
+                <h5 class="m-0">You have a draft booking. <a class="text-white"
+                        href="{{ route('client.booking.payment', $draftBooking->id) }}">Click
+                        here</a> to pay.</h5>
+            </div>
+        @endif
         <div class="row d-flex justify-content-center align-items-center">
             <div class="col-md-12">
                 <form class="booking-form" id="newBookingForm" onsubmit="return getEstimatedFees(event)">
@@ -160,6 +219,7 @@
                     {{-- Booking Form --}}
                     <div class="row">
                         <div class="col-md-4">
+                            @csrf
                             {{-- Calculated Amount --}}
                             <div class="card mb-5">
                                 <div class="card-header">
@@ -240,24 +300,24 @@
 
                                         pickupAutocomplete.addListener('place_changed', function() {
                                             var place = pickupAutocomplete.getPlace();
-                                            document.getElementById('pickup_lat').value = place.geometry.location.lat();
-                                            document.getElementById('pickup_lng').value = place.geometry.location.lng();
+                                            document.getElementById('pickup_latitude').value = place.geometry.location.lat();
+                                            document.getElementById('pickup_longitude').value = place.geometry.location.lng();
                                             updateRoute();
                                         });
 
                                         deliveryAutocomplete.addListener('place_changed', function() {
                                             var place = deliveryAutocomplete.getPlace();
-                                            document.getElementById('delivery_lat').value = place.geometry.location.lat();
-                                            document.getElementById('delivery_lng').value = place.geometry.location.lng();
+                                            document.getElementById('dropoff_latitude').value = place.geometry.location.lat();
+                                            document.getElementById('dropoff_longitude').value = place.geometry.location.lng();
                                             updateRoute();
                                         });
                                     }
 
                                     function updateRoute() {
-                                        var pickupLat = parseFloat(document.getElementById('pickup_lat').value || defaultPickupLat);
-                                        var pickupLng = parseFloat(document.getElementById('pickup_lng').value || defaultPickupLng);
-                                        var deliveryLat = parseFloat(document.getElementById('delivery_lat').value || defaultDeliveryLat);
-                                        var deliveryLng = parseFloat(document.getElementById('delivery_lng').value || defaultDeliveryLng);
+                                        var pickupLat = parseFloat(document.getElementById('pickup_latitude').value || defaultPickupLat);
+                                        var pickupLng = parseFloat(document.getElementById('pickup_longitude').value || defaultPickupLng);
+                                        var deliveryLat = parseFloat(document.getElementById('dropoff_latitude').value || defaultDeliveryLat);
+                                        var deliveryLng = parseFloat(document.getElementById('dropoff_longitude').value || defaultDeliveryLng);
 
                                         var pickup = new google.maps.LatLng(pickupLat, pickupLng);
                                         var delivery = new google.maps.LatLng(deliveryLat, deliveryLng);
@@ -335,7 +395,7 @@
                                             if (status === google.maps.GeocoderStatus.OK) {
                                                 if (results[0]) {
                                                     // callback(results[0]);
-                                                    console.log(results[0].formatted_address);
+                                                    // console.log(results[0].formatted_address);
                                                     result = results[0];
                                                     shippingData.toAddress.addr1 = result.formatted_address;
                                                     shippingData.toAddress.countryCode = getAddressComponent(result, 'country');
@@ -379,13 +439,13 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="pickupLocation">Pickup Location</label>
-                                        <input id="pickupLocation" class="form-control" type="text"
-                                            name="pickup_location" placeholder="Enter pickup location"
-                                            value="{{ request()->get('pickup_location') }}" required>
-                                        <input type="hidden" id="pickup_lat" name="pickup_lat"
-                                            value="{{ request()->get('pickup_lat') }}" required>
-                                        <input type="hidden" id="pickup_lng" name="pickup_lng"
-                                            value="{{ request()->get('pickup_lng') }}" required>
+                                        <input id="pickupLocation" class="form-control" type="text" name="pickup_address"
+                                            placeholder="Enter pickup location"
+                                            value="{{ request()->get('pickup_address') }}" required>
+                                        <input type="hidden" id="pickup_latitude" name="pickup_latitude"
+                                            value="{{ request()->get('pickup_latitude') }}" required>
+                                        <input type="hidden" id="pickup_longitude" name="pickup_longitude"
+                                            value="{{ request()->get('pickup_longitude') }}" required>
                                     </div>
                                 </div>
                                 {{-- Delivery Location --}}
@@ -393,12 +453,12 @@
                                     <div class="mb-3">
                                         <label for="deliveryLocation">Delivery Location</label>
                                         <input id="deliveryLocation" class="form-control" type="text"
-                                            name="delivery_location" placeholder="Enter delivery location"
-                                            value="{{ request()->get('delivery_location') }}" required>
-                                        <input type="hidden" id="delivery_lat" name="delivery_lat"
-                                            value="{{ request()->get('delivery_lat') }}" required>
-                                        <input type="hidden" id="delivery_lng" name="delivery_lng"
-                                            value="{{ request()->get('delivery_lng') }}" required>
+                                            name="dropoff_address" placeholder="Enter delivery location"
+                                            value="{{ request()->get('dropoff_address') }}" required>
+                                        <input type="hidden" id="dropoff_latitude" name="dropoff_latitude"
+                                            value="{{ request()->get('dropoff_latitude') }}" required>
+                                        <input type="hidden" id="dropoff_longitude" name="dropoff_longitude"
+                                            value="{{ request()->get('dropoff_longitude') }}" required>
                                     </div>
                                 </div>
                                 {{-- Service Type --}}
@@ -433,9 +493,18 @@
                                     <div class="mb-3">
                                         <select class="form-control h-100" name="priority" aria-label="Priority"
                                             onchange="updatePaymentAmount()" required>
-                                            <option value="0">Standard</option>
-                                            <option value="75">Same Day</option>
-                                            <option value="130">Express</option>
+                                            {{-- Loop through prioritySettings --}}
+                                            @foreach ($prioritySettings as $priority)
+                                                {{-- Check if priority is selected --}}
+                                                @if ($priority->id == request()->get('priority'))
+                                                    <script>
+                                                        selectedPriorityID = '{{ $priority->id }}';
+                                                    </script>
+                                                @endif
+                                                <option value="{{ $priority->id }}"
+                                                    {{ isset($priority) && $priority->price == request()->get('priority') ? 'selected' : '' }}>
+                                                    {{ $priority->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -487,16 +556,16 @@
 
                             {{-- Delivery Package Details --}}
                             <div id="deliveryPackageDetails" class="row d-none">
-                                {{-- Package Height  --}}
+                                {{-- Package Length --}}
                                 <div class="col-md-6">
-                                    <label for="packageHeight">Package Height</label>
+                                    <label for="packageLength">Package Length</label>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" placeholder="Height"
-                                            name="package_height" aria-describedby="package_height"
+                                        <input type="text" class="form-control" placeholder="Length"
+                                            name="package_length" aria-describedby="package_length"
                                             oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                             onchange="updatePaymentAmount()">
                                         <span class="input-group-text text-uppercase"
-                                            id="package_height">{{ config('dimension') ?: 'INCH' }}</span>
+                                            id="package_length">{{ config('dimension') ?: 'INCH' }}</span>
                                     </div>
                                 </div>
                                 {{-- Package Width --}}
@@ -511,18 +580,19 @@
                                             id="package_width">{{ config('dimension') ?: 'INCH' }}</span>
                                     </div>
                                 </div>
-                                {{-- Package Length --}}
+                                {{-- Package Height  --}}
                                 <div class="col-md-6">
-                                    <label for="packageLength">Package Length</label>
+                                    <label for="packageHeight">Package Height</label>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" placeholder="Length"
-                                            name="package_length" aria-describedby="package_length"
+                                        <input type="text" class="form-control" placeholder="Height"
+                                            name="package_height" aria-describedby="package_height"
                                             oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                             onchange="updatePaymentAmount()">
                                         <span class="input-group-text text-uppercase"
-                                            id="package_length">{{ config('dimension') ?: 'INCH' }}</span>
+                                            id="package_height">{{ config('dimension') ?: 'INCH' }}</span>
                                     </div>
                                 </div>
+
 
                                 {{-- Package Weight  --}}
                                 <div class="col-md-6">
@@ -688,8 +758,8 @@
                             </div>
                         @else
                             <div class="col-md-12 text-right">
-                                <button type="button" class="btn btn-primary"
-                                    onclick="window.location='{{ route('client.login') }}'">Login to Book</button>
+                                <button type="button" class="btn btn-primary" onclick="redirectToLogin()">Login to
+                                    Book</button>
                             </div>
                         @endauth
                     </div>
@@ -711,7 +781,7 @@
                     div.classList.remove('active-parcel');
                 }
             });
-            console.log('Here id is:' + id);
+            // console.log('Here id is:' + id);
             selectedparceluuid = id;
             // Call the function to update the payment amount
             updatePaymentAmount();
@@ -725,12 +795,12 @@
             var serviceType = document.querySelector('select[name="serviceType"]').value;
             // Get type of ServiceType from serviceTypes
             var serviceTypes = {!! json_encode($serviceTypes) !!};
-            console.log(serviceTypes);
+            // console.log(serviceTypes);
             if (serviceTypes.length > 0) {
                 for (let i = 0; i < serviceTypes.length; i++) {
                     if (serviceTypes[i].id == serviceType) {
                         selectedServiceType = serviceTypes[i].type;
-                        console.log('Service Type: ' + serviceTypes[i].type);
+                        // console.log('Service Type: ' + serviceTypes[i].type);
                     }
                 }
             }
@@ -779,7 +849,7 @@
                     // Get first item uuid and set it as default
                     if (data.length > 0) {
                         selectedparceluuid = data[0].uuid;
-                        console.log('Selected Parcel UUID: ' + selectedparceluuid);
+                        console.log('Selected Parcel UUID: ' + serviceCategories);
                         toggleBackground(selectedparceluuid);
                     }
                 })
@@ -796,47 +866,126 @@
         // Function to call the API
         function getEstimatedFees() {
 
-            event.preventDefault(); // Prevent the default form submission behavior
+            // Check if selected service category is empty
+            if (!selectedServiceType) {
+                alert('Please select a service type');
+                return;
+            }
+            // Check if selected parcel type is empty
+            if (!selectedparceluuid) {
+                alert('Please select a parcel type');
+                return;
+            }
+            // Find the selected parcel type from serviceCategories
+            var selectedParcelTypeSecureshipEnable = false;
+            for (let i = 0; i < serviceCategories.length; i++) {
+                if (serviceCategories[i].uuid == selectedparceluuid) {
+                    selectedParcelTypeSecureshipEnable = serviceCategories[i].is_secureship_enabled;
+                }
+            }
 
-            var apiUrl = 'https://secureship.ca/ship/api/v1/carriers/rates';
-            // var apiUrl =
-            //     'https://secureship.ca/ship/connect/query-string/get-estimate?FromCC=CA&FromPC=k1k1k1&FromCity=Ottawa&ToCC=US&ToPC=90210&ToCity=Beverly%20Hills&PT1=MyPackage&Weight1=5&PT2=MyPackage&Weight2=6&L2=4&W2=6&H2=8&Debug=true';
-            // console.log('Function Called');
+            console.log(selectedParcelTypeSecureshipEnable);
 
-            // Make an AJAX POST request to the API
-            fetch(apiUrl, {
-                    // method: 'GET',
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-api-key': apiKey
-                    },
-                    body: JSON.stringify(shippingData)
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
+            // Submit Form
+            event.preventDefault();
+
+            // Get all fields data from newBookingForm
+            var newBookingForm = document.getElementById('newBookingForm');
+            var formData = new FormData(newBookingForm);
+
+            // Add additional fields
+            formData.append('service_type_id', parseInt($("select[name='serviceType']").val()));
+            formData.append('priority_setting_id', parseInt($("select[name='priority']").val()));
+            formData.append('service_category_id', selectedparceluuid);
+            formData.append('total_price', $("#amount-to-pay-value").text());
+            formData.append('booking_type', selectedServiceType);
+
+            // Remove some data
+            // formData.delete('serviceType');
+            // formData.delete('priority');
+
+            // Stringify the form data
+            // formData = JSON.stringify(Object.fromEntries(formData));
+
+            console.log(formData);
+
+            // Append csrf token
+            // formData.append('_token', '{{ csrf_token() }}');
+
+            // console.log(formData);
+
+            let base_url = '{{ url('/') }}';
+
+            // POST AJAX Call to /client/booking/store
+
+            $.ajax({
+                url: base_url + '/client/booking/store',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    console.log(response);
+                    if (response.success == true) {
+                        window.location.href = base_url + '/client/booking/payment/' + response.data.id;
                     }
-                    return response.json();
-                })
-                .then(json => {
-                    console.log('API response:', json);
-                    if (json.length > 0) {
-                        alert('Estimated Fees: ');
-                    } else {
-                        alert('No rates found');
-                    }
-                    // Handle the API response as needed
-                })
-                .catch(error => {
-                    console.error('There was a problem with the API request:', error.message);
-                    // Handle errors
-                });
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+
+
+
+            return false;
+
+            // Get all the form data
+            // var shippingData = getShippingData();
+
+            // event.preventDefault(); // Prevent the default form submission behavior
+
+            // var apiUrl = 'https://secureship.ca/ship/api/v1/carriers/rates';
+            // // var apiUrl =
+            // //     'https://secureship.ca/ship/connect/query-string/get-estimate?FromCC=CA&FromPC=k1k1k1&FromCity=Ottawa&ToCC=US&ToPC=90210&ToCity=Beverly%20Hills&PT1=MyPackage&Weight1=5&PT2=MyPackage&Weight2=6&L2=4&W2=6&H2=8&Debug=true';
+            // // console.log('Function Called');
+
+            // // Make an AJAX POST request to the API
+            // fetch(apiUrl, {
+            //         // method: 'GET',
+            //         method: 'POST',
+            //         headers: {
+            //             'Content-Type': 'application/json',
+            //             'x-api-key': apiKey
+            //         },
+            //         body: JSON.stringify(shippingData)
+            //     })
+            //     .then(response => {
+            //         if (!response.ok) {
+            //             throw new Error('Network response was not ok');
+            //         }
+            //         return response.json();
+            //     })
+            //     .then(json => {
+            //         // console.log('API response:', json);
+            //         if (json.length > 0) {
+            //             alert('Estimated Fees: ');
+            //         } else {
+            //             alert('No rates found');
+            //         }
+            //         // Handle the API response as needed
+            //     })
+            //     .catch(error => {
+            //         console.error('There was a problem with the API request:', error.message);
+            //         // Handle errors
+            //     });
         }
 
         // Update the form data as per the service type
         function updateServiceFormData() {
-            console.log(selectedServiceType);
+            // console.log(selectedServiceType);
             if (selectedServiceType == 'moving') {
                 // Hide and Show Div
                 $("#deliveryPackageDetails").addClass("d-none");
@@ -874,6 +1023,20 @@
         // Update the payment card
         // updatePaymentAmount();
         // Select the selected parcel uuid
+
+        // Redirect to login page
+        function redirectToLogin() {
+            // Store form data in local storage
+            // storeFormDataLocalStorage();
+            window.location.href = "{{ route('client.login') }}";
+        }
+
+        // Function to store form data in local storage
+        function storeFormDataLocalStorage() {
+            console.log('Function Called storeFormDataLocalStorage');
+            // localStorage.setItem('selectedServiceType', selectedServiceType);
+            // console.log('Selected Service Type in Local Storage: ' + localStorage.getItem('selectedServiceType'));
+        }
     </script>
 
 @endsection

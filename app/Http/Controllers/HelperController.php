@@ -6,6 +6,7 @@ use App\Models\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreHelperRequest;
 use App\Http\Requests\UpdateHelperRequest;
+use App\Models\Booking;
 
 class HelperController extends Controller
 {
@@ -46,7 +47,32 @@ class HelperController extends Controller
      */
     public function index()
     {
-        return view('helper.index');
+
+        $helper_id = 0;
+        // Get helper_id from Helper
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        // No Helper found for this user_id
+        if ($helper) {
+            $helper_id = $helper->id;
+        }
+
+        // Statistics
+        $satistics = [
+            'total_bookings' => Booking::where('user_id', $helper_id)->count(),
+            'pending_bookings' => Booking::where('user_id', $helper_id)->where('status', 'pending')->count(),
+            'cancelled_bookings' => Booking::where('user_id', $helper_id)->where('status', 'cancelled')->count(),
+            'unpaid_bookings' => Booking::where('user_id', $helper_id)->where('payment_status', 'unpaid')->count(),
+        ];
+
+        $bookings = Booking::where('status', 'pending')
+            ->with('client')
+            ->with('prioritySetting')
+            ->with('serviceType')
+            ->with('serviceCategory')
+            ->orderBy('bookings.created_at', 'desc')
+            ->take(10)->get();
+
+        return view('helper.index', compact('bookings', 'satistics'));
     }
 
 

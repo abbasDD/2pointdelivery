@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
+use App\Models\Booking;
 use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
@@ -52,7 +53,22 @@ class ClientController extends Controller
      */
     public function index()
     {
-        return view('client.index');
+        // Statistics
+        $satistics = [
+            'total_bookings' => Booking::where('user_id', auth()->user()->id)->count(),
+            'pending_bookings' => Booking::where('user_id', auth()->user()->id)->where('status', 'pending')->count(),
+            'cancelled_bookings' => Booking::where('user_id', auth()->user()->id)->where('status', 'cancelled')->count(),
+            'unpaid_bookings' => Booking::where('user_id', auth()->user()->id)->where('payment_status', 'unpaid')->count(),
+        ];
+
+        $bookings = Booking::where('user_id', auth()->user()->id)
+            ->with('client')
+            ->with('prioritySetting')
+            ->with('serviceType')
+            ->with('serviceCategory')
+            ->orderBy('bookings.created_at', 'desc')
+            ->take(10)->get();
+        return view('client.index', compact('bookings', 'satistics'));
     }
 
     public function kyc_details()

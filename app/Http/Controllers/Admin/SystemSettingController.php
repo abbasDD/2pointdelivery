@@ -51,7 +51,7 @@ class SystemSettingController extends Controller
             'dimension' => 'required|string|max:255',
             'weight' => 'required|string|max:255',
             'declare_package_value' => 'required|string|max:255',
-            'enable_insurance' => 'required|string|max:255',
+            'insurance' => 'required|string|max:255',
         ]);
 
         // Store values in updated data array
@@ -88,7 +88,7 @@ class SystemSettingController extends Controller
             $file->move($destinationPath, $updatedFilename);
         }
 
-
+        // dd($systemSetting);
         // Update the system settings
         foreach ($systemSetting as $key => $value) {
             $systemSetting = SystemSetting::where('key', $key)->first();

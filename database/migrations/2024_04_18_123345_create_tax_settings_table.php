@@ -13,12 +13,18 @@ return new class extends Migration
     {
         Schema::create('tax_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('country');
-            $table->string('state');
-            $table->enum('tax_type', ['gst', 'pst', 'hst']);
-            $table->string('tax_rate');
+            $table->unsignedBigInteger('country_id');
+            $table->unsignedBigInteger('state_id');
+            $table->unsignedBigInteger('city_id');
+            $table->string('gst_rate');
+            $table->string('pst_rate');
+            $table->string('hst_rate');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
+
+            // $table->foreign('country_id')->references('id')->on('countries');
+            // $table->foreign('state_id')->references('id')->on('states');
+            // $table->foreign('city_id')->references('id')->on('cities');
         });
     }
 

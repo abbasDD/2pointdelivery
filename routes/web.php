@@ -1,6 +1,11 @@
 <?php
 
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\CityController;
+use App\Http\Controllers\CountryController;
 use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\StateController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -9,10 +14,7 @@ use Illuminate\Support\Facades\Route;
 //Front End Routes
 
 //Redirect to Home page as login is valid for user
-Route::get('/login', function () {
-    return view('frontend.index');
-    // redirect('/');
-})->name('login');
+Route::get('/login', [FrontendController::class, 'index'])->name('login');
 
 // Home Page
 Route::get('/', [FrontendController::class, 'index'])->name('index');
@@ -31,6 +33,8 @@ Route::get('/join-helper', [FrontendController::class, 'join_helper'])->name('jo
 Route::get('/new-booking', [FrontendController::class, 'new_booking'])->name('new_booking');
 Route::get('/fetch/service-categories', [FrontendController::class, 'fetch_services_categories'])->name('fetch.service.categories');
 
+// Route Chat Page
+Route::get('/chat', [ChatController::class, 'redirectChat'])->name('chat');
 
 Route::get('/booking-detail', function () {
     return view('frontend.booking_detail');
@@ -46,3 +50,10 @@ Route::get('/change-language/{lang}', function ($lang) {
     session()->save();
     return back();
 })->name('change-language');
+
+
+
+// Get Address Routes
+Route::get('/address/countries', [CountryController::class, 'countries'])->name('address.countries');
+Route::get('/address/states/{country_id}', [StateController::class, 'states'])->name('address.states');
+Route::get('/address/cities/{state_id}', [CityController::class, 'cities'])->name('address.cities');

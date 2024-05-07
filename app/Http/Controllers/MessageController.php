@@ -5,62 +5,68 @@ namespace App\Http\Controllers;
 use App\Models\Message;
 use App\Http\Requests\StoreMessageRequest;
 use App\Http\Requests\UpdateMessageRequest;
+use App\Models\Admin;
+use App\Models\Chat;
+use App\Models\Client;
+use App\Models\Helper;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class MessageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $chat = Chat::find($request->id);
+        $messages = $chat->messages()->orderBy('created_at', 'asc')->get();
+
+        if ($chat->user1_id == Auth::user()->id) {
+            $otherUser = User::findOrFail($chat->user2_id);
+            if ($otherUser->client_enabled) {
+                $otherUserInfo = Client::where('user_id', $otherUser->id)->first();
+            } else {
+                $otherUserInfo = Helper::where('user_id', $otherUser->id)->first();
+            }
+            // Check if user is admin
+            if ($otherUser->user_type == 'admin') {
+                $chat->otherUserInfo = Admin::where('user_id', $otherUser->id)->first();
+            }
+        } else {
+            $otherUser = User::findOrFail($chat->user1_id);
+            if ($otherUser->client_enabled) {
+                $otherUserInfo = Client::where('user_id', $otherUser->id)->first();
+            } else {
+                $otherUserInfo = Helper::where('user_id', $otherUser->id)->first();
+            }
+            // Check if user is admin
+            if ($otherUser->user_type == 'admin') {
+                $chat->otherUserInfo = Admin::where('user_id', $otherUser->id)->first();
+            }
+        }
+
+        // Return a json object
+        return response()->json(['success' => true, 'otherUserInfo' => $otherUserInfo, 'data' => $messages]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(Request $request)
     {
-        //
-    }
+        $chat = Chat::find($request->chat_id);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreMessageRequest $request)
-    {
-        //
-    }
+        if (!$chat) {
+            return response()->json(['success' => false, 'data' => 'Unable to find chat']);
+        }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Message $message)
-    {
-        //
-    }
+        if ($chat->user1_id != Auth::user()->id && $chat->user2_id != Auth::user()->id) {
+            return response()->json(['success' => false, 'data' => 'Unable to send message']);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Message $message)
-    {
-        //
-    }
+        $message = Message::create([
+            'chat_id' => $request->chat_id,
+            'sender_id' => Auth::user()->id,
+            'message' => $request->message,
+        ]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateMessageRequest $request, Message $message)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Message $message)
-    {
-        //
+        // Return a json object
+        return response()->json(['success' => true, 'data' => $message]);
     }
 }

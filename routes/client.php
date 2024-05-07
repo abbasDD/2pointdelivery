@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\MessageController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -16,27 +20,43 @@ Route::post('client/register', 'App\Http\Controllers\Auth\RegisterController@reg
 
 Route::post('logout', 'App\Http\Controllers\Auth\LoginController@logout')->name('logout');
 
-Route::get('/client/complete-profile', [App\Http\Controllers\ClientController::class, 'complete_profile'])->name('client.complete_profile');
-Route::post('/client/update-profile', [App\Http\Controllers\ClientController::class, 'update_profile'])->name('client.update_profile');
-Route::get('/client', [App\Http\Controllers\ClientController::class, 'index'])->name('client.index');
 
-//KYC Details
-Route::get('/client/kyc-details', [App\Http\Controllers\ClientController::class, 'kyc_details'])->name('client.kyc_details');
+Route::prefix('client')->middleware(['auth'])->name('client.')->group(function () {
 
-//Orders
-Route::get('/client/orders', [App\Http\Controllers\ClientController::class, 'orders'])->name('client.orders');
+    Route::get('complete-profile', [ClientController::class, 'complete_profile'])->name('complete_profile');
+    Route::post('update-profile', [ClientController::class, 'update_profile'])->name('update_profile');
+    Route::get('/', [ClientController::class, 'index'])->name('index');
 
-//Invoices
-Route::get('/client/invoices', [App\Http\Controllers\ClientController::class, 'invoices'])->name('client.invoices');
+    //KYC Details
+    Route::get('/kyc-details', [ClientController::class, 'kyc_details'])->name('kyc_details');
 
-//referrals
-Route::get('/client/referrals', [App\Http\Controllers\ClientController::class, 'referrals'])->name('client.referrals');
+    //Bookings
+    Route::get('/orders', [ClientController::class, 'orders'])->name('orders');
+    Route::get('/bookings', [BookingController::class, 'index'])->name('bookings');
+    Route::post('/booking/store', [BookingController::class, 'store'])->name('booking.store');
+    Route::get('/booking/payment/{id}', [BookingController::class, 'payment'])->name('booking.payment');
+    Route::get('/booking/show/{id}', [BookingController::class, 'show'])->name('booking.show');
+    Route::get('/booking/payment/cod/{id}', [BookingController::class, 'codPayment'])->name('booking.payment.cod');
 
-//settings
-Route::get('/client/settings', [App\Http\Controllers\ClientController::class, 'settings'])->name('client.settings');
+    // Chat Page Routes
+    Route::get('/chats', [ChatController::class, 'index'])->name('chats');
+    Route::post('/chat/create', [ChatController::class, 'create'])->name('chat.create');
+    Route::get('/chat/messages/{id}', [MessageController::class, 'index'])->name('chat.messages');
+    Route::post('/chat/messages/store', [MessageController::class, 'store'])->name('chat.messages.store');
 
-//Edit Profile
-Route::get('/client/edit', [App\Http\Controllers\ClientController::class, 'edit_profile'])->name('client.edit');
 
-//Track Order
-Route::get('/client/track-order', [App\Http\Controllers\ClientController::class, 'track_order'])->name('client.trackOrder');
+    //Invoices
+    Route::get('/invoices', [ClientController::class, 'invoices'])->name('invoices');
+
+    //referrals
+    Route::get('/referrals', [ClientController::class, 'referrals'])->name('referrals');
+
+    //settings
+    Route::get('/settings', [ClientController::class, 'settings'])->name('settings');
+
+    //Edit Profile
+    Route::get('/edit', [ClientController::class, 'edit_profile'])->name('edit');
+
+    //Track Order
+    Route::get('/track-order', [ClientController::class, 'track_order'])->name('trackOrder');
+});

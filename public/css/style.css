@@ -156,6 +156,26 @@ svg {
     color: var(--white);
 }
 
+.btn-paypal {
+    background-color: #00457C;
+    color: var(--white);
+}
+
+.btn-paypal:hover {
+    background-color: #025eaa;
+    color: var(--white);
+}
+
+.btn-stripe {
+    background-color: #6772e5;
+    color: var(--white);
+}
+
+.btn-stripe:hover {
+    background-color: #4a56c6;
+    color: var(--white);
+}
+
 .btn-google {
     background-color: #EB4335;
     color: var(--white);

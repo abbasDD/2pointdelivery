@@ -15,10 +15,12 @@ class TaxSetting extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'country',
-        'state',
-        'tax_type',
-        'tax_rate',
+        'country_id',
+        'state_id',
+        'city_id',
+        'gst_rate',
+        'pst_rate',
+        'hst_rate',
         'is_active',
     ];
 }

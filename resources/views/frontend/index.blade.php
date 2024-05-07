@@ -47,18 +47,18 @@
                 </div>
                 <div class="col-md-4">
                     <div class="mb-3">
-                        <input id="pickupLocation" class="form-control" type="text" name="pickup_location"
+                        <input id="pickupLocation" class="form-control" type="text" name="pickup_address"
                             placeholder="Enter pickup location" required>
-                        <input type="hidden" id="pickup_lat" name="pickup_lat" />
-                        <input type="hidden" id="pickup_lng" name="pickup_lng" />
+                        <input type="hidden" id="pickup_latitude" name="pickup_latitude" />
+                        <input type="hidden" id="pickup_longitude" name="pickup_longitude" />
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="mb-3">
-                        <input id="deliveryLocation" class="form-control" type="text" name="delivery_location"
+                        <input id="deliveryLocation" class="form-control" type="text" name="dropoff_address"
                             placeholder="Enter delivery location" required>
-                        <input type="hidden" id="delivery_lat" name="delivery_lat" />
-                        <input type="hidden" id="delivery_lng" name="delivery_lng" />
+                        <input type="hidden" id="dropoff_latitude" name="dropoff_latitude" />
+                        <input type="hidden" id="dropoff_longitude" name="dropoff_longitude" />
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -74,13 +74,13 @@
 
             pickupAutocomplete.addListener('place_changed', function() {
                 var place = pickupAutocomplete.getPlace();
-                document.getElementById('pickup_lat').value = place.geometry.location.lat();
-                document.getElementById('pickup_lng').value = place.geometry.location.lng();
+                document.getElementById('pickup_latitude').value = place.geometry.location.lat();
+                document.getElementById('pickup_longitude').value = place.geometry.location.lng();
             });
             deliveryAutocomplete.addListener('place_changed', function() {
                 var place = deliveryAutocomplete.getPlace();
-                document.getElementById('delivery_lat').value = place.geometry.location.lat();
-                document.getElementById('delivery_lng').value = place.geometry.location.lng();
+                document.getElementById('dropoff_latitude').value = place.geometry.location.lat();
+                document.getElementById('dropoff_longitude').value = place.geometry.location.lng();
             });
         </script>
     </section>

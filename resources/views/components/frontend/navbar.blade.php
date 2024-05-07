@@ -55,12 +55,12 @@
                                 width="35" height="35" alt="User">
                         </p>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            @if (auth()->user()->user_type == 'helper')
-                                <li><a class="dropdown-item" href="{{ route('helper.index') }}">Dashboard</a></li>
+                            @if (auth()->user()->user_type == 'admin')
+                                <li><a class="dropdown-item" href="{{ route('admin.index') }}">Admin</a></li>
                             @else
                                 <li><a class="dropdown-item" href="{{ route('client.index') }}">Dashboard</a></li>
                             @endif
-                            <li><a class="dropdown-item" href="#">Messages</a></li>
+                            <li><a class="dropdown-item" href="{{ route('chat') }}">Chat</a></li>
                             <li><a class="dropdown-item" href="{{ route('logout') }}"
                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
                             </li>
