@@ -15,7 +15,7 @@
     <tbody>
         @forelse ($service_categories as $service_category)
             <tr>
-                <td>{{ $service_category->id }}</td>
+                <td>{{ $loop->index + 1 }}</td>
                 <td>{{ $service_category->serviceType->name }}</td>
                 <td>{{ $service_category->name }}</td>
                 <td>

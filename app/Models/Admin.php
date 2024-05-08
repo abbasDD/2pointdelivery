@@ -20,5 +20,6 @@ class Admin extends Model
         'admin_type',
         'first_name',
         'last_name',
+        'profile_image',
     ];
 }

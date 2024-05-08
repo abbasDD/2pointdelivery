@@ -13,7 +13,7 @@
     <tbody>
         @forelse ($helpers as $helper)
             <tr>
-                <td>{{ $helper->id }}</td>
+                <td>{{ $loop->index + 1 }}</td>
                 <td><img src="{{ $helper->profile_image ? asset($helper->profile_image) : asset('images/users/default.png') }}"
                         alt="Profile Image" width="50">
                 </td>

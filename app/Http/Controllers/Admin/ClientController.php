@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
 use App\Models\Client;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -84,7 +85,6 @@ class ClientController extends Controller
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-
         ]);
         // dd($request->all());
         $client = Client::find($request->id); // Using find() instead of where()->first()
@@ -128,22 +128,12 @@ class ClientController extends Controller
         }
 
         // Get booking of the client
-
-        $bookings = collect([
-            (object) [
-                'id' => 1,
-                'priority' => 'Express',
-                'receiver_name' => 'John Doe',
-                'status' => 'Pending',
-
-            ],
-            (object) [
-                'id' => 2,
-                'priority' => 'Express',
-                'receiver_name' => 'John Doe',
-                'status' => 'Pending',
-            ]
-        ]);
+        $bookings = Booking::where('user_id', $client->user_id)
+            ->with('prioritySetting')
+            ->with('serviceType')
+            ->with('serviceCategory')
+            ->orderBy('bookings.created_at', 'desc')
+            ->paginate(10);
 
         return view('admin.clients.show', compact('client', 'bookings'));
     }

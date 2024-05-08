@@ -12,8 +12,8 @@
     <tbody>
         @forelse ($clients as $client)
             <tr>
-                <td>{{ $client->id }}</td>
-                <td><img src="{{ $client->profile_image ? asset($client->profile_image) : asset('images/users/default.png') }}"
+                <td>{{ $loop->index + 1 }}</td>
+                <td><img src="{{ $client->profile_image ? asset('images/users/' . $client->profile_image) : asset('images/users/default.png') }}"
                         alt="Profile Image" width="50">
                 </td>
                 <td>{{ $client->first_name . ' ' . $client->last_name }}</td>

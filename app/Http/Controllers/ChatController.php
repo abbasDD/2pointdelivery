@@ -65,7 +65,7 @@ class ChatController extends Controller
                 }
             }
         }
-        // dd($chats);
+        // dd($chats[1]->otherUserInfo);
         // Pass the chat list to the view or return it as JSON
         // return response()->json($chats);
         return view('client.chats.index', ['chats' => $chats]);

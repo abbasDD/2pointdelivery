@@ -16,13 +16,15 @@ return new class extends Migration
             // Random generated alpha numeric unique id
             $table->string('uuid')->unique()->index();
             $table->unsignedBigInteger('service_type_id');
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->string('description')->nullable();
             $table->string('image')->nullable();
             $table->boolean('is_secureship_enabled')->default(false);
-            $table->string('base_price')->default(0);
-            $table->string('price_per_km')->default(0);
-            $table->string('base_price_distance')->default(0);
+            $table->string('base_price')->nullable();
+            $table->string('price_per_km')->nullable();
+            $table->string('base_price_distance')->nullable();
+            $table->string('base_weight')->nullable();
+            $table->string('extra_weight_price')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 

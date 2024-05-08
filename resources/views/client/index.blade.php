@@ -78,7 +78,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Recent Orders</h5>
+                        <h5 class="mb-0">Recent Orders</h5>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -86,10 +86,10 @@
                                 <thead class="thead-primary">
                                     <tr>
                                         <th>ID</th>
+                                        <th>Client</th>
                                         <th>Priority</th>
-                                        <th>Pickup Address</th>
-                                        <th>Dropoff Address</th>
-                                        <th>Type</th>
+                                        <th>Service Type</th>
+                                        <th>Address</th>
                                         <th>Price</th>
                                         <th>Status</th>
                                         <th>Action</th>
@@ -98,13 +98,28 @@
                                 <tbody>
                                     @forelse ($bookings as $booking)
                                         <tr>
-                                            <td>{{ $booking->id }}</td>
+                                            <td>{{ $loop->index + 1 }}</td>
+                                            <td>{{ $booking->client->first_name }}</td>
                                             <td>{{ $booking->prioritySetting->name }}</td>
-                                            <td>{{ $booking->pickup_address }}</td>
-                                            <td>{{ $booking->dropoff_address }}</td>
-                                            <td>{{ $booking->serviceType->name }}</td>
+                                            <td>
+                                                {{-- Service Type --}}
+                                                <p>{{ $booking->serviceType->name }}</p>
+                                                {{-- Service Category --}}
+                                                <p>{{ $booking->serviceCategory->name }}</p>
+                                            </td>
+                                            <td>
+                                                {{-- Pickup Address --}}
+                                                <p>Pickup: {{ $booking->pickup_address }}</p>
+                                                {{-- Dropoff Address --}}
+                                                <p>Dropoff: {{ $booking->dropoff_address }}</p>
+                                            </td>
                                             <td>{{ $booking->total_price }}</td>
-                                            <td>{{ $booking->status }}</td>
+                                            <td>
+                                                <p
+                                                    class="badge {{ $booking->status == 'completed' ? 'bg-primary' : 'bg-danger' }}">
+                                                    {{ $booking->status }}
+                                                </p>
+                                            </td>
                                             <td><a href="{{ route('client.booking.show', $booking->id) }}"
                                                     class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a></td>
                                         </tr>

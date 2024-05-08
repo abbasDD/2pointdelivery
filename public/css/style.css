@@ -90,6 +90,26 @@ svg {
     text-align: right;
 }
 
+.fs-14 {
+    font-size: 14px;
+}
+
+.fs-16 {
+    font-size: 16px;
+}
+
+.fs-18 {
+    font-size: 18px;
+}
+
+.fs-20 {
+    font-size: 20px;
+}
+
+.fs-24 {
+    font-size: 24px;
+}
+
 .fs-xs {
     font-size: 1rem;
 }
@@ -149,6 +169,8 @@ svg {
 .btn-sm {
     padding: 5px 10px;
 }
+
+
 
 
 .btn-primary {
@@ -263,6 +285,10 @@ svg {
 .table .thead-primary {
     background-color: var(--primary-color);
     color: var(--white);
+}
+
+table tbody tr td {
+    font-size: 14px;
 }
 
 /* Navbar Section */

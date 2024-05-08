@@ -12,109 +12,143 @@
     {{-- Overall Statistics  --}}
     <div class="statistics">
         <div class="row">
-            {{-- Delivery Statistics --}}
-            <div class="col-lg-3 col-md-6 mb-4">
-                <h6>Delivery Statistics</h6>
-                <div class="row">
-                    <div class="col-12">
-                        {{-- Successful Delivery Card --}}
-                        <div class="card mb-3">
-                            <div class="card-body d-flex align-items-center justify-content-between py-3 px-5">
-                                <div class="bg-light-gray text-primary p-3 rounded-circle">
-                                    <i class="fas fa-car fa-2x text-primary"></i>
-                                </div>
-                                <div class="text-right">
-                                    <h5 class="card-title">5.5K</h5>
-                                    <p class="card-text">Successful Delivery</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        {{-- Pending Delivery Card --}}
-                        <div class="card mb-3">
-                            <div class="card-body d-flex align-items-center justify-content-between py-3 px-5">
-                                <div class="bg-light-gray text-primary p-3 rounded-circle">
-                                    <i class="fas fa-car fa-2x text-warning"></i>
-                                </div>
-                                <div class="text-right">
-                                    <h5 class="card-title">224</h5>
-                                    <p class="card-text">Pending Delivery</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        {{-- Cancelled Delivery Card --}}
-                        <div class="card mb-3">
-                            <div class="card-body d-flex align-items-center justify-content-between py-3 px-5">
-                                <div class="bg-light-gray text-primary p-3 rounded-circle">
-                                    <i class="fas fa-car fa-2x text-danger"></i>
-                                </div>
-                                <div class="text-right">
-                                    <h5 class="card-title">125</h5>
-                                    <p class="card-text">Cancelled Delivery</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Moving Statistics --}}
-            <div class="col-lg-3 col-md-6 mb-4">
-                <h6>Moving Statistics</h6>
-                <div class="row">
-                    <div class="col-12">
-                        {{-- Successful Moving Card --}}
-                        <div class="card mb-3">
-                            <div class="card-body d-flex align-items-center justify-content-between py-3 px-5">
-                                <div class="bg-light-gray text-primary p-3 rounded-circle">
-                                    <i class="fas fa-truck fa-2x text-primary"></i>
-                                </div>
-                                <div class="text-right">
-                                    <h5 class="card-title">6.1K</h5>
-                                    <p class="card-text">Successful Moving</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        {{-- Pending Moving Card --}}
-                        <div class="card mb-3">
-                            <div class="card-body d-flex align-items-center justify-content-between py-3 px-5">
-                                <div class="bg-light-gray text-primary p-3 rounded-circle">
-                                    <i class="fas fa-truck fa-2x text-warning"></i>
-                                </div>
-                                <div class="text-right">
-                                    <h5 class="card-title">245</h5>
-                                    <p class="card-text">Pending Moving</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        {{-- Cancelled Moving Card --}}
-                        <div class="card mb-3">
-                            <div class="card-body d-flex align-items-center justify-content-between py-3 px-5">
-                                <div class="bg-light-gray text-primary p-3 rounded-circle">
-                                    <i class="fas fa-truck fa-2x text-danger"></i>
-                                </div>
-                                <div class="text-right">
-                                    <h5 class="card-title">152</h5>
-                                    <p class="card-text">Cancelled Moving</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Delivery & Moving Statistics Graph --}}
-            <div class="col-lg-6">
-                <h6>Delivery & Moving Statistics</h6>
+            {{-- Booking Statistics --}}
+            <div class="col-md-4">
                 <div class="card">
                     <div class="card-body">
+                        {{-- Heading --}}
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h5 class="card-title">Booking Statistics</h5>
+                            <i class="fas fa-dolly fa-2x text-success"></i>
+                        </div>
+                        <hr>
+                        {{-- Total Bookings --}}
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <p class="mb-0 fs-14"><i class="fa fa-shopping-bag text-success"></i> Total Bookings</p>
+                            <h6 class="mb-0">{{ $statistics['total_bookings'] }}</h6>
+                        </div>
+                        {{-- Successful Booking --}}
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <p class="mb-0 fs-14"><i class="fa fa-check-circle text-success"></i> Successful Booking</p>
+                            <h6 class="mb-0">{{ $statistics['successful_bookings'] }}</h6>
+                        </div>
+                        {{-- Pending Booking --}}
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <p class="mb-0 fs-14"><i class="fa fa-spinner text-warning"></i> Pending Booking</p>
+                            <h6 class="mb-0">{{ $statistics['pending_bookings'] }}</h6>
+                        </div>
+                        {{-- Canceled Booking --}}
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <p class="mb-0 fs-14"><i class="fa fa-times-circle text-danger"></i> Canceled Booking</p>
+                            <h6 class="mb-0">{{ $statistics['cancelled_bookings'] }}</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{-- Users Statistics --}}
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        {{-- Heading --}}
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h5 class="card-title">Users Statistics</h5>
+                            <i class="fas fa-users fa-2x text-primary"></i>
+                        </div>
+                        <hr>
+                        {{-- Total Users --}}
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <p class="mb-0 fs-14"><i class="fa fa-user text-success"></i> Total Users</p>
+                            <h6 class="mb-0">{{ $statistics['total_users'] }}</h6>
+                        </div>
+                        {{-- Total Clients --}}
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <p class="mb-0 fs-14"><i class="fa-solid fa-mug-hot text-primary"></i> Total Clients</p>
+                            <h6 class="mb-0">{{ $statistics['total_clients'] }}</h6>
+                        </div>
+                        {{-- Total Helpers --}}
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <p class="mb-0 fs-14"><i class="fa-solid fa-motorcycle text-warning"></i> Total Helpers</p>
+                            <h6 class="mb-0">{{ $statistics['total_helpers'] }}</h6>
+                        </div>
+                        {{-- Requested Helpers --}}
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <p class="mb-0 fs-14"><i class="fa-solid fa-question text-danger"></i> Requested Helpers</p>
+                            <h6 class="mb-0">{{ $statistics['requested_helpers'] }}</h6>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{-- Earning Statistics --}}
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        {{-- Heading --}}
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h5 class="card-title">Earning Statistics</h5>
+                            <i class="fas fa-dollar-sign fa-2x text-success"></i>
+                        </div>
+                        <hr>
+                        {{-- Total Earning --}}
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <p class="mb-0 fs-14"><i class="fa fa-dollar-sign text-success"></i> Total Earning</p>
+                            <h6 class="mb-0">${{ $statistics['total_earnings'] }}</h6>
+                        </div>
+                        {{-- total_commission --}}
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <p class="mb-0 fs-14"><i class="fa fa-dollar-sign text-success"></i> Total Commission</p>
+                            <h6 class="mb-0">${{ $statistics['total_commission'] }}</h6>
+                        </div>
+                        {{-- total_taxes --}}
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <p class="mb-0 fs-14"><i class="fa fa-dollar-sign text-success"></i> Total Taxes</p>
+                            <h6 class="mb-0">${{ $statistics['total_taxes'] }}</h6>
+                        </div>
+                        {{-- total_revenue --}}
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <p class="mb-0 fs-14"><i class="fa fa-dollar-sign text-success"></i> Total Revenue</p>
+                            <h6 class="mb-0">${{ $statistics['total_revenue'] }}</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                {{-- Helpers Request --}}
+                <div class="card">
+                    <div class="card-body">
+                        {{-- Heading --}}
+                        <h6>Helpers Request</h6>
+                        {{-- Helper List --}}
+                        @foreach ($requestedHelpers as $requestedHelper)
+                            {{-- Top Helper Item --}}
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="d-flex align-items-center">
+                                    <img class="rounded mr-3" src="{{ $requestedHelper['image'] }}" alt="">
+                                    <div class="info">
+                                        <h6 class="mb-0">{{ $requestedHelper['name'] }}</h6>
+                                        <p class="mb-0">{{ $requestedHelper['email'] }}</p>
+                                    </div>
+                                </div>
+                                <div class="action">
+                                    {{-- <a href="#" class="fs-xxs text-primary">View </a> --}}
+                                    <button class="btn btn-sm btn-primary">View</button>
+                                </div>
+                            </div>
+                            <hr class="mt-1">
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            {{-- Delivery & Moving Statistics Graph --}}
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        {{-- Heading --}}
+                        <h6>Delivery & Moving Statistics</h6>
+
+                        {{-- Delivery Moving Chart --}}
                         <canvas id="deliveryMovingChart"></canvas>
                     </div>
                 </div>
@@ -123,82 +157,64 @@
         </div>
     </div>
 
-    {{-- Helper Tracking & Top Helpers --}}
+    {{-- Latest Bookings & Helper Requests --}}
     <div class="row">
-        <div class="col-md-8">
-            <h6>Helper Tracking</h6>
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <div id="map" style="height:400px; width:100%;"></div>
-                    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-jXtk8qCpcwUwFn-7Q3VazeneJJ46g00&callback=initMap" async
-                        defer></script>
-                    <script>
-                        function initMap() {
-                            var map = new google.maps.Map(document.getElementById('map'), {
-                                center: {
-                                    lat: 33.6487,
-                                    lng: 73.0407
-                                },
-                                zoom: 10
-                            });
+                    {{-- Heading --}}
+                    <h6>Latest Bookings</h6>
 
-                            // Define some locations
-                            var locations = [{
-                                    lat: 33.6844,
-                                    lng: 73.0489,
-                                    title: "Driver 01"
-                                }, // Example location
-                                {
-                                    lat: 33.6778,
-                                    lng: 73.0300,
-                                    title: "Driver 02"
-                                }, // Example location
-                                {
-                                    lat: 33.6865,
-                                    lng: 73.0962,
-                                    title: "Driver 03"
-                                } // Example location
-                            ];
+                    {{-- Booking List --}}
+                    <table class="table table-striped">
+                        <thead class="thead-primary">
+                            <tr>
+                                <th>ID</th>
+                                <th>Client</th>
+                                <th>Priority</th>
+                                <th>Service Type</th>
+                                <th>Address</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($latestBookings as $booking)
+                                <tr>
+                                    <td>{{ $loop->index + 1 }}</td>
+                                    <td>{{ $booking->client->first_name }}</td>
+                                    <td>{{ $booking->prioritySetting->name }}</td>
+                                    <td>
+                                        {{-- Service Type --}}
+                                        <p>{{ $booking->serviceType->name }}</p>
+                                        {{-- Service Category --}}
+                                        <p>{{ $booking->serviceCategory->name }}</p>
+                                    </td>
+                                    <td>
+                                        {{-- Pickup Address --}}
+                                        <p>Pickup: {{ $booking->pickup_address }}</p>
+                                        {{-- Dropoff Address --}}
+                                        <p>Dropoff: {{ $booking->dropoff_address }}</p>
+                                    </td>
+                                    <td>{{ $booking->total_price }}</td>
+                                    <td>
+                                        <p
+                                            class="badge {{ $booking->status == 'completed' ? 'bg-primary' : 'bg-danger' }}">
+                                            {{ $booking->status }}
+                                        </p>
+                                    </td>
+                                    <td><a href="{{ route('admin.booking.show', 1) }}" class="btn btn-sm btn-primary"><i
+                                                class="fas fa-eye"></i></a></td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="text-center">No data found</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
 
-                            // Create markers for each location
-                            locations.forEach(function(location) {
-                                var marker = new google.maps.Marker({
-                                    position: {
-                                        lat: location.lat,
-                                        lng: location.lng
-                                    },
-                                    map: map,
-                                    title: location.title
-                                });
-                            });
-                        }
-                    </script>
-                </div>
-
-            </div>
-        </div>
-        <div class="col-md-4">
-            {{-- List of Top Helpers --}}
-            <h6>Top Helpers</h6>
-            <div class="card">
-                <div class="card-body">
-                    @foreach ($topHelpers as $topHelper)
-                        {{-- Top Helper Item --}}
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <div class="d-flex align-items-center">
-                                <img class="rounded mr-3" src="{{ $topHelper['image'] }}" alt="">
-                                <div class="info">
-                                    <h6 class="mb-0">{{ $topHelper['name'] }}</h6>
-                                    <p class="mb-0">{{ $topHelper['email'] }}</p>
-                                </div>
-                            </div>
-                            <div class="action">
-                                {{-- <a href="#" class="fs-xxs text-primary">View </a> --}}
-                                <button class="btn btn-sm btn-primary">View</button>
-                            </div>
-                        </div>
-                        <hr class="mt-1">
-                    @endforeach
                 </div>
             </div>
         </div>
@@ -210,10 +226,10 @@
         var myChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: @json($chartData['labels']),
+                labels: @json($lastSixMonths['labels']),
                 datasets: [{
                     label: 'Delivery',
-                    data: @json($chartData['delivery']),
+                    data: @json($lastSixMonths['delivery']),
                     borderColor: 'rgba(0, 73, 56, 1)',
                     borderWidth: 2,
                     fill: false,
@@ -222,7 +238,7 @@
                     pointStyle: 'crossRot'
                 }, {
                     label: 'Moving',
-                    data: @json($chartData['moving']),
+                    data: @json($lastSixMonths['moving']),
                     borderColor: 'rgba(50, 170, 42, 1)',
                     borderWidth: 2,
                     fill: false,

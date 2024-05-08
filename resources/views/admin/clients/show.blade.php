@@ -14,7 +14,12 @@
                 <div class="section-header mb-2">
                     <div class="d-flex justify-content-between">
                         <h4 class="mb-0">Client Details</h4>
-
+                        <div class="">
+                            {{-- Edit Route --}}
+                            <a class="btn btn-sm btn-primary" href="{{ route('admin.client.edit', $client->id) }}">
+                                Edit Client
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <div class="section-body">
@@ -23,7 +28,7 @@
                             <div class="card">
                                 <div class="card-body text-center">
                                     <img class="mb-3"
-                                        src="{{ $client->profile_image ? asset($client->profile_image) : asset('images/users/default.png') }}"
+                                        src="{{ $client->profile_image ? asset('/images/users/' . $client->profile_image) : asset('images/users/default.png') }}"
                                         alt="Profile Image" width="50">
                                     <h4 class="mb-0">{{ $client->first_name . ' ' . $client->last_name }}</h4>
                                     <p>{{ $client->email }}</p>

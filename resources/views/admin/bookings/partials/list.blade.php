@@ -2,8 +2,11 @@
     <thead class="thead-primary">
         <tr>
             <th>ID</th>
+            <th>Client</th>
             <th>Priority</th>
-            <th>Receiver Name</th>
+            <th>Service Type</th>
+            <th>Address</th>
+            <th>Price</th>
             <th>Status</th>
             <th>Action</th>
         </tr>
@@ -11,11 +14,28 @@
     <tbody>
         @forelse ($bookings as $booking)
             <tr>
-                <td>{{ $booking->id }}</td>
-                <td>{{ $booking->priority }}</td>
-                <td>{{ $booking->receiver_name }}</td>
-                <td>{{ $booking->status }}</td>
-                <td><a href="{{ route('admin.booking.show', $booking->id) }}" class="btn btn-sm btn-primary"><i
+                <td>{{ $loop->index + 1 }}</td>
+                <td>{{ $booking->client->first_name }}</td>
+                <td>{{ $booking->prioritySetting->name }}</td>
+                <td>
+                    {{-- Service Type --}}
+                    <p>{{ $booking->serviceType->name }}</p>
+                    {{-- Service Category --}}
+                    <p>{{ $booking->serviceCategory->name }}</p>
+                </td>
+                <td>
+                    {{-- Pickup Address --}}
+                    <p>Pickup: {{ $booking->pickup_address }}</p>
+                    {{-- Dropoff Address --}}
+                    <p>Dropoff: {{ $booking->dropoff_address }}</p>
+                </td>
+                <td>{{ $booking->total_price }}</td>
+                <td>
+                    <p class="badge {{ $booking->status == 'completed' ? 'bg-primary' : 'bg-danger' }}">
+                        {{ $booking->status }}
+                    </p>
+                </td>
+                <td><a href="{{ route('admin.booking.show', 1) }}" class="btn btn-sm btn-primary"><i
                             class="fas fa-eye"></i></a></td>
             </tr>
         @empty
@@ -26,4 +46,4 @@
     </tbody>
 </table>
 
-{{-- {{ $bookings->links() }} --}}
+{{ $bookings->links() }}

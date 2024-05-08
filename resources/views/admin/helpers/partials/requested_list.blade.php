@@ -12,7 +12,7 @@
     </thead>
     <tbody>
         @forelse ($helpers as $helper)
-            <tr>
+            <tr id="helper_{{ $helper->id }}">
                 <td>{{ $helper->id }}</td>
                 <td><img src="{{ $helper->profile_image ? asset($helper->profile_image) : asset('images/users/default.png') }}"
                         alt="Profile Image" width="50">
@@ -125,6 +125,10 @@
                     triggerToast('Success', 'Helper approved succcessfully');
                     // Remove function from button
                     $('approveHelperLink').off('click');
+
+                    // Remove row from list
+                    $('#helper_' + id).remove();
+
                     console.log(jsonResponse.message); // Print the message from the response
                 } else {
                     // Hide modal
@@ -180,12 +184,17 @@
                     triggerToast('Success', 'Helper rejectd succcessfully');
                     // Remove function from button
                     $('rejectHelperLink').off('click');
+
+                    // Remove row from list
+                    $('#helper_' + id).remove();
+
                     console.log(jsonResponse.message); // Print the message from the response
                 } else {
                     // Hide modal
                     $('#rejectModal').modal('hide');
                     // Remove function from button
                     $('rejectHelperLink').off('click');
+
                     console.log('Failed'); // Or any other message you want to print for failed status
                 }
             },

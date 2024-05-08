@@ -1,30 +1,28 @@
 {{-- Sub Admin Form --}}
 
-{{-- Error and Success Message --}}
-
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
-@if (Session::has('success'))
-    <div class="alert alert-success">
-        {{ Session::get('success') }}
-    </div>
-@endif
-
-@if (Session::has('error'))
-    <div class="alert alert-danger">
-        {{ Session::get('error') }}
-    </div>
-@endif
 
 <div class="row">
+
+    {{-- Profile Image --}}
+    <div class="col-md-12">
+        <div class="form-group mb-3">
+            <div class="image-selection">
+                <div class="mx-auto" style="max-width: 150px;">
+                    <img id="profile_image_preview"
+                        src="{{ isset($systemSettings['profile_image']) && $systemSettings['profile_image'] !== null ? asset('images/logo/' . $systemSettings['profile_image']) : asset('images/users/default.png') }}"
+                        alt="profile_image" class=" border w-100 p-3"
+                        onclick="document.getElementById('profile_image').click()">
+                    <input type="file" name="profile_image" id="profile_image" class="d-none" accept="image/*">
+                </div>
+            </div>
+            @if ($errors->has('profile_image'))
+                <span class="invalid-feedback" role="alert">
+                    <strong>Profile Image is required</strong>
+                </span>
+            @endif
+        </div>
+    </div>
+
     {{-- First Name --}}
     <div class="col-md-6">
         <div class="form-group mb-3">
@@ -127,3 +125,23 @@
         </button>
     </div>
 </div>
+
+
+<script>
+    // Profile Image JS
+    document.querySelector('#profile_image').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (!file.type.startsWith('image/')) {
+            alert('Please select an image file.');
+            event.target.value = null;
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            document.querySelector('#profile_image_preview').src = event.target.result;
+        }
+
+        reader.readAsDataURL(file);
+    });
+</script>

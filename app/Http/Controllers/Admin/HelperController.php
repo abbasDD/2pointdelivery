@@ -14,6 +14,7 @@ class HelperController extends Controller
     {
         $helpers = Helper::select('helpers.*', 'users.email', 'users.is_active')
             ->join('users', 'helpers.user_id', '=', 'users.id')
+            ->where('helpers.is_approved', 1)
             ->paginate(10); // 10 items per page
         if (request()->ajax()) {
             return response()->json(view('helpers.partials.list', compact('helpers'))->render());

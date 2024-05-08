@@ -3,27 +3,23 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
 {
     public function index(Request $request)
     {
-        $bookings = collect([
-            (object) [
-                'id' => 1,
-                'priority' => 'Express',
-                'receiver_name' => 'John Doe',
-                'status' => 'Pending',
+        $bookings = Booking::with('client')
+            ->with('prioritySetting')
+            ->with('serviceType')
+            ->with('serviceCategory')
+            ->paginate(10);
 
-            ],
-            (object) [
-                'id' => 2,
-                'priority' => 'Express',
-                'receiver_name' => 'John Doe',
-                'status' => 'Pending',
-            ]
-        ]);
+
+        if ($request->ajax()) {
+            return view('admin.bookings.partials.list', compact('bookings'))->render();
+        }
 
         return view('admin.bookings.index', compact('bookings'));
     }

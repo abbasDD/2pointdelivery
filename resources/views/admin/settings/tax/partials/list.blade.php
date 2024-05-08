@@ -4,7 +4,7 @@
             <th>ID</th>
             <th>Country</th>
             <th>State</th>
-            <th>City</th>
+            {{-- <th>City</th> --}}
             <th>GST %</th>
             <th>PST %</th>
             <th>HST %</th>
@@ -18,7 +18,7 @@
                 <td>{{ $taxCountry->id }}</td>
                 <td>{{ $taxCountry->country_name }}</td>
                 <td>{{ $taxCountry->state_name }}</td>
-                <td>{{ $taxCountry->city_name }}</td>
+                {{-- <td>{{ $taxCountry->city_name }}</td> --}}
                 <td>{{ $taxCountry->gst_rate }}</td>
                 <td>{{ $taxCountry->pst_rate }}</td>
                 <td>{{ $taxCountry->hst_rate }}</td>

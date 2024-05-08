@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\HelperController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\MessageController;
+use App\Http\Controllers\Admin\PaymentSettingController;
 use App\Http\Controllers\Admin\PrioritySettingController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\ServiceTypeController;
@@ -116,6 +117,10 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
         Route::get('/tax/edit/{id}', [TaxSettingController::class, 'edit'])->name('taxSetting.edit');
         Route::post('/tax/update', [TaxSettingController::class, 'update'])->name('taxSetting.update');
         Route::post('/tax/update-status', [TaxSettingController::class, 'updateStatus'])->name('taxSetting.updateStatus');
+
+        // Payment
+        Route::get('/payment', [PaymentSettingController::class, 'index'])->name('paymentSettings');
+        Route::post('/payment/update', [PaymentSettingController::class, 'update'])->name('paymentSetting.update');
 
         // Priority
         Route::get('/priority', [PrioritySettingController::class, 'index'])->name('prioritySettings');

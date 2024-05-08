@@ -15,7 +15,7 @@
                 <li class="clearfix">
                     <div id="user_chat_{{ $chat->id }}" class="d-flex align-items-center p-2 item"
                         onclick="loadChat({{ $chat->id }})">
-                        <img src="{{ $chat->otherUserInfo->profile_image ?? asset('images/users/default.png') }}"
+                        <img src="{{ $chat->otherUserInfo->profile_image ? asset('images/users/' . $chat->otherUserInfo->profile_image) : asset('images/users/default.png') }}"
                             alt="avatar" />
                         <div class="about">
                             <div class="name">
@@ -34,16 +34,11 @@
         <div class="chat-header">
             {{-- User Info --}}
             <div class="">
-                <img id="chat-avatar" src="{{ asset('images/users/default.png') }}" width="50" alt="chat-avatar" />
-
+                <img id="chat-avatar" src="{{ asset('images/users/default.png') }}" width="50" alt="avatar" />
                 <div class="chat-about">
                     <div id="chat-with" class="chat-with">User Name</div>
                     <div id="user-status" class="chat-num-messages">Status</div>
                 </div>
-            </div>
-            {{-- View Profile --}}
-            <div class="">
-                <a id="chat_view_profile" href="#" class="btn btn-primary btn-sm">View Profile</a>
             </div>
         </div> <!-- end chat-header -->
 
@@ -97,17 +92,20 @@
                     selectedChatID = id;
 
                     // Update User Info at top
-                    // console.log(response.otherUserInfo.first_name);
+                    console.log(response);
                     $('#chat-with').html(response.otherUserInfo.first_name + ' ' + response.otherUserInfo
                         .last_name);
                     // $('#user-status').html(response.otherUserInfo.is_online ? 'Online' : 'Offline');
-                    $("#chat_view_profile").attr('href', base_url + '/client/users/' + response
-                        .otherUserInfo
-                        .user_id);
+
 
                     // Update Image
-                    $('#chat-avatar').attr('src', response.otherUserInfo.profile_image ??
-                        "{{ asset('images/users/default.png') }}");
+                    if (response.otherUserInfo.profile_image) {
+                        var image_path = '{{ asset('images/users/') }}' + '/' + response.otherUserInfo
+                            .profile_image;
+                    } else {
+                        var image_path = '{{ asset('images/users/default.png') }}';
+                    }
+                    $('#chat-avatar').attr('src', image_path);
 
                     // Clear items in chat history
                     $('#chat-history').html('');
@@ -195,7 +193,7 @@
         if (message) {
             $.ajax({
                 type: "POST",
-                url: "{{ route('admin.chat.messages.store') }}",
+                url: "{{ route('client.chat.messages.store') }}",
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },

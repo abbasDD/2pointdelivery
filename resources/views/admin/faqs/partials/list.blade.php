@@ -11,7 +11,7 @@
     <tbody>
         @forelse ($faqs as $faq)
             <tr>
-                <td>{{ $faq->id }}</td>
+                <td>{{ $loop->index + 1 }}</td>
                 <td>{{ $faq->question }}</td>
                 <td>{{ $faq->answer }}</td>
                 <td>

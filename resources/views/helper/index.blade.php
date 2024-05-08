@@ -95,7 +95,7 @@
                                 <tbody>
                                     @forelse ($bookings as $booking)
                                         <tr>
-                                            <td>{{ $booking->id }}</td>
+                                            <td>{{ $loop->index + 1 }}</td>
                                             <td>{{ $booking->prioritySetting->name }}</td>
                                             <td>{{ $booking->pickup_address }}</td>
                                             <td>{{ $booking->dropoff_address }}</td>

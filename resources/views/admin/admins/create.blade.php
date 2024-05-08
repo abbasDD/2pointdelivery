@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="section-body">
-                <form action="{{ route('admin.admin.store') }}" method="POST">
+                <form action="{{ route('admin.admin.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @include('admin.admins.form')
                 </form>

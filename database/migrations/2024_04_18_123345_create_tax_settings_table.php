@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('country_id');
             $table->unsignedBigInteger('state_id');
-            $table->unsignedBigInteger('city_id');
+            $table->unsignedBigInteger('city_id')->nullable();
             $table->string('gst_rate');
             $table->string('pst_rate');
             $table->string('hst_rate');

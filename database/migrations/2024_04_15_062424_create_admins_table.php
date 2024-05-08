@@ -17,6 +17,7 @@ return new class extends Migration
             $table->enum('admin_type', ['super', 'sub']);
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
+            $table->string('profile_image')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

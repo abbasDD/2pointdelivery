@@ -6,9 +6,10 @@
             <div class="image-selection">
                 <div class="mx-auto" style="max-width: 150px;">
                     <img id="image_img"
-                        src="{{ isset($vehicle_type) && $vehicle_type->image !== null ? asset('storage/' . $vehicle_type->image) : asset('images/default-user.jpg') }}"
+                        src="{{ isset($vehicle_type) && $vehicle_type->image !== null ? asset('images/vehicle_types/' . $vehicle_type->image) : asset('images/default-user.jpg') }}"
                         alt="image" class=" border w-100" onclick="document.getElementById('image').click()">
-                    <input type="file" name="image" id="image" class="d-none" accept="image/*" required>
+                    <input type="file" name="image" id="image" class="d-none" accept="image/*"
+                        @if (!isset($vehicle_type)) required @endif>
                 </div>
             </div>
             @if ($errors->has('image'))

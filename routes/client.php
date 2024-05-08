@@ -3,6 +3,7 @@
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\KycDetailController;
 use App\Http\Controllers\MessageController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,8 +28,10 @@ Route::prefix('client')->middleware(['auth'])->name('client.')->group(function (
     Route::post('update-profile', [ClientController::class, 'update_profile'])->name('update_profile');
     Route::get('/', [ClientController::class, 'index'])->name('index');
 
+
     //KYC Details
-    Route::get('/kyc-details', [ClientController::class, 'kyc_details'])->name('kyc_details');
+    Route::get('/kyc-details', [KycDetailController::class, 'index'])->name('kyc_details');
+    Route::post('/kyc/update', [KycDetailController::class, 'update'])->name('kyc.update');
 
     //Bookings
     Route::get('/orders', [ClientController::class, 'orders'])->name('orders');
@@ -54,8 +57,12 @@ Route::prefix('client')->middleware(['auth'])->name('client.')->group(function (
     //settings
     Route::get('/settings', [ClientController::class, 'settings'])->name('settings');
 
-    //Edit Profile
+    //Edit Profile -- Update Profile Routes
     Route::get('/edit', [ClientController::class, 'edit_profile'])->name('edit');
+    Route::post('/update/personal', [ClientController::class, 'personalInfo'])->name('update.personal');
+    Route::post('/update/address', [ClientController::class, 'addressInfo'])->name('update.address');
+    Route::post('/update/social', [ClientController::class, 'socialInfo'])->name('update.social');
+    Route::post('/update/password', [ClientController::class, 'passwordInfo'])->name('update.password');
 
     //Track Order
     Route::get('/track-order', [ClientController::class, 'track_order'])->name('trackOrder');

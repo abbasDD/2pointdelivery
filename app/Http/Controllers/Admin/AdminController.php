@@ -39,28 +39,40 @@ class AdminController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Create the user first
-        $user = new User([
+        // Set default profile image to null
+        $profile_image = null;
+
+        // Upload the profile image if provided
+        if ($request->hasFile('profile_image')) {
+            $file = $request->file('profile_image');
+            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('images/users/');
+            $file->move($destinationPath, $updatedFilename);
+
+            // Set the profile image attribute to the new file name
+            $profile_image = $updatedFilename;
+        }
+
+        // Create the user
+        $user = User::create([
             'account_type' => 'admin',
             'email' => $request->email,
-            'password' => Hash::make($value = $request->password),
+            'password' => Hash::make($request->password),
         ]);
 
-        $user->save();
-
         // Create the admin
-        $admin = new Admin([
+        $admin = Admin::create([
             'user_id' => $user->id,
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'admin_type' => $request->admin_type,
+            'profile_image' => $profile_image,
         ]);
-
-        $admin->save();
 
         // Redirect with a success message
         return redirect()->route('admin.admins')->with('success', 'Sub-admin created successfully!');
     }
+
 
     public function edit(Request $request)
     {
@@ -79,20 +91,38 @@ class AdminController extends Controller
             'last_name' => 'required|string|max:255',
             'admin_type' => 'required|string|in:super,sub',
         ]);
-        // dd($request->all());
-        $admin = Admin::find($request->id); // Using find() instead of where()->first()
+
+        // Find the admin
+        $admin = Admin::find($request->id);
 
         if ($admin) {
-            // If the admin is found, update its attributes
-            $admin->update($request->all());
+            // Upload the profile image if provided
+            if ($request->hasFile('profile_image')) {
+                $file = $request->file('profile_image');
+                $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+                $destinationPath = public_path('images/users/');
+                $file->move($destinationPath, $updatedFilename);
+
+                // Set the profile image attribute to the new file name
+                $admin->profile_image = $updatedFilename;
+            }
+
+            // Update the admin's attributes
+            $admin->update([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'admin_type' => $request->admin_type,
+                // Add any other fields you need to update
+            ]);
+
             // Optionally, return a success response or do other actions
             return redirect()->route('admin.admins')->with('success', 'Admin updated successfully!');
         } else {
             // If the admin is not found, handle the error
-            // For example, return a response indicating the admin was not found
             return redirect()->back()->with('error', 'Admin not found or not authorized!');
         }
     }
+
 
     public function users(Request $request)
     {

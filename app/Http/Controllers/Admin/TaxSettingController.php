@@ -12,10 +12,10 @@ class TaxSettingController extends Controller
 
     public function index(Request $request)
     {
-        $taxCountries = TaxSetting::select('tax_settings.*', 'countries.name as country_name', 'states.name as state_name', 'cities.name as city_name')
+        $taxCountries = TaxSetting::select('tax_settings.*', 'countries.name as country_name', 'states.name as state_name'/*, 'cities.name as city_name' */)
             ->join('countries', 'countries.id', '=', 'tax_settings.country_id')
             ->join('states', 'states.id', '=', 'tax_settings.state_id')
-            ->join('cities', 'cities.id', '=', 'tax_settings.city_id')
+            // ->join('cities', 'cities.id', '=', 'tax_settings.city_id')
             ->paginate(10); // 10 items per page
         if (request()->ajax()) {
             return response()->json(view('settings.tax.partials.list', compact('taxCountries'))->render());
@@ -36,7 +36,7 @@ class TaxSettingController extends Controller
         $request->validate([
             'country_id' => 'required|string|max:255',
             'state_id' => 'required|string|max:255',
-            'city_id' => 'required|string|max:255',
+            // 'city_id' => 'required|string|max:255',
             'gst_rate' => 'required|string|max:255',
             'pst_rate' => 'required|string|max:255',
             'hst_rate' => 'required|string|max:255',
@@ -63,10 +63,25 @@ class TaxSettingController extends Controller
 
     public function update(Request $request)
     {
+        $request->validate([
+            'country_id' => 'required|string|max:255',
+            'state_id' => 'required|string|max:255',
+            // 'city_id' => 'required|string|max:255',
+            'gst_rate' => 'required|string|max:255',
+            'pst_rate' => 'required|string|max:255',
+            'hst_rate' => 'required|string|max:255',
+            // 'is_active' => 'required|boolean',
+        ]);
 
-        // $taxCountry = TaxSetting::where('id', $request->id)
-        //     ->first();
-        // $taxCountry->update($request->all());
+        $taxCountry = TaxSetting::where('id', $request->id)
+            ->first();
+
+        if (!$taxCountry) {
+            return redirect()->route('admin.taxSettings')->with('error', 'Tax Country not found');
+        }
+
+        $taxCountry->update($request->all());
+
         return redirect()->route('admin.taxSettings')->with('success', 'Tax Country updated successfully!');
     }
 

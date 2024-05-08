@@ -29,29 +29,34 @@ class VehicleTypeController extends Controller
     public function store(Request $request)
     {
         // Validate the request
-        $request->validate([
+        $validatedData = $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'services' => 'required|array',
         ]);
 
-        // dd($request->input('services'));
-        // die();
+        // Upload the image if provided
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('images/vehicle_types/');
+            $file->move($destinationPath, $updatedFilename);
+        } else {
+            // If image not provided, set to null
+            $updatedFilename = null;
+        }
 
-        // Create the admin
-        $vehicle = new VehicleType([
+        // Create the vehicle type
+        $vehicle = VehicleType::create([
             'uuid' => Str::random(32),
-            'name' => $request->name,
-            'description' => $request->description,
+            'name' => $validatedData['name'],
+            'description' => $validatedData['description'],
+            'image' => $updatedFilename,
         ]);
 
-        $vehicle->save();
-
-        // Adding services to a vehicle
-        $vehicleType = VehicleType::find($vehicle->id);
-        // $serviceIds = [1, 2, 3];  // array of service IDs
-        $vehicleType->service_types()->attach($request->services);
+        // Adding services to the vehicle type
+        $vehicle->service_types()->attach($validatedData['services']);
 
         // Redirect with a success message
         return redirect()->route('admin.vehicleTypes')->with('success', 'Vehicle created successfully!');
@@ -65,30 +70,57 @@ class VehicleTypeController extends Controller
         $vehicle_type = VehicleType::where('vehicle_types.id', $request->id)->with('service_types')
             ->first();
 
+
+
+        if (!$vehicle_type) {
+            return redirect()->back()->with('error', 'Vehicle not found!');
+        }
+
         return view('admin.vehicle_types.edit', compact('vehicle_type', 'services'));
     }
 
     public function update(Request $request)
     {
+        // dd($request->all());
         // Validate the request
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'services' => 'required|array',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
+
         // Find the existing vehicle type
-        $vehicle = VehicleType::findOrFail($request->id);
+        $vehicle_type = VehicleType::findOrFail($request->id);
+
+        if (!$vehicle_type) {
+            return redirect()->back()->with('error', 'Vehicle not found!');
+        }
+
+        // Upload the  image if provided
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('images/vehicle_types/');
+            $file->move($destinationPath, $updatedFilename);
+
+            // Set the  image attribute to the new file name
+            $vehicle_type->image = $updatedFilename;
+        }
+
 
         // Update the vehicle type attributes
-        $vehicle->name = $request->name;
-        $vehicle->description = $request->description;
+        $vehicle_type->name = $request->name;
+        $vehicle_type->description = $request->description;
+
+        // dd($vehicle_type);
 
         // Save the changes
-        $vehicle->save();
+        $vehicle_type->save();
 
         // Sync services for the vehicle type
-        $vehicle->service_types()->sync($request->services);
+        $vehicle_type->service_types()->sync($request->services);
 
         // Redirect with a success message
         return redirect()->route('admin.vehicleTypes')->with('success', 'Vehicle updated successfully!');

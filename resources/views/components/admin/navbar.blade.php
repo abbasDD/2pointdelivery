@@ -77,7 +77,7 @@
                 <ul class="submenu collapse">
                     <li><a class="nav-link" href="{{ route('admin.systemSettings') }}">System </a></li>
                     <li><a class="nav-link" href="{{ route('admin.taxSettings') }}">Tax </a></li>
-                    <li><a class="nav-link" href="{{ route('admin.systemSettings') }}">Payment </a> </li>
+                    <li><a class="nav-link" href="{{ route('admin.paymentSettings') }}">Payment </a> </li>
                     <li><a class="nav-link" href="{{ route('admin.prioritySettings') }}">Priority </a> </li>
                 </ul>
             </li>

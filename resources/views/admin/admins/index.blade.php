@@ -17,6 +17,7 @@
                     <thead class="thead-primary">
                         <tr>
                             <th scope="col">#</th>
+                            <th>Profile Image</th>
                             <th scope="col">First Name</th>
                             <th scope="col">Last Name</th>
                             <th scope="col">Email</th>
@@ -28,7 +29,9 @@
                     <tbody>
                         @forelse ($admins as $admin)
                             <tr>
-                                <th scope="row">{{ $admin->id }}</th>
+                                <td>{{ $loop->index + 1 }}</td>
+                                <td><img src="{{ isset($admin['profile_image']) && $admin['profile_image'] !== null ? asset('images/users/' . $admin['profile_image']) : asset('images/users/default.png') }}"
+                                        width="50px" height="50px"></td>
                                 <td>{{ $admin->first_name }}</td>
                                 <td>{{ $admin->last_name }}</td>
                                 <td>{{ $admin->email }}</td>

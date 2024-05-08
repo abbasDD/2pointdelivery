@@ -38,7 +38,7 @@
     </div>
 
     {{-- Select City --}}
-    <div class="col-md-6">
+    {{-- <div class="col-md-6">
         <div class="form-group mb-3">
             <label for="city_id">City</label>
             <select class="form-control @error('city_id') is-invalid @enderror" id="city_id" name="city_id" required>
@@ -50,7 +50,7 @@
                 </span>
             @enderror
         </div>
-    </div>
+    </div> --}}
 
     {{-- GST Tax Rate --}}
     <div class="col-md-6">
@@ -168,35 +168,35 @@
         });
     }
 
-    // Get cities
-    function getCities(stateId) {
-        console.log(stateId);
-        // Get request to get cities
-        let baseUrl = "{{ url('/') }}";
-        let url = `${baseUrl}/address/cities/${stateId}`;
+    // // Get cities
+    // function getCities(stateId) {
+    //     console.log(stateId);
+    //     // Get request to get cities
+    //     let baseUrl = "{{ url('/') }}";
+    //     let url = `${baseUrl}/address/cities/${stateId}`;
 
-        // AJAX get request
-        $.ajax({
-            url: url,
-            type: 'GET',
-            success: function(response) {
-                console.log(response);
+    //     // AJAX get request
+    //     $.ajax({
+    //         url: url,
+    //         type: 'GET',
+    //         success: function(response) {
+    //             console.log(response);
 
-                // Empty city select
-                $('#city_id').empty();
-                // Add option Select City
-                $('#city_id').append(`<option value="" disabled selected>Select City</option>`);
-                // Load to city select as options using loop
-                response.forEach(function(city) {
-                    $('#city_id').append(`<option value="${city.id}">${city.name}</option>`);
-                })
-            }
-        })
-    }
+    //             // Empty city select
+    //             $('#city_id').empty();
+    //             // Add option Select City
+    //             $('#city_id').append(`<option value="" disabled selected>Select City</option>`);
+    //             // Load to city select as options using loop
+    //             response.forEach(function(city) {
+    //                 $('#city_id').append(`<option value="${city.id}">${city.name}</option>`);
+    //             })
+    //         }
+    //     })
+    // }
 
     // Load on page load
     $(document).ready(function() {
         getStates("{{ old('country_id', $taxCountry['country_id'] ?? '') }}");
-        getCities("{{ old('state_id', $taxCountry['state_id'] ?? '') }}");
+        // getCities("{{ old('state_id', $taxCountry['state_id'] ?? '') }}");
     })
 </script>

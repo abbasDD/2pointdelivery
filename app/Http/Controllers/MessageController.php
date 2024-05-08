@@ -29,7 +29,7 @@ class MessageController extends Controller
             }
             // Check if user is admin
             if ($otherUser->user_type == 'admin') {
-                $chat->otherUserInfo = Admin::where('user_id', $otherUser->id)->first();
+                $otherUserInfo = Admin::where('user_id', $otherUser->id)->first();
             }
         } else {
             $otherUser = User::findOrFail($chat->user1_id);
@@ -40,7 +40,7 @@ class MessageController extends Controller
             }
             // Check if user is admin
             if ($otherUser->user_type == 'admin') {
-                $chat->otherUserInfo = Admin::where('user_id', $otherUser->id)->first();
+                $otherUserInfo = Admin::where('user_id', $otherUser->id)->first();
             }
         }
 
