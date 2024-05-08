@@ -35,7 +35,7 @@
                         {{ $booking->status }}
                     </p>
                 </td>
-                <td><a href="{{ route('client.booking.show', $booking->id) }}" class="btn btn-sm btn-primary"><i
+                <td><a href="{{ route('helper.booking.show', $booking->id) }}" class="btn btn-sm btn-primary"><i
                             class="fas fa-eye"></i></a></td>
             </tr>
         @empty

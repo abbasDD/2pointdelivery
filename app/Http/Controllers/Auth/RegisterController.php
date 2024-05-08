@@ -54,8 +54,7 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'user_type' => ['required', 'string', Rule::in(['client', 'helper'])],
-            'account_type' => ['required', 'string', Rule::in(['individual', 'company'])], // Enum validation
+            'user_type' => ['required', 'string', Rule::in(['admin', 'user'])],
         ]);
     }
 

@@ -58,7 +58,8 @@
                             @if (auth()->user()->user_type == 'admin')
                                 <li><a class="dropdown-item" href="{{ route('admin.index') }}">Admin</a></li>
                             @else
-                                <li><a class="dropdown-item" href="{{ route('client.index') }}">Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{{ route('client.index') }}">Client</a></li>
+                                <li><a class="dropdown-item" href="{{ route('helper.index') }}">Helper</a></li>
                             @endif
                             <li><a class="dropdown-item" href="{{ route('chat') }}">Chat</a></li>
                             <li><a class="dropdown-item" href="{{ route('logout') }}"

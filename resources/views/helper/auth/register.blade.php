@@ -28,7 +28,7 @@
                             @csrf
 
                             {{-- Hidden field for helper --}}
-                            <input type="hidden" name="user_type" value="helper">
+                            <input type="hidden" name="user_type" value="user">
 
                             <div class="row">
                                 <div class="col-md-12">

@@ -1,9 +1,16 @@
 <?php
 
+use App\Http\Controllers\Helper\BookingController;
+use App\Http\Controllers\Helper\ChatController;
+use App\Http\Controllers\Helper\KycDetailController;
+use App\Http\Controllers\Helper\MessageController;
+use App\Http\Controllers\HelperController;
 use Illuminate\Support\Facades\Route;
 
 
 //Helper Routes
+
+
 
 //Helper Auth Routes
 Route::get('helper/login', 'App\Http\Controllers\Auth\LoginController@showLoginFormHelper')->name('helper.login');
@@ -12,24 +19,47 @@ Route::post('helper/login', 'App\Http\Controllers\Auth\LoginController@postHelpe
 Route::get('helper/register', 'App\Http\Controllers\Auth\RegisterController@showRegistrationFormHelper')->name('helper.register');
 Route::post('helper/register', 'App\Http\Controllers\Auth\RegisterController@register')->name('helper.register');
 
-Route::get('/helper/complete-profile', [App\Http\Controllers\HelperController::class, 'complete_profile'])->name('helper.complete_profile');
-Route::post('/helper/update-profile', [App\Http\Controllers\HelperController::class, 'update_profile'])->name('helper.update_profile');
-Route::get('/helper', [App\Http\Controllers\HelperController::class, 'index'])->name('helper.index');
 
-//KYC Details
-Route::get('/helper/kyc-details', [App\Http\Controllers\HelperController::class, 'kyc_details'])->name('helper.kyc_details');
+Route::prefix('helper')->middleware(['auth'])->name('helper.')->group(function () {
 
-//Bookings
-Route::get('/helper/bookings', [App\Http\Controllers\HelperController::class, 'bookings'])->name('helper.bookings');
+    Route::get('/complete-profile', [HelperController::class, 'complete_profile'])->name('complete_profile');
+    Route::post('/update-profile', [HelperController::class, 'update_profile'])->name('update_profile');
+    Route::get('/', [HelperController::class, 'index'])->name('index');
+    Route::get('/index', [HelperController::class, 'index'])->name('index');
 
-//settings
-Route::get('/helper/settings', [App\Http\Controllers\HelperController::class, 'settings'])->name('helper.settings');
+    //KYC Details
+    // Route::get('/kyc-details', [HelperController::class, 'kyc_details'])->name('kyc_details');
+    //KYC Details
+    Route::get('/kyc-details', [KycDetailController::class, 'index'])->name('kyc_details');
+    Route::post('/kyc/update', [KycDetailController::class, 'update'])->name('kyc.update');
 
-//Edit Profile
-Route::get('/helper/edit', [App\Http\Controllers\HelperController::class, 'edit_profile'])->name('helper.edit');
+    //Bookings
+    Route::get('/bookings', [BookingController::class, 'index'])->name('bookings');
+    Route::get('/booking/accept/{id}', [BookingController::class, 'acceptBooking'])->name('booking.accept');
+    Route::get('/booking/show/{id}', [BookingController::class, 'show'])->name('booking.show');
 
-//Teams
-Route::get('/helper/teams', [App\Http\Controllers\HelperController::class, 'teams'])->name('helper.teams');
 
-//Track Order
-Route::get('/helper/track-order', [App\Http\Controllers\HelperController::class, 'track_order'])->name('helper.trackOrder');
+    // Chat Page Routes
+    Route::get('/chats', [ChatController::class, 'index'])->name('chats');
+    Route::post('/chat/create', [ChatController::class, 'create'])->name('chat.create');
+    Route::get('/chat/messages/{id}', [MessageController::class, 'index'])->name('chat.messages');
+    Route::post('/chat/messages/store', [MessageController::class, 'store'])->name('chat.messages.store');
+
+
+    //settings
+    Route::get('/settings', [HelperController::class, 'settings'])->name('settings');
+
+    //Edit Profile -- Update Profile Routes
+    Route::get('/edit', [HelperController::class, 'edit_profile'])->name('edit');
+    Route::post('/update/personal', [HelperController::class, 'personalInfo'])->name('update.personal');
+    Route::post('/update/address', [HelperController::class, 'addressInfo'])->name('update.address');
+    Route::post('/update/social', [HelperController::class, 'socialInfo'])->name('update.social');
+    Route::post('/update/password', [HelperController::class, 'passwordInfo'])->name('update.password');
+
+
+    //Teams
+    Route::get('/teams', [HelperController::class, 'teams'])->name('teams');
+
+    //Track Order
+    Route::get('/track-order', [HelperController::class, 'track_order'])->name('trackOrder');
+});

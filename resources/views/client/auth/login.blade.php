@@ -91,6 +91,11 @@
                             </div>
                         </form>
 
+                        {{-- Seprator --}}
+                        <div class="my-5">
+                            <hr>
+                        </div>
+
                         {{-- Google Login Button  --}}
                         <div class="mb-3">
                             <a href="#" class="btn btn-google w-100">

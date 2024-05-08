@@ -50,8 +50,8 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('client_id')->references('id')->on('clients');
-            $table->foreign('helper_id')->references('id')->on('helpers');
+            $table->foreign('client_id')->references('id')->on('users');
+            $table->foreign('helper_id')->references('id')->on('users');
             $table->foreign('service_type_id')->references('id')->on('service_types');
             $table->foreign('priority_setting_id')->references('id')->on('priority_settings');
             $table->foreign('service_category_id')->references('id')->on('service_categories');

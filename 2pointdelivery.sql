@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 08, 2024 at 03:08 PM
+-- Generation Time: May 08, 2024 at 07:44 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -93,24 +93,6 @@ CREATE TABLE `bookings` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `bookings`
---
-
-INSERT INTO `bookings` (`id`, `uuid`, `user_id`, `client_id`, `helper_id`, `service_type_id`, `priority_setting_id`, `service_category_id`, `pickup_address`, `dropoff_address`, `pickup_latitude`, `pickup_longitude`, `dropoff_latitude`, `dropoff_longitude`, `booking_date`, `booking_time`, `booking_type`, `secureship_order_id`, `is_secureship_enabled`, `receiver_name`, `receiver_phone`, `receiver_email`, `delivery_note`, `status`, `total_price`, `payment_method`, `payment_status`, `booking_at`, `pickup_at`, `dropoff_at`, `completed_at`, `cancelled_at`, `is_deleted`, `deleted_at`, `created_at`, `updated_at`) VALUES
-(1, 'I8apUq7fYx6HyStAgDwGBhE1RvKV4zW9', 5, 2, NULL, 2, 1, 4, 'I-10 Markaz I 10 Markaz I-10, Islamabad, Pakistan', 'F-7 Markaz F 7 Markaz F-7, Islamabad, Pakistan', '33.6487643', '73.0407122', '33.7211404', '73.0571301', '2024-05-07', '11:56:00', 'moving', NULL, 0, NULL, NULL, NULL, NULL, 'pending', '531.08', 'cod', 'paid', '2024-05-07 18:39:55', NULL, NULL, NULL, NULL, 0, NULL, '2024-05-07 06:57:57', '2024-05-07 08:23:14'),
-(2, 'DFVyFJRXuSPidbwDuALqHYNlzkRr1Ne4', 5, 2, NULL, 1, 1, 5, 'I-10 Markaz I 10 Markaz I-10, Islamabad, Pakistan', 'F-7 Markaz F 7 Markaz F-7, Islamabad, Pakistan', '33.6487643', '73.0407122', '33.7211404', '73.0571301', '2024-05-07', '17:44:00', 'delivery', NULL, 0, 'Test', NULL, 'ghulamabbas0409@gmail.com', 'Test Note', 'draft', '673', 'cod', 'unpaid', '2024-05-07 17:44:58', NULL, NULL, NULL, NULL, 0, NULL, '2024-05-07 12:44:58', '2024-05-07 12:44:58'),
-(3, 'z3RtS7PnA4DLGKa0UiWOY5eQdBhFf6jX', 5, 2, NULL, 2, 1, 4, 'I-10 Markaz I 10 Markaz I-10, Islamabad, Pakistan', 'F-7 Markaz F 7 Markaz F-7, Islamabad, Pakistan', '33.6487643', '73.0407122', '33.7211404', '73.0571301', '2024-05-07', '11:56:00', 'moving', NULL, 0, NULL, NULL, NULL, NULL, 'pending', '531.08', 'cod', 'paid', '2024-05-07 18:39:55', NULL, NULL, NULL, NULL, 0, NULL, '2024-05-07 06:57:57', '2024-05-07 08:23:14'),
-(4, 'DFVyFJRXuSPidbwDuALqHYNlzkRr1Ne4', 5, 2, NULL, 2, 1, 4, 'I-10 Markaz I 10 Markaz I-10, Islamabad, Pakistan', 'F-7 Markaz F 7 Markaz F-7, Islamabad, Pakistan', '33.6487643', '73.0407122', '33.7211404', '73.0571301', '2024-05-07', '11:56:00', 'moving', NULL, 0, NULL, NULL, NULL, NULL, 'pending', '531.08', 'cod', 'paid', '2024-05-07 18:39:55', NULL, NULL, NULL, NULL, 0, NULL, '2024-05-07 06:57:57', '2024-05-07 08:23:14'),
-(5, '9Zv1IyMrjNlWq7eXGdYkLHcBwpsitfR4', 5, 2, NULL, 2, 1, 4, 'I-10 Markaz I 10 Markaz I-10, Islamabad, Pakistan', 'F-7 Markaz F 7 Markaz F-7, Islamabad, Pakistan', '33.6487643', '73.0407122', '33.7211404', '73.0571301', '2024-05-07', '11:56:00', 'moving', NULL, 0, NULL, NULL, NULL, NULL, 'pending', '531.08', 'cod', 'paid', '2024-05-07 18:39:55', NULL, NULL, NULL, NULL, 0, NULL, '2024-05-07 06:57:57', '2024-05-07 08:23:14'),
-(6, 'z3RtS7PnA4DLGKa0UiWOY5eQdBhFf6jX', 5, 2, NULL, 2, 1, 4, 'I-10 Markaz I 10 Markaz I-10, Islamabad, Pakistan', 'F-7 Markaz F 7 Markaz F-7, Islamabad, Pakistan', '33.6487643', '73.0407122', '33.7211404', '73.0571301', '2024-05-07', '11:56:00', 'moving', NULL, 0, NULL, NULL, NULL, NULL, 'pending', '531.08', 'cod', 'paid', '2024-05-07 18:39:55', NULL, NULL, NULL, NULL, 0, NULL, '2024-05-07 06:57:57', '2024-05-07 08:23:14'),
-(7, 'CQ2boFNdR9UViWzKklLaHEZTS1xJ63mP', 5, 2, NULL, 2, 1, 4, 'I-10 Markaz I 10 Markaz I-10, Islamabad, Pakistan', 'F-7 Markaz F 7 Markaz F-7, Islamabad, Pakistan', '33.6487643', '73.0407122', '33.7211404', '73.0571301', '2024-05-07', '11:56:00', 'moving', NULL, 0, NULL, NULL, NULL, NULL, 'pending', '531.08', 'cod', 'paid', '2024-05-07 18:39:55', NULL, NULL, NULL, NULL, 0, NULL, '2024-05-07 06:57:57', '2024-05-07 08:23:14'),
-(8, 'y4gUVvnMZfQ5SToBHj21dKrPax0wCJF9', 5, 2, NULL, 2, 1, 4, 'I-10 Markaz I 10 Markaz I-10, Islamabad, Pakistan', 'F-7 Markaz F 7 Markaz F-7, Islamabad, Pakistan', '33.6487643', '73.0407122', '33.7211404', '73.0571301', '2024-05-07', '11:56:00', 'moving', NULL, 0, NULL, NULL, NULL, NULL, 'pending', '531.08', 'cod', 'paid', '2024-05-07 18:39:55', NULL, NULL, NULL, NULL, 0, NULL, '2024-05-07 06:57:57', '2024-05-07 08:23:14'),
-(9, 'DzLkm2d60bnRpHqeU9OtSCoj1gFEv8Yf', 5, 2, NULL, 2, 2, 4, 'I-10 Markaz I 10 Markaz I-10, Islamabad, Pakistan', 'F-7 Markaz F 7 Markaz F-7, Islamabad, Pakistan', '33.6487643', '73.0407122', '33.7211404', '73.0571301', '2024-05-07', '11:56:00', 'moving', NULL, 0, NULL, NULL, NULL, NULL, 'pending', '531.08', 'cod', 'paid', '2024-05-07 18:39:55', NULL, NULL, NULL, NULL, 0, NULL, '2024-05-07 06:57:57', '2024-05-07 08:23:14'),
-(10, 'xK2ReWtuFlOswqC4z9r3HyM7LQoEfZvJ', 5, 2, NULL, 1, 1, 5, 'I-10 Markaz I 10 Markaz I-10, Islamabad, Pakistan', 'F-7 Markaz F 7 Markaz F-7, Islamabad, Pakistan', '33.6487643', '73.0407122', '33.7211404', '73.0571301', '2024-05-07', '17:44:00', 'delivery', NULL, 0, 'Test', NULL, 'ghulamabbas0409@gmail.com', 'Test Note', 'draft', '673', 'cod', 'unpaid', '2024-05-07 17:44:58', NULL, NULL, NULL, NULL, 0, NULL, '2024-05-07 12:44:58', '2024-05-07 12:44:58'),
-(11, 'vANFiDe1tYRzWM8aUH7O3CX9psB0kL2l', 5, 2, NULL, 1, 1, 5, 'I-10 Markaz I 10 Markaz I-10, Islamabad, Pakistan', 'F-7 Markaz F 7 Markaz F-7, Islamabad, Pakistan', '33.6487643', '73.0407122', '33.7211404', '73.0571301', '2024-05-07', '17:44:00', 'delivery', NULL, 0, 'Test', NULL, 'ghulamabbas0409@gmail.com', 'Test Note', 'draft', '673', 'cod', 'unpaid', '2024-05-07 17:44:58', NULL, NULL, NULL, NULL, 0, NULL, '2024-05-07 12:44:58', '2024-05-07 12:44:58'),
-(12, '1rQ3e4gGyXaKLUiOoH2ZBcRf8v6tEwN9', 5, 2, NULL, 1, 1, 5, 'I-10 Markaz I 10 Markaz I-10, Islamabad, Pakistan', 'F-7 Markaz F 7 Markaz F-7, Islamabad, Pakistan', '33.6487643', '73.0407122', '33.7211404', '73.0571301', '2024-05-07', '17:44:00', 'delivery', NULL, 0, 'Test', NULL, 'ghulamabbas0409@gmail.com', 'Test Note', 'draft', '673', 'cod', 'unpaid', '2024-05-07 17:44:58', NULL, NULL, NULL, NULL, 0, NULL, '2024-05-07 12:44:58', '2024-05-07 12:44:58');
-
 -- --------------------------------------------------------
 
 --
@@ -148,17 +130,6 @@ CREATE TABLE `chats` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `chats`
---
-
-INSERT INTO `chats` (`id`, `user1_id`, `user2_id`, `created_at`, `updated_at`) VALUES
-(1, 2, 3, '2024-05-06 07:55:26', '2024-05-06 07:55:26'),
-(2, 1, 3, '2024-05-06 07:55:26', '2024-05-06 07:55:26'),
-(3, 5, 3, '2024-05-06 07:55:26', '2024-05-06 07:55:26'),
-(4, 2, 1, '2024-05-06 07:55:26', '2024-05-06 07:55:26'),
-(5, 5, 1, '2024-05-06 06:58:49', '2024-05-06 06:58:49');
 
 -- --------------------------------------------------------
 
@@ -605,7 +576,8 @@ CREATE TABLE `helpers` (
 --
 
 INSERT INTO `helpers` (`id`, `user_id`, `first_name`, `middle_name`, `last_name`, `gender`, `date_of_birth`, `company_enabled`, `tax_id`, `phone_no`, `phone_verified_at`, `profile_image`, `suite`, `street`, `city`, `state`, `country`, `zip_code`, `is_approved`, `created_at`, `updated_at`) VALUES
-(1, 3, 'Test', 'A', 'Helper', 'Male', '2024-04-16', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, '2024-05-03 14:16:28', '2024-05-08 07:41:13');
+(1, 3, 'Test', 'A', 'Helper', 'Male', '2024-04-16', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, '2024-05-03 14:16:28', '2024-05-08 07:41:13'),
+(2, 2, 'Test', NULL, 'Abbas', 'male', '2024-05-02', 0, '1234', NULL, NULL, '1715187797.png', NULL, NULL, NULL, NULL, NULL, NULL, 0, '2024-05-08 11:59:30', '2024-05-08 12:03:17');
 
 -- --------------------------------------------------------
 
@@ -670,7 +642,8 @@ CREATE TABLE `kyc_details` (
 --
 
 INSERT INTO `kyc_details` (`id`, `user_id`, `front_image`, `back_image`, `id_type`, `id_number`, `country`, `state`, `city`, `issue_date`, `expiry_date`, `is_verified`, `created_at`, `updated_at`) VALUES
-(1, 5, '1715155158_front.jpg', '1715155158_back.jpg', 'residence ID', '122311', 'Pakistan', 'Islamabad', '223', '2022-05-10', '2027-06-10', 0, '2024-05-08 02:59:17', '2024-05-08 02:59:18');
+(1, 5, '1715155158_front.jpg', '1715155158_back.jpg', 'residence ID', '122311', 'Pakistan', 'Islamabad', '223', '2022-05-10', '2027-06-10', 0, '2024-05-08 02:59:17', '2024-05-08 02:59:18'),
+(2, 2, '1715186260_front.jpeg', '1715186260_back.png', 'residence ID', 'dd', 'dd', 'dd', 'dd', '2022-06-09', '2026-06-09', 0, '2024-05-08 11:37:39', '2024-05-08 11:37:40');
 
 -- --------------------------------------------------------
 
@@ -688,25 +661,6 @@ CREATE TABLE `messages` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `messages`
---
-
-INSERT INTO `messages` (`id`, `chat_id`, `sender_id`, `message`, `read`, `deleted`, `created_at`, `updated_at`) VALUES
-(1, 2, 1, 'This is a test message', 0, 0, '2024-05-05 07:56:12', '2024-05-06 07:56:12'),
-(2, 4, 1, 'Message 01', 0, 0, '2024-05-05 07:56:12', '2024-05-06 07:56:12'),
-(3, 4, 3, 'Message 02', 0, 0, '2024-05-01 07:56:12', '2024-05-06 07:56:12'),
-(4, 2, 1, 'test', 0, 0, '2024-05-06 05:10:37', '2024-05-06 05:10:37'),
-(5, 2, 1, 'Test', 0, 0, '2024-05-06 05:15:12', '2024-05-06 05:15:12'),
-(6, 4, 1, 'test', 0, 0, '2024-05-06 05:15:33', '2024-05-06 05:15:33'),
-(7, 4, 3, 'Ghulam Abbas', 0, 0, '2024-05-06 05:18:03', '2024-05-06 05:18:03'),
-(8, 4, 1, 'Test', 0, 0, '2024-05-06 05:27:43', '2024-05-06 05:27:43'),
-(9, 4, 1, 'Abbas', 0, 0, '2024-05-06 05:28:56', '2024-05-06 05:28:56'),
-(10, 4, 3, 'Test again', 0, 0, '2024-05-06 05:29:51', '2024-05-06 05:29:51'),
-(11, 5, 1, 'Abbas', 0, 0, '2024-05-06 07:16:17', '2024-05-06 07:16:17'),
-(12, 5, 1, 'Test', 0, 0, '2024-05-06 07:58:36', '2024-05-06 07:58:36'),
-(13, 3, 5, 'test', 0, 0, '2024-05-08 03:36:02', '2024-05-08 03:36:02');
 
 -- --------------------------------------------------------
 
@@ -922,9 +876,11 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('0eJ6as4it35rauRbudXkzZWHx9lCY0RVTFI7UiIe', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiZVpicmxac0xTems1NFhGRXJSY0ZPQ1VPb1hOZmdteThhQU4yRDBveCI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czo0NToiaHR0cDovL2xvY2FsaG9zdC8ycG9pbnRkZWxpdmVyeS9hZG1pbi9jbGllbnRzIjt9czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDU6Imh0dHA6Ly9sb2NhbGhvc3QvMnBvaW50ZGVsaXZlcnkvYWRtaW4vY2xpZW50cyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1715171249),
-('rP4kr7znaYsPmPbGLjsCxY2n6uUnVTAWXKXUybci', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiZzFHVEI2REhKTzFNanowREt0TjQwb3c3Mmw3cFZMdTZ1Qm1QVjFmMiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDI6Imh0dHA6Ly9sb2NhbGhvc3QvMnBvaW50ZGVsaXZlcnkvYWRtaW4vZmFxcyI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1715173448),
-('TW7YOhnRG5RAZOQkkcn8DUIpsg1HsTckMjREKGhu', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiUXNkQjgzYzhTRHVocEJuNUlEUGx0QjR6ZmFuUlZPT1VvdGVaYUF5ViI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly9sb2NhbGhvc3QvMnBvaW50ZGVsaXZlcnkvbG9naW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1715171250);
+('aK5Ko4f3zRqIeVZHZef3LOsW49e2m0aH1zAPbzov', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiMW1OZFlKYk85a2EzTnhHOThSU2E0ODZ5NHZUaEppM3pVU1RIeDk1cSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly9sb2NhbGhvc3QvMnBvaW50ZGVsaXZlcnkvbG9naW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1715186825),
+('NpaenJ9eg1DocYutQ5FPxBEPky0GMa3Z1vQSRClw', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiV1djcHo4eXVoRzhPMEVjZEFzNGZEcGlIbk5HYkhINXlBNjlnUDJSSiI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czo0NDoiaHR0cDovL2xvY2FsaG9zdC8ycG9pbnRkZWxpdmVyeS9oZWxwZXIvY2hhdHMiO31zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czo0NDoiaHR0cDovL2xvY2FsaG9zdC8ycG9pbnRkZWxpdmVyeS9oZWxwZXIvY2hhdHMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1715187105),
+('T0lnsvP7geeerhhm0oJ0jLLVQpj9uPbytgMdQULz', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiMXJDNUVRaWFqV0ZYV2lCdGVZeFdVNlh0YmQwY0JMV29HbmtGNWhQRCI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czo0NDoiaHR0cDovL2xvY2FsaG9zdC8ycG9pbnRkZWxpdmVyeS9jbGllbnQvY2hhdHMiO31zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czo0NDoiaHR0cDovL2xvY2FsaG9zdC8ycG9pbnRkZWxpdmVyeS9jbGllbnQvY2hhdHMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1715186824),
+('TTj3nLXg6peZM5sbfMTjzLEw9MqEVQYJffGzuQls', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoibTVTamE2ejhZdHdGcnR4blEzU1prS21CTEpoVUpoTlg4VmJEcDdOciI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly9sb2NhbGhvc3QvMnBvaW50ZGVsaXZlcnkvbG9naW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1715187105),
+('WqawW6F1uDoouj9XTr68Y9gbFUyAwTm6cvGauMBm', 9, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiMnFXbEZXTjR0ZmlJa3N0MllqcEhTd3pETDNLaHJnWk56QXh6Q0pRcSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHA6Ly9sb2NhbGhvc3QvMnBvaW50ZGVsaXZlcnkvY2xpZW50Ijt9czoxMjoiaW50ZW5kZWRfdXJsIjtzOjMyOiJodHRwOi8vbG9jYWxob3N0LzJwb2ludGRlbGl2ZXJ5LyI7czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6OTt9', 1715189773);
 
 -- --------------------------------------------------------
 
@@ -952,7 +908,12 @@ INSERT INTO `social_links` (`id`, `user_id`, `user_type`, `key`, `link`, `is_act
 (2, 5, 'client', 'facebook', 'Test Abbas', 1, '2024-05-08 06:35:16', '2024-05-08 06:49:03'),
 (3, 5, 'client', 'linkedin', 'Test', 1, '2024-05-08 06:35:16', '2024-05-08 06:35:16'),
 (4, 5, 'client', 'instagram', 'Test', 1, '2024-05-08 06:35:16', '2024-05-08 06:35:16'),
-(5, 5, 'client', 'tiktok', 'Test', 1, '2024-05-08 06:35:16', '2024-05-08 06:35:16');
+(5, 5, 'client', 'tiktok', 'Test', 1, '2024-05-08 06:35:16', '2024-05-08 06:35:16'),
+(6, 2, 'helper', '_token', '0JSYamnR383LRPk6YSzq8MGZbwdV0FaNtWoEeoZQ', 1, '2024-05-08 12:02:54', '2024-05-08 12:02:54'),
+(7, 2, 'helper', 'facebook', 'Test', 1, '2024-05-08 12:02:54', '2024-05-08 12:02:54'),
+(8, 2, 'helper', 'linkedin', 'test', 1, '2024-05-08 12:02:54', '2024-05-08 12:02:54'),
+(9, 2, 'helper', 'instagram', 'test', 1, '2024-05-08 12:02:54', '2024-05-08 12:02:54'),
+(10, 2, 'helper', 'tiktok', 'test', 1, '2024-05-08 12:02:54', '2024-05-08 12:02:54');
 
 -- --------------------------------------------------------
 
@@ -6183,12 +6144,14 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `user_type`, `client_enabled`, `helper_enabled`, `email`, `email_verified_at`, `password`, `is_active`, `is_updated`, `is_deleted`, `deleted_at`, `remember_token`, `created_at`, `updated_at`) VALUES
 (1, 'admin', 1, 1, 'admin@gmail.com', '2024-04-24 01:12:32', '$2y$12$Ytc3ivAA4HuEqMsd/IXZgu4Rsnb9LsOkAnJH1Fktb70GyJNZ6dHfa', 1, 1, 0, NULL, 'cEkKD0GhqHRjWfQnwpYbeWbP47gIFhdjMFmIvmQAxtkNfcDDywtE3OAk1bX5', '2024-04-24 01:12:32', '2024-04-24 01:12:32'),
-(2, 'user', 1, 0, 'client@gmail.com', '2024-04-24 01:12:32', '$2y$12$oBtK2MqFqwaj.nbgZBUUluTi/WuFVGZd0ikMTjGII/.YzgOprliRK', 1, 1, 0, NULL, 'BNt1sA1zApOCFDOpC9wLOH6BQHiaTHdjBs6PcwIsjQkqBBaJwlvbhFEwg1MV', '2024-04-24 01:12:33', '2024-05-08 07:23:27'),
-(3, 'user', 0, 1, 'helper@gmail.com', '2024-04-24 01:12:33', '$2y$12$MFo1GJvW74dkqb6n.nHf5O6pEMZBwv5dOEtN1bowIela1hBmtwG9W', 1, 1, 0, NULL, 'gwXqrlGfmIbkLt1yO4JaL5yD9bG7LizVCtLU1HPfAlHEHqjztx1D5JIGTfex', '2024-04-24 01:12:33', '2024-05-03 08:31:31'),
+(2, 'user', 1, 0, 'client@gmail.com', '2024-04-24 01:12:32', '$2y$12$oBtK2MqFqwaj.nbgZBUUluTi/WuFVGZd0ikMTjGII/.YzgOprliRK', 1, 1, 0, NULL, '3UbdO4Q3uoUkExkGKMqUHnpr6NIMvW7b0RFw0JVcaIePg7GxyuyNGScp5sfm', '2024-04-24 01:12:33', '2024-05-08 07:23:27'),
+(3, 'user', 0, 1, 'helper@gmail.com', '2024-04-24 01:12:33', '$2y$12$MFo1GJvW74dkqb6n.nHf5O6pEMZBwv5dOEtN1bowIela1hBmtwG9W', 1, 1, 0, NULL, 'EjvsdEtQZoQSXToyurSyDAwWzZKVmEJT3kgdUeKfNQMqEPq5ABpV075MxKHa', '2024-04-24 01:12:33', '2024-05-03 08:31:31'),
 (4, 'admin', 1, 0, 'subadmin@gmail.com', NULL, '$2y$12$B2wfZ0eeIcs0ig5kNpGHW.PjYGZydO7iunZhTsWZWZhoidIkT56I.', 1, 0, 0, NULL, NULL, '2024-04-24 01:18:46', '2024-04-24 01:18:46'),
 (5, 'user', 1, 0, 'abbas@gmail.com', NULL, '$2y$12$rNkLy09RPebpOIcj2HdLqePwElB238q/NRCgihih/Q8RS9lPcz3zK', 1, 0, 0, NULL, NULL, '2024-04-24 05:14:41', '2024-05-08 07:23:26'),
 (6, 'admin', 1, 0, 'abbasadmin@gmail.com', NULL, '$2y$12$DtnZdYdb3V0E.kYBNZtDBugVUGz2tn/BR9JjBmb36.rqIigHYy4Hy', 1, 0, 0, NULL, NULL, '2024-05-08 02:23:05', '2024-05-08 02:23:05'),
-(7, 'admin', 1, 0, 'bring@gmail.com', NULL, '$2y$12$836l79QOKG9DC3jpeL8FRuxmEUsir9omxK2xHq3euSXyYnrQnKWGC', 1, 0, 0, NULL, NULL, '2024-05-08 02:25:03', '2024-05-08 02:25:03');
+(7, 'admin', 1, 0, 'bring@gmail.com', NULL, '$2y$12$836l79QOKG9DC3jpeL8FRuxmEUsir9omxK2xHq3euSXyYnrQnKWGC', 1, 0, 0, NULL, NULL, '2024-05-08 02:25:03', '2024-05-08 02:25:03'),
+(8, 'user', 1, 0, 'abbas123@gmail.com', NULL, '$2y$12$eNWQeV/YjDxq5ArAv3hzEupa3X3lQ2fmbIPJk7VjJYyyxJkYCJef.', 1, 0, 0, NULL, NULL, '2024-05-08 12:34:27', '2024-05-08 12:34:27'),
+(9, 'user', 1, 0, 'abbas13@gmail.com', NULL, '$2y$12$tuVJcWK4TIre/vcSE8qzmOr1kn66ddAiHaNVc.pDNyyDUrqCWXnYS', 1, 0, 0, NULL, NULL, '2024-05-08 12:35:07', '2024-05-08 12:35:07');
 
 -- --------------------------------------------------------
 
@@ -6233,8 +6196,6 @@ ALTER TABLE `admins`
 ALTER TABLE `bookings`
   ADD PRIMARY KEY (`id`),
   ADD KEY `bookings_user_id_foreign` (`user_id`),
-  ADD KEY `bookings_client_id_foreign` (`client_id`),
-  ADD KEY `bookings_helper_id_foreign` (`helper_id`),
   ADD KEY `bookings_service_type_id_foreign` (`service_type_id`),
   ADD KEY `bookings_priority_setting_id_foreign` (`priority_setting_id`),
   ADD KEY `bookings_service_category_id_foreign` (`service_category_id`);
@@ -6456,7 +6417,7 @@ ALTER TABLE `bookings`
 -- AUTO_INCREMENT for table `chats`
 --
 ALTER TABLE `chats`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `cities`
@@ -6498,7 +6459,7 @@ ALTER TABLE `faqs`
 -- AUTO_INCREMENT for table `helpers`
 --
 ALTER TABLE `helpers`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `jobs`
@@ -6510,13 +6471,13 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `kyc_details`
 --
 ALTER TABLE `kyc_details`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `migrations`
@@ -6552,7 +6513,7 @@ ALTER TABLE `service_types`
 -- AUTO_INCREMENT for table `social_links`
 --
 ALTER TABLE `social_links`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `states`
@@ -6582,7 +6543,7 @@ ALTER TABLE `translations`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `vehicle_types`
@@ -6599,17 +6560,6 @@ ALTER TABLE `vehicle_types`
 --
 ALTER TABLE `admins`
   ADD CONSTRAINT `admins_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
-
---
--- Constraints for table `bookings`
---
-ALTER TABLE `bookings`
-  ADD CONSTRAINT `bookings_client_id_foreign` FOREIGN KEY (`client_id`) REFERENCES `clients` (`id`),
-  ADD CONSTRAINT `bookings_helper_id_foreign` FOREIGN KEY (`helper_id`) REFERENCES `helpers` (`id`),
-  ADD CONSTRAINT `bookings_priority_setting_id_foreign` FOREIGN KEY (`priority_setting_id`) REFERENCES `priority_settings` (`id`),
-  ADD CONSTRAINT `bookings_service_category_id_foreign` FOREIGN KEY (`service_category_id`) REFERENCES `service_categories` (`id`),
-  ADD CONSTRAINT `bookings_service_type_id_foreign` FOREIGN KEY (`service_type_id`) REFERENCES `service_types` (`id`),
-  ADD CONSTRAINT `bookings_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `chats`

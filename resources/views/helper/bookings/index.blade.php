@@ -1,6 +1,6 @@
 @extends('helper.layouts.app')
 
-@section('title', 'Orders')
+@section('title', 'Bookings')
 
 @section('content')
 
@@ -8,6 +8,6 @@
         <h3>Bookings</h3>
     </div>
 
-    @include('client.bookings.partials.list')
+    @include('helper.bookings.partials.list')
 
 @endsection

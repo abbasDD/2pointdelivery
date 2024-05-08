@@ -82,6 +82,15 @@ class ClientController extends Controller
         // Get client data
         $clientData = Client::where('user_id', auth()->user()->id)->first();
 
+        // Create a new helper if not found
+        if (!$clientData) {
+            $clientData = new Client();
+            $clientData->user_id = auth()->user()->id;
+            $clientData->save();
+
+            $clientData = Client::where('user_id', auth()->user()->id)->first();
+        }
+
         // Get all social links
         $socialLinks = SocialLink::where('user_id', auth()->user()->id)->where('user_type', 'client')->get();
 
@@ -261,6 +270,6 @@ class ClientController extends Controller
 
     public function track_order()
     {
-        return view('helper.track_order');
+        return view('client.track_order');
     }
 }

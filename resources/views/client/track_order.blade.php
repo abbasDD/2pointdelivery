@@ -1,4 +1,4 @@
-@extends('helper.layouts.app')
+@extends('client.layouts.app')
 
 @section('title', 'Track Order')
 
@@ -37,6 +37,13 @@
 
             function trackOrder() {
                 var order_id = document.getElementById("order_id").value;
+
+                // if empty show error
+                if (!order_id) {
+                    alert('Please fill up order id');
+                    return false;
+                }
+
                 service = new google.maps.places.PlacesService(map);
                 service.textSearch({
                     query: order_id

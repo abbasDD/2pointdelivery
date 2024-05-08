@@ -36,20 +36,7 @@
                         </div>
                         <div class="">
                             <h5 class="card-title">{{ $satistics['pending_bookings'] }}</h5>
-                            <p class="card-text">Pending Bookings</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-body d-flex align-items-center justify-content-between p-4">
-                        <div class="">
-                            <i class="fas fa-dolly fa-3x text-danger"></i>
-                        </div>
-                        <div class="">
-                            <h5 class="card-title">{{ $satistics['cancelled_bookings'] }}</h5>
-                            <p class="card-text">Cancelled Bookings</p>
+                            <p class="card-text">Accepted Bookings</p>
                         </div>
                     </div>
                 </div>
@@ -61,8 +48,21 @@
                             <i class="fas fa-dolly fa-3x text-success"></i>
                         </div>
                         <div class="">
+                            <h5 class="card-title">{{ $satistics['cancelled_bookings'] }}</h5>
+                            <p class="card-text">Completed Bookings</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body d-flex align-items-center justify-content-between p-4">
+                        <div class="">
+                            <i class="fas fa-dollar fa-3x text-success"></i>
+                        </div>
+                        <div class="">
                             <h5 class="card-title">{{ $satistics['unpaid_bookings'] }}</h5>
-                            <p class="card-text">Unpaid Bookings</p>
+                            <p class="card-text">Total Earnings</p>
                         </div>
                     </div>
                 </div>
@@ -84,10 +84,10 @@
                                 <thead class="thead-primary">
                                     <tr>
                                         <th>ID</th>
+                                        <th>Client</th>
                                         <th>Priority</th>
-                                        <th>Pickup Address</th>
-                                        <th>Dropoff Address</th>
-                                        <th>Type</th>
+                                        <th>Service Type</th>
+                                        <th>Address</th>
                                         <th>Price</th>
                                         <th>Action</th>
                                     </tr>
@@ -95,15 +95,26 @@
                                 <tbody>
                                     @forelse ($bookings as $booking)
                                         <tr>
+
                                             <td>{{ $loop->index + 1 }}</td>
+                                            <td>{{ $booking->client->first_name }}</td>
                                             <td>{{ $booking->prioritySetting->name }}</td>
-                                            <td>{{ $booking->pickup_address }}</td>
-                                            <td>{{ $booking->dropoff_address }}</td>
-                                            <td>{{ $booking->serviceType->name }}</td>
+                                            <td>
+                                                {{-- Service Type --}}
+                                                <p>{{ $booking->serviceType->name }}</p>
+                                                {{-- Service Category --}}
+                                                <p>{{ $booking->serviceCategory->name }}</p>
+                                            </td>
+                                            <td>
+                                                {{-- Pickup Address --}}
+                                                <p>Pickup: {{ $booking->pickup_address }}</p>
+                                                {{-- Dropoff Address --}}
+                                                <p>Dropoff: {{ $booking->dropoff_address }}</p>
+                                            </td>
                                             <td>{{ $booking->total_price }}</td>
                                             <td>
-                                                <button class="btn btn-sm btn-primary"
-                                                    onclick="acceptBooking('{{ $booking->id }}')">Accept</button>
+                                                <a class="btn btn-sm btn-primary"
+                                                    href="{{ route('helper.booking.accept', $booking->id) }}">Accept</a>
                                             </td>
                                         </tr>
                                     @empty

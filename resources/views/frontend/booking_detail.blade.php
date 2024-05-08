@@ -90,7 +90,8 @@
                                             <li {{ $booking->status == 'pending' ? 'class=active' : '' }}>
                                                 <p>Pending</p>
                                             </li>
-                                            <li {{ $booking->status == 'in_transit' ? 'class=active' : '' }}>
+                                            <li
+                                                {{ $booking->status == 'in_transit' || $booking->status == 'accepted' ? 'class=active' : '' }}>
                                                 <p>In Transit</p>
                                             </li>
                                             <li {{ $booking->status == 'delivered' ? 'class=active' : '' }}>

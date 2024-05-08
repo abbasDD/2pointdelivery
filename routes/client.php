@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ClientController;
@@ -12,12 +14,12 @@ use Illuminate\Support\Facades\Route;
 
 //Client Auth Routes
 // Route::get('client/login', 'App\Http\Controllers\Auth\LoginController@showLoginFormClient')->name('client.login');
-Route::get('/client/login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginFormClient'])->name('client.login');
-Route::post('/client/login', [App\Http\Controllers\Auth\LoginController::class, 'postClientLoginForm'])->name('client.login');
+Route::get('/client/login', [LoginController::class, 'showLoginFormClient'])->name('client.login');
+Route::post('/client/login', [LoginController::class, 'postClientLoginForm'])->name('client.login');
 // Route::post('client/login', 'App\Http\Controllers\Auth\LoginController@login')->name('client.login');
 
-Route::get('client/register', 'App\Http\Controllers\Auth\RegisterController@showRegistrationFormClient')->name('client.register');
-Route::post('client/register', 'App\Http\Controllers\Auth\RegisterController@register')->name('client.register');
+Route::get('client/register', [RegisterController::class, 'showRegistrationFormClient'])->name('client.register');
+Route::post('client/register', [RegisterController::class, 'register'])->name('client.register');
 
 Route::post('logout', 'App\Http\Controllers\Auth\LoginController@logout')->name('logout');
 

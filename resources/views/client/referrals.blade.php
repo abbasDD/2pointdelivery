@@ -9,16 +9,6 @@
             <div class="section-header mb-2">
                 <div class="d-flex justify-content-between">
                     <h4>Referrals History</h4>
-                    <div class="dropdown mr-2">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            All
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#">Completed</a>
-                            <a class="dropdown-item" href="#">Cancelled</a>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="section-body">
@@ -35,6 +25,9 @@
                     </thead>
                     <tbody>
                         <tr>
+                            <td colspan="6" class="text-center">No data found</td>
+                        </tr>
+                        {{-- <tr>
                             <th scope="row">1</th>
                             <td>@john123</td>
                             <td>Company Client</td>
@@ -113,7 +106,7 @@
                             <td>110</td>
                             <td><span class="badge bg-warning">Pending</span></td>
                             <td><a href="#" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a></td>
-                        </tr>
+                        </tr> --}}
                     </tbody>
                 </table>
 

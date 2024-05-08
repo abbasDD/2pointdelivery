@@ -1,4 +1,4 @@
-@extends('client.layouts.app')
+@extends('helper.layouts.app')
 
 @section('title', 'Edit Profile')
 
@@ -11,23 +11,23 @@
                 <div class="tab-pane fade m-3 show active" id="v-pills-personal" role="tabpanel"
                     aria-labelledby="v-pills-personal-tab">
                     {{-- Load Personal Tab  --}}
-                    @include('client.profile.partials.personal')
+                    @include('helper.profile.partials.personal')
                 </div>
                 {{-- Show only if company enabled --}}
                 {{-- Address Tab --}}
                 <div class="tab-pane fade m-3" id="v-pills-address" role="tabpanel" aria-labelledby="v-pills-address-tab">
                     {{-- Load Address Tab --}}
-                    @include('client.profile.partials.address')
+                    @include('helper.profile.partials.address')
                 </div>
                 {{--  Password Tab --}}
                 <div class="tab-pane fade m-3" id="v-pills-password" role="tabpanel" aria-labelledby="v-pills-password-tab">
                     {{-- Load  Password Tab --}}
-                    @include('client.profile.partials.password')
+                    @include('helper.profile.partials.password')
                 </div>
                 {{-- Social Links Tab --}}
                 <div class="tab-pane fade m-3" id="v-pills-social" role="tabpanel" aria-labelledby="v-pills-social-tab">
                     {{-- Load  Social Links Tab --}}
-                    @include('client.profile.partials.social')
+                    @include('helper.profile.partials.social')
                 </div>
             </div>
             <div class="card mt-3">

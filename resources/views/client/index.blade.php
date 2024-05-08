@@ -72,13 +72,13 @@
         </div>
     </div>
 
-    {{-- Recent Orders  --}}
+    {{-- Recent Bookings  --}}
     <div class="recent-orders">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">Recent Orders</h5>
+                        <h5 class="mb-0">Recent Bookings</h5>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -125,7 +125,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="3" class="text-center">No data found</td>
+                                            <td colspan="8" class="text-center">No data found</td>
                                         </tr>
                                     @endforelse
                                 </tbody>

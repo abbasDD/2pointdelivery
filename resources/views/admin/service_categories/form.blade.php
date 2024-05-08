@@ -95,7 +95,7 @@
     <div class="col-md-6 disable-prices {{ $serviceCategory['is_secureship_enabled'] ? 'd-none' : '' }}"
         id="base_price_distance_div">
         <div class="form-group mb-3">
-            <label for="base_price_distance">Base Price Distance</label>
+            <label for="base_price_distance">Base Distance</label>
             <input type="text" class="form-control @error('base_price_distance') is-invalid @enderror"
                 id="base_price_distance" name="base_price_distance"
                 value="{{ old('base_price_distance', $serviceCategory['base_price_distance'] ?? '') }}"
@@ -112,7 +112,7 @@
     <div class="col-md-6 disable-prices {{ $serviceCategory['is_secureship_enabled'] ? 'd-none' : '' }}"
         id="price_per_km_div">
         <div class="form-group mb-3">
-            <label for="price_per_km">Price Per KM</label>
+            <label for="price_per_km">Extra Distance Price</label>
             <input type="text" class="form-control @error('price_per_km') is-invalid @enderror" id="price_per_km"
                 name="price_per_km" value="{{ old('price_per_km', $serviceCategory['price_per_km'] ?? '') }}"
                 placeholder="Enter Price Per KM" required pattern="[0-9]*">

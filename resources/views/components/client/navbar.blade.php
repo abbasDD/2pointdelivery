@@ -21,7 +21,8 @@
                         @if (auth()->user()->user_type == 'admin')
                             <li><a class="dropdown-item" href="{{ route('admin.index') }}">Admin</a></li>
                         @else
-                            <li><a class="dropdown-item" href="{{ route('client.index') }}">Dashboard</a></li>
+                            <li><a class="dropdown-item" href="{{ route('client.index') }}">Client</a></li>
+                            <li><a class="dropdown-item" href="{{ route('helper.index') }}">Helper</a></li>
                         @endif
                         <li><a class="dropdown-item" href="{{ route('chat') }}">Chat</a></li>
                         <li><a class="dropdown-item" href="{{ route('logout') }}"
@@ -49,7 +50,8 @@
         <ul class="p-0">
             <li class="nav-item"><a class="nav-link" href="{{ route('client.index') }}"><i class="fa fa-home"></i>
                     Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('client.kyc_details') }}"><i class="fa fa-bank"></i>
+            <li class="nav-item"><a class="nav-link" href="{{ route('client.kyc_details') }}"><i
+                        class="fa fa-bank"></i>
                     KYC Detail</a>
             </li>
             @if (Auth::user()->account_type == 'company')
@@ -57,9 +59,9 @@
             @endif
             <li class="nav-item"><a class="nav-link" href="{{ route('client.bookings') }}"><i class="fa fa-dolly"></i>
                     Bookings</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('client.invoices') }}"><i
+            {{-- <li class="nav-item"><a class="nav-link" href="{{ route('client.invoices') }}"><i
                         class="fa fa-file-invoice"></i>
-                    Invoices</a></li>
+                    Invoices</a></li> --}}
             <li class="nav-item"><a class="nav-link" href="{{ route('client.chats') }}"><i class="fa fa-comment"></i>
                     Chat</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.referrals') }}"><i

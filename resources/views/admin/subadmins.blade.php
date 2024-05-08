@@ -9,16 +9,6 @@
             <div class="section-header mb-2">
                 <div class="d-flex justify-content-between">
                     <h4>Sub Admins</h4>
-                    <div class="dropdown mr-2">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            All
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#">Completed</a>
-                            <a class="dropdown-item" href="#">Cancelled</a>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="section-body">

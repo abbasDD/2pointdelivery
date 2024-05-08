@@ -27,7 +27,7 @@
                         <form method="POST" action="{{ route('client.register') }}">
                             @csrf
                             {{-- Hidden field for client --}}
-                            <input type="hidden" name="user_type" value="client">
+                            <input type="hidden" name="user_type" value="user">
 
                             <div class="row">
                                 <div class="col-md-12">
