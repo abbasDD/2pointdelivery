@@ -25,7 +25,7 @@
             <h2>Move or Deliver Anything</h2>
             <p>Efficient logistics solutions to transport or deliver any item, anywhere, anytime.</p>
         </div>
-        <form action="{{ route('new_booking') }}" method="GET">
+        <form action="{{ route('newBooking') }}" method="GET">
             <div class="row">
                 {{-- Select Service --}}
                 <div class="col-md-2">

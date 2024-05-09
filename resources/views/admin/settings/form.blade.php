@@ -61,6 +61,9 @@
             <select class="form-control @error('currency') is-invalid @enderror" id="currency" name="currency"
                 required>
                 <option value="" disabled>Select Currency</option>
+                <option value="cad"
+                    {{ old('currency', $systemSettings['currency'] ?? '') == 'cad' ? 'selected' : '' }}>CAD
+                </option>
                 <option value="usd"
                     {{ old('currency', $systemSettings['currency'] ?? '') == 'usd' ? 'selected' : '' }}>USD
                 </option>

@@ -72,4 +72,8 @@ class Booking extends Model
     {
         return $this->belongsTo(ServiceCategory::class);
     }
+    public function bookingPayment()
+    {
+        return $this->belongsTo(BookingPayment::class);
+    }
 }

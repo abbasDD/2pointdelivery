@@ -121,23 +121,30 @@
                         {{-- Heading --}}
                         <h6>Helpers Request</h6>
                         {{-- Helper List --}}
-                        @foreach ($requestedHelpers as $requestedHelper)
+                        @forelse ($helperRequests as $helperRequest)
                             {{-- Top Helper Item --}}
                             <div class="d-flex align-items-center justify-content-between mb-3">
                                 <div class="d-flex align-items-center">
-                                    <img class="rounded mr-3" src="{{ $requestedHelper['image'] }}" alt="">
+                                    <img class="rounded mr-3"
+                                        src="{{ $helperRequest['profile_image'] ? asset('images/users/' . $helperRequest['profile_image']) : asset('images/users/default.png') }}"
+                                        width="50" height="50" alt="profile">
                                     <div class="info">
-                                        <h6 class="mb-0">{{ $requestedHelper['name'] }}</h6>
-                                        <p class="mb-0">{{ $requestedHelper['email'] }}</p>
+                                        <h6 class="mb-0">{{ $helperRequest['first_name'] }}</h6>
+                                        <p class="mb-0">{{ $helperRequest['email'] }}</p>
                                     </div>
                                 </div>
                                 <div class="action">
                                     {{-- <a href="#" class="fs-xxs text-primary">View </a> --}}
-                                    <button class="btn btn-sm btn-primary">View</button>
+                                    <a href="{{ route('admin.helper.show', $helperRequest['id']) }}"
+                                        class="btn btn-sm btn-primary">View</a>
                                 </div>
                             </div>
                             <hr class="mt-1">
-                        @endforeach
+                        @empty
+                            <div class="text-center">
+                                <p>No Requests Available</p>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
@@ -157,7 +164,7 @@
         </div>
     </div>
 
-    {{-- Latest Bookings & Helper Requests --}}
+    {{-- Latest Bookings --}}
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -170,6 +177,7 @@
                         <thead class="thead-primary">
                             <tr>
                                 <th>ID</th>
+                                <th>Date</th>
                                 <th>Client</th>
                                 <th>Priority</th>
                                 <th>Service Type</th>
@@ -183,6 +191,7 @@
                             @forelse ($latestBookings as $booking)
                                 <tr>
                                     <td>{{ $loop->index + 1 }}</td>
+                                    <td>{{ $booking->booking_date }}</td>
                                     <td>{{ $booking->client->first_name }}</td>
                                     <td>{{ $booking->prioritySetting->name }}</td>
                                     <td>
@@ -209,7 +218,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="text-center">No data found</td>
+                                    <td colspan="9" class="text-center">No data found</td>
                                 </tr>
                             @endforelse
                         </tbody>

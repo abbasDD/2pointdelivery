@@ -5,7 +5,7 @@
 @section('content')
 
     {{-- Ask user to complete profile --}}
-    @if (!Auth::user()->is_updated)
+    @if (!$client_updated)
         <div class="alert alert-danger d-flex align-items-center justify-content-between" role="alert">
             <p class="m-0">Your profile is incomplete. Please complete it to book your first service.</p>
             <p class="m-0"><a href="{{ route('client.edit') }}" class="btn btn-primary ml-2">Complete</a>
@@ -13,6 +13,14 @@
         </div>
     @endif
 
+    {{-- Ask user to book first service if profile is complete --}}
+    @if ($client_updated && $satistics['total_bookings'] == 0)
+        <div class="alert alert-success d-flex align-items-center justify-content-between" role="alert">
+            <p class="m-0">You haven't embarked on your journey with us yet. Book your first service.</p>
+            <p class="m-0"><a href="{{ route('newBooking') }}" class="btn btn-primary ml-2">Book Now</a>
+            </p>
+        </div>
+    @endif
 
     {{-- Overall Statistics  --}}
     <div class="statistics">

@@ -21,7 +21,7 @@
             <div class="input-group">
                 <input type="text" id="price" class="form-control" placeholder="Price" name="price"
                     value="{{ old('price', $prioritySetting['price'] ?? '') }}" aria-describedby="price"
-                    oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required>
                 <span class="input-group-text text-uppercase" id="price">$</span>
             </div>
             @error('price')

@@ -562,7 +562,7 @@
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control" placeholder="Length"
                                             name="package_length" aria-describedby="package_length"
-                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
                                             onchange="updatePaymentAmount()">
                                         <span class="input-group-text text-uppercase"
                                             id="package_length">{{ config('dimension') ?: 'INCH' }}</span>
@@ -574,7 +574,7 @@
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control" placeholder="Width"
                                             name="package_width" aria-describedby="package_width"
-                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
                                             onchange="updatePaymentAmount()">
                                         <span class="input-group-text text-uppercase"
                                             id="package_width">{{ config('dimension') ?: 'INCH' }}</span>
@@ -586,7 +586,7 @@
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control" placeholder="Height"
                                             name="package_height" aria-describedby="package_height"
-                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
                                             onchange="updatePaymentAmount()">
                                         <span class="input-group-text text-uppercase"
                                             id="package_height">{{ config('dimension') ?: 'INCH' }}</span>
@@ -600,7 +600,7 @@
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control" placeholder="Weight"
                                             name="package_weight" aria-describedby="package_weight"
-                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
                                             onchange="updatePaymentAmount()">
                                         <span class="input-group-text text-uppercase"
                                             id="package_weight">{{ config('weight') ?: 'Kg' }}</span>
@@ -614,7 +614,7 @@
                                         <div class="input-group mb-3">
                                             <input type="text" class="form-control" placeholder="Value"
                                                 name="package_value" aria-describedby="package_value"
-                                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
                                                 onchange="updatePaymentAmount()">
                                             <span class="input-group-text text-uppercase" id="package_value">$</span>
                                         </div>
@@ -645,7 +645,7 @@
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control moving-field" placeholder="Floor Size"
                                             name="floor_size" aria-describedby="floor_size"
-                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
                                             onchange="updatePaymentAmount()">
                                         <span class="input-group-text text-uppercase" id="floor_size">SQ FT</span>
                                     </div>

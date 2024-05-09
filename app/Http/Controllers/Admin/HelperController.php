@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
 use App\Models\Helper;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -122,22 +123,12 @@ class HelperController extends Controller
         }
 
         // Get booking of the helper
-
-        $bookings = collect([
-            (object) [
-                'id' => 1,
-                'priority' => 'Express',
-                'receiver_name' => 'John Doe',
-                'status' => 'Pending',
-
-            ],
-            (object) [
-                'id' => 2,
-                'priority' => 'Express',
-                'receiver_name' => 'John Doe',
-                'status' => 'Pending',
-            ]
-        ]);
+        $bookings = Booking::where('helper_id', $helper->id)
+            ->with('client')
+            ->with('prioritySetting')
+            ->with('serviceType')
+            ->with('serviceCategory')
+            ->paginate(10);
 
         return view('admin.helpers.show', compact('helper', 'bookings'));
     }

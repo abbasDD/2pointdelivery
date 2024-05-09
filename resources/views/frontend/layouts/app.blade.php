@@ -45,11 +45,66 @@
     <!-- Footer button component -->
     <x-frontend.footer />
 
+
+    <div class="toast-container position-fixed top-5 end-0 p-3 d-none">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div id="toast-header" class="toast-header">
+                <strong id="toast-title" class="me-auto">Toast Heading</strong>
+                <small id="toast-time">Just Now</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                <p id="toast-message">This is a toast message.</p>
+            </div>
+        </div>
+    </div>
+
     {{-- JS Files here --}}
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+
+
+    <script>
+        function triggerToast(title, message) {
+            const toastLiveExample = document.getElementById('liveToast');
+
+            const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+            $('#toast-title').text(title);
+            $('#toast-message').text(message);
+            $('#toast-header').addClass('text-white');
+            $('.toast-container').removeClass('d-none');
+            if (title == 'Success') {
+                $('#toast-header').addClass('bg-success');
+            } else if (title == 'Error') {
+                $('#toast-header').addClass('bg-danger');
+            } else {
+                $('#toast-header').addClass('bg-primary');
+            }
+            toastBootstrap.show();
+        }
+    </script>
+
+    @if (session('success'))
+        <script>
+            triggerToast('Success', '{{ session('success') }}');
+        </script>
+    @endif
+
+    @if (session('error'))
+        <script>
+            triggerToast('Error', '{{ session('error') }}');
+        </script>
+    @endif
+
+    {{-- Close Modal GLobal JS --}}
+    <script>
+        function closeModal(modalId) {
+            // Hide modal with id
+            $('#' + modalId).modal('hide');
+        }
+    </script>
 
 </body>
 

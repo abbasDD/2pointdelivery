@@ -42,6 +42,10 @@ svg {
     width: 20px;
 }
 
+.top-5 {
+    top: 5rem;
+}
+
 .form-control {
     padding: 10px 25px;
     /* border: none; */

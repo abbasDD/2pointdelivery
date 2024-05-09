@@ -2,6 +2,7 @@
     <thead class="thead-primary">
         <tr>
             <th>ID</th>
+            <th>Date</th>
             <th>Client</th>
             <th>Priority</th>
             <th>Service Type</th>
@@ -15,6 +16,7 @@
         @forelse ($bookings as $booking)
             <tr>
                 <td>{{ $loop->index + 1 }}</td>
+                <td>{{ $booking->created_at }}</td>
                 <td>{{ $booking->client->first_name }}</td>
                 <td>{{ $booking->prioritySetting->name }}</td>
                 <td>
@@ -40,7 +42,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="3" class="text-center">No data found</td>
+                <td colspan="9" class="text-center">No data found</td>
             </tr>
         @endforelse
     </tbody>

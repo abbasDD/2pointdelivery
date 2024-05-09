@@ -27,6 +27,10 @@ Route::prefix('helper')->middleware(['auth'])->name('helper.')->group(function (
     Route::get('/', [HelperController::class, 'index'])->name('index');
     Route::get('/index', [HelperController::class, 'index'])->name('index');
 
+
+    // Reuqest Client Companpy
+    Route::post('/company/request', [HelperController::class, 'requestCompany'])->name('company.request');
+
     //KYC Details
     // Route::get('/kyc-details', [HelperController::class, 'kyc_details'])->name('kyc_details');
     //KYC Details
@@ -53,6 +57,7 @@ Route::prefix('helper')->middleware(['auth'])->name('helper.')->group(function (
     Route::get('/edit', [HelperController::class, 'edit_profile'])->name('edit');
     Route::post('/update/personal', [HelperController::class, 'personalInfo'])->name('update.personal');
     Route::post('/update/address', [HelperController::class, 'addressInfo'])->name('update.address');
+    Route::post('/update/company', [HelperController::class, 'companyInfo'])->name('update.company');
     Route::post('/update/social', [HelperController::class, 'socialInfo'])->name('update.social');
     Route::post('/update/password', [HelperController::class, 'passwordInfo'])->name('update.password');
 

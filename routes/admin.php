@@ -16,13 +16,14 @@ use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Admin\TaxSettingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\VehicleTypeController;
+use App\Http\Controllers\Auth\LoginController;
 
 //Admin Routes
 
 //Admin Auth Routes
 
-Route::get('/admin/login', [App\Http\Controllers\Auth\LoginController::class, 'showAdminLoginForm'])->name('admin.login');
-Route::post('/admin/login', [App\Http\Controllers\Auth\LoginController::class, 'postAdminLoginForm'])->name('admin.login');
+Route::get('/admin/login', [LoginController::class, 'showAdminLoginForm'])->name('admin.login');
+Route::post('/admin/login', [LoginController::class, 'postAdminLoginForm'])->name('admin.login');
 
 
 // Admin Routes Group

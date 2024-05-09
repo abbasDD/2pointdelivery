@@ -14,6 +14,20 @@
                 <div class="section-header mb-2">
                     <div class="d-flex justify-content-between">
                         <h4 class="mb-0">Helper Details</h4>
+                        {{-- Show Approval Buttons if not approved --}}
+                        @if ($helper->is_approved == 0)
+                            <div id="action-buttons" class=" d-flex align-items-center">
+                                <button type="button" id="approveButton_{{ $helper->id }}" class="btn btn-primary btn-sm mr-2"
+                                    onclick="showApproveDialog({{ $helper->id }})">
+                                    Approve
+                                </button>
+                                <button type="button" id="rejectButton_{{ $helper->id }}" class="btn btn-danger btn-sm"
+                                    onclick="showRejectDialog({{ $helper->id }})">
+                                    Reject
+                                </button>
+                            </div>
+                        @endif
+                        {{-- Show Block or Unblock Button --}}
 
                     </div>
                 </div>
@@ -105,4 +119,167 @@
     @endisset
 
 
+    {{-- Approve Helper Modal --}}
+    <div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="approveModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="approveModalLabel">Approve Helper</h5>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to approve this helper?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('statusModal')"
+                        data-dismiss="modal">Close</button>
+                    {{-- <a id="approveHelperLink" href="#" class="btn btn-primary">Update</a> --}}
+                    <button type="button" id="approveHelperLink" class="btn btn-primary">Approve</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Reject Helper Modal --}}
+    <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rejectModalLabel">Reject Helper</h5>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to reject this helper?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('statusModal')"
+                        data-dismiss="modal">Close</button>
+                    {{-- <a id="rejectHelperLink" href="#" class="btn btn-primary">Update</a> --}}
+                    <button type="button" id="rejectHelperLink" class="btn btn-danger">Reject</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
+
+
+<script>
+    function showApproveDialog(id, status) {
+        $('#approveModal').modal('show');
+
+        // Remove previous click event handler from #approveHelperLink
+        $('#approveHelperLink').off('click');
+        // add onclick to approveHelperLink here
+        $('#approveHelperLink').click(function() {
+            approveHelper(id);
+        });
+
+    }
+
+    function approveHelper(id) {
+        console.log(id);
+        var baseUrl = "{{ url('admin/helpers/approve') }}";
+        var csrfToken = $('meta[name="csrf-token"]').attr('content'); // Get CSRF token from the meta tag
+
+        $.ajax({
+            url: baseUrl,
+            data: {
+                id: id,
+                _token: csrfToken
+            },
+            type: 'POST', // or 'GET' depending on your route definition
+            success: function(response) {
+                // Handle the response
+                console.log(response); // Log the response for debugging
+                var jsonResponse = JSON.parse(response); //Parse the JSON string into an object
+                if (jsonResponse.status == 'success') {
+                    // Hide modal
+                    $('#approveModal').modal('hide');
+
+                    // Trigger Notification
+                    triggerToast('Success', 'Helper approved succcessfully');
+                    // Remove function from button
+                    $('approveHelperLink').off('click');
+
+                    // Remove row from list
+                    $('#action-buttons').remove();
+
+                    console.log(jsonResponse.message); // Print the message from the response
+                } else {
+                    // Hide modal
+                    $('#approveModal').modal('hide');
+                    // Remove function from button
+                    $('approveHelperLink').off('click');
+                    console.log('Failed'); // Or any other message you want to print for failed status
+                }
+            },
+            error: function(xhr, status, error) {
+                // Handle errors
+                console.error(error); // Log the error for debugging
+                // Show an error message to the user
+            }
+        });
+
+    }
+
+    // Reject Helper Modal Open
+
+    function showRejectDialog(id, status) {
+        $('#rejectModal').modal('show');
+
+        // Remove previous click event handler from #rejectHelperLink
+        $('#rejectHelperLink').off('click');
+        // add onclick to rejectHelperLink here
+        $('#rejectHelperLink').click(function() {
+            rejectHelper(id);
+        });
+    }
+
+    function rejectHelper(id) {
+        console.log(id);
+        var baseUrl = "{{ url('admin/helpers/reject') }}";
+        var csrfToken = $('meta[name="csrf-token"]').attr('content'); // Get CSRF token from the meta tag
+
+        $.ajax({
+            url: baseUrl,
+            data: {
+                id: id,
+                _token: csrfToken
+            },
+            type: 'POST', // or 'GET' depending on your route definition
+            success: function(response) {
+                // Handle the response
+                console.log(response); // Log the response for debugging
+                var jsonResponse = JSON.parse(response); //Parse the JSON string into an object
+                if (jsonResponse.status == 'success') {
+                    // Hide modal
+                    $('#rejectModal').modal('hide');
+
+                    // Trigger Notification
+                    triggerToast('Success', 'Helper rejectd succcessfully');
+                    // Remove function from button
+                    $('rejectHelperLink').off('click');
+
+                    // Remove row from list
+                    $('#action-buttons').remove();
+
+                    console.log(jsonResponse.message); // Print the message from the response
+                } else {
+                    // Hide modal
+                    $('#rejectModal').modal('hide');
+                    // Remove function from button
+                    $('rejectHelperLink').off('click');
+
+                    console.log('Failed'); // Or any other message you want to print for failed status
+                }
+            },
+            error: function(xhr, status, error) {
+                // Handle errors
+                console.error(error); // Log the error for debugging
+                // Show an error message to the user
+            }
+        });
+
+    }
+</script>

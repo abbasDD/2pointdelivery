@@ -12,7 +12,7 @@
                         <div class="input-group">
                             <input type="text" id="facebook" class="form-control" placeholder="Facebook"
                                 name="facebook" value="{{ old('facebook', $social_links['facebook'] ?? '') }}"
-                                aria-describedby="facebook" required>
+                                aria-describedby="facebook">
                             <span class="input-group-text text-uppercase" id="facebook"><i
                                     class="fa-brands fa-facebook"></i></span>
                         </div>
@@ -29,7 +29,7 @@
                         <div class="input-group">
                             <input type="text" id="linkedin" class="form-control" placeholder="LinkedIn"
                                 name="linkedin" value="{{ old('linkedin', $social_links['linkedin'] ?? '') }}"
-                                aria-describedby="linkedin" required>
+                                aria-describedby="linkedin">
                             <span class="input-group-text text-uppercase" id="linkedin"><i
                                     class="fa-brands fa-linkedin"></i></span>
                         </div>
@@ -46,7 +46,7 @@
                         <div class="input-group">
                             <input type="text" id="instagram" class="form-control" placeholder="Instagram"
                                 name="instagram" value="{{ old('instagram', $social_links['instagram'] ?? '') }}"
-                                aria-describedby="instagram" required>
+                                aria-describedby="instagram">
                             <span class="input-group-text text-uppercase" id="instagram"><i
                                     class="fa-brands fa-instagram"></i></span>
                         </div>
@@ -63,7 +63,7 @@
                         <div class="input-group">
                             <input type="text" id="tiktok" class="form-control" placeholder="Tiktok"
                                 name="tiktok" value="{{ old('tiktok', $social_links['tiktok'] ?? '') }}"
-                                aria-describedby="tiktok" required>
+                                aria-describedby="tiktok">
                             <span class="input-group-text text-uppercase" id="tiktok"><i
                                     class="fa-brands fa-tiktok"></i></span>
                         </div>

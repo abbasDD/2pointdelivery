@@ -30,7 +30,7 @@ Route::get('/help', [FrontendController::class, 'help'])->name('help');
 Route::get('/join-helper', [FrontendController::class, 'join_helper'])->name('join_helper');
 
 //Booking Routes
-Route::get('/new-booking', [FrontendController::class, 'new_booking'])->name('new_booking');
+Route::get('/new-booking', [FrontendController::class, 'newBooking'])->name('newBooking');
 Route::get('/fetch/service-categories', [FrontendController::class, 'fetch_services_categories'])->name('fetch.service.categories');
 
 // Route Chat Page

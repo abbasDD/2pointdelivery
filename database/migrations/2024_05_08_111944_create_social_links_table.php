@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->enum('user_type', ['client', 'helper']);
-            $table->string('key');
-            $table->string('link');
+            $table->string('key')->nullable();
+            $table->string('link')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 

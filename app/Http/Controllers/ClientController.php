@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Models\Booking;
+use App\Models\ClientCompany;
 use App\Models\SocialLink;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -50,6 +51,36 @@ class ClientController extends Controller
         dd('update profile');
     }
 
+    // Request Copmany Profile
+    public function requestCompany(Request $request)
+    {
+        // Check if user exist
+        $client = Client::where('user_id', auth()->user()->id)->first();
+        if (!$client) {
+            return redirect()->back()->with('error', 'Client not found');
+        }
+
+        // Check if client company already exist  
+        $clientCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
+        if ($clientCompany) {
+            // update the company_enabled to 1
+            $client->company_enabled = 1;
+            $client->save();
+
+            return redirect()->back()->with('success', 'Company profile requested successfully');
+        }
+
+        // Create a new client company
+        $clientCompany = new ClientCompany();
+        $clientCompany->user_id = auth()->user()->id;
+        $clientCompany->client_id = $client->id;
+        $clientCompany->company_alias = $request->company_alias;
+        $clientCompany->legal_name = $request->legal_name;
+        $clientCompany->save();
+
+        return redirect()->back()->with('success', 'Company profile requested successfully');
+    }
+
     /**
      * Show the application dashboard.
      *
@@ -73,7 +104,15 @@ class ClientController extends Controller
             ->orderBy('bookings.created_at', 'desc')
             ->take(10)->get();
 
-        return view('client.index', compact('bookings', 'satistics'));
+        // Check if user completed profile
+        $client_updated = false;  //Set default value
+        $client = Client::where('user_id', auth()->user()->id)->first();
+
+        if ($client->first_name != null && $client->zip_code != null) {
+            $client_updated = true;
+        }
+
+        return view('client.index', compact('bookings', 'satistics', 'client_updated'));
     }
 
     // Route to load profile to edit
@@ -103,7 +142,16 @@ class ClientController extends Controller
 
         // dd($social_links);
 
-        return view('client.profile.edit', compact('clientData', 'social_links'));
+        // Get client company data
+        $clientCompanyData = ClientCompany::where('user_id', auth()->user()->id)->first();
+        if (!$clientCompanyData) {
+            $clientCompanyData = new ClientCompany();
+            $clientCompanyData->user_id = auth()->user()->id;
+            $clientCompanyData->client_id = $clientData->id;
+            $clientCompanyData->save();
+        }
+
+        return view('client.profile.edit', compact('clientData', 'social_links', 'clientCompanyData'));
     }
 
     // Route to update personal profile data
@@ -116,6 +164,12 @@ class ClientController extends Controller
             'gender' => 'required|string|max:255',
             'date_of_birth' => 'required|string|max:255',
             'tax_id' => 'required|string|max:255',
+            'suite' => 'required|string|max:255',
+            'street' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'zip_code' => 'required|string|max:255',
         ]);
 
         // Check if user exist
@@ -146,11 +200,64 @@ class ClientController extends Controller
             'gender' => $request->gender,
             'date_of_birth' => $request->date_of_birth,
             'tax_id' => $request->tax_id,
-            'profile_image' => $profile_image
+            'profile_image' => $profile_image,
+            'suite' => $request->suite,
+            'street' => $request->street,
+            'city' => $request->city,
+            'state' => $request->state,
+            'country' => $request->country,
+            'zip_code' => $request->zip_code
         ]);
         // dd($request->all());
 
         return redirect()->back()->with('success', 'Profile info updated successfully!');
+    }
+
+    public function companyInfo(Request $request)
+    {
+        // valideate request
+        $request->validate([
+            'company_alias' => 'required|string|max:255',
+            'legal_name' => 'required|string|max:255',
+            'industry' => 'required|string|max:255',
+            'email' => 'required|string|max:255',
+            'business_phone' => 'required|string|max:255',
+            'suite' => 'required|string|max:255',
+            'street' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'zip_code' => 'required|string|max:255',
+        ]);
+
+        // Check if user exist
+        $clientCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
+
+        if (!$clientCompany) {
+            return redirect()->back()->with('error', 'Client Company not found');
+        } // Set default profile image to null
+        $company_logo = $clientCompany->company_logo ?? null;
+
+        // Upload the profile image if provided
+        if ($request->hasFile('company_logo')) {
+            $file = $request->file('company_logo');
+            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('images/company/');
+            $file->move($destinationPath, $updatedFilename);
+
+            // Set the company_logo attribute to the new file name
+            $company_logo = $updatedFilename;
+        }
+
+        // Remove company_logo as file from request
+        $request->request->remove('company_logo');
+
+        // Update the client data with company_logo included
+        $clientCompany->update(array_merge($request->all(), ['company_logo' => $company_logo]));
+
+        // dd($request->all());
+
+        return redirect()->back()->with('success', 'Company Profile info updated successfully!');
     }
 
     // Route to update address data

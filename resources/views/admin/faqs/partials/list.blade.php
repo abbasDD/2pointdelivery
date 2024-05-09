@@ -43,7 +43,8 @@
                 Are you sure you want to update status?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('statusModal')"
+                    data-dismiss="modal">Close</button>
                 <a id="updateStatusLink" href="#" class="btn btn-primary">Update</a>
             </div>
         </div>

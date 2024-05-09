@@ -30,6 +30,8 @@ Route::prefix('client')->middleware(['auth'])->name('client.')->group(function (
     Route::post('update-profile', [ClientController::class, 'update_profile'])->name('update_profile');
     Route::get('/', [ClientController::class, 'index'])->name('index');
 
+    // Reuqest Client Companpy
+    Route::post('/company/request', [ClientController::class, 'requestCompany'])->name('company.request');
 
     //KYC Details
     Route::get('/kyc-details', [KycDetailController::class, 'index'])->name('kyc_details');
@@ -42,6 +44,9 @@ Route::prefix('client')->middleware(['auth'])->name('client.')->group(function (
     Route::get('/booking/payment/{id}', [BookingController::class, 'payment'])->name('booking.payment');
     Route::get('/booking/show/{id}', [BookingController::class, 'show'])->name('booking.show');
     Route::get('/booking/payment/cod/{id}', [BookingController::class, 'codPayment'])->name('booking.payment.cod');
+    Route::post('/booking/payment/paypal/create', [BookingController::class, 'createPaypalPayment'])->name('booking.payment.paypal.create');
+    Route::get('/booking/payment/paypal/execute', [BookingController::class, 'executePaypalPayment'])->name('booking.payment.paypal.execute');
+    Route::get('/booking/payment/paypal/cancel', [BookingController::class, 'cancelPaypalPayment'])->name('booking.payment.paypal.cancel');
 
     // Chat Page Routes
     Route::get('/chats', [ChatController::class, 'index'])->name('chats');
@@ -62,7 +67,7 @@ Route::prefix('client')->middleware(['auth'])->name('client.')->group(function (
     //Edit Profile -- Update Profile Routes
     Route::get('/edit', [ClientController::class, 'edit_profile'])->name('edit');
     Route::post('/update/personal', [ClientController::class, 'personalInfo'])->name('update.personal');
-    Route::post('/update/address', [ClientController::class, 'addressInfo'])->name('update.address');
+    Route::post('/update/company', [ClientController::class, 'companyInfo'])->name('update.company');
     Route::post('/update/social', [ClientController::class, 'socialInfo'])->name('update.social');
     Route::post('/update/password', [ClientController::class, 'passwordInfo'])->name('update.password');
 

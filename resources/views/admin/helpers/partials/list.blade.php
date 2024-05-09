@@ -14,7 +14,7 @@
         @forelse ($helpers as $helper)
             <tr>
                 <td>{{ $loop->index + 1 }}</td>
-                <td><img src="{{ $helper->profile_image ? asset($helper->profile_image) : asset('images/users/default.png') }}"
+                <td><img src="{{ $helper->profile_image ? asset('images/users/' . $helper->profile_image) : asset('images/users/default.png') }}"
                         alt="Profile Image" width="50">
                 </td>
                 <td>{{ $helper->email }}</td>
@@ -63,7 +63,8 @@
                 Are you sure you want to update status?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('statusModal')"
+                    data-dismiss="modal">Close</button>
                 {{-- <a id="updateStatusLink" href="#" class="btn btn-primary">Update</a> --}}
                 <button type="button" id="updateStatusLink" class="btn btn-primary">Update</button>
             </div>

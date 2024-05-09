@@ -97,6 +97,14 @@
         </script>
     @endif
 
+    {{-- Close Modal GLobal JS --}}
+    <script>
+        function closeModal(modalId) {
+            // Hide modal with id
+            $('#' + modalId).modal('hide');
+        }
+    </script>
+
 </body>
 
 </html>

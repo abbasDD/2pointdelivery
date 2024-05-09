@@ -1,10 +1,16 @@
 <div class="card">
-    <div class="card-header">
+    <div class="card-header d-flex align-items-center justify-content-between">
         <h5 class="card-title mb-0">Personal</h5>
+        @if (!$clientData->company_enabled)
+            <button type="button" class="btn btn-primary btn-sm" onclick="requestCompany()">
+                Request Company
+            </button>
+        @endif
     </div>
     <form action="{{ route('client.update.personal') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="card-body">
+            {{-- Profile Image --}}
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group mb-3">
@@ -26,6 +32,7 @@
                     </div>
                 </div>
             </div>
+            {{-- Personal --}}
             <div class="row">
                 {{-- FIrst Name --}}
                 <div class="col-md-6">
@@ -111,6 +118,94 @@
 
                 {{-- Row End Here --}}
             </div>
+            {{-- Address --}}
+
+            <div class="row">
+                {{-- Suite --}}
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="suite" class="form-label">Suite</label>
+                        <input type="text" class="form-control" id="suite" name="suite"
+                            value="{{ old('suite', $clientData['suite'] ?? '') }}" placeholder="Suite " required>
+                        @error('suite')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                </div>
+                {{-- Street --}}
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="street" class="form-label">Street</label>
+                        <input type="text" class="form-control" id="street" name="street"
+                            value="{{ old('street', $clientData['street'] ?? '') }}" placeholder="Street" required>
+                        @error('street')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                </div>
+                {{-- City --}}
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="city" class="form-label">City</label>
+                        <input type="text" class="form-control" id="city" name="city"
+                            value="{{ old('city', $clientData['city'] ?? '') }}" placeholder="City" required>
+
+                        @error('city')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                </div>
+                {{-- State --}}
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="state" class="form-label">State</label>
+                        <input type="text" class="form-control" id="state" name="state"
+                            value="{{ old('state', $clientData['state'] ?? '') }}" placeholder="State " required>
+                        @error('state')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                </div>
+
+                {{-- Country --}}
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="country" class="form-label">Country</label>
+                        <input type="text" class="form-control" id="country" name="country"
+                            value="{{ old('country', $clientData['country'] ?? '') }}" placeholder="Country "
+                            required>
+                        @error('country')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                </div>
+                {{-- Zip Code --}}
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="zip_code" class="form-label">Zip Code</label>
+                        <input type="text" class="form-control" id="zip_code" name="zip_code"
+                            value="{{ old('zip_code', $clientData['zip_code'] ?? '') }}" placeholder="Zip Code "
+                            required>
+                        @error('zip_code')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                </div>
+
+                {{-- Row End Here --}}
+            </div>
             {{-- Button to Submit --}}
             <div class="row">
                 <div class="col-md-12 text-right">
@@ -119,6 +214,41 @@
             </div>
         </div>
     </form>
+</div>
+
+{{-- Request Company Modal --}}
+<div class="modal fade" id="requestCompanyModal" tabindex="-1" aria-labelledby="requestCompanyModalLabel
+    "
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="requestCompanyModalLabel">Request Company</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('client.company.request') }}" method="POST">
+                <div class="modal-body">
+                    @csrf
+                    {{-- Company Alias --}}
+                    <div class="mb-3">
+                        <label for="company_alias" class="form-label">Company Alias</label>
+                        <input type="text" class="form-control" id="company_alias" name="company_alias"
+                            placeholder="Company Alias" required>
+                    </div>
+                    {{-- Legal Name --}}
+                    <div class="mb-3">
+                        <label for="legal_name" class="form-label">Legal Name</label>
+                        <input type="text" class="form-control" id="legal_name" name="legal_name"
+                            placeholder="Legal Name" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" onclick="sendRequestCompany()">Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 
@@ -139,4 +269,9 @@
 
         reader.readAsDataURL(file);
     });
+
+    // Show Request Company Modal
+    function requestCompany() {
+        $('#requestCompanyModal').modal('show');
+    }
 </script>

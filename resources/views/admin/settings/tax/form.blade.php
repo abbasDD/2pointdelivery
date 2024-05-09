@@ -58,10 +58,13 @@
             <label for="gst_rate">GST Rate</label>
             <div class="input-group">
                 <input type="text" class="form-control @error('gst_rate') is-invalid @enderror" id="gst_rate"
-                    name="gst_rate" value="{{ old('gst_rate', $taxCountry['gst_rate'] ?? '') }}"
-                    placeholder="Enter GST Rate" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                    name="gst_rate"
+                    value="{{ old('gst_rate', isset($taxCountry['gst_rate']) ? number_format($taxCountry['gst_rate'], 2) : '') }}"
+                    placeholder="Enter GST Rate"
+                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required>
                 <span class="input-group-text text-uppercase" id="gst_rate">%</span>
             </div>
+
             @error('gst_rate')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -77,7 +80,8 @@
             <div class="input-group">
                 <input type="text" class="form-control @error('pst_rate') is-invalid @enderror" id="pst_rate"
                     name="pst_rate" value="{{ old('pst_rate', $taxCountry['pst_rate'] ?? '') }}"
-                    placeholder="Enter PST Rate" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                    placeholder="Enter PST Rate"
+                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required>
                 <span class="input-group-text text-uppercase" id="pst_rate">%</span>
             </div>
             @error('pst_rate')
@@ -95,7 +99,8 @@
             <div class="input-group">
                 <input type="text" class="form-control @error('hst_rate') is-invalid @enderror" id="hst_rate"
                     name="hst_rate" value="{{ old('hst_rate', $taxCountry['hst_rate'] ?? '') }}"
-                    placeholder="Enter HST Rate" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                    placeholder="Enter HST Rate"
+                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required>
                 <span class="input-group-text text-uppercase" id="hst_rate">%</span>
             </div>
             @error('hst_rate')

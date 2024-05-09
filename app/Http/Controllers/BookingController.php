@@ -5,9 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Http\Requests\StoreBookingRequest;
 use App\Http\Requests\UpdateBookingRequest;
+use App\Models\BookingPayment;
 use App\Models\Client;
+use App\Models\PaymentSetting;
 use App\Models\ServiceCategory;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -61,6 +65,13 @@ class BookingController extends Controller
             'booking_time' => 'required|string|max:255',
             'booking_type' => 'required|string|max:255',
             'total_price' => 'required|string|max:255',
+            'base_price' => 'nullable|string|max:255',
+            'distance' => 'nullable|string|max:255',
+            'base_distance' => 'nullable|string|max:255',
+            'extra_distance_price' => 'nullable|string|max:255',
+            'weight' => 'nullable|string|max:255',
+            'base_weight' => 'nullable|string|max:255',
+            'extra_weigh_price' => 'nullable|string|max:255',
         ]);
 
         // Get service_category_id from uuid
@@ -83,7 +94,17 @@ class BookingController extends Controller
         ]);
 
         // Add client_id
-        $client_id = Client::where('user_id', auth()->user()->id)->first()->id;
+        $client = Client::where('user_id', auth()->user()->id)->first();
+        // if not found then create
+        if (!$client) {
+            $newClient = Client::create([
+                'user_id' => auth()->user()->id,
+            ]);
+            $client = Client::where('user_id', auth()->user()->id)->first();
+        }
+
+        $client_id = $client->id;
+
         $request->request->add(['client_id' => $client_id]);
 
         // Add booking_at to current datetime
@@ -91,6 +112,27 @@ class BookingController extends Controller
 
         // Create new booking
         $booking = Booking::create($request->all());
+
+        // Create Booking Payment
+        $paymentBooking = BookingPayment::create([
+            'booking_id' => $booking->id,
+            'base_price' => $request->base_price,
+            'distance' => $request->distance,
+            'base_distance' => $request->base_distance,
+            'extra_distance_price' => $request->extra_distance_price,
+            'weight' => $request->weight,
+            'base_weight' => $request->base_weight,
+            'extra_weigh_price' => $request->extra_weigh_price,
+            'total_price' => $request->total_price,
+            'payment_method' => 'cod',
+            'payment_status' => 'unpaid',
+        ]);
+
+        // if unable to create paymentBooking then rollback booking
+        if (!$paymentBooking) {
+            $booking->delete();
+            return response()->json(['success' => false, 'data' => 'Unable to create booking']);
+        }
 
         // Response json with success
         return response()->json(['success' => true, 'data' => $booking, 'message' => 'Booking created successfully'], 201);
@@ -106,14 +148,177 @@ class BookingController extends Controller
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
+            ->with('bookingPayment')
             ->first();
 
         if (!$booking) {
             return redirect()->back()->with('error', 'Booking not found');
         }
-        // dd($booking->serviceType->name);
 
-        return view('frontend.payment_booking', compact('booking'));
+        $bookingPayment = BookingPayment::where('booking_id', $booking->id)->first();
+
+        // dd($bookingPayment);
+
+        return view('frontend.payment_booking', compact('booking', 'bookingPayment'));
+    }
+
+    // Make Online Payment using Paypal
+
+    public function createPaypalPayment(Request $request)
+    {
+
+        // Retrieve booking ID from the request
+        $bookingId = $request->input('booking_id');
+        if (!$bookingId) {
+            return redirect()->back()->with('error', 'Booking ID not found');
+        }
+        // Get uuid of booking from id
+        $booking = Booking::where('id', $bookingId)->where('user_id', auth()->user()->id)->first();
+        if (!$booking) {
+            return redirect()->back()->with('error', 'Booking not found');
+        }
+        $booking_uuid = $booking->uuid;
+        // dd($booking_uuid);
+
+        // Get Paypal Client ID from payment settings
+        $paypal_client_id = PaymentSetting::where('key', 'paypal_client_id')->first();
+        if (!$paypal_client_id) {
+            return redirect()->back()->with('error', 'Paypal client id not found');
+        }
+        // Get paypal_secret_id from payment settings
+        $paypal_secret_id = PaymentSetting::where('key', 'paypal_secret_id')->first();
+        if (!$paypal_secret_id) {
+            return redirect()->back()->with('error', 'Paypal secret id not found');
+        }
+        // Set up PayPal API credentials
+        $clientId = $paypal_client_id->value;
+        $secret = $paypal_secret_id->value;
+        $mode = 'sandbox';
+
+        // Set up PayPal API endpoint
+        $apiEndpoint = $mode === 'sandbox' ? 'https://api.sandbox.paypal.com' : 'https://api.paypal.com';
+
+        // Set up HTTP client
+        $httpClient = Http::withHeaders([
+            'Content-Type' => 'application/json',
+        ])->withBasicAuth($clientId, $secret);
+
+        // Create PayPal payment
+        $response = $httpClient->post("$apiEndpoint/v1/payments/payment", [
+            'intent' => 'sale',
+            'payer' => [
+                'payment_method' => 'paypal',
+            ],
+            'transactions' => [
+                [
+                    'amount' => [
+                        'total' => $request->total_price, // Set the amount to charge
+                        'currency' => 'USD',
+                    ],
+                    'custom' => $booking_uuid,
+                ],
+            ],
+            'redirect_urls' => [
+                'return_url' => route('client.booking.payment.paypal.execute'),
+                'cancel_url' => route('client.booking.payment.paypal.cancel'),
+            ],
+        ]);
+
+
+        $payment = $response->json();
+
+        // dd($payment);
+
+        if (isset($payment['name']) && $payment['name'] == 'VALIDATION_ERROR') {
+            return  redirect()->back()->with('error', 'Invalid request - something went wrong');
+        }
+
+        // Redirect to PayPal for approval
+        return redirect($payment['links'][1]['href']);
+    }
+
+    public function executePaypalPayment(Request $request)
+    {
+        // Retrieve paymentId and PayerID from the request
+        $paymentId = $request->input('paymentId');
+        $payerId = $request->input('PayerID');
+
+        // Get Paypal Client ID from payment settings
+        $paypal_client_id = PaymentSetting::where('key', 'paypal_client_id')->first();
+        if (!$paypal_client_id) {
+            return redirect()->back()->with('error', 'Paypal client id not found');
+        }
+        // Get paypal_secret_id from payment settings
+        $paypal_secret_id = PaymentSetting::where('key', 'paypal_secret_id')->first();
+        if (!$paypal_secret_id) {
+            return redirect()->back()->with('error', 'Paypal secret id not found');
+        }
+        // Set up PayPal API credentials
+        $clientId = $paypal_client_id->value;
+        $secret = $paypal_secret_id->value;
+        $mode = 'sandbox';
+
+        // Set up PayPal API endpoint
+        $apiEndpoint = $mode === 'sandbox' ? 'https://api.sandbox.paypal.com' : 'https://api.paypal.com';
+
+        // Set up HTTP client
+        $httpClient = Http::withHeaders([
+            'Content-Type' => 'application/json',
+        ])->withBasicAuth($clientId, $secret);
+
+        // Execute PayPal payment
+        $response = $httpClient->post("$apiEndpoint/v1/payments/payment/$paymentId/execute", [
+            'payer_id' => $payerId,
+        ]);
+
+        // Check if payment was successful
+        if ($response->successful()) {
+            // Payment successful
+            $paymentDetails = $response->json();
+            // Get booking_uuid as custom
+            $booking_uuid = $paymentDetails['transactions'][0]['custom'];
+            // dd($paymentDetails['transactions'][0]['custom']);
+
+            // dd($paymentDetails);
+
+            // Check if booking exist on uuid
+            $booking = Booking::where('uuid', $booking_uuid)->first();
+            if (!$booking) {
+                return redirect()->back()->with('error', 'Booking not found');
+            }
+
+            // Update booking payment status
+            $booking->update(['status' => 'pending', 'payment_status' => 'paid', 'payment_method' => 'paypal']);
+
+            // Update booking payment details
+            BookingPayment::where('booking_id', $booking->id)->update(['transaction_id' =>  $paymentDetails['id'], 'payment_status' => 'paid', 'payment_method' => 'paypal', 'payment_at' => Carbon::now()]);
+
+            // Redirect to booking detail page
+            return redirect()->route('client.booking.payment', $booking->id);
+
+            // Process the payment details and update your database accordingly
+            // For example, you might update the booking status to "paid"
+            // return redirect()->route('payment.success');
+        } else {
+            // Payment failed
+            $error = $response->json();
+            // Handle the payment failure accordingly
+            // For example, you might redirect the user to a payment failure page
+            // return redirect()->route('payment.failure');
+
+            dd($error);
+        }
+    }
+
+    public function cancelPaypalPayment()
+    {
+        // Retrieve booking ID or UUID from the request
+        // $bookingId = $request->input('booking_id');
+
+        dd('Payment cancelled');
+
+        // Handle payment cancellation
+        return redirect()->back()->with('error', 'Payment cancelled');
     }
 
     // Make COD Payment

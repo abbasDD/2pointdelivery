@@ -58,7 +58,7 @@ class FrontendController extends Controller
     }
 
     // New Booking Route
-    public function new_booking(Request $request)
+    public function newBooking(Request $request)
     {
         // Get all services Types
         $serviceTypes = ServiceType::where('is_active', 1)
@@ -99,7 +99,7 @@ class FrontendController extends Controller
         }
 
         // return view 
-        return view('frontend.new_booking', compact('serviceTypes', 'serviceCategories', 'prioritySettings', 'draftBooking'));
+        return view('frontend.bookings.new', compact('serviceTypes', 'serviceCategories', 'prioritySettings', 'draftBooking'));
     }
 
     public function fetch_services_categories(Request $request)

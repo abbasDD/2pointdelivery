@@ -56,7 +56,8 @@
                 Are you sure you want to approve this helper?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('statusModal')"
+                    data-dismiss="modal">Close</button>
                 {{-- <a id="approveHelperLink" href="#" class="btn btn-primary">Update</a> --}}
                 <button type="button" id="approveHelperLink" class="btn btn-primary">Approve</button>
             </div>
@@ -76,7 +77,8 @@
                 Are you sure you want to reject this helper?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('statusModal')"
+                    data-dismiss="modal">Close</button>
                 {{-- <a id="rejectHelperLink" href="#" class="btn btn-primary">Update</a> --}}
                 <button type="button" id="rejectHelperLink" class="btn btn-danger">Reject</button>
             </div>

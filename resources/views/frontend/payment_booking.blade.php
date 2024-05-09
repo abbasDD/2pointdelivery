@@ -66,18 +66,25 @@
                         {{-- Distance Price --}}
                         <div class="d-flex align-items-center justify-content-between">
                             <h6>Distance Price:</h6>
-                            <p>$44</p>
+                            <p>${{ $bookingPayment->distance }}</p>
                         </div>
                         {{-- Total Price --}}
                         <div class="d-flex align-items-center justify-content-between">
                             <h6>Total Price:</h6>
-                            <p>${{ $booking->total_price }}</p>
+                            <p>${{ $bookingPayment->total_price }}</p>
                         </div>
-                        {{-- Payment Status --}}
-                        <div class="d-flex align-items-center justify-content-between">
-                            <h6>Payment Status:</h6>
-                            <p>{{ $booking->payment_status }}</p>
-                        </div>
+                        @if ($bookingPayment->payment_status == 'unpaid')
+                            {{-- Payment Status --}}
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h6>Payment Status:</h6>
+                                <p>{{ $bookingPayment->payment_status }}</p>
+                            </div>
+                            {{-- Payment Method --}}
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h6>Payment Method:</h6>
+                                <p>{{ $bookingPayment->payment_method }}</p>
+                            </div>
+                        @endif
 
                         {{-- Seprator --}}
                         <hr>
@@ -87,13 +94,19 @@
                             <h5>Payment Now Using:</h5>
                             <div class="d-flex align-items-center justify-content-center">
                                 {{-- Paypal --}}
-                                <div class="paypal">
-                                    <button class="btn btn-paypal d-flex align-items-center"
-                                        onclick="paymentMethodSelection('paypal')" target="_blank">
-                                        <i class="fa-brands fa-paypal"></i>
-                                        <span class="d-none d-md-block ml-2">Paypal</span>
+                                <form id="paypal-form" action="{{ route('client.booking.payment.paypal.create') }}"
+                                    method="post">
+                                    @csrf
+                                    <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+                                    <!-- Assuming $booking is available with the booking details -->
+
+                                    <input type="hidden" name="total_price" value="{{ $bookingPayment->total_price }}">
+                                    <!-- Assuming the total_price is fixed -->
+                                    <button type="submit" class="btn btn-paypal d-flex align-items-center">
+                                        <i class="fab fa-paypal"></i>
+                                        <span class="d-none d-md-block ml-2">Pay with PayPal</span>
                                     </button>
-                                </div>
+                                </form>
                                 {{-- Stripe --}}
                                 <div class="stripe ml-2">
                                     <button class="btn btn-stripe d-flex align-items-center"

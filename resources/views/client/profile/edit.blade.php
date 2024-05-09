@@ -13,12 +13,13 @@
                     {{-- Load Personal Tab  --}}
                     @include('client.profile.partials.personal')
                 </div>
-                {{-- Show only if company enabled --}}
-                {{-- Address Tab --}}
-                <div class="tab-pane fade m-3" id="v-pills-address" role="tabpanel" aria-labelledby="v-pills-address-tab">
-                    {{-- Load Address Tab --}}
-                    @include('client.profile.partials.address')
-                </div>
+                @if ($clientData->company_enabled)
+                    {{-- Company Tab --}}
+                    <div class="tab-pane fade m-3" id="v-pills-company" role="tabpanel" aria-labelledby="v-pills-company-tab">
+                        {{-- Load Address Tab --}}
+                        @include('client.profile.partials.company')
+                    </div>
+                @endif
                 {{--  Password Tab --}}
                 <div class="tab-pane fade m-3" id="v-pills-password" role="tabpanel" aria-labelledby="v-pills-password-tab">
                     {{-- Load  Password Tab --}}
@@ -39,12 +40,13 @@
                             aria-controls="v-pills-personal" aria-selected="true">
                             <i class="fas fa-user"></i> <span class="d-none d-md-inline">Personal</span>
                         </button>
-                        {{-- Show only if company enabled --}}
-                        <button class="nav-link" id="v-pills-address-tab" data-bs-toggle="pill"
-                            data-bs-target="#v-pills-address" type="button" role="tab" aria-controls="v-pills-address"
-                            aria-selected="false">
-                            <i class="fas fa-map-marker-alt"></i> <span class="d-none d-md-inline">Address</span>
-                        </button>
+                        @if ($clientData->company_enabled)
+                            <button class="nav-link" id="v-pills-company-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-company" type="button" role="tab"
+                                aria-controls="v-pills-company" aria-selected="false">
+                                <i class="fas fa-map-marker-alt"></i> <span class="d-none d-md-inline">Company</span>
+                            </button>
+                        @endif
                         <button class="nav-link" id="v-pills-password-tab" data-bs-toggle="pill"
                             data-bs-target="#v-pills-password" type="button" role="tab"
                             aria-controls="v-pills-password" aria-selected="false">

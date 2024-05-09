@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreHelperRequest;
 use App\Http\Requests\UpdateHelperRequest;
 use App\Models\Booking;
+use App\Models\HelperCompany;
 use App\Models\SocialLink;
 use Illuminate\Http\Request;
 
@@ -121,6 +122,37 @@ class HelperController extends Controller
         return view('helper.settings');
     }
 
+
+    // Request Copmany Profile
+    public function requestCompany(Request $request)
+    {
+        // Check if user exist
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        if (!$helper) {
+            return redirect()->back()->with('error', 'Helper not found');
+        }
+
+        // Check if helper company already exist  
+        $helperCompany = HelperCompany::where('user_id', auth()->user()->id)->first();
+        if ($helperCompany) {
+            // update the company_enabled to 1
+            $helper->company_enabled = 1;
+            $helper->save();
+
+            return redirect()->back()->with('success', 'Company profile requested successfully');
+        }
+
+        // Create a new helper company
+        $helperCompany = new HelperCompany();
+        $helperCompany->user_id = auth()->user()->id;
+        $helperCompany->helper_id = $helper->id;
+        $helperCompany->company_alias = $request->company_alias;
+        $helperCompany->legal_name = $request->legal_name;
+        $helperCompany->save();
+
+        return redirect()->back()->with('success', 'Company profile requested successfully');
+    }
+
     public function edit_profile()
     {
         // Get helper data
@@ -146,7 +178,17 @@ class HelperController extends Controller
 
         // dd($social_links);
 
-        return view('helper.profile.edit', compact('helperData', 'social_links'));
+        // Get helper company data
+        $helperCompanyData = HelperCompany::where('user_id', auth()->user()->id)->first();
+        if (!$helperCompanyData) {
+            $helperCompanyData = new HelperCompany();
+            $helperCompanyData->user_id = auth()->user()->id;
+            $helperCompanyData->helper_id = $helperData->id;
+            $helperCompanyData->save();
+        }
+
+
+        return view('helper.profile.edit', compact('helperData', 'social_links', 'helperCompanyData'));
     }
 
 
@@ -257,6 +299,53 @@ class HelperController extends Controller
         return redirect()->back()->with('success', 'Profile Address updated successfully!');
     }
 
+
+    public function companyInfo(Request $request)
+    {
+        // valideate request
+        $request->validate([
+            'company_alias' => 'required|string|max:255',
+            'legal_name' => 'required|string|max:255',
+            'industry' => 'required|string|max:255',
+            'email' => 'required|string|max:255',
+            'business_phone' => 'required|string|max:255',
+            'suite' => 'required|string|max:255',
+            'street' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'zip_code' => 'required|string|max:255',
+        ]);
+
+        // Check if user exist
+        $helperCompany = HelperCompany::where('user_id', auth()->user()->id)->first();
+
+        if (!$helperCompany) {
+            return redirect()->back()->with('error', 'Helper Company not found');
+        } // Set default profile image to null
+        $company_logo = $helperCompany->company_logo ?? null;
+
+        // Upload the profile image if provided
+        if ($request->hasFile('company_logo')) {
+            $file = $request->file('company_logo');
+            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('images/company/');
+            $file->move($destinationPath, $updatedFilename);
+
+            // Set the company_logo attribute to the new file name
+            $company_logo = $updatedFilename;
+        }
+
+        // Remove company_logo as file from request
+        $request->request->remove('company_logo');
+
+        // Update the helper data with company_logo included
+        $helperCompany->update(array_merge($request->all(), ['company_logo' => $company_logo]));
+
+        // dd($request->all());
+
+        return redirect()->back()->with('success', 'Company Profile info updated successfully!');
+    }
 
     // Route to update password data
     public function passwordInfo(Request $request)

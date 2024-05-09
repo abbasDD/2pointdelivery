@@ -75,13 +75,18 @@ class HomeController extends Controller
             ]
         ];
 
+        // Helper Requets
+        $helperRequests = Helper::select('helpers.*', 'users.email', 'users.is_active')
+            ->join('users', 'users.id', '=', 'helpers.user_id')
+            ->where('helpers.is_approved', 0)->get();
+
         // Get last 6 months data of delivery and moving
         $lastSixMonths = [
             'labels' => [],
             'delivery' => [],
             'moving' => [],
         ];
-        for ($i = 0; $i < 6; $i++) {
+        for ($i = 5; $i >= 0; $i--) {
             $lastSixMonths['labels'][] = date('F', strtotime("-$i month"));
             $lastSixMonths['delivery'][] = Booking::where('booking_type', 'delivery')->whereMonth('created_at', date('m', strtotime("-$i month")))->whereYear('created_at', date('Y', strtotime("-$i month")))->count();
             $lastSixMonths['moving'][] = Booking::where('booking_type', 'moving')->whereMonth('created_at', date('m', strtotime("-$i month")))->whereYear('created_at', date('Y', strtotime("-$i month")))->count();
@@ -97,7 +102,7 @@ class HomeController extends Controller
         // Latest Bookings
         $latestBookings = Booking::latest()->take(5)->get();
 
-        return view('admin.index', compact('requestedHelpers', 'lastSixMonths', 'statistics', 'latestBookings'));
+        return view('admin.index', compact('helperRequests', 'lastSixMonths', 'statistics', 'latestBookings'));
 
         // return view('admin.index', compact('chartData'));
     }
