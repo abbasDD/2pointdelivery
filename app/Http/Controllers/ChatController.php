@@ -81,6 +81,10 @@ class ChatController extends Controller
             return response()->json(['success' => false, 'chat_id' => 0, 'message' => 'User not found']);
         }
 
+        if ($user->user_type == 'admin') {
+            $userInfo = Admin::where('user_id', $user->id)->first();
+        }
+
         // Get User detail as per user type
         if ($user->client_enabled == 1) {
             $userInfo = Client::where('user_id', $user->id)->first();

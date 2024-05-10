@@ -30,6 +30,9 @@ Route::prefix('client')->middleware(['auth'])->name('client.')->group(function (
     Route::post('update-profile', [ClientController::class, 'update_profile'])->name('update_profile');
     Route::get('/', [ClientController::class, 'index'])->name('index');
 
+    // Search Users Route
+    Route::post('/users/search', [ClientController::class, 'searchUsers'])->name('users.search');
+
     // Reuqest Client Companpy
     Route::post('/company/request', [ClientController::class, 'requestCompany'])->name('company.request');
 
@@ -67,6 +70,7 @@ Route::prefix('client')->middleware(['auth'])->name('client.')->group(function (
     //Edit Profile -- Update Profile Routes
     Route::get('/edit', [ClientController::class, 'edit_profile'])->name('edit');
     Route::post('/update/personal', [ClientController::class, 'personalInfo'])->name('update.personal');
+    Route::post('/update/address', [ClientController::class, 'addressInfo'])->name('update.address');
     Route::post('/update/company', [ClientController::class, 'companyInfo'])->name('update.company');
     Route::post('/update/social', [ClientController::class, 'socialInfo'])->name('update.social');
     Route::post('/update/password', [ClientController::class, 'passwordInfo'])->name('update.password');

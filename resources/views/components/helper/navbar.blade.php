@@ -12,8 +12,8 @@
         <div class="d-flex">
             @auth
                 <div class="dropdown">
-                    <p class="btn btn-link nav-link dropdown-toggle mb-0" type="button" id="dropdownMenuButton"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                    <p class="nav-link dropdown-toggle mb-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                        aria-expanded="false">
                         <img class="user-image d-inline rounded-circle" src="{{ asset('images/default-user.jpg') }}"
                             width="35" height="35" alt="User">
                     </p>
@@ -90,4 +90,12 @@
         document.querySelector('footer').classList.toggle('footer-left');
         document.querySelector('main').classList.toggle('main-left');
     });
+
+
+    // Onload if window.size is below 700px then call sidebarToggle
+    window.onload = function() {
+        if (window.innerWidth < 700) {
+            document.getElementById('sidebarToggle').click();
+        }
+    }
 </script>

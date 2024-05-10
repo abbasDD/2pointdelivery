@@ -1,6 +1,13 @@
+<script>
+    // Set default value to  country, state and city
+    var selectedCountry = {{ old('country', $clientData['country'] ?? 0) }};
+    var selectedState = {{ old('state', $clientData['state'] ?? 0) }};
+    var selectedCity = {{ old('city', $clientData['city'] ?? 0) }};
+</script>
+
 <div class="card">
     <div class="card-header">
-        <h5 class="card-title mb-0">Personal</h5>
+        <h5 class="card-title mb-0">Address</h5>
     </div>
     <form action="{{ route('client.update.address') }}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -32,26 +39,40 @@
                         @enderror
                     </div>
                 </div>
-                {{-- City --}}
+                {{-- Select Country --}}
                 <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="city" class="form-label">City</label>
-                        <input type="text" class="form-control" id="city" name="city"
-                            value="{{ old('city', $clientData['city'] ?? '') }}" placeholder="City" required>
-
-                        @error('city')
+                    <div class="form-group mb-3">
+                        <label for="country">Country</label>
+                        <select class="form-control @error('country') is-invalid @enderror" id="country"
+                            name="country" onchange="getStates(this.value)" required>
+                            <option value="" selected disabled>Select Country</option>
+                            @foreach ($addressData['countries'] as $country)
+                                <option value="{{ $country->id }}"
+                                    {{ old('country', $clientData['country'] ?? '') == $country->id ? 'selected' : '' }}>
+                                    {{ $country->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('country')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
                         @enderror
                     </div>
                 </div>
-                {{-- State --}}
+
+                {{-- Select State --}}
                 <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="state" class="form-label">State</label>
-                        <input type="text" class="form-control" id="state" name="state"
-                            value="{{ old('state', $clientData['state'] ?? '') }}" placeholder="State " required>
+                    <div class="form-group mb-3">
+                        <label for="state">State</label>
+                        <select class="form-control @error('state') is-invalid @enderror" id="state" name="state"
+                            onchange="getCities(this.value)" required>
+                            <option value="" selected disabled>Select State</option>
+                            @foreach ($addressData['clientStates'] as $state)
+                                <option value="{{ $state->id }}"
+                                    {{ old('state', $clientData['state'] ?? '') == $state->id ? 'selected' : '' }}>
+                                    {{ $state->name }}</option>
+                            @endforeach
+                        </select>
                         @error('state')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -60,19 +81,27 @@
                     </div>
                 </div>
 
-                {{-- Country --}}
+                {{-- Select City --}}
                 <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="country" class="form-label">Country</label>
-                        <input type="text" class="form-control" id="country" name="country"
-                            value="{{ old('country', $clientData['country'] ?? '') }}" placeholder="Country " required>
-                        @error('country')
+                    <div class="form-group mb-3">
+                        <label for="city">City</label>
+                        <select class="form-control @error('city') is-invalid @enderror" id="city" name="city"
+                            required>
+                            <option value="" selected disabled>Select City</option>
+                            @foreach ($addressData['clientCities'] as $city)
+                                <option value="{{ $city->id }}"
+                                    {{ old('city', $clientData['city'] ?? '') == $city->id ? 'selected' : '' }}>
+                                    {{ $city->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('city')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
                         @enderror
                     </div>
                 </div>
+
                 {{-- Zip Code --}}
                 <div class="col-md-6">
                     <div class="mb-3">
@@ -99,3 +128,76 @@
         </div>
     </form>
 </div>
+
+
+
+<script>
+    // Get states
+    function getStates(countryId) {
+        console.log(countryId);
+
+        // Get request to get states
+        let baseUrl = "{{ url('/') }}";
+        let url = `${baseUrl}/address/states/${countryId}`;
+
+        // AJAX get request
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(response) {
+                console.log(response);
+                // $('#state').html(response);
+                // Empty state select
+                $('#state').empty();
+                $('#city').empty();
+                // Add option Select State
+                $('#state').append(`<option value="" disabled selected>Select State</option>`);
+                $('#city').append(`<option value="" disabled selected>Select City</option>`);
+                // Load to state select as options using loop
+                response.forEach(function(state) {
+                    if (state.id == selectedState) {
+                        $('#state').append(
+                            `<option value="${state.id}" selected>${state.name}</option>`);
+                    } else {
+                        $('#state').append(`<option value="${state.id}">${state.name}</option>`);
+                    }
+
+                })
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    }
+
+    // // Get cities
+    function getCities(stateId) {
+        console.log(stateId);
+        // Get request to get cities
+        let baseUrl = "{{ url('/') }}";
+        let url = `${baseUrl}/address/cities/${stateId}`;
+
+        // AJAX get request
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(response) {
+                console.log(response);
+
+                // Empty city select
+                $('#city').empty();
+                // Add option Select City
+                $('#city').append(`<option value="" disabled selected>Select City</option>`);
+                // Load to city select as options using loop
+                response.forEach(function(city) {
+                    if (city.id == selectedCity) {
+                        $('#city').append(
+                            `<option value="${city.id}" selected>${city.name}</option>`);
+                    } else {
+                        $('#city').append(`<option value="${city.id}">${city.name}</option>`);
+                    }
+                })
+            }
+        })
+    }
+</script>

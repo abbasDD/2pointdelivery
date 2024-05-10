@@ -47,7 +47,7 @@ svg {
 }
 
 .form-control {
-    padding: 10px 25px;
+    padding: 10px 15px;
     /* border: none; */
 }
 
@@ -1100,6 +1100,11 @@ footer hr {
 
 /* For tablets and small desktops: */
 @media only screen and (min-width: 768px) and (max-width: 1024px) {
+
+    h5 {
+        font-size: 1rem;
+    }
+
     #pageheader {
         height: 500px;
     }
@@ -1110,4 +1115,21 @@ footer hr {
     #pageheader {
         height: 500px;
     }
+}
+
+/* For Mobile Devices */
+@media only screen and (max-width: 767px) {
+
+    h5 {
+        font-size: 1rem;
+    }
+
+    #pageheader {
+        height: 300px;
+    }
+
+    .authpage .card {
+        margin: 5px;
+    }
+
 }

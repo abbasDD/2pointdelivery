@@ -7,9 +7,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreHelperRequest;
 use App\Http\Requests\UpdateHelperRequest;
 use App\Models\Booking;
+use App\Models\City;
+use App\Models\Country;
 use App\Models\HelperCompany;
+use App\Models\HelperVehicle;
 use App\Models\SocialLink;
+use App\Models\State;
+use App\Models\User;
+use App\Models\VehicleType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class HelperController extends Controller
 {
@@ -187,8 +195,36 @@ class HelperController extends Controller
             $helperCompanyData->save();
         }
 
+        // Get list of all countries
+        $countries = Country::all();
 
-        return view('helper.profile.edit', compact('helperData', 'social_links', 'helperCompanyData'));
+
+        $companyStates = State::where('country_id', $helperCompanyData->country)->get();
+
+        $companyCities = City::where('state_id', $helperCompanyData->state)->get();
+
+        // Client Address Detail
+
+        $helperStates = State::where('country_id', $helperData->country)->get();
+        $helperCities = City::where('state_id', $helperData->state)->get();
+
+        // Address Data 
+        $addressData = [
+            'countries' => $countries,
+            'helperStates' => $helperStates,
+            'helperCities' => $helperCities,
+            'companyStates' => $companyStates,
+            'companyCities' => $companyCities
+        ];
+
+        // All Vehicle Types 
+        $vehicleTypes = VehicleType::where('is_active', 1)->get();
+
+        // Get vehicle data of helper
+        $vehicleData = HelperVehicle::where('helper_id', $helperData->id)->first();
+        // dd($vehicleData);
+
+        return view('helper.profile.edit', compact('helperData', 'social_links', 'helperCompanyData', 'addressData', 'vehicleTypes', 'vehicleData'));
     }
 
 
@@ -201,7 +237,8 @@ class HelperController extends Controller
             'last_name' => 'required|string|max:255',
             'gender' => 'required|string|max:255',
             'date_of_birth' => 'required|string|max:255',
-            'tax_id' => 'required|string|max:255',
+            // 'tax_id' => 'required|string|max:255',
+            'company_enabled' => 'required|integer',
         ]);
 
         // Check if user exist
@@ -228,15 +265,87 @@ class HelperController extends Controller
         // Update the helper data
         $helper->update([
             'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
             'gender' => $request->gender,
             'date_of_birth' => $request->date_of_birth,
             'tax_id' => $request->tax_id,
-            'profile_image' => $profile_image
+            'profile_image' => $profile_image,
+            'company_enabled' => $request->company_enabled
         ]);
         // dd($request->all());
 
         return redirect()->back()->with('success', 'Profile info updated successfully!');
+    }
+
+    // Route to update address data
+    public function addressInfo(Request $request)
+    {
+        // valideate request
+        $request->validate([
+            'suite' => 'required|string|max:255',
+            'street' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'zip_code' => 'required|string|max:255',
+        ]);
+
+        // Check if user exist
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
+
+        if (!$helper) {
+            return redirect()->back()->with('error', 'Helper not found');
+        }
+
+        // Update the helper data
+        $helper->update($request->all());
+        // dd($request->all());
+
+        return redirect()->back()->with('success', 'Profile Address updated successfully!');
+    }
+
+    // Route to update vehicle profile data
+    public function vehicleInfo(Request $request)
+    {
+        // valideate request
+        $request->validate([
+            'vehicle_type_id' => 'required|integer',
+            'vehicle_number' => 'required|string|max:255',
+            'vehicle_make' => 'required|string|max:255',
+            'vehicle_model' => 'required|string|max:255',
+            'vehicle_color' => 'required|string|max:255',
+            'vehicle_year' => 'required|string|max:255',
+        ]);
+
+
+        // Check if user exist
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
+
+        if (!$helper) {
+            return redirect()->back()->with('error', 'Helper not found');
+        }
+
+        // Check if Helper Vehicle already exist
+        $helperVehicle = HelperVehicle::where('helper_id', $helper->id)->first();
+
+        if ($helperVehicle) {
+            $helperVehicle->update($request->all());
+        } else {
+            $helperVehicle = new HelperVehicle();
+            $helperVehicle->user_id = auth()->user()->id;
+            $helperVehicle->helper_id = $helper->id;
+            $helperVehicle->vehicle_type_id = $request->vehicle_type_id;
+            $helperVehicle->vehicle_number = $request->vehicle_number;
+            $helperVehicle->vehicle_make = $request->vehicle_make;
+            $helperVehicle->vehicle_model = $request->vehicle_model;
+            $helperVehicle->vehicle_color = $request->vehicle_color;
+            $helperVehicle->vehicle_year = $request->vehicle_year;
+            $helperVehicle->save();
+        }
+
+
+        return redirect()->back()->with('success', 'Vehicle info updated successfully!');
     }
 
     // Route to update address data
@@ -269,34 +378,6 @@ class HelperController extends Controller
         }
 
         return redirect()->back()->with('success', 'Profile Social updated successfully!');
-    }
-
-
-    // Route to update address data
-    public function addressInfo(Request $request)
-    {
-        // valideate request
-        $request->validate([
-            'suite' => 'required|string|max:255',
-            'street' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'state' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'zip_code' => 'required|string|max:255',
-        ]);
-
-        // Check if user exist
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
-
-        if (!$helper) {
-            return redirect()->back()->with('error', 'Helper not found');
-        }
-
-        // Update the helper data
-        $helper->update($request->all());
-        // dd($request->all());
-
-        return redirect()->back()->with('success', 'Profile Address updated successfully!');
     }
 
 
@@ -377,7 +458,7 @@ class HelperController extends Controller
             'password' => Hash::make($request->new_password)
         ]);
 
-        return redirect()->back()->with('success', 'Profile Address updated successfully!');
+        return redirect()->back()->with('success', 'Password updated successfully!');
     }
 
 
@@ -389,5 +470,44 @@ class HelperController extends Controller
     public function track_order()
     {
         return view('helper.track_order');
+    }
+
+
+    public function searchUsers(Request $request)
+    {
+        $search = $request->input('search');
+        $currentUserId = auth()->id(); // Get the ID of the current authenticated user
+
+        // Get list of all admins, excluding the current user
+        $admins = DB::table('admins')
+            ->select('user_id', 'first_name', 'last_name')
+            ->where('user_id', '!=', $currentUserId) // Exclude current user
+            ->where(function ($query) use ($search) {
+                $query->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%");
+            });
+
+        // Get list of all clients, excluding the current user
+        $clients = DB::table('clients')
+            ->select('user_id', 'first_name', 'last_name')
+            ->where('user_id', '!=', $currentUserId) // Exclude current user
+            ->where(function ($query) use ($search) {
+                $query->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%");
+            });
+
+        // Get list of all helpers, excluding the current user
+        $helpers = DB::table('helpers')
+            ->select('user_id', 'first_name', 'last_name')
+            ->where('user_id', '!=', $currentUserId) // Exclude current user
+            ->where(function ($query) use ($search) {
+                $query->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%");
+            });
+
+        // Union all query results
+        $users = $clients->union($helpers)->union($admins)->get();
+
+        return response()->json($users);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\Chat;
 use App\Models\Client;
 use App\Models\Helper;
@@ -52,6 +53,11 @@ class ChatController extends Controller
         // Check if user exists
         if (!$user) {
             return response()->json(['success' => false, 'chat_id' => 0, 'message' => 'User not found']);
+        }
+
+
+        if ($user->user_type == 'admin') {
+            $userInfo = Admin::where('user_id', $user->id)->first();
         }
 
         // Get User detail as per user type

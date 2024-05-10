@@ -11,7 +11,7 @@
         <ul class="list">
             <h5>Users List</h5>
             {{-- Load List of Chats --}}
-            @foreach ($chats as $chat)
+            @forelse ($chats as $chat)
                 <li class="clearfix">
                     <div id="user_chat_{{ $chat->id }}" class="d-flex align-items-center p-2 item"
                         onclick="loadChat({{ $chat->id }})">
@@ -24,7 +24,11 @@
                         </div>
                     </div>
                 </li>
-            @endforeach
+            @empty
+                <li class="clearfix">
+                    <p class="text-center fs-xxs">No chats found</p>
+                </li>
+            @endforelse
 
 
         </ul>

@@ -73,7 +73,7 @@
             if (search.length > 2) {
                 $.ajax({
                     type: "POST",
-                    url: "{{ route('admin.users.search') }}",
+                    url: "{{ route('client.users.search') }}",
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
@@ -142,7 +142,7 @@
             if (selectedNewChatUserID) {
                 $.ajax({
                     type: "POST",
-                    url: "{{ route('admin.chat.create') }}",
+                    url: "{{ route('client.chat.create') }}",
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },

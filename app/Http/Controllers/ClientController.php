@@ -7,11 +7,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Models\Booking;
+use App\Models\City;
 use App\Models\ClientCompany;
+use App\Models\Country;
 use App\Models\SocialLink;
+use App\Models\State;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class ClientController extends Controller
@@ -108,7 +112,7 @@ class ClientController extends Controller
         $client_updated = false;  //Set default value
         $client = Client::where('user_id', auth()->user()->id)->first();
 
-        if ($client->first_name != null && $client->zip_code != null) {
+        if (isset($client) && $client->first_name != null && $client->zip_code != null) {
             $client_updated = true;
         }
 
@@ -151,7 +155,29 @@ class ClientController extends Controller
             $clientCompanyData->save();
         }
 
-        return view('client.profile.edit', compact('clientData', 'social_links', 'clientCompanyData'));
+        // Get list of all countries
+        $countries = Country::all();
+
+        $companyStates = State::where('country_id', $clientCompanyData->country)->get();
+
+        $companyCities = City::where('state_id', $clientCompanyData->state)->get();
+
+        // Client Address Detail
+
+        $clientStates = State::where('country_id', $clientData->country)->get();
+        $clientCities = City::where('state_id', $clientData->state)->get();
+
+        // Address Data 
+        $addressData = [
+            'countries' => $countries,
+            'clientStates' => $clientStates,
+            'clientCities' => $clientCities,
+            'companyStates' => $companyStates,
+            'companyCities' => $companyCities
+        ];
+
+
+        return view('client.profile.edit', compact('clientData', 'social_links', 'clientCompanyData', 'addressData'));
     }
 
     // Route to update personal profile data
@@ -163,13 +189,8 @@ class ClientController extends Controller
             'last_name' => 'required|string|max:255',
             'gender' => 'required|string|max:255',
             'date_of_birth' => 'required|string|max:255',
-            'tax_id' => 'required|string|max:255',
-            'suite' => 'required|string|max:255',
-            'street' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'state' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'zip_code' => 'required|string|max:255',
+            // 'tax_id' => 'required|string|max:255',
+            'company_enabled' => 'required|integer',
         ]);
 
         // Check if user exist
@@ -196,21 +217,45 @@ class ClientController extends Controller
         // Update the client data
         $client->update([
             'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
             'gender' => $request->gender,
             'date_of_birth' => $request->date_of_birth,
             'tax_id' => $request->tax_id,
             'profile_image' => $profile_image,
-            'suite' => $request->suite,
-            'street' => $request->street,
-            'city' => $request->city,
-            'state' => $request->state,
-            'country' => $request->country,
-            'zip_code' => $request->zip_code
+            'company_enabled' => $request->company_enabled,
         ]);
         // dd($request->all());
 
         return redirect()->back()->with('success', 'Profile info updated successfully!');
+    }
+
+
+    // Route to update address data
+    public function addressInfo(Request $request)
+    {
+        // valideate request
+        $request->validate([
+            'suite' => 'required|string|max:255',
+            'street' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'zip_code' => 'required|string|max:255',
+        ]);
+
+        // Check if user exist
+        $client = Client::where('user_id', auth()->user()->id)->first();
+
+        if (!$client) {
+            return redirect()->back()->with('error', 'Client not found');
+        }
+
+        // Update the client data
+        $client->update($request->all());
+        // dd($request->all());
+
+        return redirect()->back()->with('success', 'Profile Address updated successfully!');
     }
 
     public function companyInfo(Request $request)
@@ -293,32 +338,6 @@ class ClientController extends Controller
     }
 
 
-    // Route to update address data
-    public function addressInfo(Request $request)
-    {
-        // valideate request
-        $request->validate([
-            'suite' => 'required|string|max:255',
-            'street' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'state' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'zip_code' => 'required|string|max:255',
-        ]);
-
-        // Check if user exist
-        $client = Client::where('user_id', auth()->user()->id)->first();
-
-        if (!$client) {
-            return redirect()->back()->with('error', 'Client not found');
-        }
-
-        // Update the client data
-        $client->update($request->all());
-        // dd($request->all());
-
-        return redirect()->back()->with('success', 'Profile Address updated successfully!');
-    }
 
 
     // Route to update password data
@@ -378,5 +397,44 @@ class ClientController extends Controller
     public function track_order()
     {
         return view('client.track_order');
+    }
+
+
+    public function searchUsers(Request $request)
+    {
+        $search = $request->input('search');
+        $currentUserId = auth()->id(); // Get the ID of the current authenticated user
+
+        // Get list of all admins, excluding the current user
+        $admins = DB::table('admins')
+            ->select('user_id', 'first_name', 'last_name')
+            ->where('user_id', '!=', $currentUserId) // Exclude current user
+            ->where(function ($query) use ($search) {
+                $query->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%");
+            });
+
+        // Get list of all clients, excluding the current user
+        $clients = DB::table('clients')
+            ->select('user_id', 'first_name', 'last_name')
+            ->where('user_id', '!=', $currentUserId) // Exclude current user
+            ->where(function ($query) use ($search) {
+                $query->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%");
+            });
+
+        // Get list of all helpers, excluding the current user
+        $helpers = DB::table('helpers')
+            ->select('user_id', 'first_name', 'last_name')
+            ->where('user_id', '!=', $currentUserId) // Exclude current user
+            ->where(function ($query) use ($search) {
+                $query->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%");
+            });
+
+        // Union all query results
+        $users = $clients->union($helpers)->union($admins)->get();
+
+        return response()->json($users);
     }
 }
