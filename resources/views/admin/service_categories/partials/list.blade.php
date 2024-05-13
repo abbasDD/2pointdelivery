@@ -7,7 +7,7 @@
             <th>Secureship API</th>
             <th>Base Price</th>
             <th>Base Price Distance</th>
-            <th>Price Per KM</th>
+            <th>Extra Distance Price</th>
             <th>Status</th>
             <th>Action</th>
         </tr>
@@ -27,9 +27,9 @@
                 </td>
                 <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->base_price : 'N/A' }}
                 </td>
-                <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->base_price_distance : 'N/A' }}
+                <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->base_distance : 'N/A' }}
                 </td>
-                <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->price_per_km : 'N/A' }}
+                <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->extra_distance_price : 'N/A' }}
                 </td>
                 <td>
                     <button type="button" id="statusButton_{{ $service_category->id }}"
@@ -43,7 +43,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="7" class="text-center">No data found</td>
+                <td colspan="9" class="text-center">No data found</td>
             </tr>
         @endforelse
     </tbody>

@@ -15,7 +15,7 @@
 
                     <div class="card-body text-center">
                         <a href="{{ route('index') }}">
-                            <img src="{{ asset('images/logo/' . config('website_logo')) ?: asset('images/logo/icon.png') }}"
+                            <img src="{{ config('website_logo') ? asset('images/logo/' . config('website_logo')) : asset('images/logo/icon.png') }}"
                                 alt="2 Point" height="50">
                         </a>
                         <h3>Client Profile</h3>

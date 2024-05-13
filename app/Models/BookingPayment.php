@@ -19,7 +19,7 @@ class BookingPayment extends Model
         'extra_distance_price',
         'weight',
         'base_weight',
-        'extra_weigh_price',
+        'extra_weight_price',
         'total_price',
         'payment_method',
         'payment_status',

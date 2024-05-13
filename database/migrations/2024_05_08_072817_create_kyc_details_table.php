@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('kyc_details', function (Blueprint $table) {
             $table->id();
+            $table->enum('type', ['client', 'helper'])->default('client');
             $table->unsignedBigInteger('user_id');
             $table->string('front_image')->nullable();
             $table->string('back_image')->nullable();

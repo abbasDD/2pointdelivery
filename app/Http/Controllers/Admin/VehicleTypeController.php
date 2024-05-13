@@ -24,6 +24,7 @@ class VehicleTypeController extends Controller
     {
         // Get all services to show on form
         $services = ServiceType::where('is_active', 1)->get();
+
         return view('admin.vehicle_types.create', compact('services'));
     }
     public function store(Request $request)
@@ -34,6 +35,8 @@ class VehicleTypeController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'services' => 'required|array',
+            'price' => 'required|string',
+            'price_type' => 'required|string',
         ]);
 
         // Upload the image if provided
@@ -53,6 +56,8 @@ class VehicleTypeController extends Controller
             'name' => $validatedData['name'],
             'description' => $validatedData['description'],
             'image' => $updatedFilename,
+            'price' => $validatedData['price'],
+            'price_type' => $validatedData['price_type'],
         ]);
 
         // Adding services to the vehicle type
@@ -88,6 +93,8 @@ class VehicleTypeController extends Controller
             'description' => 'required|string|max:255',
             'services' => 'required|array',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'price' => 'required|string',
+            'price_type' => 'required|string',
         ]);
 
 
@@ -113,6 +120,8 @@ class VehicleTypeController extends Controller
         // Update the vehicle type attributes
         $vehicle_type->name = $request->name;
         $vehicle_type->description = $request->description;
+        $vehicle_type->price = $request->price;
+        $vehicle_type->price_type = $request->price_type;
 
         // dd($vehicle_type);
 

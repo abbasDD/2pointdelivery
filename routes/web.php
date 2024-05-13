@@ -16,6 +16,10 @@ use Illuminate\Support\Facades\Route;
 //Redirect to Home page as login is valid for user
 Route::get('/login', [FrontendController::class, 'index'])->name('login');
 
+// Google URL
+Route::get('/google/redirect', [App\Http\Controllers\GoogleLoginController::class, 'redirectToGoogle'])->name('google.redirect');
+Route::get('/google/callback', [App\Http\Controllers\GoogleLoginController::class, 'handleGoogleCallback'])->name('google.callback');
+
 // Home Page
 Route::get('/', [FrontendController::class, 'index'])->name('index');
 Route::get('/index', [FrontendController::class, 'index'])->name('index');
@@ -36,9 +40,9 @@ Route::get('/fetch/service-categories', [FrontendController::class, 'fetch_servi
 // Route Chat Page
 Route::get('/chat', [ChatController::class, 'redirectChat'])->name('chat');
 
-Route::get('/booking-detail', function () {
-    return view('frontend.booking_detail');
-})->name('booking_detail');
+// Route::get('/booking-detail', function () {
+//     return view('frontend.booking_detail');
+// })->name('booking_detail');
 
 
 // Change Language Routes

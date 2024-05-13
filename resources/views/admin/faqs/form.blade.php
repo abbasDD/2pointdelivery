@@ -29,7 +29,7 @@
     {{-- Submit Button --}}
     <div class="col-md-12 text-right">
         <button type="submit" class="btn btn-primary btn-block">
-            {{ isset($faq) ? 'Update' : 'Submit' }}
+            {{ isset($faq) ? 'Update' : 'Add' }}
         </button>
     </div>
 </div>

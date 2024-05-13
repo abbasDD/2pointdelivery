@@ -89,24 +89,27 @@
                         {{-- Seprator --}}
                         <hr>
 
-                        @if ($booking->payment_status == 'unpaid')
+                        @if ($booking->status == 'draft')
                             {{-- Payment Method --}}
                             <h5>Payment Now Using:</h5>
-                            <div class="d-flex align-items-center justify-content-center">
+                            <div class=" d-flex align-items-center justify-content-center">
                                 {{-- Paypal --}}
-                                <form id="paypal-form" action="{{ route('client.booking.payment.paypal.create') }}"
-                                    method="post">
-                                    @csrf
-                                    <input type="hidden" name="booking_id" value="{{ $booking->id }}">
-                                    <!-- Assuming $booking is available with the booking details -->
+                                <div class="paypal">
+                                    <form id="paypal-form" class="p-0 m-0"
+                                        action="{{ route('client.booking.payment.paypal.create') }}" method="post">
+                                        @csrf
+                                        <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+                                        <!-- Assuming $booking is available with the booking details -->
 
-                                    <input type="hidden" name="total_price" value="{{ $bookingPayment->total_price }}">
-                                    <!-- Assuming the total_price is fixed -->
-                                    <button type="submit" class="btn btn-paypal d-flex align-items-center">
-                                        <i class="fab fa-paypal"></i>
-                                        <span class="d-none d-md-block ml-2">Pay with PayPal</span>
-                                    </button>
-                                </form>
+                                        <input type="hidden" name="total_price"
+                                            value="{{ $bookingPayment->total_price }}">
+                                        <!-- Assuming the total_price is fixed -->
+                                        <button type="submit" class="btn btn-paypal d-flex align-items-center">
+                                            <i class="fab fa-paypal"></i>
+                                            <span class="d-none d-md-block ml-2">PayPal</span>
+                                        </button>
+                                    </form>
+                                </div>
                                 {{-- Stripe --}}
                                 <div class="stripe ml-2">
                                     <button class="btn btn-stripe d-flex align-items-center"

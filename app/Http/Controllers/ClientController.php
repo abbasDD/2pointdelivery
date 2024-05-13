@@ -94,19 +94,21 @@ class ClientController extends Controller
     {
         // Statistics
         $satistics = [
-            'total_bookings' => Booking::where('user_id', auth()->user()->id)->count(),
-            'pending_bookings' => Booking::where('user_id', auth()->user()->id)->where('status', 'pending')->count(),
-            'cancelled_bookings' => Booking::where('user_id', auth()->user()->id)->where('status', 'cancelled')->count(),
-            'unpaid_bookings' => Booking::where('user_id', auth()->user()->id)->where('payment_status', 'unpaid')->count(),
+            'total_bookings' => Booking::where('client_user_id', auth()->user()->id)->count(),
+            'pending_bookings' => Booking::where('client_user_id', auth()->user()->id)->where('status', 'pending')->count(),
+            'cancelled_bookings' => Booking::where('client_user_id', auth()->user()->id)->where('status', 'cancelled')->count(),
+            'unpaid_bookings' => Booking::where('client_user_id', auth()->user()->id)->where('status', 'draft')->count(),
         ];
 
-        $bookings = Booking::where('user_id', auth()->user()->id)
+        $bookings = Booking::where('client_user_id', auth()->user()->id)
             ->with('client')
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
             ->orderBy('bookings.created_at', 'desc')
             ->take(10)->get();
+
+            // Get booking client details
 
         // Check if user completed profile
         $client_updated = false;  //Set default value

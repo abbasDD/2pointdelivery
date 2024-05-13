@@ -6,6 +6,7 @@
             <th>Vehice Name</th>
             <th>Description</th>
             <th>Service Availble</th>
+            <th>Vehicle Price</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -24,12 +25,13 @@
                         <span class="badge badge-danger">No service available</span>
                     @endif
                 </td>
+                <td>{{ $vehicle_type->price . '$ per ' . $vehicle_type->price_type }}</td>
                 <td><a href="{{ route('admin.vehicleType.edit', $vehicle_type->id) }}" class="btn btn-sm btn-primary"><i
                             class="fas fa-pen"></i></a></td>
             </tr>
         @empty
             <tr>
-                <td colspan="4" class="text-center">No data found</td>
+                <td colspan="8" class="text-center">No data found</td>
             </tr>
         @endforelse
     </tbody>

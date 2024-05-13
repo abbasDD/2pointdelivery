@@ -42,11 +42,11 @@
 {{-- Sidebar Code her --}}
 <div class="sidebar">
     <a class="navbar-brand" href="{{ route('index') }}">
-        <img src="{{ asset('images/logo/' . config('website_logo')) ?: asset('images/logo/icon.png') }}" alt="2 Point"
-            height="50">
+        <img src="{{ config('website_logo') ? asset('images/logo/' . config('website_logo')) : asset('images/logo/icon.png') }}"
+            alt="2 Point" width="50">
         2 Point Client
     </a>
-    <nav class="mt-5">
+    <nav class="mt-3">
         <ul class="p-0">
             <li class="nav-item"><a class="nav-link" href="{{ route('client.index') }}"><i class="fa fa-home"></i>
                     Dashboard</a></li>
@@ -68,8 +68,7 @@
                         class="fa-solid fa-repeat"></i>
                     Referrals</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.trackOrder') }}"><i class="fa fa-map"></i>
-                    Track
-                    Order</a></li>
+                    Track Order</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.edit') }}"><i class="fa fa-edit"></i> Edit
                     Profile</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.settings') }}"><i class="fa fa-cog"></i>

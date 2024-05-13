@@ -17,9 +17,9 @@
                 <td>${{ $prioritySetting->price }}</td>
                 <td>{{ $prioritySetting->description ?? 'N/A' }}</td>
                 <td>
-                    <button type="button" id="statusButton_{{ $prioritySetting->id }}"
+                    <button type="button" id="statusPriorityButton_{{ $prioritySetting->id }}"
                         class="btn  {{ $prioritySetting->is_active ? 'btn-primary' : 'btn-danger' }} btn-sm"
-                        onclick="showStatusDialog({{ $prioritySetting->id }}, '{{ $prioritySetting->is_active }}')">
+                        onclick="showPriorityStatusDialog({{ $prioritySetting->id }}, '{{ $prioritySetting->is_active }}')">
                         {{ $prioritySetting->is_active == 1 ? 'Active' : 'Inactive' }}
                     </button>
                 </td>
@@ -37,20 +37,20 @@
 </table>
 
 
-<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel"
-    aria-hidden="true">
+<div class="modal fade" id="priorityStatusModal" tabindex="-1" role="dialog"
+    aria-labelledby="priorityStatusModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="statusModalLabel">Update Status</h5>
+                <h5 class="modal-title" id="priorityStatusModalLabel">Update Status</h5>
             </div>
             <div class="modal-body">
                 Are you sure you want to update status?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('statusModal')"
+                <button type="button" class="btn btn-secondary" onclick="closeModal('priorityStatusModal')"
                     data-dismiss="modal">Close</button>
-                <a id="updateStatusLink" href="#" class="btn btn-primary">Update</a>
+                <a id="updatePriorityStatusLink" href="#" class="btn btn-primary">Update</a>
             </div>
         </div>
     </div>
@@ -62,31 +62,31 @@
 
 
 <script>
-    function showStatusDialog(id, status) {
-        $('#statusModal').modal('show');
+    function showPriorityStatusDialog(id, status) {
+        $('#priorityStatusModal').modal('show');
         var baseUrl = "{{ url('admin/settings/priority/update-status') }}"; // Use `url()` to get the base part
-        // $('#updateStatusLink').attr('href', baseUrl + '/' + id);
+        // $('#updatePriorityStatusLink').attr('href', baseUrl + '/' + id);
 
-        // Remove previous click event handler from #updateStatusLink
-        $('#updateStatusLink').off('click');
-        // add onclick to updateStatusLink here
-        $('#updateStatusLink').click(function() {
-            updateStatus(id);
+        // Remove previous click event handler from #updatePriorityStatusLink
+        $('#updatePriorityStatusLink').off('click');
+        // add onclick to updatePriorityStatusLink here
+        $('#updatePriorityStatusLink').click(function() {
+            updatePriorityStatus(id);
         });
-        // console.log($('#statusButton_' + id).text());
-        if ($('#statusButton_' + id).text().trim() == 'Active') {
-            $('#updateStatusLink').text("Decactivate");
-            $('#updateStatusLink').removeClass('btn-primary');
-            $('#updateStatusLink').addClass('btn-danger');
+        // console.log($('#statusPriorityButton_' + id).text());
+        if ($('#statusPriorityButton_' + id).text().trim() == 'Active') {
+            $('#updatePriorityStatusLink').text("Decactivate");
+            $('#updatePriorityStatusLink').removeClass('btn-primary');
+            $('#updatePriorityStatusLink').addClass('btn-danger');
         } else {
-            $('#updateStatusLink').text("Activate");
-            $('#updateStatusLink').removeClass('btn-danger');
-            $('#updateStatusLink').addClass('btn-primary');
+            $('#updatePriorityStatusLink').text("Activate");
+            $('#updatePriorityStatusLink').removeClass('btn-danger');
+            $('#updatePriorityStatusLink').addClass('btn-primary');
         }
 
     }
 
-    function updateStatus(id) {
+    function updatePriorityStatus(id) {
         console.log(id);
         var baseUrl = "{{ url('admin/settings/priority/update-status') }}";
         var csrfToken = $('meta[name="csrf-token"]').attr('content'); // Get CSRF token from the meta tag
@@ -104,29 +104,29 @@
                 var jsonResponse = JSON.parse(response); //Parse the JSON string into an object
                 if (jsonResponse.status == 'success') {
                     // Hide modal
-                    $('#statusModal').modal('hide');
+                    $('#priorityStatusModal').modal('hide');
                     // Change text on bbutton as per response
                     if (jsonResponse.is_active == 1) {
-                        $('#statusButton_' + id).text('Inactive');
-                        $('#statusButton_' + id).removeClass('btn-primary');
-                        $('#statusButton_' + id).addClass('btn-danger');
+                        $('#statusPriorityButton_' + id).text('Inactive');
+                        $('#statusPriorityButton_' + id).removeClass('btn-primary');
+                        $('#statusPriorityButton_' + id).addClass('btn-danger');
                     }
                     if (jsonResponse.is_active == 0) {
-                        $('#statusButton_' + id).text('Active');
-                        $('#statusButton_' + id).removeClass('btn-danger');
-                        $('#statusButton_' + id).addClass('btn-primary');
+                        $('#statusPriorityButton_' + id).text('Active');
+                        $('#statusPriorityButton_' + id).removeClass('btn-danger');
+                        $('#statusPriorityButton_' + id).addClass('btn-primary');
                     }
 
                     // Trigger Notification
-                    triggerToast('Success', 'Status updated succcessfully');
+                    triggerToast('Success', 'Priority Status updated succcessfully');
                     // Remove function from button
-                    $('updateStatusLink').off('click');
+                    $('updatePriorityStatusLink').off('click');
                     console.log(jsonResponse.message); // Print the message from the response
                 } else {
                     // Hide modal
-                    $('#statusModal').modal('hide');
+                    $('#priorityStatusModal').modal('hide');
                     // Remove function from button
-                    $('updateStatusLink').off('click');
+                    $('updatePriorityStatusLink').off('click');
                     console.log('Failed'); // Or any other message you want to print for failed status
                 }
             },

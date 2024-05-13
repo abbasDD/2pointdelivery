@@ -21,10 +21,11 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->boolean('is_secureship_enabled')->default(false);
             $table->string('base_price')->nullable()->default('0');
-            $table->string('price_per_km')->nullable()->default('0');
-            $table->string('base_price_distance')->nullable()->default('0');
+            $table->string('extra_distance_price')->nullable()->default('0');
+            $table->string('base_distance')->nullable()->default('0');
             $table->string('base_weight')->nullable()->default('0');
             $table->string('extra_weight_price')->nullable()->default('0');
+            $table->string('helper_fee')->nullable()->default('0');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 

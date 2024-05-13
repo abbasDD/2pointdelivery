@@ -124,9 +124,9 @@
             for (let i = 0; i < serviceCategories.length; i++) {
                 if (serviceCategories[i].uuid === selectedparceluuid) {
                     // console.log(serviceCategories[i].base_price);
-                    if (distance_in_km > parseFloat(serviceCategories[i].base_price_distance)) {
+                    if (distance_in_km > parseFloat(serviceCategories[i].base_distance)) {
                         distance_price = parseFloat(serviceCategories[i].base_price) + (distance_in_km - parseFloat(
-                            serviceCategories[i].base_price_distance)) * parseFloat(serviceCategories[i].price_per_km);
+                            serviceCategories[i].base_distance)) * parseFloat(serviceCategories[i].extra_distance_price);
                     } else {
                         distance_price = parseFloat(serviceCategories[i].base_price);
                     }

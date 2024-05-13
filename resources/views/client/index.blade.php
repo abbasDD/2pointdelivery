@@ -94,7 +94,6 @@
                                 <thead class="thead-primary">
                                     <tr>
                                         <th>ID</th>
-                                        <th>Client</th>
                                         <th>Priority</th>
                                         <th>Service Type</th>
                                         <th>Address</th>
@@ -107,7 +106,6 @@
                                     @forelse ($bookings as $booking)
                                         <tr>
                                             <td>{{ $loop->index + 1 }}</td>
-                                            <td>{{ $booking->client->first_name }}</td>
                                             <td>{{ $booking->prioritySetting->name }}</td>
                                             <td>
                                                 {{-- Service Type --}}

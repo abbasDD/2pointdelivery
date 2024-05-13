@@ -14,7 +14,7 @@
                 <div class="card">
 
                     <div class="card-body text-center">
-                        <img src="{{ asset('images/logo/' . config('website_logo')) ?: asset('images/logo/icon.png') }}"
+                        <img src="{{ config('website_logo') ? asset('images/logo/' . config('website_logo')) : asset('images/logo/icon.png') }}"
                             alt="2 Point" height="50">
                         <h3>2 Point Client</h3>
                         <p>Please enter your detail to login</p>

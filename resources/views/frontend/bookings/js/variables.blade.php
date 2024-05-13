@@ -31,8 +31,8 @@
         selectedParcelTypeSecureshipEnable = serviceCategories[0].is_secureship_enabled;
         // Update payment details
         payment_base_price = serviceCategories[0].base_price;
-        payment_base_distance = serviceCategories[0].base_price_distance;
-        payment_extra_distance_price = serviceCategories[0].price_per_km;
+        payment_base_distance = serviceCategories[0].base_distance;
+        payment_extra_distance_price = serviceCategories[0].extra_distance_price;
         payment_base_weight = serviceCategories[0].base_weight;
         payment_extra_weight_price = serviceCategories[0].extra_weight_price;
     }
@@ -133,17 +133,17 @@
         for (let i = 0; i < serviceCategories.length; i++) {
             if (serviceCategories[i].uuid === selectedparceluuid) {
                 // console.log(serviceCategories[i].base_price);
-                if (distance_in_km > parseFloat(serviceCategories[i].base_price_distance)) {
+                if (distance_in_km > parseFloat(serviceCategories[i].base_distance)) {
                     distance_price = parseFloat(serviceCategories[i].base_price) + (distance_in_km - parseFloat(
-                        serviceCategories[i].base_price_distance)) * parseFloat(serviceCategories[i].price_per_km);
+                        serviceCategories[i].base_distance)) * parseFloat(serviceCategories[i].extra_distance_price);
                 } else {
                     distance_price = parseFloat(serviceCategories[i].base_price);
                 }
 
                 // Update payment details
                 payment_base_price = serviceCategories[i].base_price;
-                payment_base_distance = serviceCategories[i].base_price_distance;
-                payment_extra_distance_price = serviceCategories[i].price_per_km;
+                payment_base_distance = serviceCategories[i].base_distance;
+                payment_extra_distance_price = serviceCategories[i].extra_distance_price;
                 payment_base_weight = serviceCategories[i].base_weight;
                 payment_extra_weight_price = serviceCategories[i].extra_weight_price;
 

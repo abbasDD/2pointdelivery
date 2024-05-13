@@ -7,7 +7,9 @@ use App\Http\Requests\StoreBookingRequest;
 use App\Http\Requests\UpdateBookingRequest;
 use App\Models\BookingPayment;
 use App\Models\Client;
+use App\Models\Helper;
 use App\Models\PaymentSetting;
+use App\Models\PrioritySetting;
 use App\Models\ServiceCategory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -28,7 +30,7 @@ class BookingController extends Controller
      */
     public function index()
     {
-        $bookings = Booking::where('user_id', auth()->user()->id)
+        $bookings = Booking::where('client_user_id', auth()->user()->id)
             ->with('client')
             ->with('prioritySetting')
             ->with('serviceType')
@@ -71,7 +73,7 @@ class BookingController extends Controller
             'extra_distance_price' => 'nullable|string|max:255',
             'weight' => 'nullable|string|max:255',
             'base_weight' => 'nullable|string|max:255',
-            'extra_weigh_price' => 'nullable|string|max:255',
+            'extra_weight_price' => 'nullable|string|max:255',
         ]);
 
         // Get service_category_id from uuid
@@ -85,15 +87,12 @@ class BookingController extends Controller
             return response()->json(['success' => false, 'errors' => $validator->errors()]);
         }
 
-        // Add user_id 
-        $request->request->add(['user_id' => auth()->user()->id]);
-
         // String uuid
         $request->request->add([
             'uuid' => Str::random(32),
         ]);
 
-        // Add client_id
+        // Add client_user_id
         $client = Client::where('user_id', auth()->user()->id)->first();
         // if not found then create
         if (!$client) {
@@ -103,9 +102,9 @@ class BookingController extends Controller
             $client = Client::where('user_id', auth()->user()->id)->first();
         }
 
-        $client_id = $client->id;
+        $client_user_id = $client->id;
 
-        $request->request->add(['client_id' => $client_id]);
+        $request->request->add(['client_user_id' => auth()->user()->id]);
 
         // Add booking_at to current datetime
         $request->request->add(['booking_at' => now()]);
@@ -113,16 +112,63 @@ class BookingController extends Controller
         // Create new booking
         $booking = Booking::create($request->all());
 
+        // Calculate prices
+
+        // Get Distance Price
+        $distance_price  = 0;
+        if ($request->distance) {
+            if ($request->distance > $request->base_distance) {
+                $distance_price = $request->base_price + ($request->distance - $request->base_distance) * $request->extra_distance_price;
+            } else {
+                $distance_price = $request->base_price;
+            }
+            $distance_price = $request->distance * $request->extra_distance_price;
+        }
+
+        // Get weight Price
+        $weight_price = 0;
+        if ($request->weight) {
+            $package_volume = $request->package_length * $request->package_width * $request->package_height / 5000;
+            // Check which one is greater
+            if ($request->weight > $package_volume) {
+                $package_weight = $request->weight;
+            } else {
+                $package_weight = $package_volume;
+            }
+
+            if ($request->weight > $request->base_weight) {
+                $weight_price = $package_weight * $request->extra_weight_price;
+            }
+        }
+
+        // Get priority_price
+        $priority_price  = 0;
+        // Check if priority setting exist
+        if (isset($request->priority_setting_id)) {
+            $priority_setting = PrioritySetting::find($request->priority_setting_id);
+            if ($priority_setting) {
+                $priority_price = $priority_setting->price;
+            }
+        }
+
+        // get service_price
+        $service_price = 0;
+
+        // Get vehicle_price
+        $vehicle_price = 0;
+
+        // Get tax_price
+        $tax_price = 0;
+
         // Create Booking Payment
         $paymentBooking = BookingPayment::create([
             'booking_id' => $booking->id,
-            'base_price' => $request->base_price,
-            'distance' => $request->distance,
-            'base_distance' => $request->base_distance,
-            'extra_distance_price' => $request->extra_distance_price,
-            'weight' => $request->weight,
-            'base_weight' => $request->base_weight,
-            'extra_weigh_price' => $request->extra_weigh_price,
+            'distance_price' => $distance_price,
+            'weight_price' => $weight_price,
+            'priority_price' => $priority_price,
+            'service_price' => $service_price,
+            'vehicle_price' => $vehicle_price,
+            'tax_price' => $tax_price,
             'total_price' => $request->total_price,
             'payment_method' => 'cod',
             'payment_status' => 'unpaid',
@@ -143,7 +189,7 @@ class BookingController extends Controller
         // dd($request->id);
 
         $booking = Booking::where('id', $request->id)
-            ->where('user_id', auth()->user()->id)
+            ->where('client_user_id', auth()->user()->id)
             ->with('client')
             ->with('prioritySetting')
             ->with('serviceType')
@@ -173,7 +219,7 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking ID not found');
         }
         // Get uuid of booking from id
-        $booking = Booking::where('id', $bookingId)->where('user_id', auth()->user()->id)->first();
+        $booking = Booking::where('id', $bookingId)->where('client_user_id', auth()->user()->id)->first();
         if (!$booking) {
             return redirect()->back()->with('error', 'Booking not found');
         }
@@ -332,7 +378,9 @@ class BookingController extends Controller
             return response()->json(['success' => false, 'data' => 'Unable to find booking']);
         }
 
-        if ($booking->payment_status == 'paid') {
+        $bookingPayment = BookingPayment::where('booking_id', $booking->id)->first();
+
+        if ($bookingPayment->payment_status == 'paid') {
             return response()->json(['success' => false, 'data' => 'Booking already paid']);
         }
 
@@ -341,9 +389,12 @@ class BookingController extends Controller
         // Update booking to paid status
 
         $booking->update([
+            'status' => 'pending',
+        ]);
+
+        $bookingPayment->update([
             'payment_method' => 'cod',
             'payment_status' => 'paid',
-            'status' => 'pending',
         ]);
 
         return response()->json(['success' => true, 'data' => 'Booking paid successfully']);
@@ -355,7 +406,7 @@ class BookingController extends Controller
     public function show(Request $request)
     {
         $booking = Booking::where('id', $request->id)
-            ->where('user_id', auth()->user()->id)
+            ->where('client_user_id', auth()->user()->id)
             ->with('client')
             ->with('prioritySetting')
             ->with('serviceType')
@@ -366,6 +417,16 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking not found');
         }
 
-        return view('frontend.booking_detail', compact('booking'));
+        // Getting booking payment data
+        $bookingPayment = BookingPayment::where('booking_id', $booking->id)->first();
+
+        // Get helper Data
+        // $helper = Helper::where('user_id', $booking->helper_id)->first();
+
+
+
+        // dd($booking);
+
+        return view('frontend.bookings.show', compact('booking', 'bookingPayment'));
     }
 }

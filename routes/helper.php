@@ -36,8 +36,15 @@ Route::prefix('helper')->middleware(['auth'])->name('helper.')->group(function (
     //KYC Details
     // Route::get('/kyc-details', [HelperController::class, 'kyc_details'])->name('kyc_details');
     //KYC Details
+    // Route::get('/kyc-details', [KycDetailController::class, 'index'])->name('kyc_details');
+    // Route::post('/kyc/update', [KycDetailController::class, 'update'])->name('kyc.update');
+    //KYC Details
     Route::get('/kyc-details', [KycDetailController::class, 'index'])->name('kyc_details');
+    Route::get('/kyc/create/', [KycDetailController::class, 'create'])->name('kyc.create');
+    Route::post('/kyc/store/', [KycDetailController::class, 'store'])->name('kyc.store');
+    Route::get('/kyc/edit/{id}', [KycDetailController::class, 'edit'])->name('kyc.edit');
     Route::post('/kyc/update', [KycDetailController::class, 'update'])->name('kyc.update');
+    Route::get('/kyc/show/{id}', [KycDetailController::class, 'show'])->name('kyc.show');
 
     //Bookings
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings');

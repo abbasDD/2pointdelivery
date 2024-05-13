@@ -42,11 +42,11 @@
 {{-- Sidebar Code her --}}
 <div class="sidebar">
     <a class="navbar-brand" href="{{ route('index') }}">
-        <img src="{{ asset('images/logo/' . config('website_logo')) ?: asset('images/logo/icon.png') }}" alt="2 Point"
-            height="50">
+        <img src="{{ config('website_logo') ? asset('images/logo/' . config('website_logo')) : asset('images/logo/icon.png') }}"
+            alt="2 Point" width="50">
         2 Point Admin
     </a>
-    <nav class="mt-5">
+    <nav class="mt-3">
         <ul class="p-0">
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.index') }}"><i class="fa fa-home"></i>
                     Dashboard</a></li>
@@ -65,15 +65,15 @@
                         class="fa fa-dolly"></i>
                     Services</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.serviceCategories') }}"><i
-                        class="fa fa-user"></i> Service Categories </a></li>
+                        class="fa-solid fa-layer-group"></i> Service Categories </a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.vehicleTypes') }}"><i
-                        class="fa fa-edit"></i> Vehicles</a>
+                        class="fa-solid fa-truck"></i> Vehicle Types</a>
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.bookings') }}"><i class="fa fa-dolly"></i>
                     Bookings</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.chats') }}"><i class="fa fa-comment"></i>
                     Chat</a></li>
             </li>
-            <li class="nav-item has-submenu">
+            {{-- <li class="nav-item has-submenu">
                 <a class="nav-link" href="#"> <i class="fa fa-cog"></i> Settings </a>
                 <ul class="submenu collapse">
                     <li><a class="nav-link" href="{{ route('admin.systemSettings') }}">System </a></li>
@@ -81,8 +81,11 @@
                     <li><a class="nav-link" href="{{ route('admin.paymentSettings') }}">Payment </a> </li>
                     <li><a class="nav-link" href="{{ route('admin.prioritySettings') }}">Priority </a> </li>
                 </ul>
-            </li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.faqs') }}"><i class="fa fa-comment"></i>
+            </li> --}}
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.settings') }}"><i class="fa fa-cog"></i>
+                    Settings</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.faqs') }}"><i
+                        class="fa-solid fa-question"></i>
                     FAQs</a></li>
             </li>
             <li class="nav-item"><a class="nav-link" href="{{ route('logout') }}"

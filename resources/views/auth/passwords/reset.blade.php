@@ -14,7 +14,7 @@
                 <div class="card">
 
                     <div class="card-body text-center">
-                        <img src="{{ asset('images/logo/' . config('website_logo')) ?: asset('images/logo/icon.png') }}"
+                        <img src="{{ config('website_logo') ? asset('images/logo/' . config('website_logo')) : asset('images/logo/icon.png') }}"
                             alt="2 Point" height="50">
                         <h3>Reset Password</h3>
                         <p>Please enter your email to reset password</p>

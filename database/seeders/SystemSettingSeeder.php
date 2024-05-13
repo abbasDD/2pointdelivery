@@ -37,6 +37,12 @@ class SystemSettingSeeder extends Seeder
                 'value' => 'en',
                 'created_at' => now(),
                 'updated_at' => now()
+            ],
+            [
+                'key' => 'insurance',
+                'value' => 'enabled',
+                'created_at' => now(),
+                'updated_at' => now()
             ]
         ]);
     }

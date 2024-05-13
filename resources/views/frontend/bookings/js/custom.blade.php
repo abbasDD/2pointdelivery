@@ -284,7 +284,7 @@
     // Calculate amount to pay
     function amountToPayCalculation() {
         // Calculate distance_price
-        // Check if distance is greater then base_price_distance
+        // Check if distance is greater then base_distance
         if (distance_in_km > parseFloat(payment_base_distance)) {
             distance_price = parseFloat(payment_base_price) + (distance_in_km - parseFloat(
                 payment_base_distance)) * parseFloat(payment_extra_distance_price);

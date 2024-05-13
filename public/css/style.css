@@ -327,12 +327,16 @@ table tbody tr td {
 
 .card {
     min-width: 100px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
 }
 
 .card .card-header {
     background-color: white;
-    padding: 15px;
+    padding: 30px 5px 5px 30px;
     color: var(--black);
+    border: none;
 }
 
 
@@ -1007,14 +1011,18 @@ footer hr {
 
 .progressdiv .progressbar {
     counter-reset: step;
+    display: grid;
 }
 
 .progressdiv .progressbar li {
-    position: relative;
-    list-style: none;
-    float: left;
-    width: 25%;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+
+.progressdiv .progressbar li:last-child {
+    margin-bottom: 0;
 }
 
 .progressdiv .progressbar li p {
@@ -1025,8 +1033,21 @@ footer hr {
     color: var(--primary-dark);
 }
 
+.progressdiv .progressbar li h6 {
+    color: var(--gray-color);
+    margin-bottom: 5px;
+}
+
+.progressdiv .progressbar li.active h6 {
+    color: var(--primary-dark);
+}
+
 /* Circles */
-.progressdiv .progressbar li:before {
+.progressdiv .progressbar li .circle {
+    position: relative;
+}
+
+.progressdiv .progressbar li .circle:before {
     content: counter(step);
     counter-increment: step;
     width: 40px;
@@ -1040,29 +1061,30 @@ footer hr {
     line-height: 39px;
 }
 
-.progressdiv .progressbar li:after {
+.progressdiv .progressbar li:not(:last-child) .circle:after {
     content: "";
     position: absolute;
-    width: 100%;
-    height: 1px;
-    background: var(--primary-light);
-    top: 20px;
-    /*half of height Parent (li) */
-    left: -50%;
-    z-index: -1;
+    width: 1px;
+    height: 50px;
+    background: var(--gray-color);
+    top: 40px;
+    /* half of height Parent (li) */
+    left: 50%;
+    z-index: 9999;
 }
+
 
 .progressdiv .progressbar li:first-child:after {
     content: none;
 }
 
-.progressdiv .progressbar li.active:before {
+.progressdiv .progressbar li.active .circle:before {
     background: var(--primary-color);
     content: "✔";
 }
 
-.progressdiv .progressbar li.active+li:after {
-    background: var(--gray-color);
+.progressdiv .progressbar li.active .circle:after {
+    background: var(--primary-color);
 }
 
 

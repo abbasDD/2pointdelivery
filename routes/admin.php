@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AuthenticationSettingController;
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\ClientController;
@@ -109,6 +110,9 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
 
     // Settings Page Routes
     Route::prefix('settings')->group(function () {
+        // Default Settings
+        Route::get('/', [SystemSettingController::class, 'index'])->name('settings');
+
         Route::get('/system', [SystemSettingController::class, 'index'])->name('systemSettings');
         Route::post('/system/update', [SystemSettingController::class, 'update'])->name('systemSetting.update');
         // Tax
@@ -130,6 +134,11 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
         Route::get('/priority/edit/{id}', [PrioritySettingController::class, 'edit'])->name('prioritySetting.edit');
         Route::post('/priority/update', [PrioritySettingController::class, 'update'])->name('prioritySetting.update');
         Route::post('/priority/update-status', [PrioritySettingController::class, 'updateStatus'])->name('prioritySetting.updateStatus');
+
+        // Authentication
+        Route::get('/authentication', [AuthenticationSettingController::class, 'index'])->name('authenticationSettings');
+        Route::post('/authentication/update', [AuthenticationSettingController::class, 'update'])->name('authenticationSetting.update');
+
 
         // End of Settings Prefix Route
     });

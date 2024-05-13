@@ -19,6 +19,8 @@ class VehicleType extends Model
         'uuid',
         'name',
         'image',
+        'price_type',
+        'price',
         'description',
         'is_active'
     ];

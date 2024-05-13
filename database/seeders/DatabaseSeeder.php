@@ -18,5 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UsersTableSeeder::class);
         $this->call(ServiceTypeSeeder::class);
         $this->call(SystemSettingSeeder::class);
+        $this->call(FaqSeeder::class);
+        $this->call(PrioritySettingSeeder::class);
     }
 }

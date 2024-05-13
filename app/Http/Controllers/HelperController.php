@@ -8,6 +8,7 @@ use App\Http\Requests\StoreHelperRequest;
 use App\Http\Requests\UpdateHelperRequest;
 use App\Models\Booking;
 use App\Models\City;
+use App\Models\Client;
 use App\Models\Country;
 use App\Models\HelperCompany;
 use App\Models\HelperVehicle;
@@ -69,10 +70,10 @@ class HelperController extends Controller
 
         // Statistics
         $satistics = [
-            'total_bookings' => Booking::where('user_id', $helper_id)->count(),
-            'pending_bookings' => Booking::where('user_id', $helper_id)->where('status', 'pending')->count(),
-            'cancelled_bookings' => Booking::where('user_id', $helper_id)->where('status', 'cancelled')->count(),
-            'unpaid_bookings' => Booking::where('user_id', $helper_id)->where('payment_status', 'unpaid')->count(),
+            'total_bookings' => Booking::where('helper_user_id', $helper_id)->count(),
+            'pending_bookings' => Booking::where('helper_user_id', $helper_id)->where('status', 'pending')->count(),
+            'cancelled_bookings' => Booking::where('helper_user_id', $helper_id)->where('status', 'cancelled')->count(),
+            'unpaid_bookings' => Booking::where('helper_user_id', $helper_id)->where('status', 'draft')->count(),
         ];
 
         $bookings = Booking::where('status', 'pending')
@@ -82,6 +83,9 @@ class HelperController extends Controller
             ->with('serviceCategory')
             ->orderBy('bookings.created_at', 'desc')
             ->take(10)->get();
+
+        // Booking Client Detail
+        // $bookingClient = Client::where('user_id', auth()->user()->id)->first();
 
         return view('helper.index', compact('bookings', 'satistics'));
     }
@@ -95,7 +99,7 @@ class HelperController extends Controller
     public function bookings()
     {
 
-        $bookings = Booking::where('helper_id', auth()->user()->id)
+        $bookings = Booking::where('helper_user_id', auth()->user()->id)
             ->with('helper')
             ->with('prioritySetting')
             ->with('serviceType')

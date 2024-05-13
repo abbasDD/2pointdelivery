@@ -73,7 +73,7 @@
     {{-- Submit Button --}}
     <div class="col-md-12 text-right">
         <button type="submit" class="btn btn-primary btn-block">
-            {{ isset($prioritySetting) ? 'Update' : 'Submit' }}
+            {{ isset($prioritySetting) ? 'Update' : 'Add' }}
         </button>
     </div>
 </div>

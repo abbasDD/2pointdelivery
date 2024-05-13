@@ -23,6 +23,14 @@ class SystemSettingsProvider extends ServiceProvider
             foreach ($settings as $setting) {
                 config([$setting->key => $setting->value]);
             }
+
+            // Retrieve Authentication settings from the database if the table exists
+            $authSettings = SystemSetting::where('key', 'LIKE', 'auth.%')->get();
+
+            // Set each setting as a configuration value
+            foreach ($authSettings as $setting) {
+                config([$setting->key => $setting->value]);
+            }
         } catch (QueryException $e) {
             // Handle the case where the table does not exist
             // For now, we can just log the error

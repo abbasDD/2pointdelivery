@@ -6,7 +6,7 @@
             <div class="image-selection">
                 <div class="mx-auto" style="max-width: 150px;">
                     <img id="image_img"
-                        src="{{ isset($vehicle_type) && $vehicle_type->image !== null ? asset('images/vehicle_types/' . $vehicle_type->image) : asset('images/default-user.jpg') }}"
+                        src="{{ isset($vehicle_type) && $vehicle_type->image !== null ? asset('images/vehicle_types/' . $vehicle_type->image) : asset('images/vehicle_types/default.png') }}"
                         alt="image" class=" border w-100" onclick="document.getElementById('image').click()">
                     <input type="file" name="image" id="image" class="d-none" accept="image/*"
                         @if (!isset($vehicle_type)) required @endif>
@@ -49,6 +49,42 @@
             @enderror
         </div>
     </div>
+    {{-- price_type --}}
+    <div class="col-md-6">
+        <div class="form-group mb-3">
+            <label for="price_type">Price Type</label>
+            <select class="form-control @error('price_type') is-invalid @enderror" id="price_type" name="price_type">
+                <option value="" selected disabled>Choose Price Type</option>
+                <option value="km" @if (old('price_type', $vehicle_type['price_type'] ?? '') == 'km') selected @endif>KM</option>
+                <option value="hour" @if (old('price_type', $vehicle_type['price_type'] ?? '') == 'hour') selected @endif>Hour</option>
+                <option value="day" @if (old('price_type', $vehicle_type['price_type'] ?? '') == 'day') selected @endif>Day</option>
+            </select>
+            @error('price_type')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
+    {{-- Vehicle Price --}}
+    <div class="col-md-6">
+        <div class="form-group mb-3">
+            <label for="price">Vehicle Price</label>
+            <div class="input-group">
+                <input type="text" class="form-control @error('price') is-invalid @enderror" id="price"
+                    name="price" value="{{ old('price', $vehicle_type['price'] ?? '') }}"
+                    placeholder="Enter Vehicle Price"
+                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required>
+                <span class="input-group-text text-uppercase" id="price">$</span>
+            </div>
+            @error('price')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
 
     {{-- Service Available for --}}
     <div class="col-md-12">
@@ -81,7 +117,7 @@
     {{-- Submit Button --}}
     <div class="col-md-12 text-right">
         <button type="submit" class="btn btn-primary btn-block">
-            {{ isset($vehicle_type) ? 'Update' : 'Submit' }}
+            {{ isset($vehicle_type) ? 'Update' : 'Add' }}
         </button>
     </div>
 </div>

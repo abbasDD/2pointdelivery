@@ -128,7 +128,7 @@ class ClientController extends Controller
         }
 
         // Get booking of the client
-        $bookings = Booking::where('user_id', $client->user_id)
+        $bookings = Booking::where('client_user_id', $client->user_id)
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')

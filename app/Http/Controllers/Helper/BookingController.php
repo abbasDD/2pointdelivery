@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Helper;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\BookingPayment;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -12,7 +13,7 @@ class BookingController extends Controller
     public function index()
     {
 
-        $bookings = Booking::where('helper_id', auth()->user()->id)
+        $bookings = Booking::where('helper_user_id', auth()->user()->id)
             ->with('helper')
             ->with('prioritySetting')
             ->with('serviceType')
@@ -35,7 +36,7 @@ class BookingController extends Controller
         }
 
         $booking->status = 'accepted';
-        $booking->helper_id = auth()->user()->id;
+        $booking->helper_user_id = auth()->user()->id;
         $booking->save();
 
         return redirect()->back()->with('success', 'Booking accepted successfully!');
@@ -47,8 +48,8 @@ class BookingController extends Controller
     public function show(Request $request)
     {
         $booking = Booking::where('id', $request->id)
-            ->where('helper_id', auth()->user()->id)
-            ->with('client')
+            ->where('helper_user_id', auth()->user()->id)
+            ->with('helper')
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
@@ -58,6 +59,16 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking not found');
         }
 
-        return view('frontend.booking_detail', compact('booking'));
+        // Getting booking payment data
+        $bookingPayment = BookingPayment::where('booking_id', $booking->id)->first();
+
+        // Get helper Data
+        // $helper = Helper::where('user_id', $booking->helper_id)->first();
+
+
+
+        // dd($booking);
+
+        return view('frontend.bookings.show', compact('booking', 'bookingPayment'));
     }
 }

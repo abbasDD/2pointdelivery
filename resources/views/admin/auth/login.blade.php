@@ -9,7 +9,7 @@
                 <div class="card" style="box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);">
                     <div class="card-body text-center">
                         <a href="{{ route('index') }}">
-                            <img src="{{ asset('images/logo/' . config('website_logo')) ?: asset('images/logo/icon.png') }}"
+                            <img src="{{ config('website_logo') ? asset('images/logo/' . config('website_logo')) : asset('images/logo/icon.png') }}"
                                 alt="2 Point" height="50">
                         </a>
                         <h3>2 Point Admin</h3>

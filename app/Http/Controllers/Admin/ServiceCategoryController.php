@@ -25,6 +25,7 @@ class ServiceCategoryController extends Controller
     {
         $serviceTypes = ServiceType::where('is_active', 1)->get();
         $serviceCategory = new ServiceCategory();
+
         return view('admin.service_categories.create', compact('serviceTypes', 'serviceCategory'));
     }
     public function store(Request $request)
@@ -36,8 +37,11 @@ class ServiceCategoryController extends Controller
             'description' => 'nullable|string|max:255',  // allows null or string values
             'image' => 'nullable|string|max:255',        // allows null or string values
             'base_price' => 'nullable|string|max:255',        // allows null or string values
-            'price_per_km' => 'nullable|string|max:255',        // allows null or string values
-            'base_price_distance' => 'nullable|string|max:255',        // allows null or string values
+            'extra_distance_price' => 'nullable|string|max:255',        // allows null or string values
+            'base_distance' => 'nullable|string|max:255',        // allows null or string values
+            'base_weight' => 'nullable|string|max:255',        // allows null or string values
+            'extra_weight_price' => 'nullable|string|max:255',        // allows null or string values
+            'helper_fee' => 'nullable|string|max:255',        // allows null or string values
             'is_active' => 'sometimes|boolean'
         ]);
 
@@ -74,8 +78,11 @@ class ServiceCategoryController extends Controller
             'description' => 'nullable|string|max:255',  // allows null or string values
             'image' => 'nullable|string|max:255',        // allows null or string values
             'base_price' => 'nullable|string|max:255',        // allows null or string values
-            'price_per_km' => 'nullable|string|max:255',         // allows null or string values
-            'base_price_distance' => 'nullable|string|max:255',       // allows null or string values
+            'extra_distance_price' => 'nullable|string|max:255',         // allows null or string values
+            'base_distance' => 'nullable|string|max:255',       // allows null or string values
+            'base_weight' => 'nullable|string|max:255',        // allows null or string values
+            'extra_weight_price' => 'nullable|string|max:255',        // allows null or string values
+            'helper_fee' => 'nullable|string|max:255',        // allows null or string values
             'is_active' => 'sometimes|boolean'
         ]);
 

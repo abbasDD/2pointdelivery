@@ -95,7 +95,7 @@ class FrontendController extends Controller
 
         if (Auth::check()) {
             // Check if draft biooking exist
-            $draftBooking = Booking::where('user_id', auth()->user()->id)->where('status', 'draft')->first();
+            $draftBooking = Booking::where('client_user_id', auth()->user()->id)->where('status', 'draft')->first();
         }
 
         // return view 

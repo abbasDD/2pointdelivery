@@ -42,11 +42,11 @@
 {{-- Sidebar Code --}}
 <div class="sidebar">
     <a class="navbar-brand" href="{{ route('index') }}">
-        <img src="{{ asset('images/logo/' . config('website_logo')) ?: asset('images/logo/icon.png') }}" alt="2 Point"
-            height="50">
+        <img src="{{ config('website_logo') ? asset('images/logo/' . config('website_logo')) : asset('images/logo/icon.png') }}"
+            alt="2 Point" width="50">
         2 Point Helper
     </a>
-    <nav class="mt-5">
+    <nav class="mt-3">
         <ul class="p-0">
             <li class="nav-item"><a class="nav-link" href="{{ route('helper.index') }}"><i class="fa fa-home"></i>
                     Dashboard</a></li>

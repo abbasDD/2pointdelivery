@@ -121,7 +121,7 @@
     {{-- Submit Button --}}
     <div class="col-md-12 text-right">
         <button type="submit" class="btn btn-primary btn-block">
-            {{ isset($admin) ? 'Update' : 'Submit' }}
+            {{ isset($admin) ? 'Update' : 'Add' }}
         </button>
     </div>
 </div>

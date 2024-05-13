@@ -80,9 +80,12 @@
         id="base_price_div">
         <div class="form-group mb-3">
             <label for="base_price">Base Price</label>
-            <input type="text" class="form-control @error('base_price') is-invalid @enderror" id="base_price"
-                name="base_price" value="{{ old('base_price', $serviceCategory['base_price'] ?? '') }}"
-                placeholder="Enter Base Price" required pattern="[0-9]*">
+            <div class="input-group">
+                <input type="text" class="form-control @error('base_price') is-invalid @enderror" id="base_price"
+                    name="base_price" value="{{ old('base_price', $serviceCategory['base_price'] ?? '') }}"
+                    placeholder="Enter Base Price" required pattern="[0-9]*">
+                <span class="input-group-text text-uppercase" id="base_price">$</span>
+            </div>
             @error('base_price')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -93,14 +96,17 @@
 
     {{-- Base Price Distance --}}
     <div class="col-md-6 disable-prices {{ $serviceCategory['is_secureship_enabled'] ? 'd-none' : '' }}"
-        id="base_price_distance_div">
+        id="base_distance_div">
         <div class="form-group mb-3">
-            <label for="base_price_distance">Base Distance</label>
-            <input type="text" class="form-control @error('base_price_distance') is-invalid @enderror"
-                id="base_price_distance" name="base_price_distance"
-                value="{{ old('base_price_distance', $serviceCategory['base_price_distance'] ?? '') }}"
-                placeholder="Enter Price Per KM" required pattern="[0-9]*">
-            @error('base_price_distance')
+            <label for="base_distance">Base Distance</label>
+            <div class="input-group">
+                <input type="text" class="form-control @error('base_distance') is-invalid @enderror"
+                    id="base_distance" name="base_distance"
+                    value="{{ old('base_distance', $serviceCategory['base_distance'] ?? '') }}"
+                    placeholder="Enter Distance for Base Price" required pattern="[0-9]*">
+                <span class="input-group-text text-uppercase" id="base_distance">Km</span>
+            </div>
+            @error('base_distance')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>
@@ -108,15 +114,19 @@
         </div>
     </div>
 
-    {{-- Price Per KM --}}
+    {{-- Extra Distance Price --}}
     <div class="col-md-6 disable-prices {{ $serviceCategory['is_secureship_enabled'] ? 'd-none' : '' }}"
-        id="price_per_km_div">
+        id="extra_distance_price_div">
         <div class="form-group mb-3">
-            <label for="price_per_km">Extra Distance Price</label>
-            <input type="text" class="form-control @error('price_per_km') is-invalid @enderror" id="price_per_km"
-                name="price_per_km" value="{{ old('price_per_km', $serviceCategory['price_per_km'] ?? '') }}"
-                placeholder="Enter Price Per KM" required pattern="[0-9]*">
-            @error('price_per_km')
+            <label for="extra_distance_price">Extra Distance Price</label>
+            <div class="input-group">
+                <input type="text" class="form-control @error('extra_distance_price') is-invalid @enderror"
+                    id="extra_distance_price" name="extra_distance_price"
+                    value="{{ old('extra_distance_price', $serviceCategory['extra_distance_price'] ?? '') }}"
+                    placeholder="Enter Extra Distance Price" required pattern="[0-9]*">
+                <span class="input-group-text text-uppercase" id="extra_distance_price">$</span>
+            </div>
+            @error('extra_distance_price')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>
@@ -129,9 +139,12 @@
         id="base_weight_div">
         <div class="form-group mb-3">
             <label for="base_weight">Base Weight</label>
-            <input type="text" class="form-control @error('base_weight') is-invalid @enderror" id="base_weight"
-                name="base_weight" value="{{ old('base_weight', $serviceCategory['base_weight'] ?? '') }}"
-                placeholder="Enter Base Weight" required pattern="[0-9]*">
+            <div class="input-group">
+                <input type="text" class="form-control @error('base_weight') is-invalid @enderror" id="base_weight"
+                    name="base_weight" value="{{ old('base_weight', $serviceCategory['base_weight'] ?? '') }}"
+                    placeholder="Enter Base Weight" required pattern="[0-9]*">
+                <span class="input-group-text text-uppercase" id="base_weight">Kgs</span>
+            </div>
             @error('base_weight')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -145,11 +158,33 @@
         id="extra_weight_price_div">
         <div class="form-group mb-3">
             <label for="extra_weight_price">Base Weight Price</label>
-            <input type="text" class="form-control @error('extra_weight_price') is-invalid @enderror"
-                id="extra_weight_price" name="extra_weight_price"
-                value="{{ old('extra_weight_price', $serviceCategory['extra_weight_price'] ?? '') }}"
-                placeholder="Enter Base Weight Price" required pattern="[0-9]*">
+            <div class="input-group">
+                <input type="text" class="form-control @error('extra_weight_price') is-invalid @enderror"
+                    id="extra_weight_price" name="extra_weight_price"
+                    value="{{ old('extra_weight_price', $serviceCategory['extra_weight_price'] ?? '') }}"
+                    placeholder="Enter Base Weight Price" required pattern="[0-9]*">
+                <span class="input-group-text text-uppercase" id="extra_weight_price">$</span>
+            </div>
             @error('extra_weight_price')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
+    {{-- Helper Fee --}}
+    <div class="col-md-6 disable-prices {{ $serviceCategory['is_secureship_enabled'] ? 'd-none' : '' }}"
+        id="helper_fee_div">
+        <div class="form-group mb-3">
+            <label for="helper_fee">Helper Fee</label>
+            <div class="input-group">
+                <input type="text" class="form-control @error('helper_fee') is-invalid @enderror" id="helper_fee"
+                    name="helper_fee" value="{{ old('helper_fee', $serviceCategory['helper_fee'] ?? '') }}"
+                    placeholder="Enter Helper Fee" required pattern="[0-9]*">
+                <span class="input-group-text text-uppercase" id="helper_fee">$</span>
+            </div>
+            @error('helper_fee')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>
@@ -184,7 +219,7 @@
     {{-- Submit Button --}}
     <div class="col-md-12 text-right">
         <button type="submit" class="btn btn-primary btn-block">
-            {{ isset($serviceCategory->id) ? 'Update' : 'Submit' }}
+            {{ isset($serviceCategory->id) ? 'Update' : 'Add' }}
         </button>
     </div>
 </div>

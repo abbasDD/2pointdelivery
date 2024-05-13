@@ -23,7 +23,7 @@
                 <td>{{ $taxCountry->pst_rate }}</td>
                 <td>{{ $taxCountry->hst_rate }}</td>
                 <td>
-                    <button type="button" id="statusButton_{{ $taxCountry->id }}"
+                    <button type="button" id="statusTaxButton_{{ $taxCountry->id }}"
                         class="btn  {{ $taxCountry->is_active ? 'btn-primary' : 'btn-danger' }} btn-sm"
                         onclick="showStatusDialog({{ $taxCountry->id }}, '{{ $taxCountry->is_active }}')">
                         {{ $taxCountry->is_active == 1 ? 'Active' : 'Inactive' }}
@@ -43,20 +43,20 @@
 
 {{-- Modal --}}
 
-<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel"
+<div class="modal fade" id="statusTaxModal" tabindex="-1" role="dialog" aria-labelledby="statusTaxModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="statusModalLabel">Update Status</h5>
+                <h5 class="modal-title" id="statusTaxModalLabel">Update Status</h5>
             </div>
             <div class="modal-body">
                 Are you sure you want to update status?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('statusModal')"
+                <button type="button" class="btn btn-secondary" onclick="closeModal('statusTaxModal')"
                     data-dismiss="modal">Close</button>
-                <a id="updateStatusLink" href="#" class="btn btn-primary">Update</a>
+                <a id="updateTaxStatusLink" href="#" class="btn btn-primary">Update</a>
             </div>
         </div>
     </div>
@@ -67,25 +67,25 @@
 
 <script>
     function showStatusDialog(id, status) {
-        $('#statusModal').modal('show');
+        $('#statusTaxModal').modal('show');
         var baseUrl = "{{ url('admin/settings/tax/update-status') }}"; // Use `url()` to get the base part
-        // $('#updateStatusLink').attr('href', baseUrl + '/' + id);
+        // $('#updateTaxStatusLink').attr('href', baseUrl + '/' + id);
 
-        // Remove previous click event handler from #updateStatusLink
-        $('#updateStatusLink').off('click');
-        // add onclick to updateStatusLink here
-        $('#updateStatusLink').click(function() {
+        // Remove previous click event handler from #updateTaxStatusLink
+        $('#updateTaxStatusLink').off('click');
+        // add onclick to updateTaxStatusLink here
+        $('#updateTaxStatusLink').click(function() {
             updateStatus(id);
         });
-        // console.log($('#statusButton_' + id).text());
-        if ($('#statusButton_' + id).text().trim() == 'Active') {
-            $('#updateStatusLink').text("Decactivate");
-            $('#updateStatusLink').removeClass('btn-primary');
-            $('#updateStatusLink').addClass('btn-danger');
+        // console.log($('#statusTaxButton_' + id).text());
+        if ($('#statusTaxButton_' + id).text().trim() == 'Active') {
+            $('#updateTaxStatusLink').text("Decactivate");
+            $('#updateTaxStatusLink').removeClass('btn-primary');
+            $('#updateTaxStatusLink').addClass('btn-danger');
         } else {
-            $('#updateStatusLink').text("Activate");
-            $('#updateStatusLink').removeClass('btn-danger');
-            $('#updateStatusLink').addClass('btn-primary');
+            $('#updateTaxStatusLink').text("Activate");
+            $('#updateTaxStatusLink').removeClass('btn-danger');
+            $('#updateTaxStatusLink').addClass('btn-primary');
         }
 
     }
@@ -108,29 +108,29 @@
                 var jsonResponse = JSON.parse(response); //Parse the JSON string into an object
                 if (jsonResponse.status == 'success') {
                     // Hide modal
-                    $('#statusModal').modal('hide');
+                    $('#statusTaxModal').modal('hide');
                     // Change text on bbutton as per response
                     if (jsonResponse.is_active == 1) {
-                        $('#statusButton_' + id).text('Inactive');
-                        $('#statusButton_' + id).removeClass('btn-primary');
-                        $('#statusButton_' + id).addClass('btn-danger');
+                        $('#statusTaxButton_' + id).text('Inactive');
+                        $('#statusTaxButton_' + id).removeClass('btn-primary');
+                        $('#statusTaxButton_' + id).addClass('btn-danger');
                     }
                     if (jsonResponse.is_active == 0) {
-                        $('#statusButton_' + id).text('Active');
-                        $('#statusButton_' + id).removeClass('btn-danger');
-                        $('#statusButton_' + id).addClass('btn-primary');
+                        $('#statusTaxButton_' + id).text('Active');
+                        $('#statusTaxButton_' + id).removeClass('btn-danger');
+                        $('#statusTaxButton_' + id).addClass('btn-primary');
                     }
 
                     // Trigger Notification
-                    triggerToast('Success', 'Status updated succcessfully');
+                    triggerToast('Success', 'Tax Status updated succcessfully');
                     // Remove function from button
-                    $('updateStatusLink').off('click');
+                    $('updateTaxStatusLink').off('click');
                     console.log(jsonResponse.message); // Print the message from the response
                 } else {
                     // Hide modal
-                    $('#statusModal').modal('hide');
+                    $('#statusTaxModal').modal('hide');
                     // Remove function from button
-                    $('updateStatusLink').off('click');
+                    $('updateTaxStatusLink').off('click');
                     console.log('Failed'); // Or any other message you want to print for failed status
                 }
             },

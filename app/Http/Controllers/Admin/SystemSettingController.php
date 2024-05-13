@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AuthenticationSetting;
+use App\Models\PaymentSetting;
+use App\Models\PrioritySetting;
 use App\Models\SystemSetting;
 use App\Models\TaxSetting;
 use Illuminate\Http\Request;
@@ -11,6 +14,91 @@ use Illuminate\Database\QueryException;
 class SystemSettingController extends Controller
 {
     public function index()
+    {
+        // Get System Settings
+        $systemSettings = [];
+
+        try {
+            // Retrieve settings from the database if the table exists
+            $settings = SystemSetting::all();
+
+            // Set each setting as a configuration value
+            foreach ($settings as $setting) {
+                // config([$setting->key => $setting->value]);
+                $systemSettings[$setting->key] = $setting->value ? $setting->value : null;
+            }
+
+            // dd($systemSettings);
+        } catch (QueryException $e) {
+            // Handle the case where the table does not exist
+            // For now, we can just log the error
+            // \Log::error("Error retrieving system settings: {$e->getMessage()}");
+
+            $systemSettings = [];
+        }
+
+        // Tax Countries List
+        $taxCountries = TaxSetting::select('tax_settings.*', 'countries.name as country_name', 'states.name as state_name'/*, 'cities.name as city_name' */)
+            ->join('countries', 'countries.id', '=', 'tax_settings.country_id')
+            ->join('states', 'states.id', '=', 'tax_settings.state_id')
+            // ->join('cities', 'cities.id', '=', 'tax_settings.city_id')
+            ->paginate(10); // 10 items per page
+
+        // Payment Settings
+
+
+        $paymentSettings = [];
+
+        try {
+            // Retrieve settings from the database if the table exists
+            $settings = PaymentSetting::all();
+
+            // Set each setting as a configuration value
+            foreach ($settings as $setting) {
+                // config([$setting->key => $setting->value]);
+                $paymentSettings[$setting->key] = $setting->value ? $setting->value : null;
+            }
+
+            // dd($paymentSettings);
+        } catch (QueryException $e) {
+            // Handle the case where the table does not exist
+            // For now, we can just log the error
+            // \Log::error("Error retrieving system settings: {$e->getMessage()}");
+
+            $paymentSettings = [];
+        }
+
+        // Priority Settings
+
+        $prioritySettings = PrioritySetting::where('is_deleted', 0)->paginate(10); // 10 items per page
+
+        // Get Authentication Settings
+        $AuthenticationSettings = [];
+
+        try {
+            // Retrieve settings from the database if the table exists
+            $settings = AuthenticationSetting::all();
+
+            // Set each setting as a configuration value
+            foreach ($settings as $setting) {
+                // config([$setting->key => $setting->value]);
+                $AuthenticationSettings[$setting->key] = $setting->value ? $setting->value : null;
+            }
+
+            // dd($AuthenticationSettings);
+        } catch (QueryException $e) {
+            // Handle the case where the table does not exist
+            // For now, we can just log the error
+            // \Log::error("Error retrieving system settings: {$e->getMessage()}");
+
+            $AuthenticationSettings = [];
+        }
+
+        // dd($AuthenticationSettings);
+        return view('admin.settings.index', compact('systemSettings', 'taxCountries', 'paymentSettings', 'prioritySettings', 'AuthenticationSettings'));
+    }
+
+    public function system()
     {
         $systemSettings = [];
 
@@ -35,7 +123,7 @@ class SystemSettingController extends Controller
 
 
         // dd($systemSettings);
-        return view('admin.settings.index', compact('systemSettings'));
+        return view('admin.settings.system', compact('systemSettings'));
     }
 
     public function update(Request $request)

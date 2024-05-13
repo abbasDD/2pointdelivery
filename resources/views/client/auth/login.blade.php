@@ -19,7 +19,7 @@
                     </div>
                     <div class="card-body text-center">
                         <a href="{{ route('index') }}">
-                            <img src="{{ asset('images/logo/' . config('website_logo')) ?: asset('images/logo/icon.png') }}"
+                            <img src="{{ config('website_logo') ? asset('images/logo/' . config('website_logo')) : asset('images/logo/icon.png') }}"
                                 alt="2 Point" height="50">
                         </a>
                         <h3>2 Point Client</h3>
@@ -98,7 +98,7 @@
 
                         {{-- Google Login Button  --}}
                         <div class="mb-3">
-                            <a href="#" class="btn btn-google w-100">
+                            <a href="{{ route('google.redirect') }}" class="btn btn-google w-100">
                                 Continue with Google | <i class="fa-brands fa-google"></i>
                             </a>
                         </div>
@@ -106,7 +106,7 @@
                         {{-- Facebook Login Button  --}}
                         <div class="mb-3">
                             <a href="#" class="btn btn-facebook w-100">
-                                Continue with Google | <i class="fa-brands fa-facebook"></i>
+                                Continue with Facebook | <i class="fa-brands fa-facebook"></i>
                             </a>
                         </div>
 

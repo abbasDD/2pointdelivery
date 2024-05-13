@@ -8,9 +8,8 @@ class Booking extends Model
 {
     protected $fillable = [
         'uuid',
-        'user_id',
-        'client_id',
-        'helper_id',
+        'client_user_id',
+        'helper_user_id',
         'service_type_id',
         'priority_setting_id',
         'service_category_id',

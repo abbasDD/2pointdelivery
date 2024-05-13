@@ -123,7 +123,7 @@ class HelperController extends Controller
         }
 
         // Get booking of the helper
-        $bookings = Booking::where('helper_id', $helper->id)
+        $bookings = Booking::where('helper_user_id', $helper->id)
             ->with('client')
             ->with('prioritySetting')
             ->with('serviceType')
