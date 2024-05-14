@@ -100,7 +100,11 @@ class HomeController extends Controller
         // ];
 
         // Latest Bookings
-        $latestBookings = Booking::latest()->take(5)->get();
+        $latestBookings = Booking::with('client')
+            ->with('prioritySetting')
+            ->with('serviceType')
+            ->with('serviceCategory')->latest()->take(5)->get();
+        // dd($latestBookings);
 
         return view('admin.index', compact('helperRequests', 'lastSixMonths', 'statistics', 'latestBookings'));
 

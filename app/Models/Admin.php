@@ -4,16 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
 
 class Admin extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var array
      */
     protected $fillable = [
         'user_id',
@@ -22,4 +21,12 @@ class Admin extends Model
         'last_name',
         'profile_image',
     ];
+
+    /**
+     * Get the user associated with the admin.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

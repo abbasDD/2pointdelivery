@@ -2,10 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
 {
+    use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'uuid',
         'client_user_id',
@@ -13,6 +21,7 @@ class Booking extends Model
         'service_type_id',
         'priority_setting_id',
         'service_category_id',
+        'booking_type',
         'pickup_address',
         'dropoff_address',
         'pickup_latitude',
@@ -21,7 +30,6 @@ class Booking extends Model
         'dropoff_longitude',
         'booking_date',
         'booking_time',
-        'booking_type',
         'secureship_order_id',
         'is_secureship_enabled',
         'receiver_name',
@@ -30,8 +38,6 @@ class Booking extends Model
         'delivery_note',
         'status',
         'total_price',
-        'payment_method',
-        'payment_status',
         'booking_at',
         'pickup_at',
         'dropoff_at',
@@ -41,38 +47,51 @@ class Booking extends Model
         'deleted_at',
     ];
 
-    // Define relationships
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
+    /**
+     * Get the client user associated with the booking.
+     */
     public function client()
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsTo(User::class, 'client_user_id');
     }
 
+    /**
+     * Get the helper user associated with the booking.
+     */
     public function helper()
     {
-        return $this->belongsTo(Helper::class);
+        return $this->belongsTo(User::class, 'helper_user_id');
     }
 
+    /**
+     * Get the service type associated with the booking.
+     */
     public function serviceType()
     {
         return $this->belongsTo(ServiceType::class);
     }
 
+    /**
+     * Get the priority setting associated with the booking.
+     */
     public function prioritySetting()
     {
         return $this->belongsTo(PrioritySetting::class);
     }
 
+    /**
+     * Get the service category associated with the booking.
+     */
     public function serviceCategory()
     {
         return $this->belongsTo(ServiceCategory::class);
     }
-    public function bookingPayment()
+
+    /**
+     * Get the payment associated with the booking.
+     */
+    public function payment()
     {
-        return $this->belongsTo(BookingPayment::class);
+        return $this->hasOne(BookingPayment::class);
     }
 }

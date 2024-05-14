@@ -8,4 +8,36 @@ use Illuminate\Database\Eloquent\Model;
 class City extends Model
 {
     use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+        'state_id',
+        'state_code',
+        'country_id',
+        'country_code',
+        'latitude',
+        'longitude',
+        'flag',
+    ];
+
+    /**
+     * Get the state that owns the city.
+     */
+    public function state()
+    {
+        return $this->belongsTo(State::class);
+    }
+
+    /**
+     * Get the country that owns the city.
+     */
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
 }

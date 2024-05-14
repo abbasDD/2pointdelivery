@@ -1,5 +1,4 @@
 <?php
-// app/Models/BookingPayment.php
 
 namespace App\Models;
 
@@ -10,23 +9,29 @@ class BookingPayment extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'booking_id',
         'transaction_id',
-        'base_price',
-        'distance',
-        'base_distance',
-        'extra_distance_price',
-        'weight',
-        'base_weight',
-        'extra_weight_price',
-        'total_price',
         'payment_method',
+        'distance_price',
+        'weight_price',
+        'priority_price',
+        'service_price',
+        'vehicle_price',
+        'tax_price',
+        'total_price',
         'payment_status',
         'payment_at',
     ];
 
-    // Define relationships if any
+    /**
+     * Get the booking associated with the payment.
+     */
     public function booking()
     {
         return $this->belongsTo(Booking::class);

@@ -7,11 +7,11 @@
 
     {{-- Header Section  --}}
     <section class="py-3">
-        <div class="container">
+        <div class="container mt-5">
             <div class="d-flex align-items-center justify-content-between">
                 <div class="">
                     <h3 class="mb-1">Order Detail</h3>
-                    <p>Order No 123466789</p>
+                    <p>Order No : <span class="text-uppercase">{{ $booking->uuid ? $booking->uuid : 'N/A' }}</span></p>
                 </div>
                 <div class="">
                     <a href="#" class="btn btn-danger"><i class="fa fa-bug" aria-hidden="true"></i> <span
@@ -26,82 +26,81 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    {{-- Order Summary --}}
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <h5 class="mb-0">Order Summary</h5>
-                        </div>
-                        <div class="card-body">
-                            {{-- Priority --}}
-                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                <p class="mb-0">Priority:</p>
-                                <h6 class="mb-0">Express Delivery</h6>
-                            </div>
-                            {{-- Vehicle --}}
-                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                <p class="mb-0">Vehicle:</p>
-                                <h6 class="mb-0">Bike</h6>
-                            </div>
-                            {{-- Package Value: --}}
-                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                <p class="mb-0">Package Value:</p>
-                                <h6 class="mb-0">$ 100.00</h6>
-                            </div>
-                            {{-- Delivery Time: --}}
-                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                <p class="mb-0">Delivery Time:</p>
-                                <h6 class="mb-0">2 Days</h6>
-                            </div>
-                            {{-- Receiver Details: --}}
-                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                <p class="mb-0">Receiver Details:</p>
-                                <h6 class="mb-0">John Doe</h6>
-                            </div>
-                            {{-- Delivery Charges: --}}
-                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                <p class="mb-0">Delivery Charges:</p>
-                                <h6 class="mb-0">$ 10.00</h6>
-                            </div>
-                        </div>
-                    </div>
+
                     {{-- Tracking Status --}}
                     <div class="card mb-3">
                         <div class="card-header">
                             <h5 class="mb-0">Tracking Status</h5>
                         </div>
                         <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    {{-- Progess Status --}}
-                                    <div class="progressdiv">
-                                        <ul class="progressbar p-0">
-                                            <li>
-                                                <p>Placed</p>
-                                            </li>
-                                            <li class="active">
-                                                <p>Picked</p>
-                                            </li>
-                                            <li>
-                                                <p>In Transit</p>
-                                            </li>
-                                            <li>
-                                                <p>Delivered</p>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                {{-- Pickup --}}
-                                <div class="text-center">
-                                    <p class="mb-0">Jan 20, 2024</p>
-                                    <h6 class="mb-0">New York</h6>
-                                </div>
-                                {{-- Drop off --}}
-                                <div class="text-center">
-                                    <p class="mb-0">Jan 30, 2024</p>
-                                    <h6 class="mb-0">Washington</h6>
-                                </div>
+                            {{-- Order Status --}}
+                            <div class="progressdiv">
+                                <ul class="progressbar p-0">
+                                    {{-- Pending --}}
+                                    <li {{ $booking->status == 'pending' ? 'class=active' : '' }}>
+                                        <div class="text-right">
+                                            <h6>05 May 2024</h6>
+                                            <p>11:00 AM</p>
+                                        </div>
+                                        <div class="circle mx-3">
+                                        </div>
+                                        <div class="">
+                                            <h6>Parcel Booked</h6>
+                                            <p>6391 Washington</p>
+                                        </div>
+                                    </li>
+                                    {{-- Accepted --}}
+                                    <li {{ $booking->status == 'accepted' ? 'class=active' : '' }}>
+                                        <div class="text-right">
+                                            <h6>07 May 2024</h6>
+                                            <p>10:00</p>
+                                        </div>
+                                        <div class="circle mx-3">
+                                        </div>
+                                        <div class="">
+                                            <h6>Parcel Received</h6>
+                                            <p>6391 Washington</p>
+                                        </div>
+                                    </li>
+                                    {{-- Picked Up --}}
+                                    <li {{ $booking->status == 'picked' ? 'class=active' : '' }}>
+                                        <div class="text-right">
+                                            <h6>Expected</h6>
+                                            <p>10:00 PM</p>
+                                        </div>
+                                        <div class="circle mx-3">
+                                        </div>
+                                        <div class="">
+                                            <h6>Driver will pick up</h6>
+                                            <p>6391 Washington</p>
+                                        </div>
+                                    </li>
+                                    {{-- Delivered --}}
+                                    <li {{ $booking->status == 'delivered' ? 'class=active' : '' }}>
+                                        <div class="text-right">
+                                            <h6>Expected</h6>
+                                            <p>11:00 PM</p>
+                                        </div>
+                                        <div class="circle mx-3">
+                                        </div>
+                                        <div class="">
+                                            <h6>Driver will deliver</h6>
+                                            <p>6391 Washington</p>
+                                        </div>
+                                    </li>
+                                    <li {{ $booking->status == 'completed' ? 'class=active' : '' }}>
+                                        <div class="text-right">
+                                            <h6>Expected</h6>
+                                            <p>11:00</p>
+                                        </div>
+                                        <div class="circle mx-3">
+                                        </div>
+                                        <div class="">
+                                            <h6>Order will complete</h6>
+                                            <p>6391 Washington</p>
+                                        </div>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -121,10 +120,10 @@
                                 var map;
                                 var directionsService;
                                 var directionsRenderer;
-                                var defaultPickupLat = 33.6487;
-                                var defaultPickupLng = 73.0407;
-                                var defaultDeliveryLat = 33.6115;
-                                var defaultDeliveryLng = 72.9706;
+                                var defaultPickupLat = '{{ $booking->pickup_latitude ? $booking->pickup_latitude : 33.6115 }}';
+                                var defaultPickupLng = '{{ $booking->pickup_longitude ? $booking->pickup_longitude : 72.9706 }}';
+                                var defaultDeliveryLat = '{{ $booking->dropoff_latitude ? $booking->dropoff_latitude : 33.6115 }}';
+                                var defaultDeliveryLng = '{{ $booking->dropoff_longitude ? $booking->dropoff_longitude : 72.9706 }}';
 
                                 function initMap() {
                                     map = new google.maps.Map(document.getElementById('map'), {
@@ -175,42 +174,17 @@
                             </script>
                         </div>
                     </div>
-                    {{-- Delivery Vehicle Detail  --}}
+
                     <div class="card mb-3">
-                        <div class="card-header">
-                            <h5 class="mb-0">Delivery Vehicle Detail</h5>
-                        </div>
                         <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-md-6">
-                                    <div class="d-flex align-items-center justify-content-between mb-3">
-                                        <p class="mb-0">Vehicle type:</p>
-                                        <h6 class="mb-0">Bike</h6>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-between mb-3">
-                                        <p class="mb-0">Make:</p>
-                                        <h6 class="mb-0">Suzuki Motors</h6>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-between mb-3">
-                                        <p class="mb-0">Model:</p>
-                                        <h6 class="mb-0">2018</h6>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-between mb-3">
-                                        <p class="mb-0">Number:</p>
-                                        <h6 class="mb-0">RIL 123</h6>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="text-center">
-                                        <img src="{{ asset('images/vehicles/bike.png') }}" alt="Truck" class="img-fluid">
-                                    </div>
-                                </div>
-                            </div>
+                            {{-- Include Order Summary from admin\bookings\partials\info.blade.php --}}
+                            @include('admin.bookings.partials.info')
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
 
 @endsection

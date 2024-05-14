@@ -3,7 +3,7 @@
         <tr>
             <th>ID</th>
             <th>Date</th>
-            <th>Client</th>
+            {{-- <th>Client</th> --}}
             <th>Priority</th>
             <th>Service Type</th>
             <th>Address</th>
@@ -16,8 +16,9 @@
         @forelse ($bookings as $booking)
             <tr>
                 <td>{{ $loop->index + 1 }}</td>
-                <td>{{ $booking->created_at }}</td>
-                <td>{{ $booking->client->first_name }}</td>
+                <td>{{ app('dateHelper')->formatTimestamp($booking->created_at, 'Y-m-d') }}
+                </td>
+                {{-- <td>{{ $booking->client->first_name }}</td> --}}
                 <td>{{ $booking->prioritySetting->name }}</td>
                 <td>
                     {{-- Service Type --}}

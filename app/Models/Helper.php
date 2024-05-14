@@ -4,17 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
 
 class Helper extends Model
 {
-
-    use HasFactory, Notifiable;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var array
      */
     protected $fillable = [
         'user_id',
@@ -36,4 +34,12 @@ class Helper extends Model
         'zip_code',
         'is_approved',
     ];
+
+    /**
+     * Get the user associated with the helper.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

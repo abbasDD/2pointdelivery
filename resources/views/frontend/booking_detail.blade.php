@@ -69,7 +69,7 @@
                             {{-- Payment Method --}}
                             <div class="d-flex align-items-center justify-content-between mb-3">
                                 <p class="mb-0">Payment Method:</p>
-                                <h6 class="mb-0">{{ $booking->payment_method }}</h6>
+                                <h6 class="mb-0">{{ $bookingPayment->payment_method }}</h6>
                             </div>
                         </div>
                     </div>

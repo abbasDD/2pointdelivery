@@ -14,7 +14,7 @@
         @forelse ($helpers as $helper)
             <tr id="helper_{{ $helper->id }}">
                 <td>{{ $helper->id }}</td>
-                <td><img src="{{ $helper->profile_image ? asset($helper->profile_image) : asset('images/users/default.png') }}"
+                <td><img src="{{ $helper->profile_image ? asset('images/users/' . $helper->profile_image) : asset('images/users/default.png') }}"
                         alt="Profile Image" width="50">
                 </td>
                 <td>{{ $helper->email }}</td>
