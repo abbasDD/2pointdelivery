@@ -1,3 +1,9 @@
+<script>
+    // Set default value to  country, state and city
+    var selectedCountry = {{ old('country', $taxCountry['country'] ?? 0) }};
+    var selectedState = {{ old('state', $taxCountry['state'] ?? 0) }};
+</script>
+
 {{-- Country Form --}}
 <div class="row">
     {{-- Select Country --}}
@@ -28,6 +34,11 @@
             <select class="form-control @error('state_id') is-invalid @enderror" id="state_id" name="state_id"
                 onchange="getCities(this.value)" required>
                 <option value="" selected disabled>Select State</option>
+                @foreach ($states as $state)
+                    <option value="{{ $state->id }}"
+                        {{ old('state_id', $taxCountry['state_id'] ?? '') == $state->id ? 'selected' : '' }}>
+                        {{ $state->name }}</option>
+                @endforeach
             </select>
             @error('state_id')
                 <span class="invalid-feedback" role="alert">
@@ -164,7 +175,12 @@
                 $('#state_id').append(`<option value="" disabled selected>Select State</option>`);
                 // Load to state select as options using loop
                 response.forEach(function(state) {
-                    $('#state_id').append(`<option value="${state.id}">${state.name}</option>`);
+                    if (state.id == selectedState) {
+                        $('#state_id').append(
+                            `<option value="${state.id}" selected>${state.name}</option>`);
+                    } else {
+                        $('#state_id').append(`<option value="${state.id}">${state.name}</option>`);
+                    }
                 })
             },
             error: function(error) {

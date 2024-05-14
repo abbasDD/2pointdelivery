@@ -15,7 +15,7 @@
                 <td>{{ $prioritySetting->id }}</td>
                 <td>{{ $prioritySetting->name }}</td>
                 <td>${{ $prioritySetting->price }}</td>
-                <td>{{ $prioritySetting->description ?? 'N/A' }}</td>
+                <td>{{ $prioritySetting->description ?? '-' }}</td>
                 <td>
                     <button type="button" id="statusPriorityButton_{{ $prioritySetting->id }}"
                         class="btn  {{ $prioritySetting->is_active ? 'btn-primary' : 'btn-danger' }} btn-sm"

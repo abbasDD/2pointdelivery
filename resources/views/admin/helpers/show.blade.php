@@ -53,12 +53,12 @@
                                     {{-- Show Phone Number --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">Phone</h6>
-                                        <p class="mb-0">{{ $helper->phone_no ?: 'N/A' }}</p>
+                                        <p class="mb-0">{{ $helper->phone_no ?: '-' }}</p>
                                     </div>
                                     {{-- Show Gender --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">Gender</h6>
-                                        <p class="mb-0">{{ $helper->gender ?: 'N/A' }}</p>
+                                        <p class="mb-0">{{ $helper->gender ?: '-' }}</p>
                                     </div>
                                     {{-- Account Type --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
@@ -68,37 +68,38 @@
                                     {{-- Tax ID --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">Tax ID</h6>
-                                        <p class="mb-0">{{ $helper->tax_id ?: 'N/A' }}</p>
+                                        <p class="mb-0">{{ $helper->tax_id ?: '-' }}</p>
                                     </div>
                                     {{-- Suite --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">Suite</h6>
-                                        <p class="mb-0">{{ $helper->suite ?: 'N/A' }}</p>
+                                        <p class="mb-0">{{ $helper->suite ?: '-' }}</p>
                                     </div>
                                     {{-- Street --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">Street</h6>
-                                        <p class="mb-0">{{ $helper->street ?: 'N/A' }}</p>
+                                        <p class="mb-0">{{ $helper->street ?: '-' }}</p>
                                     </div>
                                     {{-- City --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">City</h6>
-                                        <p class="mb-0">{{ $helper->city ?: 'N/A' }}</p>
+                                        <p class="mb-0">{{ app('addressHelper')->getCityName($helper->city) }}</p>
                                     </div>
                                     {{-- State --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">State</h6>
-                                        <p class="mb-0">{{ $helper->state ?: 'N/A' }}</p>
+                                        <p class="mb-0">{{ app('addressHelper')->getStateName($helper->state) }}</p>
+                                        {{-- <p class="mb-0">{{ $helper->state ?: '-' }}</p> --}}
                                     </div>
                                     {{-- Country --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">Country</h6>
-                                        <p class="mb-0">{{ $helper->country ?: 'N/A' }}</p>
+                                        <p class="mb-0">{{ app('addressHelper')->getCountryName($helper->country) }}</p>
                                     </div>
                                     {{-- Zip Code --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">Zip Code</h6>
-                                        <p class="mb-0">{{ $helper->zip_code ?: 'N/A' }}</p>
+                                        <p class="mb-0">{{ $helper->zip_code ?: '-' }}</p>
                                     </div>
                                 </div>
                             </div>

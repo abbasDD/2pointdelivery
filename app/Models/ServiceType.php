@@ -36,4 +36,9 @@ class ServiceType extends Model
     {
         return $this->hasMany(ServiceCategory::class);
     }
+
+    public function helpers()
+    {
+        return $this->belongsToMany(Helper::class, 'service_helper');
+    }
 }

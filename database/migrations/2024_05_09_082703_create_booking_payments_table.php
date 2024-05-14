@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('service_price')->nullable();
             $table->string('vehicle_price')->nullable();
             $table->string('tax_price')->nullable();
+            $table->string('helper_fee')->nullable();
             $table->string('total_price')->nullable();
             $table->string('payment_status')->default('unpaid');
             $table->timestamp('payment_at')->nullable();

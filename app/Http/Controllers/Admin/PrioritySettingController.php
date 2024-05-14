@@ -37,7 +37,7 @@ class PrioritySettingController extends Controller
         $prioritySetting->description = $request->description;
         $prioritySetting->save();
 
-        return redirect()->route('admin.prioritySettings')->with('success', 'Priority created successfully');
+        return redirect()->route('admin.settings')->with('success', 'Priority created successfully');
     }
 
     public function edit(Request $request)
@@ -53,6 +53,7 @@ class PrioritySettingController extends Controller
 
     public function update(Request $request)
     {
+        // dd($request->all());
         // Validate the request
         $request->validate([
             'name' => 'required|string|max:255',
@@ -67,7 +68,7 @@ class PrioritySettingController extends Controller
             // If the admin is found, update its attributes
             $prioritySetting->update($request->all());
             // Optionally, return a success response or do other actions
-            return redirect()->route('admin.prioritySettings')->with('success', 'prioritySetting updated successfully!');
+            return redirect()->route('admin.settings')->with('success', 'prioritySetting updated successfully!');
         } else {
             // If the admin is not found, handle the error
             // For example, return a response indicating the admin was not found

@@ -17,7 +17,7 @@ class PaymentSetting extends Model
     protected $fillable = [
         'key',
         'value',
-        'decription',
+        'description',
         'is_active',
     ];
 }

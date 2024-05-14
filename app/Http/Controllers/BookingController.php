@@ -118,28 +118,31 @@ class BookingController extends Controller
         $distance_price  = 0;
         if ($request->distance) {
             if ($request->distance > $request->base_distance) {
-                $distance_price = $request->base_price + ($request->distance - $request->base_distance) * $request->extra_distance_price;
+                $distance_price =  ($request->distance - $request->base_distance) * $request->extra_distance_price;
             } else {
-                $distance_price = $request->base_price;
+                $distance_price = 0;
             }
-            $distance_price = $request->distance * $request->extra_distance_price;
+            // $distance_price = $request->distance * $request->extra_distance_price;
         }
 
         // Get weight Price
         $weight_price = 0;
-        if ($request->weight) {
-            $package_volume = $request->package_length * $request->package_width * $request->package_height / 5000;
-            // Check which one is greater
-            if ($request->weight > $package_volume) {
-                $package_weight = $request->weight;
-            } else {
-                $package_weight = $package_volume;
-            }
-
-            if ($request->weight > $request->base_weight) {
-                $weight_price = $package_weight * $request->extra_weight_price;
-            }
+        if ($request->weight > $request->base_weight) {
+            $weight_price = ($request->weight - $request->base_weight) * $request->extra_weight_price;
         }
+        // if ($request->weight) {
+        //     $package_volume = $request->package_length * $request->package_width * $request->package_height / 5000;
+        //     // Check which one is greater
+        //     if ($request->weight > $package_volume) {
+        //         $package_weight = $request->weight;
+        //     } else {
+        //         $package_weight = $package_volume;
+        //     }
+
+        //     if ($request->weight > $request->base_weight) {
+        //         $weight_price = $package_weight * $request->extra_weight_price;
+        //     }
+        // }
 
         // Get priority_price
         $priority_price  = 0;
@@ -152,13 +155,16 @@ class BookingController extends Controller
         }
 
         // get service_price
-        $service_price = 0;
+        $service_price = $request->base_price;
 
         // Get vehicle_price
-        $vehicle_price = 0;
+        $vehicle_price = 100;
 
         // Get tax_price
         $tax_price = 0;
+
+        // helper_fee
+        $helper_fee = $service_category->helper_fee;
 
         // Create Booking Payment
         $paymentBooking = BookingPayment::create([
@@ -169,6 +175,7 @@ class BookingController extends Controller
             'service_price' => $service_price,
             'vehicle_price' => $vehicle_price,
             'tax_price' => $tax_price,
+            'helper_fee' => $helper_fee,
             'total_price' => $request->total_price,
             'payment_method' => 'cod',
             'payment_status' => 'unpaid',
@@ -194,18 +201,32 @@ class BookingController extends Controller
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
-            ->with('bookingPayment')
             ->first();
 
         if (!$booking) {
             return redirect()->back()->with('error', 'Booking not found');
         }
 
+        // Get payment settings
+        $paymentSetting = PaymentSetting::all();
+
+        $paypalEnabled = false;
+        $stripeEnabled = false;
+
+        if (isset($paymentSetting->paypal_client_id) && isset($paymentSetting->paypal_secret_id)) {
+            $paypalEnabled = true;
+        }
+
+        // for stripe
+        if (isset($paymentSetting->stripe_publishable_key) && isset($paymentSetting->stripe_secret_key)) {
+            $stripeEnabled = true;
+        }
+
         $bookingPayment = BookingPayment::where('booking_id', $booking->id)->first();
 
         // dd($bookingPayment);
 
-        return view('frontend.payment_booking', compact('booking', 'bookingPayment'));
+        return view('frontend.payment_booking', compact('booking', 'bookingPayment', 'paypalEnabled', 'stripeEnabled'));
     }
 
     // Make Online Payment using Paypal
@@ -407,7 +428,6 @@ class BookingController extends Controller
     {
         $booking = Booking::where('id', $request->id)
             ->where('client_user_id', auth()->user()->id)
-            ->with('client')
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
@@ -421,12 +441,21 @@ class BookingController extends Controller
         $bookingPayment = BookingPayment::where('booking_id', $booking->id)->first();
 
         // Get helper Data
-        // $helper = Helper::where('user_id', $booking->helper_id)->first();
+        $helperData = null;
+        if ($booking->helper_user_id) {
+            $helperData = Helper::where('user_id', $booking->helper_user_id)->first();
+        }
+
+        // Get client data
+        $clientData = null;
+        if ($booking->client_user_id) {
+            $clientData = Client::where('user_id', $booking->client_user_id)->first();
+        }
 
 
 
-        // dd($booking);
+        // dd($booking->client_user_id);
 
-        return view('frontend.bookings.show', compact('booking', 'bookingPayment'));
+        return view('frontend.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'clientData'));
     }
 }

@@ -8,6 +8,7 @@
     var service_price = 0;
     var per_km_price = 0;
     var service_charges = 0;
+    var package_weight = 0;
 
     // Booking Payment Variables
     var payment_base_price = 0;
@@ -18,6 +19,7 @@
     var payment_base_weight = 0;
     var payment_extra_weight_price = 0;
     var payment_total_price = 0;
+    var helper_fee = 0;
 
     // Check Service Type
     var selectedServiceType = 'delivery';
@@ -46,10 +48,14 @@
     var map;
     var directionsService;
     var directionsRenderer;
-    var defaultPickupLat = {{ request()->get('pickup_latitude', 33.33) }};
-    var defaultPickupLng = {{ request()->get('pickup_longitude', 74.44) }};
-    var defaultDeliveryLat = {{ request()->get('dropoff_latitude', 33.33) }};
-    var defaultDeliveryLng = {{ request()->get('dropoff_longitude', 74.44) }};
+    var defaultPickupLat =
+        {{ request()->get('pickup_latitude', 33.53) ? request()->get('pickup_latitude', 33.53) : 33.53 }};
+    var defaultPickupLng =
+        {{ request()->get('pickup_longitude', 74.74) ? request()->get('pickup_longitude', 74.74) : 74.74 }};
+    var defaultDeliveryLat =
+        {{ request()->get('dropoff_latitude', 35.33) ? request()->get('dropoff_latitude', 35.33) : 35.33 }};
+    var defaultDeliveryLng =
+        {{ request()->get('dropoff_longitude', 75.44) ? request()->get('dropoff_longitude', 75.44) : 75.44 }};
 
     // Distance
     var distance = 0;
@@ -134,10 +140,10 @@
             if (serviceCategories[i].uuid === selectedparceluuid) {
                 // console.log(serviceCategories[i].base_price);
                 if (distance_in_km > parseFloat(serviceCategories[i].base_distance)) {
-                    distance_price = parseFloat(serviceCategories[i].base_price) + (distance_in_km - parseFloat(
+                    distance_price = (distance_in_km - parseFloat(
                         serviceCategories[i].base_distance)) * parseFloat(serviceCategories[i].extra_distance_price);
                 } else {
-                    distance_price = parseFloat(serviceCategories[i].base_price);
+                    distance_price = 0;
                 }
 
                 // Update payment details
@@ -147,7 +153,9 @@
                 payment_base_weight = serviceCategories[i].base_weight;
                 payment_extra_weight_price = serviceCategories[i].extra_weight_price;
 
-                service_price = 50;
+                helper_fee = serviceCategories[i].helper_fee;
+
+                service_price = serviceCategories[i].base_price;
                 vehicle_price = 100;
             }
         }
@@ -157,26 +165,32 @@
         // Get price of priority from prioritySettings
         for (let i = 0; i < prioritySettings.length; i++) {
             if (prioritySettings[i].id == priorityID) {
-                priorityValue = prioritySettings[i].price;
+                priorityPriceValue = prioritySettings[i].price;
             }
         }
+
 
         // Calculate Weight Price Value
         calculateWeightPrice();
 
         var serviceType = document.querySelector('select[name="serviceType"]').value;
         document.getElementById('distance-price-value').innerHTML = Math.round(distance_price * 100) / 100;
-        document.getElementById('service-price-value').innerHTML = Math.round(service_price * 100) / 100;
+        document.getElementById('base-price-value').innerHTML = Math.round(service_price * 100) / 100;
         document.getElementById('vehicle-price-value').innerHTML = Math.round(vehicle_price * 100) / 100;
-        document.getElementById('priority-price-value').innerHTML = priorityValue;
+        document.getElementById('priority-price-value').innerHTML = priorityPriceValue;
+        document.getElementById('booking-distance-value').innerHTML = Math.round(distance_in_km * 100) / 100;
+        document.getElementById('helper-fee-value').innerHTML = Math.round(helper_fee * 100) / 100;
 
         // Ge total amount
         var amountToPay = amountToPayCalculation();
         // var amountToPay = parseFloat(distance_price) +
         //     parseFloat(service_price) +
-        //     parseFloat(priorityValue) +
+        //     parseFloat(priorityPriceValue) +
         //     parseFloat(vehicle_price);
         document.getElementById('amount-to-pay-value').innerHTML = Math.round(amountToPay * 100) / 100;
+
+
+        document.getElementById('weight-price-value').innerHTML = Math.round(weight_price * 100) / 100;
 
         // console.log('Function calling ' + selectedparceluuid);
     }
@@ -185,8 +199,9 @@
     function calculateWeightPrice() {
         var weight = document.querySelector('input[name="package_weight"]').value;
         if (weight == '') {
-            weight = 1;
+            weight = 0;
         }
+        weight = parseFloat(weight);
         var length = document.querySelector('input[name="package_length"]').value;
         if (length == '') {
             length = 1;
@@ -210,12 +225,14 @@
         }
 
         if (weight < cubicVolumeWeight) {
-            document.getElementById('weight-price-value').innerHTML = Math.round((cubicVolumeWeight) * 100) /
-                100;
-            payment_weight = Math.round((cubicVolumeWeight) * 100) / 100;
+            package_weight = Math.round((cubicVolumeWeight) * 100) / 100;
+            // document.getElementById('weight-price-value').innerHTML = Math.round((cubicVolumeWeight) * 100) /
+            //     100;
         } else {
-            document.getElementById('weight-price-value').innerHTML = parseFloat(weight);
-            payment_weight = parseFloat(weight);
+            // document.getElementById('weight-price-value').innerHTML = parseFloat(weight);
+            package_weight = parseFloat(weight);
         }
+
+        console.log('Package Weight: ' + package_weight);
     }
 </script>

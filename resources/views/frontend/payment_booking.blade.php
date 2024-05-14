@@ -30,7 +30,7 @@
                         {{-- Booking Date Time --}}
                         <div class="d-flex align-items-center justify-content-between">
                             <h6>Pickup Date Time:</h6>
-                            <p>{{ $booking->booking_at ? $booking->booking_at : 'N/A' }}</p>
+                            <p>{{ $booking->booking_at ? $booking->booking_at : '-' }}</p>
                         </div>
                         {{-- Service Type --}}
                         <div class="d-flex align-items-center justify-content-between">
@@ -66,7 +66,7 @@
                         {{-- Distance Price --}}
                         <div class="d-flex align-items-center justify-content-between">
                             <h6>Distance Price:</h6>
-                            <p>${{ $bookingPayment->distance }}</p>
+                            <p>${{ $bookingPayment->distance_price }}</p>
                         </div>
                         {{-- Total Price --}}
                         <div class="d-flex align-items-center justify-content-between">
@@ -94,30 +94,34 @@
                             <h5>Payment Now Using:</h5>
                             <div class=" d-flex align-items-center justify-content-center">
                                 {{-- Paypal --}}
-                                <div class="paypal">
-                                    <form id="paypal-form" class="p-0 m-0"
-                                        action="{{ route('client.booking.payment.paypal.create') }}" method="post">
-                                        @csrf
-                                        <input type="hidden" name="booking_id" value="{{ $booking->id }}">
-                                        <!-- Assuming $booking is available with the booking details -->
+                                @if ($paypalEnabled)
+                                    <div class="paypal">
+                                        <form id="paypal-form" class="p-0 m-0"
+                                            action="{{ route('client.booking.payment.paypal.create') }}" method="post">
+                                            @csrf
+                                            <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+                                            <!-- Assuming $booking is available with the booking details -->
 
-                                        <input type="hidden" name="total_price"
-                                            value="{{ $bookingPayment->total_price }}">
-                                        <!-- Assuming the total_price is fixed -->
-                                        <button type="submit" class="btn btn-paypal d-flex align-items-center">
-                                            <i class="fab fa-paypal"></i>
-                                            <span class="d-none d-md-block ml-2">PayPal</span>
+                                            <input type="hidden" name="total_price"
+                                                value="{{ $bookingPayment->total_price }}">
+                                            <!-- Assuming the total_price is fixed -->
+                                            <button type="submit" class="btn btn-paypal d-flex align-items-center">
+                                                <i class="fab fa-paypal"></i>
+                                                <span class="d-none d-md-block ml-2">PayPal</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                @endif
+                                @if ($stripeEnabled)
+                                    {{-- Stripe --}}
+                                    <div class="stripe ml-2">
+                                        <button class="btn btn-stripe d-flex align-items-center"
+                                            onclick="paymentMethodSelection('stripe')" target="_blank">
+                                            <i class="fa-brands fa-stripe"></i>
+                                            <span class="d-none d-md-block ml-2">Stripe</span>
                                         </button>
-                                    </form>
-                                </div>
-                                {{-- Stripe --}}
-                                <div class="stripe ml-2">
-                                    <button class="btn btn-stripe d-flex align-items-center"
-                                        onclick="paymentMethodSelection('stripe')" target="_blank">
-                                        <i class="fa-brands fa-stripe"></i>
-                                        <span class="d-none d-md-block ml-2">Stripe</span>
-                                    </button>
-                                </div>
+                                    </div>
+                                @endif
                                 {{-- Cash On Delivery --}}
                                 <div class="cod ml-2">
                                     <button class="btn btn-primary d-flex align-items-center"

@@ -44,12 +44,12 @@
                                     {{-- Show Phone Number --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">Phone</h6>
-                                        <p class="mb-0">{{ $client->phone_no ?: 'N/A' }}</p>
+                                        <p class="mb-0">{{ $client->phone_no ?: '-' }}</p>
                                     </div>
                                     {{-- Show Gender --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">Gender</h6>
-                                        <p class="mb-0">{{ $client->gender ?: 'N/A' }}</p>
+                                        <p class="mb-0">{{ $client->gender ?: '-' }}</p>
                                     </div>
                                     {{-- Account Type --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
@@ -59,37 +59,37 @@
                                     {{-- Tax ID --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">Tax ID</h6>
-                                        <p class="mb-0">{{ $client->tax_id ?: 'N/A' }}</p>
+                                        <p class="mb-0">{{ $client->tax_id ?: '-' }}</p>
                                     </div>
                                     {{-- Suite --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">Suite</h6>
-                                        <p class="mb-0">{{ $client->suite ?: 'N/A' }}</p>
+                                        <p class="mb-0">{{ $client->suite ?: '-' }}</p>
                                     </div>
                                     {{-- Street --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">Street</h6>
-                                        <p class="mb-0">{{ $client->street ?: 'N/A' }}</p>
+                                        <p class="mb-0">{{ $client->street ?: '-' }}</p>
                                     </div>
                                     {{-- City --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">City</h6>
-                                        <p class="mb-0">{{ $client->city ?: 'N/A' }}</p>
+                                        <p class="mb-0">{{ app('addressHelper')->getCityName($client->city) }}</p>
                                     </div>
                                     {{-- State --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">State</h6>
-                                        <p class="mb-0">{{ $client->state ?: 'N/A' }}</p>
+                                        <p class="mb-0">{{ app('addressHelper')->getStateName($client->state) }}</p>
                                     </div>
                                     {{-- Country --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">Country</h6>
-                                        <p class="mb-0">{{ $client->country ?: 'N/A' }}</p>
+                                        <p class="mb-0">{{ app('addressHelper')->getCountryName($client->country) }}</p>
                                     </div>
                                     {{-- Zip Code --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">Zip Code</h6>
-                                        <p class="mb-0">{{ $client->zip_code ?: 'N/A' }}</p>
+                                        <p class="mb-0">{{ $client->zip_code ?: '-' }}</p>
                                     </div>
                                 </div>
                             </div>

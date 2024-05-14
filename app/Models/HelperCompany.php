@@ -19,7 +19,7 @@ class HelperCompany extends Model
         'industry',
         'company_number',
         'gst_number',
-        'hst_number',
+        'website_url',
         'email',
         'business_phone',
         'business_phone_verified_at',

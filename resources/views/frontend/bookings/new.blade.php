@@ -38,12 +38,12 @@
                                 <div class="card-body flex-grow-1">
                                     <div class="calculated-amount">
                                         <div class="item">
-                                            <h6>Distance Price</h6>
-                                            <p>$<span id="distance-price-value">0</span></p>
+                                            <h6>Base Price</h6>
+                                            <p>$<span id="base-price-value">0</span></p>
                                         </div>
                                         <div class="item">
-                                            <h6>Service Price</h6>
-                                            <p>$<span id="service-price-value">0</span></p>
+                                            <h6>Distance Price</h6>
+                                            <p>$<span id="distance-price-value">0</span></p>
                                         </div>
                                         <div class="item">
                                             <h6>Priority Price</h6>
@@ -61,9 +61,13 @@
                                             <h6>Weight Price</h6>
                                             <p>$<span id="weight-price-value">0</span></p>
                                         </div>
+                                        <div class="item delivery d-none">
+                                            <h6>Helper Fee</h6>
+                                            <p>$<span id="helper-fee-value">0</span></p>
+                                        </div>
                                         <div class="item">
-                                            <h6>Platform Charges</h6>
-                                            <p>$<span id="platform-charge-value">0</span></p>
+                                            <h6>Order Distance</h6>
+                                            <p><span id="booking-distance-value">0</span> KM</p>
                                         </div>
                                         <hr>
                                         <div class="item">
@@ -405,8 +409,7 @@
 
                         @auth
                             <div class="col-md-12 text-right">
-                                <button type="submit" class="btn btn-primary btn-block">Get
-                                    Estimate</button>
+                                <button type="submit" class="btn btn-primary btn-block">Pay for Order</button>
                             </div>
                         @else
                             <div class="col-md-12 text-right">

@@ -130,6 +130,35 @@
                     </div>
                 </div>
 
+                {{-- Service Available for --}}
+                <div class="col-md-12">
+                    <div class="form-group mb-3">
+                        <label>Service Available for <span class="text-danger">*</span></label>
+                        <div class="d-block">
+                            @foreach ($services as $service)
+                                <div class="custom-control custom-checkbox">
+                                    <input class="custom-control-input" type="checkbox"
+                                        id="service-{{ $service->id }}" name="services[]"
+                                        value="{{ $service->id }}" @if (isset($helperData) && in_array($service->id, $helperData->service_types->pluck('id')->toArray())) checked @endif>
+                                    <label class="custom-control-label"
+                                        for="service-{{ $service->id }}">{{ $service->name }}</label>
+                                </div>
+                            @endforeach
+                            @error('services')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                            @if ($errors->has('services'))
+                                <span class="help-block text-danger">
+                                    <strong>Please select atleast one service</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+
                 {{-- Row End Here --}}
             </div>
             {{-- Button to Submit --}}

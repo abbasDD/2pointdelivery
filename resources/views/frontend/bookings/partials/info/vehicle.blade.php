@@ -1,6 +1,6 @@
 {{-- Vehicle Detail --}}
 
-@if ($booking->helper_id)
+@if ($booking->helper_user_id)
     {{-- Delivery Vehicle Detail  --}}
     <div class="card mb-3">
         <div class="card-body">
@@ -30,5 +30,9 @@
                 </div>
             </div>
         </div>
+    </div>
+@else
+    <div class="text-center">
+        <h6> No Vehicle Available </h6>
     </div>
 @endif

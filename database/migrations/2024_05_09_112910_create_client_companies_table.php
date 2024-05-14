@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('industry')->nullable();
             $table->string('company_number')->nullable();
             $table->string('gst_number')->nullable();
-            $table->string('hst_number')->nullable();
+            $table->string('website_url')->nullable();
             $table->string('email')->nullable();
             $table->string('business_phone')->nullable();
             $table->timestamp('business_phone_verified_at')->nullable();

@@ -29,7 +29,7 @@
                     {{-- Dropoff Address --}}
                     <p>Dropoff: {{ $booking->dropoff_address }}</p>
                 </td>
-                <td>{{ $booking->total_price }}</td>
+                <td>${{ $booking->helper_fee }}</td>
                 <td>
                     <p class="badge {{ $booking->status == 'completed' ? 'bg-primary' : 'bg-danger' }}">
                         {{ $booking->status }}

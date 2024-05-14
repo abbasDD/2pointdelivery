@@ -12,6 +12,8 @@ use App\Models\Client;
 use App\Models\Country;
 use App\Models\HelperCompany;
 use App\Models\HelperVehicle;
+use App\Models\Industry;
+use App\Models\ServiceType;
 use App\Models\SocialLink;
 use App\Models\State;
 use App\Models\User;
@@ -76,7 +78,9 @@ class HelperController extends Controller
             'unpaid_bookings' => Booking::where('helper_user_id', $helper_id)->where('status', 'draft')->count(),
         ];
 
-        $bookings = Booking::where('status', 'pending')
+        $bookings = Booking::select('bookings.*', 'booking_payments.helper_fee')
+            ->where('status', 'pending')
+            ->join('booking_payments', 'bookings.id', '=', 'booking_payments.booking_id')
             ->with('helper')
             ->with('prioritySetting')
             ->with('serviceType')
@@ -168,7 +172,8 @@ class HelperController extends Controller
     public function edit_profile()
     {
         // Get helper data
-        $helperData = Helper::where('user_id', auth()->user()->id)->first();
+        $helperData = Helper::where('user_id', auth()->user()->id)->with('service_types')->first();
+        // dd($helperData);
         // Create a new helper if not found
         if (!$helperData) {
             $helperData = new Helper();
@@ -197,7 +202,11 @@ class HelperController extends Controller
             $helperCompanyData->user_id = auth()->user()->id;
             $helperCompanyData->helper_id = $helperData->id;
             $helperCompanyData->save();
+
+            $helperCompanyData = HelperCompany::where('user_id', auth()->user()->id)->first();
         }
+
+        // dd($helperCompanyData);
 
         // Get list of all countries
         $countries = Country::all();
@@ -228,7 +237,16 @@ class HelperController extends Controller
         $vehicleData = HelperVehicle::where('helper_id', $helperData->id)->first();
         // dd($vehicleData);
 
-        return view('helper.profile.edit', compact('helperData', 'social_links', 'helperCompanyData', 'addressData', 'vehicleTypes', 'vehicleData'));
+
+        // Get service types
+        $services = ServiceType::where('is_active', 1)->get();
+        // dd($services);
+
+
+        // Get list of industries
+        $industries = Industry::all();
+
+        return view('helper.profile.edit', compact('helperData', 'social_links', 'helperCompanyData', 'addressData', 'vehicleTypes', 'vehicleData', 'services', 'industries'));
     }
 
 
@@ -243,6 +261,7 @@ class HelperController extends Controller
             'date_of_birth' => 'required|string|max:255',
             // 'tax_id' => 'required|string|max:255',
             'company_enabled' => 'required|integer',
+            'services' => 'required|array',
         ]);
 
         // Check if user exist
@@ -278,6 +297,10 @@ class HelperController extends Controller
             'company_enabled' => $request->company_enabled
         ]);
         // dd($request->all());
+
+
+        // Sync services for the vehicle type
+        $helper->service_types()->sync($request->services);
 
         return redirect()->back()->with('success', 'Profile info updated successfully!');
     }

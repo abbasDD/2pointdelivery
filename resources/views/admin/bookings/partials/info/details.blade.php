@@ -30,7 +30,7 @@
         {{-- Delivery Charges: --}}
         <div class="d-flex align-items-center justify-content-between mb-3">
             <p class="mb-0">Delivery Charges:</p>
-            <h6 class="mb-0">${{ $booking->prioritySetting->price }}</h6>
+            <h6 class="mb-0">${{ $bookingPayment->helper_fee }}</h6>
         </div>
         {{-- Amount to Pay --}}
         <div class="d-flex align-items-center justify-content-between mb-3">

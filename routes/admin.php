@@ -113,10 +113,10 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
         // Default Settings
         Route::get('/', [SystemSettingController::class, 'index'])->name('settings');
 
-        Route::get('/system', [SystemSettingController::class, 'index'])->name('systemSettings');
+        // Route::get('/system', [SystemSettingController::class, 'index'])->name('systemSettings');
         Route::post('/system/update', [SystemSettingController::class, 'update'])->name('systemSetting.update');
         // Tax
-        Route::get('/tax', [TaxSettingController::class, 'index'])->name('taxSettings');
+        // Route::get('/tax', [TaxSettingController::class, 'index'])->name('taxSettings');
         Route::get('/tax/create', [TaxSettingController::class, 'create'])->name('taxSetting.create');
         Route::post('/tax/store', [TaxSettingController::class, 'store'])->name('taxSetting.store');
         Route::get('/tax/edit/{id}', [TaxSettingController::class, 'edit'])->name('taxSetting.edit');
@@ -124,11 +124,11 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
         Route::post('/tax/update-status', [TaxSettingController::class, 'updateStatus'])->name('taxSetting.updateStatus');
 
         // Payment
-        Route::get('/payment', [PaymentSettingController::class, 'index'])->name('paymentSettings');
+        // Route::get('/payment', [PaymentSettingController::class, 'index'])->name('paymentSettings');
         Route::post('/payment/update', [PaymentSettingController::class, 'update'])->name('paymentSetting.update');
 
         // Priority
-        Route::get('/priority', [PrioritySettingController::class, 'index'])->name('prioritySettings');
+        // Route::get('/priority', [PrioritySettingController::class, 'index'])->name('prioritySettings');
         Route::get('/priority/create', [PrioritySettingController::class, 'create'])->name('prioritySetting.create');
         Route::post('/priority/store', [PrioritySettingController::class, 'store'])->name('prioritySetting.store');
         Route::get('/priority/edit/{id}', [PrioritySettingController::class, 'edit'])->name('prioritySetting.edit');
@@ -136,7 +136,7 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
         Route::post('/priority/update-status', [PrioritySettingController::class, 'updateStatus'])->name('prioritySetting.updateStatus');
 
         // Authentication
-        Route::get('/authentication', [AuthenticationSettingController::class, 'index'])->name('authenticationSettings');
+        // Route::get('/authentication', [AuthenticationSettingController::class, 'index'])->name('authenticationSettings');
         Route::post('/authentication/update', [AuthenticationSettingController::class, 'update'])->name('authenticationSetting.update');
 
 

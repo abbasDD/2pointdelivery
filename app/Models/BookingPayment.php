@@ -24,6 +24,7 @@ class BookingPayment extends Model
         'service_price',
         'vehicle_price',
         'tax_price',
+        'helper_fee',
         'total_price',
         'payment_status',
         'payment_at',

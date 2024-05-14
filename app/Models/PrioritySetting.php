@@ -17,7 +17,7 @@ class PrioritySetting extends Model
     protected $fillable = [
         'name',
         'price',
-        'decription',
+        'description',
         'is_active',
         'is_deleted',
     ];

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Country;
+use App\Models\State;
 use App\Models\TaxSetting;
 use Illuminate\Http\Request;
 
@@ -50,7 +51,7 @@ class TaxSettingController extends Controller
         $taxSetting->save();
 
         // Redirect with a success message
-        return redirect()->route('admin.taxSettings')->with('success', 'Tax Country created successfully!');
+        return redirect()->route('admin.settings')->with('success', 'Tax Country created successfully!');
     }
 
     public function edit(Request $request)
@@ -59,7 +60,11 @@ class TaxSettingController extends Controller
 
         $taxCountry = TaxSetting::where('id', $request->id)
             ->first();
-        return view('admin.settings.tax.edit', compact('taxCountry', 'countries'));
+
+        // Get selected country states
+        $states = State::where('id', $taxCountry->state_id)->get();
+
+        return view('admin.settings.tax.edit', compact('taxCountry', 'countries', 'states'));
     }
 
     public function update(Request $request)
@@ -78,12 +83,12 @@ class TaxSettingController extends Controller
             ->first();
 
         if (!$taxCountry) {
-            return redirect()->route('admin.taxSettings')->with('error', 'Tax Country not found');
+            return redirect()->route('admin.settings')->with('error', 'Tax Country not found');
         }
 
         $taxCountry->update($request->all());
 
-        return redirect()->route('admin.taxSettings')->with('success', 'Tax Country updated successfully!');
+        return redirect()->route('admin.settings')->with('success', 'Tax Country updated successfully!');
     }
 
     public function updateStatus(Request $request)
@@ -94,7 +99,7 @@ class TaxSettingController extends Controller
             $taxSetting->update(['is_active' => !$taxSetting->is_active]);
             return json_encode(['status' => 'success', 'is_active' => !$taxSetting->is_active, 'message' => 'taxSetting status updated successfully!']);
         }
-        // return redirect()->route('admin.taxSettings')->with('success', 'Tax Country Status updated successfully!');
+        // return redirect()->route('admin.settings')->with('success', 'Tax Country Status updated successfully!');
 
         return json_encode(['status' => 'error', 'message' => 'taxSetting not found']);
     }

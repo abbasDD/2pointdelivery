@@ -10,7 +10,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <div class="">
                     <h3 class="mb-1">Order Detail</h3>
-                    <p>Order No : <span class="text-uppercase">{{ $booking->uuid ? $booking->uuid : 'N/A' }}</span></p>
+                    <p>Order No : <span class="text-uppercase">{{ $booking->uuid ? $booking->uuid : '-' }}</span></p>
                 </div>
                 <div class="">
                     <a href="#" class="btn btn-danger"><i class="fa fa-bug" aria-hidden="true"></i> <span
@@ -59,7 +59,7 @@
                             {{-- Delivery Charges: --}}
                             <div class="d-flex align-items-center justify-content-between mb-3">
                                 <p class="mb-0">Delivery Charges:</p>
-                                <h6 class="mb-0">${{ $booking->prioritySetting->price }}</h6>
+                                <h6 class="mb-0">${{ $bookingPayment->helper_fee }}</h6>
                             </div>
                             {{-- Amount to Pay --}}
                             <div class="d-flex align-items-center justify-content-between mb-3">

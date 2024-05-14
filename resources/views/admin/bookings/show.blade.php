@@ -11,7 +11,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <div class="">
                     <h3 class="mb-1">Order Detail</h3>
-                    <p>Order No : <span class="text-uppercase">{{ $booking->uuid ? $booking->uuid : 'N/A' }}</span></p>
+                    <p>Order No : <span class="text-uppercase">{{ $booking->uuid ? $booking->uuid : '-' }}</span></p>
                 </div>
                 <div class="">
                     <a href="#" class="btn btn-danger"><i class="fa fa-bug" aria-hidden="true"></i> <span

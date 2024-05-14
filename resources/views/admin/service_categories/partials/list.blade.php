@@ -25,11 +25,11 @@
 
 
                 </td>
-                <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->base_price : 'N/A' }}
+                <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->base_price : '-' }}
                 </td>
-                <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->base_distance : 'N/A' }}
+                <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->base_distance : '-' }}
                 </td>
-                <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->extra_distance_price : 'N/A' }}
+                <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->extra_distance_price : '-' }}
                 </td>
                 <td>
                     <button type="button" id="statusButton_{{ $service_category->id }}"

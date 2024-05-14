@@ -10,6 +10,7 @@ use App\Models\Booking;
 use App\Models\City;
 use App\Models\ClientCompany;
 use App\Models\Country;
+use App\Models\Industry;
 use App\Models\SocialLink;
 use App\Models\State;
 use App\Models\User;
@@ -108,7 +109,7 @@ class ClientController extends Controller
             ->orderBy('bookings.created_at', 'desc')
             ->take(10)->get();
 
-            // Get booking client details
+        // Get booking client details
 
         // Check if user completed profile
         $client_updated = false;  //Set default value
@@ -117,6 +118,8 @@ class ClientController extends Controller
         if (isset($client) && $client->first_name != null && $client->zip_code != null) {
             $client_updated = true;
         }
+
+
 
         return view('client.index', compact('bookings', 'satistics', 'client_updated'));
     }
@@ -127,7 +130,7 @@ class ClientController extends Controller
         // Get client data
         $clientData = Client::where('user_id', auth()->user()->id)->first();
 
-        // Create a new helper if not found
+        // Create a new client if not found
         if (!$clientData) {
             $clientData = new Client();
             $clientData->user_id = auth()->user()->id;
@@ -178,8 +181,12 @@ class ClientController extends Controller
             'companyCities' => $companyCities
         ];
 
+        // dd($clientCompanyData);
 
-        return view('client.profile.edit', compact('clientData', 'social_links', 'clientCompanyData', 'addressData'));
+        // Get list of industries
+        $industries = Industry::all();
+
+        return view('client.profile.edit', compact('clientData', 'social_links', 'clientCompanyData', 'addressData', 'industries'));
     }
 
     // Route to update personal profile data

@@ -12,7 +12,7 @@
                         <div class="image-selection">
                             <div class="mx-auto" style="max-width: 150px;">
                                 <img id="company_logo_preview"
-                                    src="{{ isset($helperCompanyData['company_logo']) && $helperCompanyData['company_logo'] !== null ? asset('images/company/' . $helperCompanyData['company_logo']) : asset('images/company/default.png') }}"
+                                    src="{{ isset($helperCompanyData['company_logo']) && $helperCompanyData['company_logo'] != null ? asset('images/company/' . $helperCompanyData['company_logo']) : asset('images/users/default.png') }}"
                                     alt="company_logo" class=" border w-100 p-3"
                                     onclick="document.getElementById('company_logo').click()">
                                 <input type="file" name="company_logo" id="company_logo" class="d-none"
@@ -59,13 +59,20 @@
                         @enderror
                     </div>
                 </div>
+
                 {{-- Industry --}}
                 <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="industry" class="form-label">Industry</label>
-                        <input type="text" class="form-control @error('industry') is-invalid @enderror"
-                            id="industry" name="industry" placeholder="Industry"
-                            value="{{ old('industry', $helperCompanyData['industry'] ?? '') }}" required>
+                    <div class="form-group mb-3">
+                        <label for="industry">Industry</label>
+                        <select class="form-control @error('industry') is-invalid @enderror" id="industry"
+                            name="industry" required>
+                            <option value="">Select Industry</option>
+                            @foreach ($industries as $industry)
+                                <option value="{{ $industry->id }}"
+                                    {{ old('industry', $helperCompanyData['industry'] ?? '') == $industry->id ? 'selected' : '' }}>
+                                    {{ $industry->name }}</option>
+                            @endforeach
+                        </select>
                         @error('industry')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -101,14 +108,15 @@
                         @enderror
                     </div>
                 </div>
-                {{-- HST Number --}}
+
+                {{-- Website URL --}}
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="hst_number" class="form-label">HST Number</label>
-                        <input type="text" class="form-control" id="hst_number" name="hst_number"
-                            value="{{ old('hst_number', $helperCompanyData['hst_number'] ?? '') }}"
-                            placeholder="HST Number (optional)">
-                        @error('hst_number')
+                        <label for="website_url" class="form-label">Website URL</label>
+                        <input type="text" class="form-control" id="website_url" name="website_url"
+                            value="{{ old('website_url', $helperCompanyData['website_url'] ?? '') }}"
+                            placeholder="Website URL (optional)">
+                        @error('website_url')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
@@ -270,6 +278,24 @@
 
 
 <script>
+    // Company Logo JS
+    document.querySelector('#company_logo').addEventListener('change', function(event) {
+        console.log('Function callled for Company Logo');
+        const file = event.target.files[0];
+        if (!file.type.startsWith('image/')) {
+            alert('Please select an image file.');
+            event.target.value = null;
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            document.querySelector('#company_logo_preview').src = event.target.result;
+        }
+
+        reader.readAsDataURL(file);
+    });
+
     // Get states
     function getCompanyStates(countryId) {
         console.log(countryId);

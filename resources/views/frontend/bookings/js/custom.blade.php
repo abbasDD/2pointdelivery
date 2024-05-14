@@ -132,7 +132,7 @@
         formData.append('distance', distance_in_km);
         formData.append('base_distance', payment_base_distance);
         formData.append('extra_distance_price', payment_extra_distance_price);
-        formData.append('weight', payment_weight);
+        formData.append('weight', package_weight);
         formData.append('base_weight', payment_base_weight);
         formData.append('extra_weight_price', payment_extra_weight_price);
 
@@ -294,13 +294,21 @@
 
         // Calculate weight_price
         // if weight is greater then base_weight
-        if (payment_weight > parseFloat(payment_base_weight)) {
-            weight_price = parseFloat(payment_base_weight) + (payment_weight - parseFloat(
-                payment_base_weight)) * parseFloat(payment_extra_weight_price);
+        if (parseFloat(package_weight) > parseFloat(payment_base_weight)) {
+            weight_price = (package_weight - parseFloat(payment_base_weight)) * parseFloat(payment_extra_weight_price);
         } else {
-            weight_price = parseFloat(payment_base_weight);
+            weight_price = 0;
         }
 
-        return distance_price + service_price + weight_price;
+        // Convert to float
+        service_price = parseFloat(service_price);
+        priorityPriceValue = parseFloat(priorityPriceValue);
+        vehicle_price = parseFloat(vehicle_price);
+        weight_price = parseFloat(weight_price);
+        helper_fee = parseFloat(helper_fee);
+
+        console.log('Total Price is : ' + payment_extra_weight_price)
+
+        return distance_price + service_price + weight_price + priorityPriceValue + vehicle_price + helper_fee;
     }
 </script>

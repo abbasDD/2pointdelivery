@@ -111,7 +111,7 @@
                                                 {{-- Dropoff Address --}}
                                                 <p>Dropoff: {{ $booking->dropoff_address }}</p>
                                             </td>
-                                            <td>{{ $booking->total_price }}</td>
+                                            <td>${{ $booking->helper_fee }}</td>
                                             <td>
                                                 <a class="btn btn-sm btn-primary"
                                                     href="{{ route('helper.booking.accept', $booking->id) }}">Accept</a>

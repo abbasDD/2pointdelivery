@@ -42,4 +42,9 @@ class Helper extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function service_types()
+    {
+        return $this->belongsToMany(ServiceType::class, 'service_helper');
+    }
 }
