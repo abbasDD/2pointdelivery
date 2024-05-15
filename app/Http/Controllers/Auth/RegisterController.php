@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 
 class RegisterController extends Controller
@@ -66,11 +67,14 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $referralCode = strtoupper(Str::random(8));
+        // dd($referralCode);
         return User::create([
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'user_type' => $data['user_type'],
             'account_type' => $data['account_type'],
+            'referral_code' => $referralCode,
             'is_active' => 1,   //Comment this line if you want to manually activate users
         ]);
     }

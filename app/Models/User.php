@@ -22,6 +22,7 @@ class User extends Authenticatable
         'helper_enabled',
         'email',
         'password',
+        'referral_code',
         'is_active',
         'is_updated',
         'is_deleted',

@@ -11,6 +11,7 @@ use App\Models\City;
 use App\Models\ClientCompany;
 use App\Models\Country;
 use App\Models\Industry;
+use App\Models\Referral;
 use App\Models\SocialLink;
 use App\Models\State;
 use App\Models\User;
@@ -198,7 +199,7 @@ class ClientController extends Controller
             'last_name' => 'required|string|max:255',
             'gender' => 'required|string|max:255',
             'date_of_birth' => 'required|string|max:255',
-            // 'tax_id' => 'required|string|max:255',
+            'phone_no' => 'required|string|max:255',
             'company_enabled' => 'required|integer',
         ]);
 
@@ -229,6 +230,7 @@ class ClientController extends Controller
             'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
             'gender' => $request->gender,
+            'phone_no' => $request->phone_no,
             'date_of_birth' => $request->date_of_birth,
             'tax_id' => $request->tax_id,
             'profile_image' => $profile_image,
@@ -394,7 +396,12 @@ class ClientController extends Controller
 
     public function referrals()
     {
-        return view('client.referrals');
+        // Get all referred list
+        $referrals = Referral::select('referrals.*', 'users.email', 'users.user_type')
+            ->join('users', 'users.id', '=', 'referrals.referred_user_id')
+            ->where('referrer_id', auth()->user()->id)->get();
+
+        return view('client.referrals', compact('referrals'));
     }
 
     public function settings()

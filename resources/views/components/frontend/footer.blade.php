@@ -98,10 +98,10 @@
                         <!-- Links -->
                         <h6 class="text-uppercase fw-bold">Contact</h6>
                         <hr class="mb-4 bg-primary mt-0 d-inline-block mx-auto" />
-                        <p><i class="fas fa-home mr-3"></i> New York, NY 10012, US</p>
+                        <p><i class="fas fa-home mr-3"></i> 7551 Mapleford Blvd, Regina, S4Y0C6</p>
                         <p><i class="fas fa-envelope mr-3"></i> info@2pointdelivery.com</p>
-                        <p><i class="fas fa-phone mr-3"></i> + 01 234 567 88</p>
-                        <p><i class="fas fa-print mr-3"></i> + 01 234 567 89</p>
+                        <p><i class="fas fa-phone mr-3"></i> +1 (639) 997-2710</p>
+                        <p><i class="fas fa-print mr-3"></i> +1 (306) 807-9001</p>
                     </div>
                     <!-- Grid column -->
                 </div>

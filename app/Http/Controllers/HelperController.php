@@ -259,7 +259,7 @@ class HelperController extends Controller
             'last_name' => 'required|string|max:255',
             'gender' => 'required|string|max:255',
             'date_of_birth' => 'required|string|max:255',
-            // 'tax_id' => 'required|string|max:255',
+            'phone_no' => 'required|string|max:255',
             'company_enabled' => 'required|integer',
             'services' => 'required|array',
         ]);
@@ -291,6 +291,7 @@ class HelperController extends Controller
             'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
             'gender' => $request->gender,
+            'phone_no' => $request->phone_no,
             'date_of_birth' => $request->date_of_birth,
             'tax_id' => $request->tax_id,
             'profile_image' => $profile_image,

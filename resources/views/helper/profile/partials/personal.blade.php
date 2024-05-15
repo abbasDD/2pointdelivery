@@ -81,6 +81,31 @@
                         @enderror
                     </div>
                 </div>
+
+                {{-- Email --}}
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email"
+                            name="email" value="{{ auth()->user()->email }}" placeholder="Email" readonly>
+
+                    </div>
+                </div>
+                {{-- Phone Number --}}
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="phone_no" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="phone_no" name="phone_no"
+                            value="{{ old('phone_no', $helperData['phone_no'] ?? '') }}" placeholder="Phone Number"
+                            required>
+
+                        @error('phone_no')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                </div>
                 {{-- Gender --}}
                 <div class="col-md-6">
                     <div class="mb-3">

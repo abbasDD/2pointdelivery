@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Helper\BookingController;
 use App\Http\Controllers\Helper\ChatController;
 use App\Http\Controllers\Helper\KycDetailController;
@@ -17,7 +18,7 @@ Route::get('helper/login', 'App\Http\Controllers\Auth\LoginController@showLoginF
 Route::post('helper/login', 'App\Http\Controllers\Auth\LoginController@postHelperLoginForm')->name('helper.login');
 
 Route::get('helper/register', 'App\Http\Controllers\Auth\RegisterController@showRegistrationFormHelper')->name('helper.register');
-Route::post('helper/register', 'App\Http\Controllers\Auth\RegisterController@register')->name('helper.register');
+Route::post('helper/register', [RegisterController::class, 'register'])->name('helper.register');
 
 
 Route::prefix('helper')->middleware(['auth'])->name('helper.')->group(function () {

@@ -20,21 +20,25 @@
                             <th scope="col">User Type</th>
                             <th scope="col">Points</th>
                             <th scope="col">Status</th>
-                            <th scope="col">Action</th>
+                            {{-- <th scope="col">Action</th> --}}
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td colspan="6" class="text-center">No data found</td>
-                        </tr>
-                        {{-- <tr>
-                            <th scope="row">1</th>
-                            <td>@john123</td>
-                            <td>Company Client</td>
-                            <td>200</td>
-                            <td><span class="badge bg-success">Completed</span></td>
-                            <td><a href="#" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a></td>
-                        </tr>
+                        @forelse ($referrals as $referral)
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>{{ $referral->email }}</td>
+                                <td>{{ $referral->user_type }}</td>
+                                <td>200</td>
+                                <td><span class="badge bg-success">Awarded</span></td>
+                                {{-- <td><a href="#" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a></td> --}}
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center">No data found</td>
+                            </tr>
+                        @endforelse
+                        {{-- 
                         <tr>
                             <th scope="row">2</th>
                             <td>@emma456</td>

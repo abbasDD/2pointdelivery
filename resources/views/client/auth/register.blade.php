@@ -89,6 +89,21 @@
                                 </div>
                             </div>
 
+                            {{-- referral code --}}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <input id="referral_code" type="text"
+                                        class="form-control @error('referral_code') is-invalid @enderror"
+                                        name="referral_code" placeholder="Referral Code (optional)"
+                                        autocomplete="referral_code">
+                                    @error('referral_code')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <button type="submit" class="btn btn-primary w-100">
