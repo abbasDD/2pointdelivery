@@ -7,11 +7,11 @@
             <div class="row align-items-center">
                 <div class="col-sm-8">
                     <div class="d-block d-md-flex align-items-center justify-content-between mb-3">
-                        <p class="mb-0">Driver Name:</p>
+                        <p class="mb-0">Customer Name:</p>
                         <h6 class="mb-0">{{ $clientData->first_name . ' ' . $clientData->last_name }}</h6>
                     </div>
                     <div class="d-flex align-items-center justify-content-between mb-3">
-                        <p class="mb-0">Driver Phone:</p>
+                        <p class="mb-0">Customer Phone:</p>
                         <h6 class="mb-0">{{ $clientData->phone }}</h6>
                     </div>
                     <div class="d-flex align-items-center justify-content-between mb-3">

@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\HelperController;
 use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\Admin\KycDetailController;
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\PaymentSettingController;
 use App\Http\Controllers\Admin\PrioritySettingController;
@@ -45,6 +46,10 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     // Search Users Route
     Route::post('/users/search', [AdminController::class, 'searchUsers'])->name('users.search');
 
+    //KYC Details
+    Route::get('/kyc-details', [KycDetailController::class, 'index'])->name('kycDetails');
+    Route::get('/kyc-details/approve/{id}', [KycDetailController::class, 'approveKycDetail'])->name('kycDetail.approve');
+
     // Clients Page Routes
     Route::get('/clients', [ClientController::class, 'index'])->name('clients');
     Route::get('/clients/create', [ClientController::class, 'create'])->name('client.create');
@@ -74,14 +79,6 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     Route::post('/service-type/update', [ServiceTypeController::class, 'update'])->name('serviceType.update');
     Route::post('/service-type/update-status', [ServiceTypeController::class, 'updateStatus'])->name('serviceType.updateStatus');
 
-    // Service Categories Page Routes
-    Route::get('/service-categories', [ServiceCategoryController::class, 'index'])->name('serviceCategories');
-    Route::get('/service-category/create', [ServiceCategoryController::class, 'create'])->name('serviceCategory.create');
-    Route::post('/service-category/store', [ServiceCategoryController::class, 'store'])->name('serviceCategory.store');
-    Route::get('/service-category/edit/{id}', [ServiceCategoryController::class, 'edit'])->name('serviceCategory.edit');
-    Route::post('/service-category/update', [ServiceCategoryController::class, 'update'])->name('serviceCategory.update');
-    Route::post('/service-category/update-status', [ServiceCategoryController::class, 'updateStatus'])->name('serviceCategory.updateStatus');
-
     // Vehicle Types Page Routes
     Route::get('/vehicle-types', [VehicleTypeController::class, 'index'])->name('vehicleTypes');
     Route::get('/vehicle-type/create', [VehicleTypeController::class, 'create'])->name('vehicleType.create');
@@ -89,6 +86,16 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     Route::get('/vehicle-type/edit/{id}', [VehicleTypeController::class, 'edit'])->name('vehicleType.edit');
     Route::post('/vehicle-type/update', [VehicleTypeController::class, 'update'])->name('vehicleType.update');
     Route::post('/vehicle-type/update-status', [VehicleTypeController::class, 'updateStatus'])->name('vehicleType.updateStatus');
+
+    // Service Categories Page Routes
+    Route::get('/service-categories', [ServiceCategoryController::class, 'index'])->name('serviceCategories');
+    Route::get('/service-category/create', [ServiceCategoryController::class, 'create'])->name('serviceCategory.create');
+    Route::post('/service-category/store', [ServiceCategoryController::class, 'store'])->name('serviceCategory.store');
+    Route::get('/service-category/edit/{id}', [ServiceCategoryController::class, 'edit'])->name('serviceCategory.edit');
+    Route::post('/service-category/update', [ServiceCategoryController::class, 'update'])->name('serviceCategory.update');
+    Route::post('/service-category/update-status', [ServiceCategoryController::class, 'updateStatus'])->name('serviceCategory.updateStatus');
+    Route::get('/service-category/list/{id}', [ServiceCategoryController::class, 'getVehicleTypes'])->name('serviceCategory.list');
+
 
     // Bookings Page Routes
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings');

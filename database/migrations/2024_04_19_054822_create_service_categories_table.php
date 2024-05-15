@@ -16,6 +16,7 @@ return new class extends Migration
             // Random generated alpha numeric unique id
             $table->string('uuid')->unique()->index();
             $table->unsignedBigInteger('service_type_id');
+            $table->unsignedBigInteger('vehicle_type_id');
             $table->string('name')->nullable();
             $table->string('description')->nullable();
             $table->string('image')->nullable();
@@ -30,6 +31,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('service_type_id')->references('id')->on('service_types');
+            $table->foreign('vehicle_type_id')->references('id')->on('vehicle_types');
         });
     }
 

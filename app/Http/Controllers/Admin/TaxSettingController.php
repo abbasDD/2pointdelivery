@@ -29,7 +29,10 @@ class TaxSettingController extends Controller
     {
         $countries = Country::all();
 
-        return view('admin.settings.tax.create', compact('countries'));
+        // Get selected country states
+        $states = [];
+
+        return view('admin.settings.tax.create', compact('countries', 'states'));
     }
     public function store(Request $request)
     {

@@ -1,6 +1,6 @@
 {{-- Vehicle Detail --}}
 
-@if ($booking->helper_user_id)
+@if (isset($vehicleTypeData))
     {{-- Delivery Vehicle Detail  --}}
     <div class="card mb-3">
         <div class="card-body">
@@ -8,11 +8,12 @@
                 <div class="col-md-6">
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <p class="mb-0">Vehicle type:</p>
-                        <h6 class="mb-0">Bike</h6>
+                        <h6 class="mb-0">{{ $vehicleTypeData->name }}</h6>
                     </div>
                     <div class="d-flex align-items-center justify-content-between mb-3">
-                        <p class="mb-0">Make:</p>
-                        <h6 class="mb-0">Suzuki Motors</h6>
+                        <p class="mb-0">Description:</p>
+                        <h6 class="mb-0">{{ $vehicleTypeData->description ? $vehicleTypeData->description : 'N/A' }}
+                        </h6>
                     </div>
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <p class="mb-0">Model:</p>
@@ -25,7 +26,8 @@
                 </div>
                 <div class="col-md-6">
                     <div class="text-center">
-                        <img src="{{ asset('images/vehicles/bike.png') }}" alt="Truck" class="img-fluid">
+                        <img src="{{ $vehicleTypeData->image ? asset('images/vehicle_types/' . $vehicleTypeData->image) : asset('images/vehicle_types/bike.png') }}"
+                            alt="Truck" class="img-fluid">
                     </div>
                 </div>
             </div>

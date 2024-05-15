@@ -61,10 +61,10 @@
                                             <h6>Weight Price</h6>
                                             <p>$<span id="weight-price-value">0</span></p>
                                         </div>
-                                        <div class="item delivery d-none">
+                                        {{-- <div class="item delivery d-none">
                                             <h6>Helper Fee</h6>
                                             <p>$<span id="helper-fee-value">0</span></p>
-                                        </div>
+                                        </div> --}}
                                         <div class="item">
                                             <h6>Order Distance</h6>
                                             <p><span id="booking-distance-value">0</span> KM</p>

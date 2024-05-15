@@ -849,7 +849,9 @@
                     // Get first item uuid and set it as default
                     if (data.length > 0) {
                         selectedparceluuid = data[0].uuid;
-                        console.log('Selected Parcel UUID: ' + serviceCategories);
+                        console.log('Selected Parcel UUID: ' + data[0]);
+                        vehicle_price = data[0].vehicle_price;
+                        vehicle_price_type = data[0].vehicle_price_type;
                         toggleBackground(selectedparceluuid);
                     }
                 })

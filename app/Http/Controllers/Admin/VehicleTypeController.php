@@ -13,6 +13,12 @@ class VehicleTypeController extends Controller
 
     public function index(Request $request)
     {
+
+        // Check if service type already added
+        if ($this->checkIfServiceTypesNotAdded()) {
+            return redirect()->route('admin.serviceTypes')->with('error', 'You must have one enabled service to add service category');
+        }
+
         $vehicle_types = VehicleType::with('service_types')->paginate(10); // 10 items per page
         if (request()->ajax()) {
             return response()->json(view('vehicle_types.partials.list', compact('vehicle_types'))->render());
@@ -22,6 +28,11 @@ class VehicleTypeController extends Controller
 
     public function create()
     {
+        // Check if service type already added
+        if ($this->checkIfServiceTypesNotAdded()) {
+            return redirect()->route('admin.serviceTypes')->with('error', 'You must have one enabled service to add service category');
+        }
+
         // Get all services to show on form
         $services = ServiceType::where('is_active', 1)->get();
 
@@ -146,6 +157,19 @@ class VehicleTypeController extends Controller
         }
         // return redirect()->route('admin.taxSettings')->with('success', 'Tax Country Status updated successfully!');
 
-        return json_encode(['status' => 'error', 'message' => 'User not found']);
+        return json_encode(['status' => 'error', 'message' => 'Type not found']);
+    }
+
+    private function checkIfServiceTypesNotAdded()
+    {
+
+        // Check if service type already added
+        $serviceTypes = ServiceType::where('is_active', 1)->get();
+
+        if (!count($serviceTypes)) {
+            return true;
+        }
+
+        return false;
     }
 }

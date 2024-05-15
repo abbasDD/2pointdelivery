@@ -17,6 +17,7 @@ class ServiceCategory extends Model
     protected $fillable = [
         'uuid',
         'service_type_id',
+        'vehicle_type_id',
         'name',
         'description',
         'image',
@@ -45,5 +46,13 @@ class ServiceCategory extends Model
     public function serviceType()
     {
         return $this->belongsTo('App\Models\ServiceType', 'service_type_id');
+    }
+
+    /**
+     * Get the vehicle type that owns the service category.
+     */
+    public function vehicleType()
+    {
+        return $this->belongsTo('App\Models\VehicleType', 'vehicle_type_id');
     }
 }

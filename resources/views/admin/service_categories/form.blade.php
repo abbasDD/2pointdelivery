@@ -22,8 +22,30 @@
         </div>
     </div>
 
-    {{-- Category Name --}}
+    {{-- Select Vehicle Type --}}
     <div class="col-md-6">
+        <div class="form-group mb-3">
+            <label for="vehicle_type_id">Vehicle Type</label>
+            <select class="form-control @error('vehicle_type_id') is-invalid @enderror" id="vehicle_type_id"
+                name="vehicle_type_id" required>
+                <option value="" selected disabled>Choose Vehicle Type</option>
+                @foreach ($vehicleTypes as $vehicleType)
+                    <option value="{{ $vehicleType->id }}"
+                        {{ old('vehicle_type_id', $serviceCategory->vehicle_type_id ?? '') == $vehicleType->id ? 'selected' : '' }}>
+                        {{ $vehicleType->name }}
+                    </option>
+                @endforeach
+            </select>
+            @error('vehicle_type_id')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
+    {{-- Category Name --}}
+    <div class="col-md-12">
         <div class="form-group mb-3">
             <label for="name">Name</label>
             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"
@@ -140,8 +162,9 @@
         <div class="form-group mb-3">
             <label for="base_weight">Base Weight</label>
             <div class="input-group">
-                <input type="text" class="form-control @error('base_weight') is-invalid @enderror" id="base_weight"
-                    name="base_weight" value="{{ old('base_weight', $serviceCategory['base_weight'] ?? '') }}"
+                <input type="text" class="form-control @error('base_weight') is-invalid @enderror"
+                    id="base_weight" name="base_weight"
+                    value="{{ old('base_weight', $serviceCategory['base_weight'] ?? '') }}"
                     placeholder="Enter Base Weight" required pattern="[0-9]*">
                 <span class="input-group-text text-uppercase" id="base_weight">Kgs</span>
             </div>

@@ -21,6 +21,7 @@ class FrontendController extends Controller
             ->whereHas('serviceCategories', function ($query) {
                 $query->where('is_active', 1);
             })
+            ->where('type', 'delivery')
             ->get();
         // dd($serviceTypes);
         return view('frontend.index', compact('serviceTypes'));
@@ -65,18 +66,31 @@ class FrontendController extends Controller
             ->whereHas('serviceCategories', function ($query) {
                 $query->where('is_active', 1);
             })
+            ->where('type', 'delivery')
             ->get();
 
         // Check if service type exist
         if (!$serviceType = $serviceTypes->firstWhere('id', $request->serviceType)) {
             // return redirect()->back()->with('error', 'Service Type not found');
-            $serviceCategories = ServiceCategory::with('serviceType')->where('service_type_id', $serviceTypes[0]->id)->where('is_active', 1)->get();
+            // $serviceCategories = ServiceCategory::with('serviceType')->where('service_type_id', $serviceTypes[0]->id)->with('vehicleType')->where('is_active', 1)->get();
+            $serviceCategories = ServiceCategory::select('service_categories.*', 'service_types.uuid as service_uuid', 'service_types.type as service_type', 'service_types.name as service_name', 'vehicle_types.uuid as vehicle_uuid', 'vehicle_types.name as vehicle_name', 'vehicle_types.price as vehicle_price', 'vehicle_types.price_type as vehicle_price_type')
+                ->join('service_types', 'service_categories.service_type_id', '=', 'service_types.id')
+                ->join('vehicle_types', 'service_categories.vehicle_type_id', '=', 'vehicle_types.id')
+                ->where('service_type_id', $serviceTypes[0]->id)
+                ->where('service_categories.is_active', 1)
+                ->get();
         } else {
             // service Categories of selected service type
-            $serviceCategories = ServiceCategory::with('serviceType')->where('service_type_id', $request->serviceType)->where('is_active', 1)->get();
+            // $serviceCategories = ServiceCategory::with('serviceType')->where('service_type_id', $request->serviceType)->with('vehicleType')->where('is_active', 1)->get();
+            $serviceCategories = ServiceCategory::select('service_categories.*', 'service_types.uuid as service_uuid', 'service_types.type as service_type', 'service_types.name as service_name', 'vehicle_types.uuid as vehicle_uuid', 'vehicle_types.name as vehicle_name', 'vehicle_types.price as vehicle_price', 'vehicle_types.price_type as vehicle_price_type')
+                ->join('service_types', 'service_categories.service_type_id', '=', 'service_types.id')
+                ->join('vehicle_types', 'service_categories.vehicle_type_id', '=', 'vehicle_types.id')
+                ->where('service_type_id', $request->serviceType)
+                ->where('service_categories.is_active', 1)
+                ->get();
         }
 
-        // dd($serviceCategories);
+        // dd($serviceCategories[0]);
 
         // Get priority settings
         $prioritySettings = PrioritySetting::where('is_active', 1)->get();
@@ -105,7 +119,13 @@ class FrontendController extends Controller
     public function fetch_services_categories(Request $request)
     {
         // service Categories of selected service type
-        $serviceCategories = ServiceCategory::where('service_type_id', $request->serviceType)->with('serviceType')->get();
+        // $serviceCategories = ServiceCategory::where('service_type_id', $request->serviceType)->with('serviceType')->with('vehicleType')->get();
+        $serviceCategories = ServiceCategory::select('service_categories.*', 'service_types.uuid as service_uuid', 'service_types.type as service_type', 'service_types.name as service_name', 'vehicle_types.uuid as vehicle_uuid', 'vehicle_types.name as vehicle_name', 'vehicle_types.price as vehicle_price', 'vehicle_types.price_type as vehicle_price_type')
+            ->join('service_types', 'service_categories.service_type_id', '=', 'service_types.id')
+            ->join('vehicle_types', 'service_categories.vehicle_type_id', '=', 'vehicle_types.id')
+            ->where('service_type_id', $request->serviceType)
+            ->where('service_categories.is_active', 1)
+            ->get();
         // return a json object
         return response()->json($serviceCategories);
     }

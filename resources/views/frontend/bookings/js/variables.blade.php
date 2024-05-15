@@ -5,10 +5,12 @@
     // Define some javascript variables to be used in JS
     var csrf_token = "{{ csrf_token() }}";
     var distance_price = 0;
-    var service_price = 0;
+    var base_price = 0;
     var per_km_price = 0;
     var service_charges = 0;
     var package_weight = 0;
+    var vehicle_price = 0;
+    var vehicle_price_type = 0;
 
     // Booking Payment Variables
     var payment_base_price = 0;
@@ -20,6 +22,7 @@
     var payment_extra_weight_price = 0;
     var payment_total_price = 0;
     var helper_fee = 0;
+    var amountToPay = 0;
 
     // Check Service Type
     var selectedServiceType = 'delivery';
@@ -30,6 +33,8 @@
     var serviceCategories = {!! json_encode($serviceCategories) !!};
     if (serviceCategories.length > 0) {
         selectedparceluuid = serviceCategories[0].uuid;
+        vehicle_price = serviceCategories[0].vehicle_price;
+        vehicle_price_type = serviceCategories[0].vehicle_price_type;
         selectedParcelTypeSecureshipEnable = serviceCategories[0].is_secureship_enabled;
         // Update payment details
         payment_base_price = serviceCategories[0].base_price;
@@ -37,6 +42,7 @@
         payment_extra_distance_price = serviceCategories[0].extra_distance_price;
         payment_base_weight = serviceCategories[0].base_weight;
         payment_extra_weight_price = serviceCategories[0].extra_weight_price;
+        console.log('Selected category vehicle price is ' + serviceCategories[0]);
     }
     // Store $prioritySettings to JS array
     var prioritySettings = {!! json_encode($prioritySettings) !!};
@@ -133,6 +139,8 @@
         if (selectedparceluuid == '') {
             // Get from first service type from serviceCategories
             selectedparceluuid = serviceCategories[0].uuid;
+            vehicle_price = serviceCategories[0].vehicle_price;
+            vehicle_price_type = serviceCategories[0].vehicle_price_type;
         }
 
         // Get data on selected uuid
@@ -152,11 +160,14 @@
                 payment_extra_distance_price = serviceCategories[i].extra_distance_price;
                 payment_base_weight = serviceCategories[i].base_weight;
                 payment_extra_weight_price = serviceCategories[i].extra_weight_price;
+                vehicle_price = serviceCategories[i].vehicle_price;
+                vehicle_price_type = serviceCategories[i].vehicle_price_type;
 
                 helper_fee = serviceCategories[i].helper_fee;
 
-                service_price = serviceCategories[i].base_price;
-                vehicle_price = 100;
+                base_price = serviceCategories[i].base_price;
+
+                vehicle_price_value = parseFloat(vehicle_price) * parseFloat(distance_in_km);
             }
         }
 
@@ -175,16 +186,16 @@
 
         var serviceType = document.querySelector('select[name="serviceType"]').value;
         document.getElementById('distance-price-value').innerHTML = Math.round(distance_price * 100) / 100;
-        document.getElementById('base-price-value').innerHTML = Math.round(service_price * 100) / 100;
-        document.getElementById('vehicle-price-value').innerHTML = Math.round(vehicle_price * 100) / 100;
-        document.getElementById('priority-price-value').innerHTML = priorityPriceValue;
+        document.getElementById('base-price-value').innerHTML = Math.round(base_price * 100) / 100;
+        document.getElementById('vehicle-price-value').innerHTML = Math.round(vehicle_price_value * 100) / 100;
+        document.getElementById('priority-price-value').innerHTML = Math.round(priorityPriceValue * 100) / 100;
         document.getElementById('booking-distance-value').innerHTML = Math.round(distance_in_km * 100) / 100;
-        document.getElementById('helper-fee-value').innerHTML = Math.round(helper_fee * 100) / 100;
+        // document.getElementById('helper-fee-value').innerHTML = Math.round(helper_fee * 100) / 100;
 
         // Ge total amount
-        var amountToPay = amountToPayCalculation();
+        amountToPay = amountToPayCalculation();
         // var amountToPay = parseFloat(distance_price) +
-        //     parseFloat(service_price) +
+        //     parseFloat(base_price) +
         //     parseFloat(priorityPriceValue) +
         //     parseFloat(vehicle_price);
         document.getElementById('amount-to-pay-value').innerHTML = Math.round(amountToPay * 100) / 100;

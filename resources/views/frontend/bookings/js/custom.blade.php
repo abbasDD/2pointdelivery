@@ -77,7 +77,10 @@
                 // Get first item uuid and set it as default
                 if (data.length > 0) {
                     selectedparceluuid = data[0].uuid;
-                    console.log('Selected Parcel UUID: ' + serviceCategories);
+                    console.log('Selected Parcel UUID: is ' + data[0].vehicle_price_type);
+                    vehicle_price = data[0].vehicle_price;
+                    vehicle_price_type = data[0].vehicle_price_type;
+
                     toggleBackground(selectedparceluuid);
                 }
             })
@@ -128,13 +131,22 @@
         formData.append('total_price', $("#amount-to-pay-value").text());
         formData.append('booking_type', selectedServiceType);
         // Payment details
-        formData.append('base_price', payment_base_price);
+        // formData.append('base_price', payment_base_price);
         formData.append('distance', distance_in_km);
         formData.append('base_distance', payment_base_distance);
         formData.append('extra_distance_price', payment_extra_distance_price);
         formData.append('weight', package_weight);
         formData.append('base_weight', payment_base_weight);
         formData.append('extra_weight_price', payment_extra_weight_price);
+
+        // Payment fields
+        formData.append('base_price', Math.round(base_price * 100) / 100);
+        formData.append('distance_price', Math.round(distance_price * 100) / 100);
+        formData.append('vehicle_price_value', Math.round(vehicle_price_value * 100) / 100);
+        formData.append('priorityPriceValue', Math.round(priorityPriceValue * 100) / 100);
+        formData.append('weight_price', Math.round(weight_price * 100) / 100);
+        formData.append('total_price', Math.round(amountToPay * 100) / 100);
+
 
         // Calculate total price
 
@@ -286,10 +298,10 @@
         // Calculate distance_price
         // Check if distance is greater then base_distance
         if (distance_in_km > parseFloat(payment_base_distance)) {
-            distance_price = parseFloat(payment_base_price) + (distance_in_km - parseFloat(
+            distance_price = (distance_in_km - parseFloat(
                 payment_base_distance)) * parseFloat(payment_extra_distance_price);
         } else {
-            distance_price = parseFloat(payment_base_price);
+            distance_price = 0;
         }
 
         // Calculate weight_price
@@ -301,14 +313,14 @@
         }
 
         // Convert to float
-        service_price = parseFloat(service_price);
+        base_price = parseFloat(base_price);
         priorityPriceValue = parseFloat(priorityPriceValue);
-        vehicle_price = parseFloat(vehicle_price);
+        vehicle_price_value = parseFloat(vehicle_price_value);
         weight_price = parseFloat(weight_price);
         helper_fee = parseFloat(helper_fee);
 
         console.log('Total Price is : ' + payment_extra_weight_price)
 
-        return distance_price + service_price + weight_price + priorityPriceValue + vehicle_price + helper_fee;
+        return base_price + distance_price + weight_price + priorityPriceValue + vehicle_price_value;
     }
 </script>

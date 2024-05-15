@@ -18,13 +18,19 @@
                 <td>{{ $loop->index + 1 }}</td>
                 <td>{{ $kycDetail->id_type }}</td>
                 <td>{{ $kycDetail->id_number }}</td>
-                <td>{{ $kycDetail->city }}</td>
-                <td>{{ $kycDetail->state }}</td>
-                <td>{{ $kycDetail->country }}</td>
+                <td>{{ app('addressHelper')->getCityName($kycDetail->city) }}</td>
+                <td>{{ app('addressHelper')->getStateName($kycDetail->state) }}</td>
+                <td>{{ app('addressHelper')->getCountryName($kycDetail->country) }}</td>
                 <td>{{ $kycDetail->issue_date }}</td>
                 <td>{{ $kycDetail->expiry_date }}</td>
-                <td><a href="{{ route('helper.kyc.edit', $kycDetail->id) }}" class="btn btn-sm btn-primary"><i
-                            class="fas fa-pencil"></i></a></td>
+                <td>
+                    @if ($kycDetail->is_verified)
+                        <p class="badge bg-success">Verified</p>
+                    @else
+                        <a href="{{ route('client.kyc.edit', $kycDetail->id) }}" class="btn btn-sm btn-primary"><i
+                                class="fas fa-pencil"></i></a>
+                    @endif
+                </td>
             </tr>
         @empty
             <tr>

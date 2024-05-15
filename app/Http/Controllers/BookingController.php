@@ -11,6 +11,7 @@ use App\Models\Helper;
 use App\Models\PaymentSetting;
 use App\Models\PrioritySetting;
 use App\Models\ServiceCategory;
+use App\Models\VehicleType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -159,6 +160,10 @@ class BookingController extends Controller
 
         // Get vehicle_price
         $vehicle_price = 100;
+
+        if (isset($request->vehicle_price_value)) {
+            $vehicle_price = $request->vehicle_price_value;
+        }
 
         // Get tax_price
         $tax_price = 0;
@@ -452,10 +457,19 @@ class BookingController extends Controller
             $clientData = Client::where('user_id', $booking->client_user_id)->first();
         }
 
+        // Get vehicle data
+        $vehicleTypeData = null;
+        if ($booking->service_category_id) {
+            $serviceCategoryData = ServiceCategory::where('id', $booking->service_category_id)->first();
+            if ($serviceCategoryData) {
+                $vehicleTypeData = VehicleType::where('id', $serviceCategoryData->vehicle_type_id)->first();
+            }
+        }
 
 
-        // dd($booking->client_user_id);
 
-        return view('frontend.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'clientData'));
+        // dd($vehicleTypeData);
+
+        return view('frontend.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'clientData', 'vehicleTypeData'));
     }
 }

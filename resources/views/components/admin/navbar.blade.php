@@ -61,17 +61,29 @@
                     <li><a class="nav-link" href="{{ route('admin.requestedHelpers') }}">Requested Helpers </a></li>
                 </ul>
             </li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.serviceTypes') }}"><i
-                        class="fa fa-dolly"></i>
-                    Services</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.serviceCategories') }}"><i
-                        class="fa-solid fa-layer-group"></i> Service Categories </a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.vehicleTypes') }}"><i
-                        class="fa-solid fa-truck"></i> Vehicle Types</a>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.bookings') }}"><i class="fa fa-dolly"></i>
-                    Bookings</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.chats') }}"><i class="fa fa-comment"></i>
-                    Chat</a></li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.serviceTypes') }}"><i class="fa fa-dolly"></i>
+                    Services</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.vehicleTypes') }}"><i class="fa-solid fa-truck"></i> Vehicle
+                    Types</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.kycDetails') }}"><i class="fa-solid fa-truck"></i> KYC
+                    Details</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.serviceCategories') }}"><i
+                        class="fa-solid fa-layer-group"></i> Service Categories </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.bookings') }}"><i class="fa fa-dolly"></i>
+                    Bookings</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.chats') }}"><i class="fa fa-comment"></i>
+                    Chat</a>
             </li>
             {{-- <li class="nav-item has-submenu">
                 <a class="nav-link" href="#"> <i class="fa fa-cog"></i> Settings </a>
