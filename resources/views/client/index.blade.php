@@ -8,7 +8,7 @@
     @if (!$client_updated)
         <div class="alert alert-danger d-flex align-items-center justify-content-between" role="alert">
             <p class="m-0">Your profile is incomplete. Please complete it to book your first service.</p>
-            <p class="m-0"><a href="{{ route('client.edit') }}" class="btn btn-primary ml-2">Complete</a>
+            <p class="m-0"><a href="{{ route('client.profile') }}" class="btn btn-primary ml-2">Complete</a>
             </p>
         </div>
     @endif
@@ -126,8 +126,21 @@
                                                     {{ $booking->status }}
                                                 </p>
                                             </td>
-                                            <td><a href="{{ route('client.booking.show', $booking->id) }}"
-                                                    class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a></td>
+                                            <td>
+                                                {{-- If booking status is draft then ask client to payment --}}
+                                                @if ($booking->status == 'draft')
+                                                    <a href="{{ route('client.booking.payment', $booking->id) }}"
+                                                        class="btn btn-sm btn-primary" data-toggle="tooltip"
+                                                        data-placement="top" title="Pay Now"><i
+                                                            class="fas fa-credit-card"></i></a>
+                                                @else
+                                                    {{-- Else show view button --}}
+                                                    <a href="{{ route('client.booking.show', $booking->id) }}"
+                                                        class="btn btn-sm btn-primary" data-toggle="tooltip"
+                                                        data-placement="top" title="View Booking"><i
+                                                            class="fas fa-eye"></i></a>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr>

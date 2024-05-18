@@ -5,6 +5,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -29,8 +31,17 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'app_language' => LanguageMiddleware::class,
             'isAdmin' => \App\Http\Middleware\IsAdmin::class,
+            'isHelper' => \App\Http\Middleware\CheckIfHelperCreated::class,
+            'isClient' => \App\Http\Middleware\CheckIfClientCreated::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        // 404 Not found
+        $exceptions->render(function (NotFoundHttpException  $e, Request $request) {
+            return response()->view('errors.404', [], 404);
+        });
+        // 500 Internal Server Error
+        $exceptions->render(function (NotFoundHttpException  $e, Request $request) {
+            return response()->view('errors.500', [], 500);
+        });
     })->create();

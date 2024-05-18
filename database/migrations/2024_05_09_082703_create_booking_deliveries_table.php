@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('booking_payments', function (Blueprint $table) {
+        Schema::create('booking_deliveries', function (Blueprint $table) {
             $table->id();
             $table->foreignId('booking_id')->constrained();
             $table->text('transaction_id')->nullable();
@@ -26,6 +26,12 @@ return new class extends Migration
             $table->string('total_price')->nullable();
             $table->string('payment_status')->default('unpaid');
             $table->timestamp('payment_at')->nullable();
+            $table->timestamp('accepted_at')->nullable();
+            $table->string('start_booking_image')->nullable();
+            $table->timestamp('start_booking_at')->nullable();
+            $table->timestamp('start_intransit_at')->nullable();
+            $table->string('complete_booking_image')->nullable();
+            $table->timestamp('complete_booking_at')->nullable();
             $table->timestamps();
         });
     }
@@ -35,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('booking_payments');
+        Schema::dropIfExists('booking_deliveries');
     }
 };

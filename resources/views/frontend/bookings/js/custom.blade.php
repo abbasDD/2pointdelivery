@@ -10,7 +10,7 @@
             }
         });
         // console.log('Here id is:' + id);
-        selectedparceluuid = id;
+        selectedServiceCategoryUuid = id;
         // Call the function to update the payment amount
         updatePaymentAmount();
     }
@@ -28,6 +28,7 @@
             for (let i = 0; i < serviceTypes.length; i++) {
                 if (serviceTypes[i].id == serviceType) {
                     selectedServiceType = serviceTypes[i].type;
+                    selectedServiceTypeID = serviceTypes[i].id;
                     // console.log('Service Type: ' + serviceTypes[i].type);
                 }
             }
@@ -76,12 +77,12 @@
 
                 // Get first item uuid and set it as default
                 if (data.length > 0) {
-                    selectedparceluuid = data[0].uuid;
+                    selectedServiceCategoryUuid = data[0].uuid;
                     console.log('Selected Parcel UUID: is ' + data[0].vehicle_price_type);
                     vehicle_price = data[0].vehicle_price;
                     vehicle_price_type = data[0].vehicle_price_type;
 
-                    toggleBackground(selectedparceluuid);
+                    toggleBackground(selectedServiceCategoryUuid);
                 }
             })
             .catch(error => {
@@ -103,15 +104,16 @@
             return;
         }
         // Check if selected parcel type is empty
-        if (!selectedparceluuid) {
+        if (!selectedServiceCategoryUuid) {
             alert('Please select a parcel type');
             return;
         }
         // Find the selected parcel type from serviceCategories
         var selectedParcelTypeSecureshipEnable = false;
         for (let i = 0; i < serviceCategories.length; i++) {
-            if (serviceCategories[i].uuid == selectedparceluuid) {
+            if (serviceCategories[i].uuid == selectedServiceCategoryUuid) {
                 selectedParcelTypeSecureshipEnable = serviceCategories[i].is_secureship_enabled;
+                volume_enabled = serviceCategories[i].volume_enabled;
             }
         }
 
@@ -127,7 +129,7 @@
         // Add additional fields
         formData.append('service_type_id', parseInt($("select[name='serviceType']").val()));
         formData.append('priority_setting_id', parseInt($("select[name='priority']").val()));
-        formData.append('service_category_id', selectedparceluuid);
+        formData.append('service_category_id', selectedServiceCategoryUuid);
         formData.append('total_price', $("#amount-to-pay-value").text());
         formData.append('booking_type', selectedServiceType);
         // Payment details
@@ -135,7 +137,7 @@
         formData.append('distance', distance_in_km);
         formData.append('base_distance', payment_base_distance);
         formData.append('extra_distance_price', payment_extra_distance_price);
-        formData.append('weight', package_weight);
+        formData.append('weight', calculated_weight);
         formData.append('base_weight', payment_base_weight);
         formData.append('extra_weight_price', payment_extra_weight_price);
 
@@ -196,45 +198,6 @@
 
         return false;
 
-        // Get all the form data
-        // var shippingData = getShippingData();
-
-        // event.preventDefault(); // Prevent the default form submission behavior
-
-        // var apiUrl = 'https://secureship.ca/ship/api/v1/carriers/rates';
-        // // var apiUrl =
-        // //     'https://secureship.ca/ship/connect/query-string/get-estimate?FromCC=CA&FromPC=k1k1k1&FromCity=Ottawa&ToCC=US&ToPC=90210&ToCity=Beverly%20Hills&PT1=MyPackage&Weight1=5&PT2=MyPackage&Weight2=6&L2=4&W2=6&H2=8&Debug=true';
-        // // console.log('Function Called');
-
-        // // Make an AJAX POST request to the API
-        // fetch(apiUrl, {
-        //         // method: 'GET',
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //             'x-api-key': apiKey
-        //         },
-        //         body: JSON.stringify(shippingData)
-        //     })
-        //     .then(response => {
-        //         if (!response.ok) {
-        //             throw new Error('Network response was not ok');
-        //         }
-        //         return response.json();
-        //     })
-        //     .then(json => {
-        //         // console.log('API response:', json);
-        //         if (json.length > 0) {
-        //             alert('Estimated Fees: ');
-        //         } else {
-        //             alert('No rates found');
-        //         }
-        //         // Handle the API response as needed
-        //     })
-        //     .catch(error => {
-        //         console.error('There was a problem with the API request:', error.message);
-        //         // Handle errors
-        //     });
     }
 
     // Update the form data as per the service type
@@ -272,7 +235,7 @@
     window.onload = function() {
         // Call the function
         updateServiceFormData();
-        toggleBackground(selectedparceluuid);
+        toggleBackground(selectedServiceCategoryUuid);
     }
     // Update the payment card
     // updatePaymentAmount();
@@ -306,8 +269,9 @@
 
         // Calculate weight_price
         // if weight is greater then base_weight
-        if (parseFloat(package_weight) > parseFloat(payment_base_weight)) {
-            weight_price = (package_weight - parseFloat(payment_base_weight)) * parseFloat(payment_extra_weight_price);
+        if (parseFloat(calculated_weight) > parseFloat(payment_base_weight)) {
+            weight_price = (calculated_weight - parseFloat(payment_base_weight)) * parseFloat(
+                payment_extra_weight_price);
         } else {
             weight_price = 0;
         }

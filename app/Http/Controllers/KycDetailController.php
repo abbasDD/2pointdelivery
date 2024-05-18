@@ -35,7 +35,11 @@ class KycDetailController extends Controller
             'selectedCities' => [],
         ];
 
-        return view('client.kycDetails.create', compact('addressData'));
+        // Get already added kycdetails
+        $kycDetailTypes = KycDetail::where('user_id', auth()->user()->id)->pluck('id_type')->toArray();
+        // dd($kycDetailTypes);
+
+        return view('client.kycDetails.create', compact('addressData', 'kycDetailTypes'));
     }
 
     // Store new kyc
@@ -57,6 +61,13 @@ class KycDetailController extends Controller
         $user = User::where('id', auth()->user()->id)->first();
         if (!$user) {
             return redirect()->back()->with('error', 'User not found');
+        }
+
+        // Check if kyc exist or not
+        $kycDetail = KycDetail::where('user_id', auth()->user()->id)->where('id_type', $request->id_type)->first();
+
+        if ($kycDetail) {
+            return redirect()->back()->with('error', 'You have already added this KYC');
         }
 
         $kycDetail = KycDetail::create([
@@ -132,7 +143,10 @@ class KycDetailController extends Controller
             'selectedCities' => $selectedCities,
         ];
 
-        return view('client.kycDetails.edit', compact('kycDetails', 'addressData'));
+        // Get already added kycdetails
+        $kycDetailTypes = KycDetail::where('user_id', auth()->user()->id)->where('id_type', '!=', $kycDetails->id_type)->pluck('id_type')->toArray();
+
+        return view('client.kycDetails.edit', compact('kycDetails', 'addressData', 'kycDetailTypes'));
     }
 
 

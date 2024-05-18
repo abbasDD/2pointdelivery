@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Http\Requests\StoreBookingRequest;
 use App\Http\Requests\UpdateBookingRequest;
-use App\Models\BookingPayment;
+use App\Models\BookingDelivery;
 use App\Models\Client;
+use App\Models\ClientCompany;
 use App\Models\Helper;
+use App\Models\HelperVehicle;
 use App\Models\PaymentSetting;
 use App\Models\PrioritySetting;
 use App\Models\ServiceCategory;
@@ -172,7 +174,7 @@ class BookingController extends Controller
         $helper_fee = $service_category->helper_fee;
 
         // Create Booking Payment
-        $paymentBooking = BookingPayment::create([
+        $paymentBooking = BookingDelivery::create([
             'booking_id' => $booking->id,
             'distance_price' => $distance_price,
             'weight_price' => $weight_price,
@@ -198,6 +200,40 @@ class BookingController extends Controller
 
     public function payment(Request $request)
     {
+
+        // Check if client completed its profile
+        $client = Client::where('user_id', auth()->user()->id)->first();
+
+        if (!$client) {
+            return redirect()->route('client.profile')->with('error', 'In order to complete booking please complete your profile');
+        }
+
+        // Check if personal detail completed
+        if ($client->first_name == null || $client->last_name == null) {
+            return redirect()->route('client.profile')->with('error', 'In order to complete booking please complete your profile');
+        }
+
+        // Check if address detail completed
+        if ($client->city == null || $client->state == null || $client->country == null) {
+            return redirect()->route('client.profile')->with('error', 'In order to complete booking please complete your profile');
+        }
+
+        // Check if profile is company profile
+        if ($client->company_enabled == 1) {
+            // Check if company detail completed
+            $companyData = ClientCompany::where('user_id', auth()->user()->id)->first();
+
+            if (!$companyData) {
+                return redirect()->route('client.profile')->with('error', 'In order to complete booking please complete your profile');
+            }
+
+            // Check if company detail completed
+
+            if ($companyData->company_alias == null || $companyData->city == null) {
+                return redirect()->route('client.profile')->with('error', 'In order to complete booking please complete your profile');
+            }
+        }
+
         // dd($request->id);
 
         $booking = Booking::where('id', $request->id)
@@ -227,11 +263,11 @@ class BookingController extends Controller
             $stripeEnabled = true;
         }
 
-        $bookingPayment = BookingPayment::where('booking_id', $booking->id)->first();
+        $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
 
-        // dd($bookingPayment);
+        // dd($bookingDelivery);
 
-        return view('frontend.payment_booking', compact('booking', 'bookingPayment', 'paypalEnabled', 'stripeEnabled'));
+        return view('frontend.payment_booking', compact('booking', 'bookingDelivery', 'paypalEnabled', 'stripeEnabled'));
     }
 
     // Make Online Payment using Paypal
@@ -363,10 +399,11 @@ class BookingController extends Controller
             $booking->update(['status' => 'pending', 'payment_status' => 'paid', 'payment_method' => 'paypal']);
 
             // Update booking payment details
-            BookingPayment::where('booking_id', $booking->id)->update(['transaction_id' =>  $paymentDetails['id'], 'payment_status' => 'paid', 'payment_method' => 'paypal', 'payment_at' => Carbon::now()]);
+            BookingDelivery::where('booking_id', $booking->id)->update(['transaction_id' =>  $paymentDetails['id'], 'payment_status' => 'paid', 'payment_method' => 'paypal', 'payment_at' => Carbon::now()]);
 
             // Redirect to booking detail page
-            return redirect()->route('client.booking.payment', $booking->id);
+            // return redirect()->route('client.booking.show', $booking->id);
+            return redirect()->route('client.bookings');
 
             // Process the payment details and update your database accordingly
             // For example, you might update the booking status to "paid"
@@ -404,9 +441,9 @@ class BookingController extends Controller
             return response()->json(['success' => false, 'data' => 'Unable to find booking']);
         }
 
-        $bookingPayment = BookingPayment::where('booking_id', $booking->id)->first();
+        $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
 
-        if ($bookingPayment->payment_status == 'paid') {
+        if ($bookingDelivery->payment_status == 'paid') {
             return response()->json(['success' => false, 'data' => 'Booking already paid']);
         }
 
@@ -418,9 +455,10 @@ class BookingController extends Controller
             'status' => 'pending',
         ]);
 
-        $bookingPayment->update([
+        $bookingDelivery->update([
             'payment_method' => 'cod',
             'payment_status' => 'paid',
+            'payment_at' => Carbon::now(),
         ]);
 
         return response()->json(['success' => true, 'data' => 'Booking paid successfully']);
@@ -443,7 +481,7 @@ class BookingController extends Controller
         }
 
         // Getting booking payment data
-        $bookingPayment = BookingPayment::where('booking_id', $booking->id)->first();
+        $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
 
         // Get helper Data
         $helperData = null;
@@ -466,10 +504,16 @@ class BookingController extends Controller
             }
         }
 
+        // Get helper vehicle data
+        $helperVehicleData = null;
+        if ($booking->helper_user_id) {
+            $helperVehicleData = HelperVehicle::where('helper_id', $booking->helper_user_id)->first();
+        }
+
 
 
         // dd($vehicleTypeData);
 
-        return view('frontend.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'clientData', 'vehicleTypeData'));
+        return view('frontend.bookings.show', compact('booking', 'bookingDelivery', 'helperData', 'clientData', 'vehicleTypeData', 'helperVehicleData'));
     }
 }

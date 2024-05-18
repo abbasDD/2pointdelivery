@@ -12,7 +12,7 @@
                     </div>
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <p class="mb-0">Customer Phone:</p>
-                        <h6 class="mb-0">{{ $clientData->phone }}</h6>
+                        <h6 class="mb-0">{{ $clientData->phone_no }}</h6>
                     </div>
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <p class="mb-0">Gender</p>

@@ -21,7 +21,7 @@ Route::get('helper/register', 'App\Http\Controllers\Auth\RegisterController@show
 Route::post('helper/register', [RegisterController::class, 'register'])->name('helper.register');
 
 
-Route::prefix('helper')->middleware(['auth'])->name('helper.')->group(function () {
+Route::prefix('helper')->middleware(['auth', 'isHelper'])->name('helper.')->group(function () {
 
     Route::get('/complete-profile', [HelperController::class, 'complete_profile'])->name('complete_profile');
     Route::post('/update-profile', [HelperController::class, 'update_profile'])->name('update_profile');
@@ -51,6 +51,9 @@ Route::prefix('helper')->middleware(['auth'])->name('helper.')->group(function (
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings');
     Route::get('/booking/accept/{id}', [BookingController::class, 'acceptBooking'])->name('booking.accept');
     Route::get('/booking/show/{id}', [BookingController::class, 'show'])->name('booking.show');
+    Route::post('/booking/start/', [BookingController::class, 'start'])->name('booking.start');
+    Route::post('/booking/in-transit/', [BookingController::class, 'inTransit'])->name('booking.inTransit');
+    Route::post('/booking/complete/', [BookingController::class, 'complete'])->name('booking.complete');
 
 
     // Chat Page Routes
@@ -64,7 +67,7 @@ Route::prefix('helper')->middleware(['auth'])->name('helper.')->group(function (
     Route::get('/settings', [HelperController::class, 'settings'])->name('settings');
 
     //Edit Profile -- Update Profile Routes
-    Route::get('/edit', [HelperController::class, 'edit_profile'])->name('edit');
+    Route::get('/profile', [HelperController::class, 'edit_profile'])->name('profile');
     Route::post('/update/personal', [HelperController::class, 'personalInfo'])->name('update.personal');
     Route::post('/update/address', [HelperController::class, 'addressInfo'])->name('update.address');
     Route::post('/update/vehicle', [HelperController::class, 'vehicleInfo'])->name('update.vehicle');

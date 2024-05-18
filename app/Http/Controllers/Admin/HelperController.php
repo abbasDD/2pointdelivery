@@ -148,6 +148,20 @@ class HelperController extends Controller
         return json_encode(['status' => 'error', 'message' => 'User not found']);
     }
 
+    public function resetPassword(Request $request)
+    {
+        $helper = Helper::where('id', $request->id)
+            ->first();
+        $user = User::where('id', $helper->user_id)->first();
+        if ($user) {
+            $user->update(['password' => Hash::make($request->password)]);
+            return json_encode(['status' => 'success', 'is_active' => !$user->is_active, 'message' => 'User password updated successfully!']);
+        }
+        // return redirect()->route('admin.taxSettings')->with('success', 'Tax Country Status updated successfully!');
+
+        return json_encode(['status' => 'error', 'message' => 'User not found']);
+    }
+
     public function approve(Request $request)
     {
         $helper = Helper::where('id', $request->id)

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BookingPayment;
-use App\Http\Requests\StoreBookingPaymentRequest;
-use App\Http\Requests\UpdateBookingPaymentRequest;
+use App\Models\BookingDelivery;
+use App\Http\Requests\StoreBookingDeliveryRequest;
+use App\Http\Requests\UpdateBookingDeliveryRequest;
 
-class BookingPaymentController extends Controller
+class BookingDeliveryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +27,7 @@ class BookingPaymentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreBookingPaymentRequest $request)
+    public function store(StoreBookingDeliveryRequest $request)
     {
         //
     }
@@ -35,7 +35,7 @@ class BookingPaymentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(BookingPayment $bookingPayment)
+    public function show(BookingDelivery $bookingDelivery)
     {
         //
     }
@@ -43,7 +43,7 @@ class BookingPaymentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(BookingPayment $bookingPayment)
+    public function edit(BookingDelivery $bookingDelivery)
     {
         //
     }
@@ -51,7 +51,7 @@ class BookingPaymentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateBookingPaymentRequest $request, BookingPayment $bookingPayment)
+    public function update(UpdateBookingDeliveryRequest $request, BookingDelivery $bookingDelivery)
     {
         //
     }
@@ -59,7 +59,7 @@ class BookingPaymentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(BookingPayment $bookingPayment)
+    public function destroy(BookingDelivery $bookingDelivery)
     {
         //
     }

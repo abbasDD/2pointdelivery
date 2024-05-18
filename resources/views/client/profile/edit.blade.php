@@ -12,20 +12,21 @@
                     <div class="card-body p-3">
                         <div class="d-flex nav nav-pills justify-content-between" id="v-pills-tab" role="tablist"
                             aria-orientation="vertical">
-                            <button class="nav-link active" id="v-pills-personal-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-personal" type="button" role="tab"
-                                aria-controls="v-pills-personal" aria-selected="true">
+                            <button class="nav-link active {{ $clientData->first_name == null ? 'text-danger' : '' }}"
+                                id="v-pills-personal-tab" data-bs-toggle="pill" data-bs-target="#v-pills-personal"
+                                type="button" role="tab" aria-controls="v-pills-personal" aria-selected="true">
                                 <i class="fas fa-user"></i> <span class="d-none d-lg-inline">Personal</span>
                             </button>
-                            <button class="nav-link" id="v-pills-address-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-address" type="button" role="tab"
-                                aria-controls="v-pills-address" aria-selected="true">
+                            <button class="nav-link {{ $clientData->suite == null ? 'text-danger' : '' }}"
+                                id="v-pills-address-tab" data-bs-toggle="pill" data-bs-target="#v-pills-address"
+                                type="button" role="tab" aria-controls="v-pills-address" aria-selected="true">
                                 <i class="fas fa-map-marker-alt"></i> <span class="d-none d-lg-inline">Address</span>
                             </button>
                             @if ($clientData->company_enabled)
-                                <button class="nav-link" id="v-pills-company-tab" data-bs-toggle="pill"
-                                    data-bs-target="#v-pills-company" type="button" role="tab"
-                                    aria-controls="v-pills-company" aria-selected="false">
+                                <button
+                                    class="nav-link {{ $clientCompanyData->company_alias == null ? 'text-danger' : '' }}"
+                                    id="v-pills-company-tab" data-bs-toggle="pill" data-bs-target="#v-pills-company"
+                                    type="button" role="tab" aria-controls="v-pills-company" aria-selected="false">
                                     <i class="fas fa-building"></i> <span class="d-none d-lg-inline">Company</span>
                                 </button>
                             @endif
@@ -82,20 +83,21 @@
                     <div class="card-body p-3">
                         <div class="d-flex flex-column nav flex-column nav-pills" id="v-pills-tab" role="tablist"
                             aria-orientation="vertical">
-                            <button class="nav-link active" id="v-pills-personal-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-personal" type="button" role="tab"
-                                aria-controls="v-pills-personal" aria-selected="true">
+                            <button class="nav-link active {{ $clientData->first_name == null ? 'text-danger' : '' }}"
+                                id="v-pills-personal-tab" data-bs-toggle="pill" data-bs-target="#v-pills-personal"
+                                type="button" role="tab" aria-controls="v-pills-personal" aria-selected="true">
                                 <i class="fas fa-user"></i> <span class="d-none d-lg-inline">Personal</span>
                             </button>
-                            <button class="nav-link" id="v-pills-address-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-address" type="button" role="tab"
-                                aria-controls="v-pills-address" aria-selected="true">
+                            <button class="nav-link {{ $clientData->suite == null ? 'text-danger' : '' }}"
+                                id="v-pills-address-tab" data-bs-toggle="pill" data-bs-target="#v-pills-address"
+                                type="button" role="tab" aria-controls="v-pills-address" aria-selected="true">
                                 <i class="fas fa-map-marker-alt"></i> <span class="d-none d-lg-inline">Address</span>
                             </button>
                             @if ($clientData->company_enabled)
-                                <button class="nav-link" id="v-pills-company-tab" data-bs-toggle="pill"
-                                    data-bs-target="#v-pills-company" type="button" role="tab"
-                                    aria-controls="v-pills-company" aria-selected="false">
+                                <button
+                                    class="nav-link {{ $clientCompanyData->company_alias == null ? 'text-danger' : '' }}"
+                                    id="v-pills-company-tab" data-bs-toggle="pill" data-bs-target="#v-pills-company"
+                                    type="button" role="tab" aria-controls="v-pills-company" aria-selected="false">
                                     <i class="fas fa-building"></i> <span class="d-none d-lg-inline">Company</span>
                                 </button>
                             @endif

@@ -215,6 +215,31 @@
         </div>
     </div>
 
+    {{-- Volume Enabled --}}
+    <div class="col-md-6 disable-prices {{ $serviceCategory['is_secureship_enabled'] ? 'd-none' : '' }}"
+        id="helper_fee_div">
+        <div class="form-group mb-3">
+            <label for="volume_enabled">Volume Enabled</label>
+            <select class="form-control @error('volume_enabled') is-invalid @enderror" id="volume_enabled"
+                name="volume_enabled" required>
+                <option value="" selected disabled>Choose Status</option>
+                <option value="1"
+                    {{ old('volume_enabled', $serviceCategory['volume_enabled'] ?? '') == 1 ? 'selected' : '' }}>
+                    Enabled
+                </option>
+                <option value="0"
+                    {{ old('volume_enabled', $serviceCategory['volume_enabled'] ?? '') == 0 ? 'selected' : '' }}>
+                    Disabled
+                </option>
+            </select>
+            @error('volume_enabled')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
     {{-- Status --}}
     <div class="col-md-6">
         <div class="form-group mb-3">

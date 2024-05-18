@@ -1,6 +1,6 @@
 {{-- Vehicle Detail --}}
 
-@if (isset($vehicleTypeData))
+@if (isset($vehicleTypeData) && isset($helperVehicleData))
     {{-- Delivery Vehicle Detail  --}}
     <div class="card mb-3">
         <div class="card-body">
@@ -17,11 +17,15 @@
                     </div>
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <p class="mb-0">Model:</p>
-                        <h6 class="mb-0">2018</h6>
+                        <h6 class="mb-0">{{ $helperVehicleData->vehicle_model }}</h6>
                     </div>
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <p class="mb-0">Number:</p>
-                        <h6 class="mb-0">RIL 123</h6>
+                        <h6 class="mb-0">{{ $helperVehicleData->vehicle_number }}</h6>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <p class="mb-0">Color:</p>
+                        <h6 class="mb-0">{{ $helperVehicleData->vehicle_color }}</h6>
                     </div>
                 </div>
                 <div class="col-md-6">

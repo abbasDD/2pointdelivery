@@ -55,9 +55,10 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     Route::get('/clients/create', [ClientController::class, 'create'])->name('client.create');
     Route::get('/clients/show/{id}', [ClientController::class, 'show'])->name('client.show');
     Route::post('/clients/store', [ClientController::class, 'store'])->name('client.store');
-    Route::get('/clients/edit/{id}', [ClientController::class, 'edit'])->name('client.edit');
+    Route::get('/clients/edit/{id}', [ClientController::class, 'edit'])->name('client.profile');
     Route::post('/clients/update', [ClientController::class, 'update'])->name('client.update');
     Route::post('/clients/update-status', [ClientController::class, 'updateStatus'])->name('client.updateStatus');
+    Route::post('/clients/reset-password', [ClientController::class, 'resetPassword'])->name('client.resetPassword');
 
     // Helpers Page Routes
     Route::get('/helpers', [HelperController::class, 'index'])->name('helpers');
@@ -65,11 +66,12 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     Route::get('/helpers/create', [HelperController::class, 'create'])->name('helper.create');
     Route::get('/helpers/show/{id}', [HelperController::class, 'show'])->name('helper.show');
     Route::post('/helpers/store', [HelperController::class, 'store'])->name('helper.store');
-    Route::get('/helpers/edit/{id}', [HelperController::class, 'edit'])->name('helper.edit');
+    Route::get('/helpers/edit/{id}', [HelperController::class, 'edit'])->name('helper.profile');
     Route::post('/helpers/update', [HelperController::class, 'update'])->name('helper.update');
     Route::post('/helpers/update-status', [HelperController::class, 'updateStatus'])->name('helper.updateStatus');
     Route::post('/helpers/approve', [HelperController::class, 'approve'])->name('helper.approve');
     Route::post('/helpers/reject', [HelperController::class, 'reject'])->name('helper.reject');
+    Route::post('/helpers/reset-password', [HelperController::class, 'resetPassword'])->name('client.resetPassword');
 
     // Service Types Page Routes
     Route::get('/service-types', [ServiceTypeController::class, 'index'])->name('serviceTypes');

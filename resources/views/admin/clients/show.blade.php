@@ -16,7 +16,7 @@
                         <h4 class="mb-0">Client Details</h4>
                         <div class="">
                             {{-- Edit Route --}}
-                            <a class="btn btn-sm btn-primary" href="{{ route('admin.client.edit', $client->id) }}">
+                            <a class="btn btn-sm btn-primary" href="{{ route('admin.client.profile', $client->id) }}">
                                 Edit Client
                             </a>
                         </div>

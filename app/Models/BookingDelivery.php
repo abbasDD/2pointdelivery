@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class BookingPayment extends Model
+class BookingDelivery extends Model
 {
     use HasFactory;
 
@@ -28,6 +28,12 @@ class BookingPayment extends Model
         'total_price',
         'payment_status',
         'payment_at',
+        'accepted_at',
+        'start_booking_image',
+        'start_booking_at',
+        'start_intransit_at',
+        'complete_booking_image',
+        'complete_booking_at',
     ];
 
     /**

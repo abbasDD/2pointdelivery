@@ -99,10 +99,6 @@
                     // callback(results[0]);
                     // console.log(results[0]);
                     result = results[0];
-                    shippingData.fromAddress.addr1 = result.formatted_address;
-                    shippingData.fromAddress.countryCode = getAddressComponent(result, 'country');
-                    shippingData.fromAddress.postalCode = getAddressComponent(result, 'postal_code');
-                    shippingData.fromAddress.city = getAddressComponent(result, 'locality');
                 } else {
                     console.error('No address found for the provided coordinates.');
                     // callback(null);
@@ -125,10 +121,6 @@
                     // callback(results[0]);
                     // console.log(results[0].formatted_address);
                     result = results[0];
-                    shippingData.toAddress.addr1 = result.formatted_address;
-                    shippingData.toAddress.countryCode = getAddressComponent(result, 'country');
-                    shippingData.toAddress.postalCode = getAddressComponent(result, 'postal_code');
-                    shippingData.toAddress.city = getAddressComponent(result, 'locality');
                 } else {
                     console.error('No address found for the provided coordinates.');
                     // callback(null);

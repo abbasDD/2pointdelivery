@@ -63,7 +63,8 @@
                     Order</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('helper.chats') }}"><i class="fa fa-comment"></i>
                     Chat</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('helper.edit') }}"><i class="fa fa-edit"></i> Edit
+            <li class="nav-item"><a class="nav-link" href="{{ route('helper.profile') }}"><i class="fa fa-edit"></i>
+                    Edit
                     Profile</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('helper.settings') }}"><i class="fa fa-cog"></i>
                     Settings</a></li>

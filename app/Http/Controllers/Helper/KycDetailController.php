@@ -34,6 +34,10 @@ class KycDetailController extends Controller
             'selectedCities' => [],
         ];
 
+        // Get already added kycdetails
+        $kycDetailTypes = KycDetail::where('user_id', auth()->user()->id)->pluck('id_type')->toArray();
+        // dd($kycDetailTypes);
+
         return view('helper.kycDetails.create', compact('addressData'));
     }
 
@@ -130,6 +134,10 @@ class KycDetailController extends Controller
             'selectedStates' => $selectedStates,
             'selectedCities' => $selectedCities,
         ];
+
+        // Get already added kycdetails
+        $kycDetailTypes = KycDetail::where('user_id', auth()->user()->id)->where('id_type', '!=', $kycDetails->id_type)->pluck('id_type')->toArray();
+
 
         return view('helper.kycDetails.edit', compact('kycDetails', 'addressData'));
     }

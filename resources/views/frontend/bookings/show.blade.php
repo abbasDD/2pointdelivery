@@ -12,12 +12,8 @@
                     <h3 class="mb-1">Order Detail</h3>
                     <p>Order No : <span class="text-uppercase">{{ $booking->uuid ? $booking->uuid : '-' }}</span></p>
                 </div>
-                @if (isset($clientData) && $clientData->user_id == auth()->user()->id)
-                    <div class="">
-                        <a href="#" class="btn btn-danger"><i class="fa fa-bug" aria-hidden="true"></i> <span
-                                class="d-none d-md-inline"> Report an Issue</span></a>
-                    </div>
-                @endif
+                {{-- Action buttons --}}
+                @include('frontend.bookings.partials.show.actions')
             </div>
     </section>
 
@@ -27,7 +23,6 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-
                     {{-- Tracking Status --}}
                     <div class="card mb-3">
                         <div class="card-header">
@@ -39,65 +34,85 @@
                                 <ul class="progressbar p-0">
                                     {{-- Pending --}}
                                     <li {{ $booking->status == 'pending' ? 'class=active' : '' }}>
-                                        <div class="text-right">
-                                            <h6>05 May 2024</h6>
-                                            <p>11:00 AM</p>
-                                        </div>
-                                        <div class="circle mx-3">
+                                        <div class="d-flex">
+                                            <div class="text-right">
+                                                <h5>{{ $bookingDelivery->created_at ? app('dateHelper')->formatTimestamp($bookingDelivery->created_at, 'Y-m-d') : 'Expected' }}
+                                                </h5>
+                                                <p>{{ $bookingDelivery->created_at ? app('dateHelper')->formatTimestamp($bookingDelivery->created_at, 'H:i') : '-' }}
+                                                </p>
+                                            </div>
+                                            <div class="circle mx-3">
+                                            </div>
                                         </div>
                                         <div class="">
-                                            <h6>Parcel Booked</h6>
+                                            <h6>Order Booked</h6>
                                             <p>6391 Washington</p>
                                         </div>
                                     </li>
                                     {{-- Accepted --}}
                                     <li {{ $booking->status == 'accepted' ? 'class=active' : '' }}>
-                                        <div class="text-right">
-                                            <h6>07 May 2024</h6>
-                                            <p>10:00</p>
-                                        </div>
-                                        <div class="circle mx-3">
+                                        <div class="d-flex">
+                                            <div class="text-right">
+                                                <h5>{{ $bookingDelivery->accepted_at ? app('dateHelper')->formatTimestamp($bookingDelivery->accepted_at, 'Y-m-d') : 'Expected' }}
+                                                </h5>
+                                                <p>{{ $bookingDelivery->accepted_at ? app('dateHelper')->formatTimestamp($bookingDelivery->accepted_at, 'H:i') : '-' }}
+                                                </p>
+                                            </div>
+                                            <div class="circle mx-3">
+                                            </div>
                                         </div>
                                         <div class="">
-                                            <h6>Parcel Received</h6>
+                                            <h6>Order Assigned</h6>
                                             <p>6391 Washington</p>
                                         </div>
                                     </li>
                                     {{-- Picked Up --}}
-                                    <li {{ $booking->status == 'picked' ? 'class=active' : '' }}>
-                                        <div class="text-right">
-                                            <h6>Expected</h6>
-                                            <p>10:00 PM</p>
-                                        </div>
-                                        <div class="circle mx-3">
+                                    <li {{ $booking->status == 'started' ? 'class=active' : '' }}>
+                                        <div class="d-flex">
+                                            <div class="text-right">
+                                                <h5>{{ $bookingDelivery->start_booking_at ? app('dateHelper')->formatTimestamp($bookingDelivery->start_booking_at, 'Y-m-d') : 'Expected' }}
+                                                </h5>
+                                                <p>{{ $bookingDelivery->start_booking_at ? app('dateHelper')->formatTimestamp($bookingDelivery->start_booking_at, 'H:i') : '-' }}
+                                                </p>
+                                            </div>
+                                            <div class="circle mx-3">
+                                            </div>
                                         </div>
                                         <div class="">
-                                            <h6>Driver will pick up</h6>
+                                            <h6>Package Received</h6>
                                             <p>6391 Washington</p>
                                         </div>
                                     </li>
                                     {{-- Delivered --}}
-                                    <li {{ $booking->status == 'delivered' ? 'class=active' : '' }}>
-                                        <div class="text-right">
-                                            <h6>Expected</h6>
-                                            <p>11:00 PM</p>
-                                        </div>
-                                        <div class="circle mx-3">
+                                    <li {{ $booking->status == 'in_transit' ? 'class=active' : '' }}>
+                                        <div class="d-flex">
+                                            <div class="text-right">
+                                                <h5>{{ $bookingDelivery->start_intransit_at ? app('dateHelper')->formatTimestamp($bookingDelivery->start_intransit_at, 'Y-m-d') : 'Expected' }}
+                                                </h5>
+                                                <p>{{ $bookingDelivery->start_intransit_at ? app('dateHelper')->formatTimestamp($bookingDelivery->start_intransit_at, 'H:i') : '-' }}
+                                                </p>
+                                            </div>
+                                            <div class="circle mx-3">
+                                            </div>
                                         </div>
                                         <div class="">
-                                            <h6>Driver will deliver</h6>
+                                            <h6>Delivering</h6>
                                             <p>6391 Washington</p>
                                         </div>
                                     </li>
                                     <li {{ $booking->status == 'completed' ? 'class=active' : '' }}>
-                                        <div class="text-right">
-                                            <h6>Expected</h6>
-                                            <p>11:00</p>
-                                        </div>
-                                        <div class="circle mx-3">
+                                        <div class="d-flex">
+                                            <div class="text-right">
+                                                <h5>{{ $bookingDelivery->complete_booking_at ? app('dateHelper')->formatTimestamp($bookingDelivery->complete_booking_at, 'Y-m-d') : 'Expected' }}
+                                                </h5>
+                                                <p>{{ $bookingDelivery->complete_booking_at ? app('dateHelper')->formatTimestamp($bookingDelivery->complete_booking_at, 'H:i') : '-' }}
+                                                </p>
+                                            </div>
+                                            <div class="circle mx-3">
+                                            </div>
                                         </div>
                                         <div class="">
-                                            <h6>Order will complete</h6>
+                                            <h6>Receipent Received</h6>
                                             <p>6391 Washington</p>
                                         </div>
                                     </li>

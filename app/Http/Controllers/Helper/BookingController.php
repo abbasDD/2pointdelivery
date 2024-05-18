@@ -4,9 +4,14 @@ namespace App\Http\Controllers\Helper;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
-use App\Models\BookingPayment;
+use App\Models\BookingDelivery;
 use App\Models\Client;
 use App\Models\Helper;
+use App\Models\HelperCompany;
+use App\Models\HelperVehicle;
+use App\Models\ServiceCategory;
+use App\Models\VehicleType;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -15,10 +20,10 @@ class BookingController extends Controller
     public function index()
     {
 
-        $bookings = Booking::select('bookings.*', 'booking_payments.helper_fee')
+        $bookings = Booking::select('bookings.*', 'booking_deliveries.helper_fee')
             ->where('helper_user_id', auth()->user()->id)
             ->with('helper')
-            ->join('booking_payments', 'bookings.id', '=', 'booking_payments.booking_id')
+            ->join('booking_deliveries', 'bookings.id', '=', 'booking_deliveries.booking_id')
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
@@ -29,11 +34,62 @@ class BookingController extends Controller
 
     public function acceptBooking(Request $request)
     {
+
+        // Check if helper completed its profile
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
+
+        if (!$helper) {
+            return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
+        }
+
+        // Check if personal detail completed
+        if ($helper->first_name == null || $helper->last_name == null) {
+            return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
+        }
+
+        // Check if address detail completed
+        if ($helper->city == null || $helper->state == null || $helper->country == null) {
+            return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
+        }
+
+        // Check if vehicle detail completed
+        $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
+        if (!$helperVehicle) {
+            return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
+        }
+
+        // Check if profile is company profile
+        if ($helper->company_enabled == 1) {
+            // Check if company detail completed
+            $companyData = HelperCompany::where('user_id', auth()->user()->id)->first();
+
+            if (!$companyData) {
+                return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
+            }
+
+            // Check if company detail completed
+
+            if ($companyData->company_alias == null || $companyData->city == null) {
+                return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
+            }
+        }
+
+        // Check if client approve helper
+        if ($helper->is_approved == 0) {
+            return redirect()->route('helper.index')->with('error', 'Admin have not accept your request yet');
+        }
+
+
         $booking = Booking::find($request->id);
 
         if (!$booking) {
             return redirect()->back()->with('error', 'Booking not found');
         }
+
+        if ($booking->client_user_id == auth()->user()->id) {
+            return redirect()->back()->with('error', 'You can not accept your own booking');
+        }
+
 
         if ($booking->status != 'pending') {
             return redirect()->back()->with('error', 'Booking already accepted');
@@ -51,7 +107,6 @@ class BookingController extends Controller
      */
     public function show(Request $request)
     {
-
         $booking = Booking::where('id', $request->id)
             ->where('helper_user_id', auth()->user()->id)
             ->with('prioritySetting')
@@ -64,7 +119,7 @@ class BookingController extends Controller
         }
 
         // Getting booking payment data
-        $bookingPayment = BookingPayment::where('booking_id', $booking->id)->first();
+        $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
 
         // Get helper Data
         $helperData = null;
@@ -78,8 +133,161 @@ class BookingController extends Controller
             $clientData = Client::where('user_id', $booking->client_user_id)->first();
         }
 
+        // Get vehicle data
+        $vehicleTypeData = null;
+        if ($booking->service_category_id) {
+            $serviceCategoryData = ServiceCategory::where('id', $booking->service_category_id)->first();
+            if ($serviceCategoryData) {
+                $vehicleTypeData = VehicleType::where('id', $serviceCategoryData->vehicle_type_id)->first();
+            }
+        }
+
+
+        // Get helper vehicle data
+        $helperVehicleData = null;
+        if ($booking->helper_user_id) {
+            $helperVehicleData = HelperVehicle::where('user_id', $booking->helper_user_id)->first();
+        }
+        // dd($helperVehicleData);
+
         // dd($booking);
 
-        return view('frontend.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'clientData'));
+        return view('frontend.bookings.show', compact('booking', 'bookingDelivery', 'helperData', 'clientData', 'vehicleTypeData', 'helperVehicleData'));
+    }
+    // Start Booking
+    public function start(Request $request)
+    {
+        $booking = Booking::where('id', $request->id)
+            ->where('helper_user_id', auth()->user()->id)
+            ->first();
+
+        if (!$booking) {
+            return redirect()->back()->with('error', 'Booking not found');
+        }
+
+        if ($booking->status != 'accepted') {
+            return redirect()->back()->with('error', 'Booking not accepted');
+        }
+
+        // Get booking delivery data
+        $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+        if (!$bookingDelivery) {
+            return redirect()->back()->with('error', 'Booking delivery not found');
+        }
+
+        // if start_booking_image is not set then back with error
+        if (!$request->hasFile('start_booking_image')) {
+            return redirect()->back()->with('error', 'Please select start booking image');
+        }
+
+        $start_booking_image = null;
+
+        // Upload booking image
+        if ($request->hasFile('start_booking_image')) {
+            $file = $request->file('start_booking_image');
+            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('images/bookings/');
+            $file->move($destinationPath, $updatedFilename);
+
+            // Set the profile image attribute to the new file name
+            $start_booking_image = $updatedFilename;
+        }
+
+
+        $bookingDelivery->start_booking_image = $start_booking_image;
+        $bookingDelivery->start_booking_at = Carbon::now();
+        $bookingDelivery->save();
+
+        $booking->status = 'started';
+        $booking->save();
+
+        // dd($booking);
+
+        return redirect()->back()->with('success', 'Booking started successfully!');
+
+        // return view('frontend.bookings.show', compact('booking', 'bookingDelivery', 'helperData', 'clientData'));
+    }
+
+    // inTransit Booking
+    public function inTransit(Request $request)
+    {
+        $booking = Booking::where('id', $request->id)
+            ->where('helper_user_id', auth()->user()->id)
+            ->first();
+
+        if (!$booking) {
+            return redirect()->back()->with('error', 'Booking not found');
+        }
+
+        if ($booking->status != 'started') {
+            return redirect()->back()->with('error', 'Booking not started');
+        }
+
+        $booking->status = 'in_transit';
+        $booking->save();
+
+        // Get booking delivery data
+        $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+        if (!$bookingDelivery) {
+            return redirect()->back()->with('error', 'Booking delivery not found');
+        }
+
+        $bookingDelivery->start_intransit_at = Carbon::now();
+        $bookingDelivery->save();
+
+        return redirect()->back()->with('success', 'Booking in transit successfully!');
+    }
+
+    // Start Booking
+    public function complete(Request $request)
+    {
+        $booking = Booking::where('id', $request->id)
+            ->where('helper_user_id', auth()->user()->id)
+            ->first();
+
+        if (!$booking) {
+            return redirect()->back()->with('error', 'Booking not found');
+        }
+
+        if ($booking->status != 'in_transit') {
+            return redirect()->back()->with('error', 'Booking is not in transit');
+        }
+
+        // Get booking delivery data
+        $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+        if (!$bookingDelivery) {
+            return redirect()->back()->with('error', 'Booking delivery not found');
+        }
+
+        // if complete_booking_image is not set then back with error
+        if (!$request->hasFile('complete_booking_image')) {
+            return redirect()->back()->with('error', 'Please select complete booking image');
+        }
+
+        $complete_booking_image = null;
+
+        // Upload booking image
+        if ($request->hasFile('complete_booking_image')) {
+            $file = $request->file('complete_booking_image');
+            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('images/bookings/');
+            $file->move($destinationPath, $updatedFilename);
+
+            // Set the profile image attribute to the new file name
+            $complete_booking_image = $updatedFilename;
+        }
+
+        $bookingDelivery->complete_booking_image = $complete_booking_image;
+        $bookingDelivery->complete_booking_at = Carbon::now();
+        $bookingDelivery->save();
+
+        $booking->status = 'completed';
+        $booking->save();
+
+        // dd($booking);
+
+        return redirect()->back()->with('success', 'Booking completed successfully!');
+
+        // return view('frontend.bookings.show', compact('booking', 'bookingDelivery', 'helperData', 'clientData'));
     }
 }

@@ -161,6 +161,8 @@ class ClientController extends Controller
             $clientCompanyData->save();
         }
 
+        // dd($clientCompanyData);
+
         // Get list of all countries
         $countries = Country::all();
 

@@ -66,21 +66,27 @@ class HelperController extends Controller
         // Get helper_id from Helper
         $helper = Helper::where('user_id', auth()->user()->id)->first();
         // No Helper found for this user_id
-        if ($helper) {
+        if (!$helper) {
+            // Create a new Helper
+            $helper = new Helper();
+            $helper->user_id = auth()->user()->id;
+            $helper->save();
             $helper_id = $helper->id;
         }
 
+        $helper_id = $helper->id;
+
         // Statistics
         $satistics = [
-            'total_bookings' => Booking::where('helper_user_id', $helper_id)->count(),
-            'pending_bookings' => Booking::where('helper_user_id', $helper_id)->where('status', 'pending')->count(),
-            'cancelled_bookings' => Booking::where('helper_user_id', $helper_id)->where('status', 'cancelled')->count(),
-            'unpaid_bookings' => Booking::where('helper_user_id', $helper_id)->where('status', 'draft')->count(),
+            'total_bookings' => Booking::where('helper_user_id', auth()->user()->id)->count(),
+            'accepted_bookings' => Booking::where('helper_user_id', auth()->user()->id)->where('status', 'accepted')->count(),
+            'cancelled_bookings' => Booking::where('helper_user_id', auth()->user()->id)->where('status', 'cancelled')->count(),
+            'total_earnings' => Booking::where('helper_user_id', auth()->user()->id)->where('status', 'draft')->count(),
         ];
 
-        $bookings = Booking::select('bookings.*', 'booking_payments.helper_fee')
+        $bookings = Booking::select('bookings.*', 'booking_deliveries.helper_fee')
             ->where('status', 'pending')
-            ->join('booking_payments', 'bookings.id', '=', 'booking_payments.booking_id')
+            ->join('booking_deliveries', 'bookings.id', '=', 'booking_deliveries.booking_id')
             ->with('helper')
             ->with('prioritySetting')
             ->with('serviceType')
@@ -91,7 +97,43 @@ class HelperController extends Controller
         // Booking Client Detail
         // $bookingClient = Client::where('user_id', auth()->user()->id)->first();
 
-        return view('helper.index', compact('bookings', 'satistics'));
+        // Check if helper completed its profile
+        $helperUpdated = true;
+
+        // Check if personal detail completed
+        if ($helper->first_name == null || $helper->last_name == null) {
+            $helperUpdated = false;
+        }
+
+        // Check if address detail completed
+        if ($helper->city == null || $helper->state == null || $helper->country == null) {
+            $helperUpdated = false;
+        }
+
+        // Check if vehicle detail completed
+        $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
+        if (!$helperVehicle) {
+            $helperUpdated = false;
+        }
+
+        // Check if profile is company profile
+        if ($helper->company_enabled == 1) {
+            // Check if company detail completed
+            $companyData = HelperCompany::where('user_id', auth()->user()->id)->first();
+
+            if (!$companyData) {
+                $helperUpdated = false;
+            }
+
+            // Check if company detail completed
+
+            if ($companyData->company_alias == null || $companyData->city == null) {
+                $helperUpdated = false;
+            }
+        }
+        // $helperUpdated = false;
+
+        return view('helper.index', compact('helper', 'bookings', 'satistics', 'helperUpdated'));
     }
 
 

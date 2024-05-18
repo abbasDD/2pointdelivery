@@ -8,6 +8,7 @@
             <th>Base Price</th>
             <th>Base Price Distance</th>
             <th>Extra Distance Price</th>
+            <th>Volume</th>
             <th>Status</th>
             <th>Action</th>
         </tr>
@@ -22,14 +23,17 @@
                     <p class="badge {{ $service_category->is_secureship_enabled ? 'bg-primary' : 'bg-danger' }}">
                         {{ $service_category->is_secureship_enabled == 1 ? 'Enabled' : 'Disabled' }}
                     </p>
-
-
                 </td>
                 <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->base_price : '-' }}
                 </td>
                 <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->base_distance : '-' }}
                 </td>
                 <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->extra_distance_price : '-' }}
+                </td>
+                <td>
+                    <p class="badge {{ $service_category->volume_enabled ? 'bg-primary' : 'bg-danger' }}">
+                        {{ $service_category->volume_enabled == 1 ? 'Enabled' : 'Disabled' }}
+                    </p>
                 </td>
                 <td>
                     <button type="button" id="statusButton_{{ $service_category->id }}"

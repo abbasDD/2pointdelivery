@@ -36,21 +36,36 @@
             <label for="id_type">ID Card Type:</label>
             <select class="form-control" id="id_type" name="id_type" required>
                 <option value="" disabled selected>Select ID Card Type</option>
-                <option value="residence ID"
-                    {{ old('id_type', $kycDetails->id_type ?? '') == 'residence ID' ? 'selected' : '' }}>
-                    Residence ID</option>
-                <option value="drivers license"
-                    {{ old('id_type', $kycDetails->id_type ?? '') == 'drivers license' ? 'selected' : '' }}>
-                    Drivers License</option>
-                <option value="insurance card"
-                    {{ old('id_type', $kycDetails->id_type ?? '') == 'insurance card' ? 'selected' : '' }}>
-                    Insurance Card</option>
-                <option value="passport"
-                    {{ old('id_type', $kycDetails->id_type ?? '') == 'passport' ? 'selected' : '' }}>Passport
-                </option>
-                <option value="voters ID"
-                    {{ old('id_type', $kycDetails->id_type ?? '') == 'voters ID' ? 'selected' : '' }}>Voters
-                    ID</option>
+                @if (!in_array('residence ID', $kycDetailTypes))
+                    <option value="residence ID"
+                        {{ old('id_type', $kycDetails->id_type ?? '') == 'residence ID' ? 'selected' : '' }}>
+                        Residence ID
+                    </option>
+                @endif
+                @if (!in_array('drivers license', $kycDetailTypes))
+                    <option value="drivers license"
+                        {{ old('id_type', $kycDetails->id_type ?? '') == 'drivers license' ? 'selected' : '' }}>
+                        Drivers License
+                    </option>
+                @endif
+                @if (!in_array('insurance card', $kycDetailTypes))
+                    <option value="insurance card"
+                        {{ old('id_type', $kycDetails->id_type ?? '') == 'insurance card' ? 'selected' : '' }}>
+                        Insurance Card
+                    </option>
+                @endif
+                @if (!in_array('passport', $kycDetailTypes))
+                    <option value="passport"
+                        {{ old('id_type', $kycDetails->id_type ?? '') == 'passport' ? 'selected' : '' }}>
+                        Passport
+                    </option>
+                @endif
+                @if (!in_array('voters ID', $kycDetailTypes))
+                    <option value="voters ID"
+                        {{ old('id_type', $kycDetails->id_type ?? '') == 'voters ID' ? 'selected' : '' }}>
+                        Voters ID
+                    </option>
+                @endif
             </select>
         </div>
     </div>

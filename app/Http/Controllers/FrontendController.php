@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\Client;
 use App\Models\Faq;
 use App\Models\PrioritySetting;
 use App\Models\ServiceCategory;
 use App\Models\ServiceType;
+use App\Models\TaxSetting;
+use App\Models\VehicleType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -56,6 +59,140 @@ class FrontendController extends Controller
         $faqs = Faq::where('is_active', 1)->get();
 
         return view('frontend.join_helper', compact('faqs'));
+    }
+
+    // Get calculation for delivery system
+    public function deliveryBooking(Request $request)
+    {
+        // Testing
+        // return response()->json($request->all());
+
+        // data to return
+        $data = [];
+
+        // Check if service type available for booking
+        $serviceType = ServiceType::where('id', $request->selectedServiceTypeID)->where('is_active', 1)->first();
+        if (!$serviceType) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Service type not found',
+            ]);
+        }
+
+        // Check selected selectedServiceCategoryUuid is empty
+        $serviceCategory = ServiceCategory::where('uuid', $request->selectedServiceCategoryUuid)->where('is_active', 1)->first();
+        if (!$serviceCategory) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Service category not found',
+            ]);
+        }
+
+        // Check if priority setting exist
+        $prioritySetting = PrioritySetting::where('is_active', 1)->first();
+        if (!$prioritySetting) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Priority setting not found',
+            ]);
+        }
+
+
+        // Calculate 
+
+        // Base Price
+        $data['base_price'] = $serviceCategory->base_price;
+
+        // Distance Price
+        if ($request->distance_in_km > $serviceCategory->base_distance) {
+            // If distance is greater than base distance
+            $data['distance_price'] = ($request->distance_in_km - $serviceCategory->base_distance) * $serviceCategory->extra_distance_price;
+        } else {
+            // If distance is less than base distance
+            $data['distance_price'] = 0;
+        }
+
+        // Priority Price
+        $data['priority_price'] = $prioritySetting->price;
+
+        // Vehicle Price
+        $vehicleType = VehicleType::where('id', $serviceCategory->vehicle_type_id)->first();
+        if (!$vehicleType) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Vehicle type not found',
+            ]);
+        }
+        $data['vehicle_price'] = $vehicleType->price * $request->distance_in_km;
+
+        // Calculate cubic volume
+        $cubicVolume = $request->package_length * $request->package_width * $request->package_height;
+
+        if (config('dimension') == 'INCH') {
+            $calculated_weight = $cubicVolume / 139;
+        } else {
+            $calculated_weight = $cubicVolume / 5000;
+        }
+
+        $package_weight = $request->package_weight; // package_weight
+
+        // If caculated weight is greater than package weight then assign calcuated weight  to package weight
+        if ($calculated_weight > $package_weight) {
+            $package_weight = $calculated_weight;
+        }
+
+        // Now check if package weight is greater than base weight
+
+        if ($package_weight > $serviceCategory->base_weight) {
+            $data['weight_price'] = ($package_weight - $serviceCategory->base_weight) * $serviceCategory->extra_weight_price;
+        } else {
+            $data['weight_price'] = 0;
+        }
+
+        // Sub Total
+        $data['sub_total'] = $data['base_price'] + $data['distance_price'] + $data['priority_price'] + $data['vehicle_price'] + $data['weight_price'];
+
+
+        //  Tax Price
+        // if()
+        $data['tax_price'] = 0;
+        $taxPercentage = 0;
+
+        // check if auth exist
+        if (Auth::check()) {
+            $client = Client::where('user_id', Auth::user()->id)->first();
+            if ($client) {
+                // Check if client is company or individual
+                if ($client->company_enabled) {
+                    $taxPercentage = $this->getClientTax();
+                } else {
+                    $taxPercentage = $this->getClientCompanyTax();
+                }
+            }
+        }
+
+
+        if ($taxPercentage > 0) {
+            $data['tax_price'] = $data['sub_total'] * ($taxPercentage / 100);
+        }
+
+
+        // Total amountToPay
+        $data['amountToPay'] = $data['base_price'] + $data['distance_price'] + $data['priority_price'] + $data['vehicle_price'] + $data['weight_price'] + $data['tax_price'];
+
+
+        // return a json object
+        // return response()->json($data);
+        return response()->json([
+            'status' => 'success',
+            'data' => $data,
+        ]);
+    }
+
+    // Get calculation for moving syste
+    public function movingBooking(Request $request)
+    {
+        return response()->json($request->all());
     }
 
     // New Booking Route
@@ -128,5 +265,52 @@ class FrontendController extends Controller
             ->get();
         // return a json object
         return response()->json($serviceCategories);
+    }
+
+    // Get client individual tax calculation
+    private function getClientTax()
+    {
+        $taxPercentage = 0;
+
+        // Check if user has added the tax detail
+        $clientStateTaxID = Client::where('user_id', Auth::user()->id)->first()->tax_id;
+
+        // If user has not added tax detail then only apply tax
+        if (!$clientStateTaxID) {
+            // Get client address state
+            $clientStateID = Client::where('user_id', Auth::user()->id)->first()->state_id;
+            $taxPercentage = 0;
+            if ($clientStateID) {
+                $taxSetting = TaxSetting::where('state_id', $clientStateID)->first();
+                if ($taxSetting) {
+                    $taxPercentage = $taxSetting->gst_rate + $taxSetting->hst_rate + $taxSetting->pst_rate;
+                }
+            }
+        }
+
+        return $taxPercentage;
+    }
+
+    private function getClientCompanyTax()
+    {
+        $taxPercentage = 0;
+
+        // Check if user has added the tax detail
+        $clientStateTaxID = Client::where('user_id', Auth::user()->id)->first()->tax_id;
+
+        // If user has not added tax detail then only apply tax
+        if (!$clientStateTaxID) {
+            // Get client address state
+            $clientStateID = Client::where('user_id', Auth::user()->id)->first()->state_id;
+            $taxPercentage = 0;
+            if ($clientStateID) {
+                $taxSetting = TaxSetting::where('state_id', $clientStateID)->first();
+                if ($taxSetting) {
+                    $taxPercentage = $taxSetting->gst_rate + $taxSetting->hst_rate + $taxSetting->pst_rate;
+                }
+            }
+        }
+
+        return $taxPercentage;
     }
 }

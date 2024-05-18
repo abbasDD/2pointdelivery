@@ -92,6 +92,6 @@ class Booking extends Model
      */
     public function payment()
     {
-        return $this->hasOne(BookingPayment::class);
+        return $this->hasOne(BookingDelivery::class);
     }
 }

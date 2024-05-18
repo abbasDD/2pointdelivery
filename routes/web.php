@@ -35,6 +35,8 @@ Route::get('/join-helper', [FrontendController::class, 'join_helper'])->name('jo
 
 //Booking Routes
 Route::get('/new-booking', [FrontendController::class, 'newBooking'])->name('newBooking');
+Route::post('/estimate/delivery', [FrontendController::class, 'deliveryBooking'])->name('estimate.delivery'); //Get order details of delivery type booking
+Route::post('/estimate/moving', [FrontendController::class, 'movingBooking'])->name('estimate.moving'); //Get order details of moving type booking
 Route::get('/fetch/service-categories', [FrontendController::class, 'fetch_services_categories'])->name('fetch.service.categories');
 
 // Route Chat Page

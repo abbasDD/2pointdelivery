@@ -67,6 +67,7 @@ class ServiceCategoryController extends Controller
             'base_weight' => 'nullable|string|max:255',        // allows null or string values
             'extra_weight_price' => 'nullable|string|max:255',        // allows null or string values
             'helper_fee' => 'nullable|string|max:255',        // allows null or string values
+            'volume_enabled' => 'nullable|string|max:255',
             'is_active' => 'sometimes|boolean'
         ]);
 
@@ -111,6 +112,7 @@ class ServiceCategoryController extends Controller
             'base_weight' => 'nullable|string|max:255',        // allows null or string values
             'extra_weight_price' => 'nullable|string|max:255',        // allows null or string values
             'helper_fee' => 'nullable|string|max:255',        // allows null or string values
+            'volume_enabled' => 'nullable|string|max:255',
             'is_active' => 'sometimes|boolean'
         ]);
 

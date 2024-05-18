@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
-use App\Models\BookingPayment;
+use App\Models\BookingDelivery;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -39,7 +39,7 @@ class BookingController extends Controller
         }
 
         // Getting booking payment data
-        $bookingPayment = BookingPayment::where('booking_id', $booking->id)->first();
+        $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
 
         // Get helper Data
         // $helper = Helper::where('user_id', $booking->helper_id)->first();
@@ -48,6 +48,6 @@ class BookingController extends Controller
 
         // dd($booking);
 
-        return view('admin.bookings.show', compact('booking', 'bookingPayment'));
+        return view('admin.bookings.show', compact('booking', 'bookingDelivery'));
     }
 }

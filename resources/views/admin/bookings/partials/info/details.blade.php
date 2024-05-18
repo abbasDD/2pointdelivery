@@ -30,7 +30,7 @@
         {{-- Delivery Charges: --}}
         <div class="d-flex align-items-center justify-content-between mb-3">
             <p class="mb-0">Delivery Charges:</p>
-            <h6 class="mb-0">${{ $bookingPayment->helper_fee }}</h6>
+            <h6 class="mb-0">${{ $bookingDelivery->helper_fee }}</h6>
         </div>
         {{-- Amount to Pay --}}
         <div class="d-flex align-items-center justify-content-between mb-3">
@@ -40,7 +40,7 @@
         {{-- Payment Method --}}
         <div class="d-flex align-items-center justify-content-between mb-3">
             <p class="mb-0">Payment Method:</p>
-            <h6 class="mb-0">{{ $bookingPayment->payment_method }}</h6>
+            <h6 class="mb-0">{{ $bookingDelivery->payment_method }}</h6>
         </div>
     </div>
 </div>

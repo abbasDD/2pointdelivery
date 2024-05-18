@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" type="image/x-icon"
+        href="{{ config('website_favicon') ? asset('images/logo/' . config('website_favicon')) : asset('images/logo/icon.png') }}">
+
+
+    <title>404 Page Not Found</title>
+
+    <link type="text/css" rel="stylesheet" href="{{ asset('css/style.css') }}" />
+
+
+    <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+    <meta name="robots" content="noindex, follow">
+</head>
+
+<body>
+    <div id="notfound">
+        <div class="notfound">
+            <div class="notfound-404">
+                <h1>Oops!</h1>
+                <h2>404 - The Page can't be found</h2>
+            </div>
+            <a href="{{ url('/') }}">Go TO Homepage</a>
+        </div>
+    </div>
+
+</body>
+
+</html>

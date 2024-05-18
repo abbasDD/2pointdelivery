@@ -66,23 +66,23 @@
                         {{-- Distance Price --}}
                         <div class="d-flex align-items-center justify-content-between">
                             <h6>Distance Price:</h6>
-                            <p>${{ $bookingPayment->distance_price }}</p>
+                            <p>${{ $bookingDelivery->distance_price }}</p>
                         </div>
                         {{-- Total Price --}}
                         <div class="d-flex align-items-center justify-content-between">
                             <h6>Total Price:</h6>
-                            <p>${{ $bookingPayment->total_price }}</p>
+                            <p>${{ $bookingDelivery->total_price }}</p>
                         </div>
-                        @if ($bookingPayment->payment_status == 'unpaid')
+                        @if ($bookingDelivery->payment_status == 'unpaid')
                             {{-- Payment Status --}}
                             <div class="d-flex align-items-center justify-content-between">
                                 <h6>Payment Status:</h6>
-                                <p>{{ $bookingPayment->payment_status }}</p>
+                                <p>{{ $bookingDelivery->payment_status }}</p>
                             </div>
                             {{-- Payment Method --}}
                             <div class="d-flex align-items-center justify-content-between">
                                 <h6>Payment Method:</h6>
-                                <p>{{ $bookingPayment->payment_method }}</p>
+                                <p>{{ $bookingDelivery->payment_method }}</p>
                             </div>
                         @endif
 
@@ -103,7 +103,7 @@
                                             <!-- Assuming $booking is available with the booking details -->
 
                                             <input type="hidden" name="total_price"
-                                                value="{{ $bookingPayment->total_price }}">
+                                                value="{{ $bookingDelivery->total_price }}">
                                             <!-- Assuming the total_price is fixed -->
                                             <button type="submit" class="btn btn-paypal d-flex align-items-center">
                                                 <i class="fab fa-paypal"></i>
@@ -180,7 +180,7 @@
                     console.log(response); // Log the response for debugging
                     if (response.success == true) {
                         // Redirect to booking detail page
-                        window.location.href = base_url + '/client/booking/show/' + '{{ $booking->id }}';
+                        window.location.href = base_url + '/client/bookings/';
                     } else {
                         alert('Something went wrong. Please try again later.');
                     }

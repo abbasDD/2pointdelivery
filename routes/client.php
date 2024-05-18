@@ -24,7 +24,7 @@ Route::post('client/register', [RegisterController::class, 'register'])->name('c
 Route::post('logout', 'App\Http\Controllers\Auth\LoginController@logout')->name('logout');
 
 
-Route::prefix('client')->middleware(['auth'])->name('client.')->group(function () {
+Route::prefix('client')->middleware(['auth', 'isClient'])->name('client.')->group(function () {
 
     Route::get('complete-profile', [ClientController::class, 'complete_profile'])->name('complete_profile');
     Route::post('update-profile', [ClientController::class, 'update_profile'])->name('update_profile');
@@ -72,7 +72,7 @@ Route::prefix('client')->middleware(['auth'])->name('client.')->group(function (
     Route::get('/settings', [ClientController::class, 'settings'])->name('settings');
 
     //Edit Profile -- Update Profile Routes
-    Route::get('/edit', [ClientController::class, 'edit_profile'])->name('edit');
+    Route::get('/profile', [ClientController::class, 'edit_profile'])->name('profile');
     Route::post('/update/personal', [ClientController::class, 'personalInfo'])->name('update.personal');
     Route::post('/update/address', [ClientController::class, 'addressInfo'])->name('update.address');
     Route::post('/update/company', [ClientController::class, 'companyInfo'])->name('update.company');

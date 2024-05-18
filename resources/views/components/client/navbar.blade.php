@@ -69,7 +69,7 @@
                     Referrals</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.trackOrder') }}"><i class="fa fa-map"></i>
                     Track Order</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('client.edit') }}"><i class="fa fa-edit"></i> Edit
+            <li class="nav-item"><a class="nav-link" href="{{ route('client.profile') }}"><i class="fa fa-edit"></i> Edit
                     Profile</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.settings') }}"><i class="fa fa-cog"></i>
                     Settings</a></li>
