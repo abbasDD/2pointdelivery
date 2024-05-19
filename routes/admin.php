@@ -42,6 +42,7 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
 
     // Create a route to redirect to user page as per user type
     Route::get('/users/{id}', [AdminController::class, 'users'])->name('users');
+    // Route::get('/users/{id}', [AdminController::class, 'users'])->name('users');
 
     // Search Users Route
     Route::post('/users/search', [AdminController::class, 'searchUsers'])->name('users.search');
