@@ -5,10 +5,12 @@
         <button class="nav-link" id="nav-vehicle-tab" data-bs-toggle="tab" data-bs-target="#nav-vehicle" type="button"
             role="tab" aria-controls="nav-vehicle" aria-selected="false">Vehicle</button>
         <button class="nav-link" id="nav-driver-tab" data-bs-toggle="tab" data-bs-target="#nav-driver" type="button"
-            role="tab" aria-controls="nav-driver" aria-selected="false">Driver Information</button>
+            role="tab" aria-controls="nav-driver" aria-selected="false">Driver</button>
         <button class="nav-link" id="nav-customer-tab" data-bs-toggle="tab" data-bs-target="#nav-customer"
             type="button" role="tab" aria-controls="nav-customer" aria-selected="false">Customer
-            Information</button>
+        </button><button class="nav-link" id="nav-receipent-tab" data-bs-toggle="tab" data-bs-target="#nav-receipent"
+            type="button" role="tab" aria-controls="nav-receipent" aria-selected="false">Receipent
+        </button>
     </div>
 </nav>
 <div class="tab-content" id="nav-tabContent">
@@ -25,7 +27,11 @@
         @include('frontend.bookings.partials.info.driver')
     </div>
     <div class="tab-pane my-3 fade" id="nav-customer" role="tabpanel" aria-labelledby="nav-customer-tab">
-        {{-- Customer Detail --}}
+        {{-- Receipent Detail --}}
         @include('frontend.bookings.partials.info.customer')
+    </div>
+    <div class="tab-pane my-3 fade" id="nav-receipent" role="tabpanel" aria-labelledby="nav-receipent-tab">
+        {{-- Receipent Detail --}}
+        @include('frontend.bookings.partials.info.receipent')
     </div>
 </div>

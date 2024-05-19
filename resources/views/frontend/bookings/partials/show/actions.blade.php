@@ -1,14 +1,14 @@
 {{-- Action Buttons --}}
 <div class="d-flex gap-2">
     {{-- Report an Issue --}}
-    @if (isset($clientData) && $clientData->user_id == auth()->user()->id)
+    @if ($clientView && isset($clientData) && $clientData->user_id == auth()->user()->id)
         <div class="">
             <a href="#" class="btn btn-danger"><i class="fa fa-bug" aria-hidden="true"></i> <span
                     class="d-none d-md-inline"> Report an Issue</span></a>
         </div>
     @endif
     {{-- If draft then ask client to payment --}}
-    @if (isset($clientData) && $clientData->user_id == auth()->user()->id && $booking->status == 'draft')
+    @if ($clientView && isset($clientData) && $clientData->user_id == auth()->user()->id && $booking->status == 'draft')
         <div class="">
             <a href="{{ route('client.booking.payment', $booking->id) }}" class="btn btn-success"><i class="fa fa-dollar"
                     aria-hidden="true"></i> <span class="d-none d-md-inline"> Pay
@@ -16,28 +16,38 @@
         </div>
     @endif
     {{-- If pending and helper then ask client to accept --}}
-    @if (auth()->user()->helper_enabled && $booking->status == 'pending')
+    @if ($helperView && auth()->user()->helper_enabled && $booking->status == 'pending')
         <div class="">
             <a href="{{ route('helper.booking.accept', $booking->id) }}" class="btn btn-success"><i class="fa fa-dollar"
                     aria-hidden="true"></i> <span class="d-none d-md-inline"> Accept</span></a>
         </div>
     @endif
     {{-- If auth user is helper and status accepted then ask to start --}}
-    @if (auth()->user()->helper_enabled && $booking->helper_user_id == auth()->user()->id && $booking->status == 'accepted')
+    @if (
+        $helperView &&
+            auth()->user()->helper_enabled &&
+            $booking->helper_user_id == auth()->user()->id &&
+            $booking->status == 'accepted')
         <div class="">
             <a onclick="startBooking('{{ $booking->id }}')" class="btn btn-success"><i class="fa fa-bicycle"
                     aria-hidden="true"></i> <span class="d-none d-md-inline"> Start</span></a>
         </div>
     @endif
     {{-- If auth user is helper and status accepted then ask to start --}}
-    @if (auth()->user()->helper_enabled && $booking->helper_user_id == auth()->user()->id && $booking->status == 'started')
+    @if (
+        $helperView &&
+            auth()->user()->helper_enabled &&
+            $booking->helper_user_id == auth()->user()->id &&
+            $booking->status == 'started')
         <div class="">
             <a onclick="inTransitBooking('{{ $booking->id }}')" class="btn btn-success"><i class="fa fa-bicycle"
                     aria-hidden="true"></i> <span class="d-none d-md-inline"> In Transit</span></a>
         </div>
     @endif
     {{-- If auth user is helper and status in_transit then ask to complete --}}
-    @if (auth()->user()->helper_enabled &&
+    @if (
+        $helperView &&
+            auth()->user()->helper_enabled &&
             $booking->helper_user_id == auth()->user()->id &&
             $booking->status == 'in_transit')
         <div class="">

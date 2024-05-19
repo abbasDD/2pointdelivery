@@ -225,6 +225,7 @@ class KycDetailController extends Controller
         $kycDetail->city = $request->city;
         $kycDetail->issue_date = $request->issue_date;
         $kycDetail->expiry_date = $request->expiry_date;
+        $kycDetail->is_verified = 0;
 
         $kycDetail->save();
 

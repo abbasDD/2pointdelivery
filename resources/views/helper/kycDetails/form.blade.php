@@ -153,11 +153,14 @@
                 value="{{ old('expiry_date', $kycDetails->expiry_date ?? '') }}" required>
         </div>
     </div>
-</div>
-<div class="col-md-12 mb-3">
-    <div class="form-group" style="float: right">
-        <button class="btn btn-primary" type="submit">{{ isset($kycDetails) ? 'Update' : 'Add' }}</button>
+
+
+    <div class="col-md-12 mb-3">
+        <div class="form-group" style="float: right">
+            <button class="btn btn-primary" type="submit">{{ isset($kycDetails) ? 'Update' : 'Add' }}</button>
+        </div>
     </div>
+
 </div>
 
 

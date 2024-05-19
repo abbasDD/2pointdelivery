@@ -118,6 +118,12 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking not found');
         }
 
+        // Client view false
+        $clientView = false;
+
+        // Helper view true
+        $helperView = true;
+
         // Getting booking payment data
         $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
 
@@ -152,7 +158,7 @@ class BookingController extends Controller
 
         // dd($booking);
 
-        return view('frontend.bookings.show', compact('booking', 'bookingDelivery', 'helperData', 'clientData', 'vehicleTypeData', 'helperVehicleData'));
+        return view('frontend.bookings.show', compact('booking', 'bookingDelivery', 'helperData', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'clientView', 'helperView'));
     }
     // Start Booking
     public function start(Request $request)

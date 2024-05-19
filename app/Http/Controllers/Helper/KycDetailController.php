@@ -38,7 +38,7 @@ class KycDetailController extends Controller
         $kycDetailTypes = KycDetail::where('user_id', auth()->user()->id)->pluck('id_type')->toArray();
         // dd($kycDetailTypes);
 
-        return view('helper.kycDetails.create', compact('addressData'));
+        return view('helper.kycDetails.create', compact('addressData', 'kycDetailTypes'));
     }
 
     // Store new kyc
@@ -139,7 +139,7 @@ class KycDetailController extends Controller
         $kycDetailTypes = KycDetail::where('user_id', auth()->user()->id)->where('id_type', '!=', $kycDetails->id_type)->pluck('id_type')->toArray();
 
 
-        return view('helper.kycDetails.edit', compact('kycDetails', 'addressData'));
+        return view('helper.kycDetails.edit', compact('kycDetails', 'addressData', 'kycDetailTypes'));
     }
 
 
@@ -218,6 +218,7 @@ class KycDetailController extends Controller
         $kycDetail->city = $request->city;
         $kycDetail->issue_date = $request->issue_date;
         $kycDetail->expiry_date = $request->expiry_date;
+        $kycDetail->is_verified = 0;
 
         $kycDetail->save();
 

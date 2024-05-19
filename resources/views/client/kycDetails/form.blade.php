@@ -139,25 +139,41 @@
             @enderror
         </div>
     </div>
+
+    {{-- Issue Date --}}
     <div class="col-md-6 mb-3">
         <div class="form-group">
             <label for="issue_date">Issue Date:</label>
             <input class="form-control" type="date" id="issue_date" name="issue_date"
                 value="{{ old('issue_date', $kycDetails->issue_date ?? '') }}" required>
+            @error('issue_date')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
         </div>
     </div>
 
+    {{-- Expiry Date --}}
     <div class="col-md-6 mb-3">
         <div class="form-group">
             <label for="expiry_date">Expiry Date:</label>
             <input class="form-control" type="date" id="expiry_date" name="expiry_date"
                 value="{{ old('expiry_date', $kycDetails->expiry_date ?? '') }}" required>
+            @error('expiry_date')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
         </div>
     </div>
-</div>
-<div class="col-md-12 mb-3">
-    <div class="form-group" style="float: right">
-        <button class="btn btn-primary" type="submit">{{ isset($kycDetails) ? 'Update' : 'Add' }}</button>
+
+    {{-- Submit Button --}}
+
+    <div class="col-md-12 mb-3">
+        <div class="form-group" style="float: right">
+            <button class="btn btn-primary" type="submit">{{ isset($kycDetails) ? 'Update' : 'Add' }}</button>
+        </div>
     </div>
 </div>
 

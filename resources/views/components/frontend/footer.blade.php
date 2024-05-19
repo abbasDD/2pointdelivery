@@ -46,8 +46,10 @@
                     <!-- Grid column -->
                     <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
                         <!-- Content -->
-                        <div class="mb-3">
-                            <img src="{{ asset('images/logo/logo-white.png') }}" alt="2 Point" height="40">
+                        <div class="logo-white mb-3 text-white">
+                            <img src="{{ config('website_logo') ? asset('images/logo/' . config('website_logo')) : asset('images/logo/icon.png') }}"
+                                alt="2 Point" width="50">
+                            <span class=" ml-2">{{ config('website_name') ?: 'Website Name' }} </span>
                         </div>
                         <p>
                             Let us shoulder the weight of delivering your cherished possessions with ease. Entrust us
@@ -116,7 +118,7 @@
                 <div class="d-flex justify-content-between align-items-center p-3">
                     <div>
                         © 2024 Copyright:
-                        <a class="text-white" href="">2 Point Delivery Inc</a>
+                        <a class="text-white" href="#">{{ config('website_name') ?: '2 Point' }}</a>
                     </div>
                     <div>
                         <span class="text-white ml-3">Designed by <a class="text-white"

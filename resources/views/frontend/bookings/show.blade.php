@@ -9,6 +9,10 @@
         <div class="container mt-5">
             <div class="d-flex align-items-center justify-content-between">
                 <div class="">
+                    {{-- Back to Bookings --}}
+                    <a href="{{ $clientView ? route('client.bookings') : route('helper.bookings') }}"
+                        class="btn btn-primary btn-sm"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                        <span class="d-none d-md-inline"> Back to Bookings</span></a>
                     <h3 class="mb-1">Order Detail</h3>
                     <p>Order No : <span class="text-uppercase">{{ $booking->uuid ? $booking->uuid : '-' }}</span></p>
                 </div>

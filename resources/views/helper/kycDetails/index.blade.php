@@ -11,4 +11,5 @@
     </div>
 
     @include('helper.kycDetails.partials.list')
+
 @endsection

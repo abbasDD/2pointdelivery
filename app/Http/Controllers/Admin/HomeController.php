@@ -38,7 +38,7 @@ class HomeController extends Controller
             'total_clients' => User::where('helper_enabled', 1)->count(),
             'requested_helpers' => Helper::where('is_approved', 0)->count(),
             // Earning Data
-            'total_earnings' => 250,
+            'total_earnings' => Booking::sum('total_price'),
             'total_commission' => 250,
             'total_taxes' => 250,
             'total_revenue' => 250,

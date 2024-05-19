@@ -49,6 +49,8 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     //KYC Details
     Route::get('/kyc-details', [KycDetailController::class, 'index'])->name('kycDetails');
     Route::get('/kyc-details/approve/{id}', [KycDetailController::class, 'approveKycDetail'])->name('kycDetail.approve');
+    Route::get('/kyc-details/reject/{id}', [KycDetailController::class, 'rejectKycDetail'])->name('kycDetail.reject');
+    Route::get('/kyc-details/show/{id}', [KycDetailController::class, 'show'])->name('kycDetail.show');
 
     // Clients Page Routes
     Route::get('/clients', [ClientController::class, 'index'])->name('clients');

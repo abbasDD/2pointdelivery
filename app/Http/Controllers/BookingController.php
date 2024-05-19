@@ -90,9 +90,18 @@ class BookingController extends Controller
             return response()->json(['success' => false, 'errors' => $validator->errors()]);
         }
 
+        // Generate uuid
+        $uuid = Str::random(8);
+
+        // Check if uuid exists
+        $booking = Booking::where('uuid', $uuid)->first();
+        if ($booking) {
+            $uuid = Str::random(8);
+        }
+
         // String uuid
         $request->request->add([
-            'uuid' => Str::random(32),
+            'uuid' => $uuid,
         ]);
 
         // Add client_user_id
@@ -480,6 +489,12 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking not found');
         }
 
+        // Client view true
+        $clientView = true;
+
+        // Helper view false
+        $helperView = false;
+
         // Getting booking payment data
         $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
 
@@ -514,6 +529,6 @@ class BookingController extends Controller
 
         // dd($vehicleTypeData);
 
-        return view('frontend.bookings.show', compact('booking', 'bookingDelivery', 'helperData', 'clientData', 'vehicleTypeData', 'helperVehicleData'));
+        return view('frontend.bookings.show', compact('booking', 'bookingDelivery', 'helperData', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'clientView', 'helperView'));
     }
 }

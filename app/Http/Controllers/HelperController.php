@@ -76,12 +76,18 @@ class HelperController extends Controller
 
         $helper_id = $helper->id;
 
+        // Calculate helper earnings
+        $helper_earnings = Booking::where('bookings.helper_user_id', auth()->user()->id)
+            ->join('booking_deliveries', 'bookings.id', '=', 'booking_deliveries.booking_id')
+            ->where('bookings.status', 'completed')
+            ->sum('booking_deliveries.helper_fee');
+
         // Statistics
         $satistics = [
             'total_bookings' => Booking::where('helper_user_id', auth()->user()->id)->count(),
             'accepted_bookings' => Booking::where('helper_user_id', auth()->user()->id)->where('status', 'accepted')->count(),
             'cancelled_bookings' => Booking::where('helper_user_id', auth()->user()->id)->where('status', 'cancelled')->count(),
-            'total_earnings' => Booking::where('helper_user_id', auth()->user()->id)->where('status', 'draft')->count(),
+            'total_earnings' => $helper_earnings,
         ];
 
         $bookings = Booking::select('bookings.*', 'booking_deliveries.helper_fee')
@@ -124,11 +130,11 @@ class HelperController extends Controller
             if (!$companyData) {
                 $helperUpdated = false;
             }
-
             // Check if company detail completed
-
-            if ($companyData->company_alias == null || $companyData->city == null) {
-                $helperUpdated = false;
+            else {
+                if ($companyData->company_alias == null || $companyData->city == null) {
+                    $helperUpdated = false;
+                }
             }
         }
         // $helperUpdated = false;
