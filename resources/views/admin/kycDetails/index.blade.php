@@ -6,8 +6,8 @@
 
     <div class="d-flex align-items-center justify-content-between mb-3">
         <h3 class="mb-0">KYC Details</h3>
-        {{-- Create New Booking --}}
     </div>
 
     @include('admin.kycDetails.partials.list')
+
 @endsection

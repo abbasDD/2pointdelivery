@@ -50,8 +50,8 @@
         <ul class="p-0">
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.index') }}"><i class="fa fa-home"></i>
                     Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.admins') }}"><i class="fa fa-bank"></i>
-                    Sub Admins</a>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.admins') }}"> <i
+                        class="fa-solid fa-user-tie"></i> Sub Admins</a>
             </li>
             <li class="nav-item has-submenu">
                 <a class="nav-link" href="#"> <i class="fa fa-users"></i> Users </a>
@@ -70,7 +70,7 @@
                     Types</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.kycDetails') }}"><i class="fa-solid fa-truck"></i> KYC
+                <a class="nav-link" href="{{ route('admin.kycDetails') }}"><i class="fa-solid fa-bank"></i> KYC
                     Details</a>
             </li>
             <li class="nav-item">

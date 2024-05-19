@@ -161,6 +161,21 @@ class SystemSettingController extends Controller
             $file->move($destinationPath, $updatedFilename);
         }
 
+        // Upload the white logo
+        if ($request->hasFile('white_logo')) {
+            $file = $request->file('white_logo');
+            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            // $destinationPath = asset('images/logo/');
+            $destinationPath = public_path('images/logo');
+
+            // dd($updatedFilename);
+            $systemSetting['white_logo'] = $updatedFilename ?? 'default.png';
+
+
+            // Move the file
+            $file->move($destinationPath, $updatedFilename);
+        }
+
         // Upload the website website_favicon
         if ($request->hasFile('website_favicon')) {
             $file = $request->file('website_favicon');

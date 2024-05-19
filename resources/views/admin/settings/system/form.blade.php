@@ -1,8 +1,9 @@
 {{-- Sub Admin Form --}}
 <div class="row">
     {{-- Website Logo --}}
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="form-group mb-3">
+            <label for="website_name">Website Logo</label>
             <div class="image-selection">
                 <div class="mx-auto" style="max-width: 150px;">
                     <img id="website_logo_preview"
@@ -19,10 +20,30 @@
             @endif
         </div>
     </div>
+    {{-- White Logo --}}
+    <div class="col-md-4">
+        <div class="form-group mb-3">
+            <label for="website_name">White Logo</label>
+            <div class="image-selection">
+                <div class="mx-auto" style="max-width: 150px;">
+                    <img id="white_logo_preview"
+                        src="{{ isset($systemSettings['white_logo']) && $systemSettings['white_logo'] !== null ? asset('images/logo/' . $systemSettings['white_logo']) : asset('images/logo/default.png') }}"
+                        alt="white_logo" class=" border w-100" onclick="document.getElementById('white_logo').click()">
+                    <input type="file" name="white_logo" id="white_logo" class="d-none" accept="image/*">
+                </div>
+            </div>
+            @if ($errors->has('white_logo'))
+                <span class="invalid-feedback" role="alert">
+                    <strong>Website Logo is required</strong>
+                </span>
+            @endif
+        </div>
+    </div>
 
     {{-- Website Favicon --}}
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="form-group mb-3">
+            <label for="website_name">Website Favicon</label>
             <div class="image-selection">
                 <div class="mx-auto" style="max-width: 150px;">
                     <img id="website_favicon_preview"
@@ -157,12 +178,14 @@
     <div class="col-md-6">
         <div class="form-group mb-3">
             <label for="weight">Weight</label>
-            <select class="form-control @error('weight') is-invalid @enderror" id="weight" name="weight" required>
+            <select class="form-control @error('weight') is-invalid @enderror" id="weight" name="weight"
+                required>
                 <option value="" disabled>Select Weight</option>
                 <option value="kg" {{ old('weight', $systemSettings['weight'] ?? '') == 'kg' ? 'selected' : '' }}>
                     Kg
                 </option>
-                <option value="lbs" {{ old('weight', $systemSettings['weight'] ?? '') == 'lbs' ? 'selected' : '' }}>
+                <option value="lbs"
+                    {{ old('weight', $systemSettings['weight'] ?? '') == 'lbs' ? 'selected' : '' }}>
                     Lbs
                 </option>
             </select>
@@ -244,6 +267,23 @@
         const reader = new FileReader();
         reader.onload = (event) => {
             document.querySelector('#website_logo_preview').src = event.target.result;
+        }
+
+        reader.readAsDataURL(file);
+    });
+
+    // White Logo JS
+    document.querySelector('#white_logo').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (!file.type.startsWith('image/')) {
+            alert('Please select an image file.');
+            event.target.value = null;
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            document.querySelector('#white_logo_preview').src = event.target.result;
         }
 
         reader.readAsDataURL(file);

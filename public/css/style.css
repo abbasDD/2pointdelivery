@@ -343,6 +343,7 @@ w-70 {
     border: none;
     border-radius: 5px;
     box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
+    margin-bottom: 3rem;
 }
 
 .card .card-header {
@@ -1299,4 +1300,172 @@ body {
         padding: 7px 15px;
         font-size: 14px
     }
+}
+
+
+/* tracking Page CSS */
+.tracking .tracking-list {
+    border: 1px solid var(--light-gray-color);
+}
+
+.tracking .tracking-item {
+    border-left: 4px solid var(--primary-color);
+    position: relative;
+    padding: 2rem 0.5rem 0.5rem 2.5rem;
+    font-size: 0.9rem;
+    margin-left: 3rem;
+    min-height: 5rem;
+}
+
+.tracking .tracking-item:last-child {
+    padding-bottom: 4rem;
+}
+
+.tracking .tracking-item .tracking-date {
+    margin-bottom: 0.5rem;
+}
+
+.tracking .tracking-item .tracking-date span {
+    color: var(--gray-color);
+    font-size: 85%;
+    padding-left: 0.4rem;
+}
+
+.tracking .tracking-item .tracking-content {
+    padding: 0.5rem 0.8rem;
+    background-color: #f4f4f4;
+    border-radius: 0.5rem;
+}
+
+.tracking .tracking-item .tracking-content span {
+    display: block;
+    color: #767676;
+    font-size: 12px;
+}
+
+.tracking .tracking-item .tracking-icon {
+    position: absolute;
+    left: -0.7rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    background-color: #fff;
+    color: #fff;
+}
+
+.tracking .tracking-item-pending {
+    border-left: 4px solid #d6d6d6;
+    position: relative;
+    padding: 2rem 1.5rem 0.5rem 1.5rem;
+    font-size: 0.9rem;
+    margin-left: 3rem;
+    min-height: 5rem;
+}
+
+.tracking .tracking-item-pending:last-child {
+    padding-bottom: 4rem;
+}
+
+.tracking .tracking-item-pending .tracking-date {
+    margin-bottom: 0.5rem;
+}
+
+.tracking .tracking-item-pending .tracking-date span {
+    color: #888;
+    font-size: 85%;
+    padding-left: 0.4rem;
+}
+
+.tracking .tracking-item-pending .tracking-content {
+    padding: 0.5rem 0.8rem;
+    background-color: #f4f4f4;
+    border-radius: 0.5rem;
+}
+
+.tracking .tracking-item-pending .tracking-content span {
+    display: block;
+    color: #767676;
+    font-size: 12px;
+}
+
+.tracking .tracking-item-pending .tracking-icon {
+    line-height: 2.6rem;
+    position: absolute;
+    left: -0.7rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    color: #d6d6d6;
+}
+
+.tracking .tracking-item-pending .tracking-content {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.tracking .tracking-item .tracking-icon.status-current {
+    width: 1.9rem;
+    /* height: 1.9rem; */
+    left: -1.1rem;
+}
+
+.tracking .tracking-item .tracking-icon.status-intransit {
+    color: var(--primary-color);
+    font-size: 0.6rem;
+}
+
+.tracking .tracking-item .tracking-icon.status-current {
+    color: var(--primary-color);
+    font-size: 0.6rem;
+}
+
+@media (min-width: 992px) {
+    .tracking .tracking-item {
+        margin-left: 8rem;
+    }
+
+    .tracking .tracking-item .tracking-date {
+        position: absolute;
+        left: -11rem;
+        width: 7.5rem;
+        text-align: right;
+    }
+
+    .tracking .tracking-item .tracking-date span {
+        display: block;
+    }
+
+    .tracking .tracking-item .tracking-content {
+        padding: 0;
+        background-color: transparent;
+    }
+
+    .tracking .tracking-item-pending {
+        margin-left: 8rem;
+    }
+
+    .tracking .tracking-item-pending .tracking-date {
+        position: absolute;
+        left: -11rem;
+        width: 7.5rem;
+        text-align: right;
+    }
+
+    .tracking .tracking-item-pending .tracking-date span {
+        display: block;
+    }
+
+    .tracking .tracking-item-pending .tracking-content {
+        padding: 0;
+        background-color: transparent;
+    }
+}
+
+.tracking .tracking-item .tracking-content {
+    font-weight: 600;
+    font-size: 14px;
 }

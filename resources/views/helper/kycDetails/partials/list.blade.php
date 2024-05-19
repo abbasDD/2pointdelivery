@@ -32,6 +32,7 @@
                     @else
                         <p class="badge bg-warning">Pending</p>
                     @endif
+                </td>
                 <td>
                     @if ($kycDetail->is_verified == 1)
                         <p class="badge bg-success">Approved</p>
