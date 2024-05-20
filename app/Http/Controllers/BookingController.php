@@ -522,7 +522,7 @@ class BookingController extends Controller
         // Get helper vehicle data
         $helperVehicleData = null;
         if ($booking->helper_user_id) {
-            $helperVehicleData = HelperVehicle::where('helper_id', $booking->helper_user_id)->first();
+            $helperVehicleData = HelperVehicle::where('user_id', $booking->helper_user_id)->first();
         }
 
 

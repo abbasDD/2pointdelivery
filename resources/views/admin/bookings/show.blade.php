@@ -13,10 +13,9 @@
                     <h3 class="mb-1">Order Detail</h3>
                     <p>Order No : <span class="text-uppercase">{{ $booking->uuid ? $booking->uuid : '-' }}</span></p>
                 </div>
-                <div class="">
-                    <a href="#" class="btn btn-danger"><i class="fa fa-bug" aria-hidden="true"></i> <span
-                            class="d-none d-md-inline"> Report an Issue</span></a>
-                </div>
+                <p class="btn btn-primary">
+                    {{ $booking->status }}
+                </p>
             </div>
     </section>
 
@@ -26,84 +25,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
+                    {{-- Load Tracking Status --}}
+                    @include('admin.bookings.partials.show.tracking')
 
-                    {{-- Tracking Status --}}
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <h5 class="mb-0">Tracking Status</h5>
-                        </div>
-                        <div class="card-body">
-                            {{-- Order Status --}}
-                            <div class="progressdiv">
-                                <ul class="progressbar p-0">
-                                    {{-- Pending --}}
-                                    <li {{ $booking->status == 'pending' ? 'class=active' : '' }}>
-                                        <div class="text-right">
-                                            <h6>05 May 2024</h6>
-                                            <p>11:00 AM</p>
-                                        </div>
-                                        <div class="circle mx-3">
-                                        </div>
-                                        <div class="">
-                                            <h6>Parcel Booked</h6>
-                                            <p>6391 Washington</p>
-                                        </div>
-                                    </li>
-                                    {{-- Accepted --}}
-                                    <li {{ $booking->status == 'accepted' ? 'class=active' : '' }}>
-                                        <div class="text-right">
-                                            <h6>07 May 2024</h6>
-                                            <p>10:00</p>
-                                        </div>
-                                        <div class="circle mx-3">
-                                        </div>
-                                        <div class="">
-                                            <h6>Parcel Received</h6>
-                                            <p>6391 Washington</p>
-                                        </div>
-                                    </li>
-                                    {{-- Picked Up --}}
-                                    <li {{ $booking->status == 'picked' ? 'class=active' : '' }}>
-                                        <div class="text-right">
-                                            <h6>Expected</h6>
-                                            <p>10:00 PM</p>
-                                        </div>
-                                        <div class="circle mx-3">
-                                        </div>
-                                        <div class="">
-                                            <h6>Driver will pick up</h6>
-                                            <p>6391 Washington</p>
-                                        </div>
-                                    </li>
-                                    {{-- Delivered --}}
-                                    <li {{ $booking->status == 'delivered' ? 'class=active' : '' }}>
-                                        <div class="text-right">
-                                            <h6>Expected</h6>
-                                            <p>11:00 PM</p>
-                                        </div>
-                                        <div class="circle mx-3">
-                                        </div>
-                                        <div class="">
-                                            <h6>Driver will deliver</h6>
-                                            <p>6391 Washington</p>
-                                        </div>
-                                    </li>
-                                    <li {{ $booking->status == 'completed' ? 'class=active' : '' }}>
-                                        <div class="text-right">
-                                            <h6>Expected</h6>
-                                            <p>11:00</p>
-                                        </div>
-                                        <div class="circle mx-3">
-                                        </div>
-                                        <div class="">
-                                            <h6>Order will complete</h6>
-                                            <p>6391 Washington</p>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                    {{-- Load Images --}}
+                    @include('admin.bookings.partials.show.images')
                 </div>
                 <div class="col-md-8">
                     {{-- Map Tracking --}}

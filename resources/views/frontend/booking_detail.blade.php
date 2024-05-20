@@ -39,7 +39,7 @@
                             {{-- Vehicle --}}
                             <div class="d-flex align-items-center justify-content-between mb-3">
                                 <p class="mb-0">Vehicle:</p>
-                                <h6 class="mb-0">N/A</h6>
+                                <h6 class="mb-0">-</h6>
                             </div>
                             {{-- Package Value: --}}
                             <div class="d-flex align-items-center justify-content-between mb-3">

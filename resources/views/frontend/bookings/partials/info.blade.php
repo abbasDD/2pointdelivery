@@ -8,7 +8,8 @@
             role="tab" aria-controls="nav-driver" aria-selected="false">Driver</button>
         <button class="nav-link" id="nav-customer-tab" data-bs-toggle="tab" data-bs-target="#nav-customer"
             type="button" role="tab" aria-controls="nav-customer" aria-selected="false">Customer
-        </button><button class="nav-link" id="nav-receipent-tab" data-bs-toggle="tab" data-bs-target="#nav-receipent"
+        </button>
+        <button class="nav-link" id="nav-receipent-tab" data-bs-toggle="tab" data-bs-target="#nav-receipent"
             type="button" role="tab" aria-controls="nav-receipent" aria-selected="false">Receipent
         </button>
     </div>

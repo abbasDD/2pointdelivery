@@ -7,11 +7,6 @@
             <p class="mb-0">Priority:</p>
             <h6 class="mb-0">{{ $booking->prioritySetting->name }}</h6>
         </div>
-        {{-- Vehicle --}}
-        <div class="d-flex align-items-center justify-content-between mb-3">
-            <p class="mb-0">Vehicle:</p>
-            <h6 class="mb-0">N/A</h6>
-        </div>
         {{-- Package Value: --}}
         <div class="d-flex align-items-center justify-content-between mb-3">
             <p class="mb-0">Service Type:</p>

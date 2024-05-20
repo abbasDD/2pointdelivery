@@ -1311,7 +1311,7 @@ body {
 .tracking .tracking-item {
     border-left: 4px solid var(--primary-color);
     position: relative;
-    padding: 2rem 0.5rem 0.5rem 2.5rem;
+    padding: 2rem 0.5rem 0.5rem 1.5rem;
     font-size: 0.9rem;
     margin-left: 3rem;
     min-height: 5rem;

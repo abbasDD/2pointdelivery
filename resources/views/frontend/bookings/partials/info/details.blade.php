@@ -24,14 +24,16 @@
         </div>
         {{-- Delivery Charges: --}}
         <div class="d-flex align-items-center justify-content-between mb-3">
-            <p class="mb-0">Delivery Charges:</p>
+            <p class="mb-0">Helper Fee:</p>
             <h6 class="mb-0">${{ $bookingDelivery->helper_fee }}</h6>
         </div>
-        {{-- Amount to Pay --}}
-        <div class="d-flex align-items-center justify-content-between mb-3">
-            <p class="mb-0">Amount to Pay:</p>
-            <h6 class="mb-0">${{ $booking->total_price }}</h6>
-        </div>
+        @if ($clientView)
+            {{-- Amount to Pay --}}
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <p class="mb-0">Amount to Pay:</p>
+                <h6 class="mb-0">${{ $booking->total_price }}</h6>
+            </div>
+        @endif
         {{-- Payment Method --}}
         <div class="d-flex align-items-center justify-content-between mb-3">
             <p class="mb-0">Payment Method:</p>
