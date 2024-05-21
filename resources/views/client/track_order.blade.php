@@ -72,7 +72,7 @@
             }
         </script>
         <script
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-oZSu4Kvv97DDpLZA20a9qIGMpwjtitM&libraries=places&callback=initMap"
+            src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initMap"
             async defer></script>
 
     </div>

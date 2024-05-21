@@ -66,8 +66,7 @@
                 </div>
             </div>
         </form>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-oZSu4Kvv97DDpLZA20a9qIGMpwjtitM&libraries=places">
-        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places"></script>
         <script>
             var pickupAutocomplete = new google.maps.places.Autocomplete(document.getElementById('pickupLocation'));
             var deliveryAutocomplete = new google.maps.places.Autocomplete(document.getElementById('deliveryLocation'));

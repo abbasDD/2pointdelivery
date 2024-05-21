@@ -92,24 +92,25 @@
                         {{-- Total Earning --}}
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <p class="mb-0 fs-14"><i class="fa fa-dollar-sign text-success"></i> Total Earning</p>
-                            <h6 class="mb-0">${{ $statistics['total_earnings'] }}</h6>
+                            <h6 class="mb-0">${{ number_format($statistics['total_earnings'], 0, '.', '') }}</h6>
                         </div>
-                        {{-- total_commission --}}
+                        {{-- Total Payments --}}
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <p class="mb-0 fs-14"><i class="fa fa-dollar-sign text-success"></i> Total Commission</p>
-                            <h6 class="mb-0">${{ $statistics['total_commission'] }}</h6>
+                            <p class="mb-0 fs-14"><i class="fa fa-dollar-sign text-success"></i> Total Payments</p>
+                            <h6 class="mb-0">${{ number_format($statistics['total_payments'], 0, '.', '') }}</h6>
                         </div>
-                        {{-- total_taxes --}}
+                        {{-- Total Taxes --}}
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <p class="mb-0 fs-14"><i class="fa fa-dollar-sign text-success"></i> Total Taxes</p>
-                            <h6 class="mb-0">${{ $statistics['total_taxes'] }}</h6>
+                            <h6 class="mb-0">${{ number_format($statistics['total_taxes'], 0, '.', '') }}</h6>
                         </div>
-                        {{-- total_revenue --}}
+                        {{-- Total Revenue --}}
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <p class="mb-0 fs-14"><i class="fa fa-dollar-sign text-success"></i> Total Revenue</p>
-                            <h6 class="mb-0">${{ $statistics['total_revenue'] }}</h6>
+                            <h6 class="mb-0">${{ number_format($statistics['total_revenue'], 0, '.', '') }}</h6>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>

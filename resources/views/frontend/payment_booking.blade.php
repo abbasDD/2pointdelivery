@@ -68,6 +68,26 @@
                             <h6>Distance Price:</h6>
                             <p>${{ $bookingDelivery->distance_price }}</p>
                         </div>
+                        {{-- Weight Price --}}
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h6>Weight Price:</h6>
+                            <p>${{ $bookingDelivery->weight_price }}</p>
+                        </div>
+                        {{-- Service Price --}}
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h6>Service Price:</h6>
+                            <p>${{ $bookingDelivery->service_price }}</p>
+                        </div>
+                        {{-- Vehicle Price --}}
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h6>Vehicle Price:</h6>
+                            <p>${{ $bookingDelivery->vehicle_price }}</p>
+                        </div>
+                        {{-- Tax Price --}}
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h6>Tax Price:</h6>
+                            <p>${{ $bookingDelivery->tax_price }}</p>
+                        </div>
                         {{-- Total Price --}}
                         <div class="d-flex align-items-center justify-content-between">
                             <h6>Total Price:</h6>

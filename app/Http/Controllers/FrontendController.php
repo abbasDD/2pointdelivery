@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\Client;
+use App\Models\ClientCompany;
 use App\Models\Faq;
 use App\Models\PrioritySetting;
 use App\Models\ServiceCategory;
@@ -89,13 +90,16 @@ class FrontendController extends Controller
         }
 
         // Check if priority setting exist
-        $prioritySetting = PrioritySetting::where('is_active', 1)->first();
+        $prioritySetting = PrioritySetting::where('id', $request->priorityID)->where('is_active', 1)->first();
         if (!$prioritySetting) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Priority setting not found',
             ]);
         }
+
+        // Get package value and calculate insurance
+        $data['insurance_value'] = $this->calculateInsuranceValue($request->package_value);
 
 
         // Calculate 
@@ -154,7 +158,6 @@ class FrontendController extends Controller
 
 
         //  Tax Price
-        // if()
         $data['tax_price'] = 0;
         $taxPercentage = 0;
 
@@ -164,10 +167,11 @@ class FrontendController extends Controller
             if ($client) {
                 // Check if client is company or individual
                 if ($client->company_enabled) {
-                    $taxPercentage = $this->getClientTax();
-                } else {
                     $taxPercentage = $this->getClientCompanyTax();
+                } else {
+                    $taxPercentage = $this->getClientTax();
                 }
+                $data['tax_price'] = $taxPercentage;
             }
         }
 
@@ -278,8 +282,8 @@ class FrontendController extends Controller
         // If user has not added tax detail then only apply tax
         if (!$clientStateTaxID) {
             // Get client address state
-            $clientStateID = Client::where('user_id', Auth::user()->id)->first()->state_id;
-            $taxPercentage = 0;
+            $clientStateID = Client::where('user_id', Auth::user()->id)->first()->state;
+            // $taxPercentage = Auth::user()->id;
             if ($clientStateID) {
                 $taxSetting = TaxSetting::where('state_id', $clientStateID)->first();
                 if ($taxSetting) {
@@ -296,13 +300,13 @@ class FrontendController extends Controller
         $taxPercentage = 0;
 
         // Check if user has added the tax detail
-        $clientStateTaxID = Client::where('user_id', Auth::user()->id)->first()->tax_id;
+        $clientStateTaxID = ClientCompany::where('user_id', Auth::user()->id)->first()->tax_id;
 
         // If user has not added tax detail then only apply tax
         if (!$clientStateTaxID) {
             // Get client address state
-            $clientStateID = Client::where('user_id', Auth::user()->id)->first()->state_id;
-            $taxPercentage = 0;
+            // $clientStateID = Client::where('user_id', Auth::user()->id)->first()->state_id;
+            $clientStateID = ClientCompany::where('user_id', Auth::user()->id)->first()->state;
             if ($clientStateID) {
                 $taxSetting = TaxSetting::where('state_id', $clientStateID)->first();
                 if ($taxSetting) {
@@ -312,5 +316,59 @@ class FrontendController extends Controller
         }
 
         return $taxPercentage;
+    }
+
+
+    // Get client individual tax calculation
+    private function calculateInsuranceValue($package_value)
+    {
+
+        // Let isurance value to 0;
+        $insuranceValue = 0;
+
+        // API endpoint
+        $url = 'https://api.secursus.com/v2/parcel/get_price';
+
+        // Request data
+        $data = [
+            'parcel_value' => $package_value,
+            'currency' => 'cad',
+        ];
+
+        // Authorization token
+        $token = 'Bearer 76a994d52c23d2301e3fa6db0fd9ff4b';
+
+        // Set up cURL
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: ' . $token,
+            'Content-Type: application/json',
+        ]);
+
+        // Execute the request
+        $response = curl_exec($ch);
+
+        // Check for errors
+        if ($response === false) {
+            $error = curl_error($ch);
+            // Handle the error
+            // echo "cURL Error: $error";
+            $insuranceValue = 0;
+        } else {
+            // Decode the response
+            $responseData = json_decode($response, true);
+            // Process the response data as needed
+            $insuranceValue = $responseData;
+            // print_r($responseData);
+        }
+
+        // Close cURL
+        curl_close($ch);
+
+        return $insuranceValue;
     }
 }

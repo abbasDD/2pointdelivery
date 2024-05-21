@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\BookingDelivery;
 use App\Models\Helper;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -38,10 +39,10 @@ class HomeController extends Controller
             'total_clients' => User::where('helper_enabled', 1)->count(),
             'requested_helpers' => Helper::where('is_approved', 0)->count(),
             // Earning Data
-            'total_earnings' => Booking::sum('total_price'),
-            'total_commission' => 250,
-            'total_taxes' => 250,
-            'total_revenue' => 250,
+            'total_earnings' => (BookingDelivery::sum('sub_total') - BookingDelivery::sum('helper_fee')),
+            'total_payments' => BookingDelivery::sum('helper_fee'),
+            'total_taxes' => BookingDelivery::sum('tax_price'),
+            'total_revenue' => BookingDelivery::sum('sub_total'),
             // Old Data
             'delivery_successful' => Booking::where('status', 'completed')->where('booking_type', 'delivery')->count(),
             'delivery_cancelled' => Booking::where('status', 'cancelled')->where('booking_type', 'delivery')->count(),

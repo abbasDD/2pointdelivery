@@ -18,6 +18,7 @@
     var priorityID = 0;
     var tax_price = 0;
     var volume_enabled = 0;
+    var package_value = 0;
 
     var prioritySettings = {!! json_encode($prioritySettings) !!};
     if (prioritySettings.length > 0) {
@@ -243,6 +244,15 @@
         formData.append('package_width', package_width); // package_width
         formData.append('package_height', package_height); // package_height
         formData.append('calculated_weight', calculated_weight); // calculated_weight
+
+        // Get declared value of package
+        package_value = document.querySelector('input[name="package_value"]').value;
+        // if not empty
+        if (package_value == '') {
+            package_value = 0;
+        }
+        formData.append('package_value', package_value);
+
 
 
         console.log(formData);

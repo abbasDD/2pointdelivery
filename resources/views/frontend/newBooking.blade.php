@@ -268,9 +268,14 @@
                             <div class="map-booking">
                                 <div id="map" style="height: 400px; width:100%;"></div>
                                 {{-- AIzaSyD-jXtk8qCpcwUwFn-7Q3VazeneJJ46g00 --}}
+                                {{-- <script
+                                    src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initMap"
+                                    async defer></script> --}}
+
                                 <script
-                                    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-oZSu4Kvv97DDpLZA20a9qIGMpwjtitM&libraries=places&callback=initMap"
+                                    src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initMap"
                                     async defer></script>
+
                                 <script>
                                     function initMap() {
                                         map = new google.maps.Map(document.getElementById('map'), {

@@ -40,7 +40,7 @@
                         <div class="card-body" style="height: 400px">
                             <div id="map" style="height:100%; width:100%;"></div>
                             <script
-                                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-oZSu4Kvv97DDpLZA20a9qIGMpwjtitM&libraries=places&callback=initMap"
+                                src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initMap"
                                 async defer></script>
                             <script>
                                 var map;

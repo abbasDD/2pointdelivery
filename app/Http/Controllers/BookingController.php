@@ -13,9 +13,11 @@ use App\Models\HelperVehicle;
 use App\Models\PaymentSetting;
 use App\Models\PrioritySetting;
 use App\Models\ServiceCategory;
+use App\Models\TaxSetting;
 use App\Models\VehicleType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -129,8 +131,8 @@ class BookingController extends Controller
         // Get Distance Price
         $distance_price  = 0;
         if ($request->distance) {
-            if ($request->distance > $request->base_distance) {
-                $distance_price =  ($request->distance - $request->base_distance) * $request->extra_distance_price;
+            if ($request->distance > $service_category->base_distance) {
+                $distance_price =  ($request->distance - $service_category->base_distance) * $service_category->extra_distance_price;
             } else {
                 $distance_price = 0;
             }
@@ -176,23 +178,49 @@ class BookingController extends Controller
             $vehicle_price = $request->vehicle_price_value;
         }
 
-        // Get tax_price
+        //  Tax Price
         $tax_price = 0;
+        $taxPercentage = 0;
+
+        // check if auth exist
+        if (Auth::check()) {
+            $client = Client::where('user_id', Auth::user()->id)->first();
+            if ($client) {
+                // Check if client is company or individual
+                if ($client->company_enabled) {
+                    $taxPercentage = $this->getClientCompanyTax();
+                } else {
+                    $taxPercentage = $this->getClientTax();
+                }
+                $data['tax_price'] = $taxPercentage;
+            }
+        }
+
+        $sub_total = $service_category->base_price + $distance_price + $priority_price + $vehicle_price + $weight_price;
+
+
+        if ($taxPercentage > 0) {
+            $tax_price = $sub_total * ($taxPercentage / 100);
+        }
 
         // helper_fee
         $helper_fee = $service_category->helper_fee;
 
+        // Total amountToPay
+        $amountToPay = $service_category->base_price + $distance_price + $priority_price + $vehicle_price + $weight_price + $tax_price;
+
         // Create Booking Payment
         $paymentBooking = BookingDelivery::create([
             'booking_id' => $booking->id,
-            'distance_price' => $distance_price,
-            'weight_price' => $weight_price,
-            'priority_price' => $priority_price,
-            'service_price' => $service_price,
-            'vehicle_price' => $vehicle_price,
-            'tax_price' => $tax_price,
-            'helper_fee' => $helper_fee,
-            'total_price' => $request->total_price,
+            'distance_price' => number_format((float)$distance_price, 2, '.', ''),
+            'weight_price' => number_format((float)$weight_price, 2, '.', ''),
+            'priority_price' => number_format((float)$priority_price, 2, '.', ''),
+            'service_price' => number_format((float)$service_category->base_price, 2, '.', ''),
+            'sub_total' => number_format((float)$sub_total, 2, '.', ''),
+            'vehicle_price' => number_format((float)$vehicle_price, 2, '.', ''),
+            'tax_price' => number_format((float)$tax_price, 2, '.', ''),
+            'helper_fee' => number_format((float)$helper_fee, 2, '.', ''),
+            'total_price' => number_format((float)$amountToPay, 2, '.', ''),
             'payment_method' => 'cod',
             'payment_status' => 'unpaid',
         ]);
@@ -530,5 +558,52 @@ class BookingController extends Controller
         // dd($vehicleTypeData);
 
         return view('frontend.bookings.show', compact('booking', 'bookingDelivery', 'helperData', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'clientView', 'helperView'));
+    }
+
+    // Get client individual tax calculation
+    private function getClientTax()
+    {
+        $taxPercentage = 0;
+
+        // Check if user has added the tax detail
+        $clientStateTaxID = Client::where('user_id', Auth::user()->id)->first()->tax_id;
+
+        // If user has not added tax detail then only apply tax
+        if (!$clientStateTaxID) {
+            // Get client address state
+            $clientStateID = Client::where('user_id', Auth::user()->id)->first()->state;
+            // $taxPercentage = Auth::user()->id;
+            if ($clientStateID) {
+                $taxSetting = TaxSetting::where('state_id', $clientStateID)->first();
+                if ($taxSetting) {
+                    $taxPercentage = $taxSetting->gst_rate + $taxSetting->hst_rate + $taxSetting->pst_rate;
+                }
+            }
+        }
+
+        return $taxPercentage;
+    }
+
+    private function getClientCompanyTax()
+    {
+        $taxPercentage = 0;
+
+        // Check if user has added the tax detail
+        $clientStateTaxID = ClientCompany::where('user_id', Auth::user()->id)->first()->tax_id;
+
+        // If user has not added tax detail then only apply tax
+        if (!$clientStateTaxID) {
+            // Get client address state
+            // $clientStateID = Client::where('user_id', Auth::user()->id)->first()->state_id;
+            $clientStateID = ClientCompany::where('user_id', Auth::user()->id)->first()->state;
+            if ($clientStateID) {
+                $taxSetting = TaxSetting::where('state_id', $clientStateID)->first();
+                if ($taxSetting) {
+                    $taxPercentage = $taxSetting->gst_rate + $taxSetting->hst_rate + $taxSetting->pst_rate;
+                }
+            }
+        }
+
+        return $taxPercentage;
     }
 }

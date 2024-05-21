@@ -14,7 +14,7 @@
 
                 <!-- Right -->
                 <div>
-                    <a href="" class="text-white me-4">
+                    <a href="https://facebook.com/" target="_blank" class="text-white me-4">
                         <i class="fab fa-facebook-f"></i>
                     </a>
                     <a href="" class="text-white me-4">
