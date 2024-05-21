@@ -33,7 +33,7 @@
                     aria-hidden="true"></i> <span class="d-none d-md-inline"> Start</span></a>
         </div>
     @endif
-    {{-- If auth user is helper and status accepted then ask to start --}}
+    {{-- If auth user is helper and status started then ask to in_transit --}}
     @if (
         $helperView &&
             auth()->user()->helper_enabled &&
@@ -55,134 +55,171 @@
                     aria-hidden="true"></i> <span class="d-none d-md-inline"> Complete</span></a>
         </div>
     @endif
+    {{-- If auth user is helper and status is not completed then helper can mark incomplete --}}
+    @if (
+        $helperView &&
+            auth()->user()->helper_enabled &&
+            $booking->helper_user_id == auth()->user()->id &&
+            $booking->status != 'pending')
+        <div class="">
+            <a onclick="#" class="btn btn-danger"><i class="fa fa-xmark" aria-hidden="true"></i> <span
+                    class="d-none d-md-inline"> Incomplete</span></a>
+        </div>
+    @endif
 </div>
 
-
-{{-- Start Booking Modal --}}
-<div class="modal fade" id="startBookingModal" tabindex="-1" aria-labelledby="startBookingModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="startBookingModalLabel">Start Booking</h5>
-            </div>
-            <form action="{{ route('helper.booking.start') }}" method="POST" id="startBookingForm"
-                enctype="multipart/form-data">
-                <div class="modal-body">
-                    <p>Please upload client signed image to start booking</p>
-                    {{-- hidden booking id --}}
-                    <input type="hidden" name="id" value="{{ $booking->id }}">
-                    {{-- Start Booking Image --}}
-                    <div class="row justify-content-center">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <div class="image-selection">
-                                    <div class="mx-auto" style="max-width: 150px;">
-                                        <img id="start_booking_image_preview"
-                                            src="{{ asset('images/bookings/default.png') }}" alt="start_booking_image"
-                                            class=" border w-100 p-3"
-                                            onclick="document.getElementById('start_booking_image').click()">
-                                        <input type="file" name="start_booking_image" id="start_booking_image"
-                                            class="d-none" accept="image/*" required>
+@if (
+    $helperView &&
+        auth()->user()->helper_enabled &&
+        $booking->helper_user_id == auth()->user()->id &&
+        $booking->status == 'accepted')
+    {{-- Start Booking Modal --}}
+    <div class="modal fade" id="startBookingModal" tabindex="-1" aria-labelledby="startBookingModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="startBookingModalLabel">Start Booking</h5>
+                </div>
+                <form action="{{ route('helper.booking.start') }}" method="POST" id="startBookingForm"
+                    enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <p>Please upload client signed image to start booking</p>
+                        {{-- hidden booking id --}}
+                        <input type="hidden" name="id" value="{{ $booking->id }}">
+                        {{-- Start Booking Image --}}
+                        <div class="row justify-content-center">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <div class="image-selection">
+                                        <div class="mx-auto" style="max-width: 150px;">
+                                            <img id="start_booking_image_preview"
+                                                src="{{ asset('images/bookings/default.png') }}"
+                                                alt="start_booking_image" class=" border w-100 p-3"
+                                                onclick="document.getElementById('start_booking_image').click()">
+                                            <input type="file" name="start_booking_image" id="start_booking_image"
+                                                class="d-none" accept="image/*" required>
+                                        </div>
                                     </div>
+                                    @if ($errors->has('start_booking_image'))
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>Profile Image is required</strong>
+                                        </span>
+                                    @endif
                                 </div>
-                                @if ($errors->has('start_booking_image'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>Profile Image is required</strong>
-                                    </span>
-                                @endif
                             </div>
+                            {{-- Signature Start Pad JS --}}
+                            @include('frontend.bookings.partials.show.signatureStart')
+
                         </div>
+                        @csrf
+                        {{-- Upload Image --}}
                     </div>
-                    @csrf
-                    {{-- Upload Image --}}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" onclick="startBooking('{{ $booking->id }}')">Start
-                        Booking</button>
-                </div>
-            </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary"
+                            onclick="startBooking('{{ $booking->id }}')">Start
+                            Booking</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
+@endif
 
-{{-- inTransitBooking Modal --}}
-<div class="modal fade" id="inTransitBookingModal" tabindex="-1" aria-labelledby="inTransitBookingModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="inTransitBookingModalLabel">In Transit Booking</h5>
+@if (
+    $helperView &&
+        auth()->user()->helper_enabled &&
+        $booking->helper_user_id == auth()->user()->id &&
+        $booking->status == 'started')
+    {{-- inTransitBooking Modal --}}
+    <div class="modal fade" id="inTransitBookingModal" tabindex="-1" aria-labelledby="inTransitBookingModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="inTransitBookingModalLabel">In Transit Booking</h5>
+                </div>
+                <form action="{{ route('helper.booking.inTransit') }}" method="POST">
+                    <div class="modal-body">
+                        <p>The package is ready to be delivered</p>
+                        @csrf
+                        {{-- hidden booking id --}}
+                        <input type="hidden" name="id" value="{{ $booking->id }}">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary"
+                            onclick="inTransitBooking('{{ $booking->id }}')">In
+                            Transit
+                            Booking</button>
+                    </div>
+                </form>
             </div>
-            <form action="{{ route('helper.booking.inTransit') }}" method="POST">
-                <div class="modal-body">
-                    <p>The package is ready to be delivered</p>
-                    @csrf
-                    {{-- hidden booking id --}}
-                    <input type="hidden" name="id" value="{{ $booking->id }}">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary"
-                        onclick="inTransitBooking('{{ $booking->id }}')">In
-                        Transit
-                        Booking</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
+@endif
 
-{{-- Complete Booking Modal --}}
-<div class="modal fade" id="completeBookingModal" tabindex="-1" aria-labelledby="completeBookingModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="completeBookingModalLabel">Complete Booking</h5>
-            </div>
-            <form action="{{ route('helper.booking.complete') }}" method="POST" id="completeBookingForm"
-                enctype="multipart/form-data">
-                <div class="modal-body">
-                    <p>Please upload client signed image to complete booking</p>
-                    {{-- hidden booking id --}}
-                    <input type="hidden" name="id" value="{{ $booking->id }}">
-                    {{-- Complete Booking Image --}}
-                    <div class="row justify-content-center">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <div class="image-selection">
-                                    <div class="mx-auto" style="max-width: 150px;">
-                                        <img id="complete_booking_image_preview"
-                                            src="{{ asset('images/bookings/default.png') }}"
-                                            alt="complete_booking_image" class=" border w-100 p-3"
-                                            onclick="document.getElementById('complete_booking_image').click()">
-                                        <input type="file" name="complete_booking_image"
-                                            id="complete_booking_image" class="d-none" accept="image/*" required>
+@if (
+    $helperView &&
+        auth()->user()->helper_enabled &&
+        $booking->helper_user_id == auth()->user()->id &&
+        $booking->status == 'in_transit')
+    {{-- Complete Booking Modal --}}
+    <div class="modal fade" id="completeBookingModal" tabindex="-1" aria-labelledby="completeBookingModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="completeBookingModalLabel">Complete Booking</h5>
+                </div>
+                <form action="{{ route('helper.booking.complete') }}" method="POST" id="completeBookingForm"
+                    enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <p>Please upload client signed image to complete booking</p>
+                        {{-- hidden booking id --}}
+                        <input type="hidden" name="id" value="{{ $booking->id }}">
+                        {{-- Complete Booking Image --}}
+                        <div class="row justify-content-center">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <div class="image-selection">
+                                        <div class="mx-auto" style="max-width: 150px;">
+                                            <img id="complete_booking_image_preview"
+                                                src="{{ asset('images/bookings/default.png') }}"
+                                                alt="complete_booking_image" class=" border w-100 p-3"
+                                                onclick="document.getElementById('complete_booking_image').click()">
+                                            <input type="file" name="complete_booking_image"
+                                                id="complete_booking_image" class="d-none" accept="image/*" required>
+                                        </div>
                                     </div>
+                                    @if ($errors->has('complete_booking_image'))
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>Profile Image is required</strong>
+                                        </span>
+                                    @endif
                                 </div>
-                                @if ($errors->has('complete_booking_image'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>Profile Image is required</strong>
-                                    </span>
-                                @endif
                             </div>
+
+                            {{-- Signature Start Pad JS --}}
+                            @include('frontend.bookings.partials.show.signatureCompleted')
                         </div>
+                        @csrf
+                        {{-- Upload Image --}}
                     </div>
-                    @csrf
-                    {{-- Upload Image --}}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary"
-                        onclick="completeBooking('{{ $booking->id }}')">Complete
-                        Booking</button>
-                </div>
-            </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary"
+                            onclick="completeBooking('{{ $booking->id }}')">Complete
+                            Booking</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
+@endif
+
+
 
 
 <script>

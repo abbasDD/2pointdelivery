@@ -28,9 +28,11 @@ return new class extends Migration
             $table->timestamp('payment_at')->nullable();
             $table->timestamp('accepted_at')->nullable();
             $table->string('start_booking_image')->nullable();
+            $table->string('signatureStart')->nullable();
             $table->timestamp('start_booking_at')->nullable();
             $table->timestamp('start_intransit_at')->nullable();
             $table->string('complete_booking_image')->nullable();
+            $table->string('signatureCompleted')->nullable();
             $table->timestamp('complete_booking_at')->nullable();
             $table->timestamps();
         });

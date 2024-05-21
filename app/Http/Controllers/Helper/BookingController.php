@@ -163,6 +163,9 @@ class BookingController extends Controller
     // Start Booking
     public function start(Request $request)
     {
+
+        // return redirect()->back()->with('error', 'Booking not found');
+
         $booking = Booking::where('id', $request->id)
             ->where('helper_user_id', auth()->user()->id)
             ->first();
@@ -186,7 +189,15 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Please select start booking image');
         }
 
+        // if start_booking_image is not set then back with error
+        if (!$request->hasFile('signatureStart')) {
+            return redirect()->back()->with('error', 'Please select start booking image');
+        }
+
         $start_booking_image = null;
+
+        $signatureStart = null;
+
 
         // Upload booking image
         if ($request->hasFile('start_booking_image')) {
@@ -199,7 +210,19 @@ class BookingController extends Controller
             $start_booking_image = $updatedFilename;
         }
 
+        // Upload signature start image
+        if ($request->hasFile('signatureStart')) {
+            $file = $request->file('signatureStart');
+            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('images/bookings/');
+            $file->move($destinationPath, $updatedFilename);
 
+            // Set the profile image attribute to the new file name
+            $signatureStart = $updatedFilename;
+        }
+
+
+        $bookingDelivery->signatureStart = $signatureStart;
         $bookingDelivery->start_booking_image = $start_booking_image;
         $bookingDelivery->start_booking_at = Carbon::now();
         $bookingDelivery->save();
@@ -270,7 +293,14 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Please select complete booking image');
         }
 
+        // if start_booking_image is not set then back with error
+        if (!$request->hasFile('signatureCompleted')) {
+            return redirect()->back()->with('error', 'Please select start booking image');
+        }
+
         $complete_booking_image = null;
+
+        $signatureCompleted = null;
 
         // Upload booking image
         if ($request->hasFile('complete_booking_image')) {
@@ -283,6 +313,18 @@ class BookingController extends Controller
             $complete_booking_image = $updatedFilename;
         }
 
+        // Upload completed signature image
+        if ($request->hasFile('signatureCompleted')) {
+            $file = $request->file('signatureCompleted');
+            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('images/bookings/');
+            $file->move($destinationPath, $updatedFilename);
+
+            // Set the profile image attribute to the new file name
+            $signatureCompleted = $updatedFilename;
+        }
+
+        $bookingDelivery->signatureCompleted = $signatureCompleted;
         $bookingDelivery->complete_booking_image = $complete_booking_image;
         $bookingDelivery->complete_booking_at = Carbon::now();
         $bookingDelivery->save();

@@ -30,9 +30,11 @@ class BookingDelivery extends Model
         'payment_at',
         'accepted_at',
         'start_booking_image',
+        'signatureStart',
         'start_booking_at',
         'start_intransit_at',
         'complete_booking_image',
+        'signatureCompleted',
         'complete_booking_at',
     ];
 
