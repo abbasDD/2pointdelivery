@@ -37,6 +37,8 @@ class BookingDelivery extends Model
         'complete_booking_image',
         'signatureCompleted',
         'complete_booking_at',
+        'incomplete_reason',
+        'incomplete_booking_at',
     ];
 
     /**

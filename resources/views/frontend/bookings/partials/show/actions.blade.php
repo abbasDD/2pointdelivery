@@ -60,10 +60,10 @@
         $helperView &&
             auth()->user()->helper_enabled &&
             $booking->helper_user_id == auth()->user()->id &&
-            $booking->status != 'pending')
+            ($booking->status != 'completed' && $booking->status != 'incomplete'))
         <div class="">
-            <a onclick="#" class="btn btn-danger"><i class="fa fa-xmark" aria-hidden="true"></i> <span
-                    class="d-none d-md-inline"> Incomplete</span></a>
+            <a onclick="inCompleteBooking('{{ $booking->id }}')" class="btn btn-danger"><i class="fa fa-xmark"
+                    aria-hidden="true"></i> <span class="d-none d-md-inline"> Incomplete</span></a>
         </div>
     @endif
 </div>
@@ -220,6 +220,37 @@
 @endif
 
 
+@if (
+    $helperView &&
+        auth()->user()->helper_enabled &&
+        $booking->helper_user_id == auth()->user()->id &&
+        ($booking->status != 'completed' && $booking->status != 'incomplete'))
+    {{-- inCompleteBooking Modal --}}
+    <div class="modal fade" id="inCompleteBookingModal" tabindex="-1" aria-labelledby="inCompleteBookingModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="inCompleteBookingModalLabel">In Complete Booking</h5>
+                </div>
+                <form action="{{ route('helper.booking.incomplete') }}" method="POST">
+                    <div class="modal-body">
+                        @csrf
+                        {{-- hidden booking id --}}
+                        <input type="hidden" name="id" value="{{ $booking->id }}">
+                        <label for="incomplete_reason">Write a reason</label>
+                        <textarea class="form-control" name="incomplete_reason" id="incomplete_reason" rows="3"
+                            placeholder="Enter reason" required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Mark Incomplete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endif
 
 
 <script>
@@ -271,4 +302,9 @@
 
         reader.readAsDataURL(file);
     });
+
+    // inCompleteBooking
+    function inCompleteBooking(id) {
+        $('#inCompleteBookingModal').modal('show');
+    }
 </script>

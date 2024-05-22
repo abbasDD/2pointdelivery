@@ -36,8 +36,9 @@
                 <div class="col-md-8">
                     {{-- Map Tracking --}}
                     <div class="card mb-3">
-                        <div class="card-header">
+                        <div class="card-header d-flex align-items-center justify-content-between">
                             <h5 class="mb-0">Tracking Order</h5>
+                            <p class="mb-0 badge bg-primary">{{ $booking->status }}</p>
                         </div>
                         <div class="card-body" style="height: 400px">
                             <div id="map" style="height:100%; width:100%;"></div>

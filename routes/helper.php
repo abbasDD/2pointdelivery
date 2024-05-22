@@ -54,6 +54,7 @@ Route::prefix('helper')->middleware(['auth', 'isHelper'])->name('helper.')->grou
     Route::post('/booking/start/', [BookingController::class, 'start'])->name('booking.start');
     Route::post('/booking/in-transit/', [BookingController::class, 'inTransit'])->name('booking.inTransit');
     Route::post('/booking/complete/', [BookingController::class, 'complete'])->name('booking.complete');
+    Route::post('/booking/incomplete/', [BookingController::class, 'incomplete'])->name('booking.incomplete');
 
 
     // Chat Page Routes

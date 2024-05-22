@@ -68,16 +68,13 @@
     @endif
 
     {{-- Check if insurance is enabled --}}
-    @if (config('insurance') == 1)
-        {{-- Insurance --}}
-        <div class="col-md-6">
-            <label for="insurance">Insurance</label>
-            <div class="input-group mb-3">
-                <select class="form-control" name="insurance" aria-label="Insurance" onchange="updatePaymentAmount()">
-                    <option value="0">No</option>
-                    <option value="1">Yes</option>
-                </select>
-            </div>
+    {{-- Insurance --}}
+    <div class="col-md-6">
+        <label for="insurance">Insurance</label>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Value" id="insurance_value" name="insurance_value"
+                aria-describedby="insurance_value" disabled>
+            <span class="input-group-text text-uppercase" id="insurance_value">$</span>
         </div>
-    @endif
+    </div>
 </div>

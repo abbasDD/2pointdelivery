@@ -252,15 +252,17 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking not started');
         }
 
-        $booking->status = 'in_transit';
-        $booking->save();
-
         // Get booking delivery data
         $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
         if (!$bookingDelivery) {
             return redirect()->back()->with('error', 'Booking delivery not found');
         }
 
+        // Update Booking
+        $booking->status = 'in_transit';
+        $booking->save();
+
+        // Update booking delivery
         $bookingDelivery->start_intransit_at = Carbon::now();
         $bookingDelivery->save();
 
@@ -337,5 +339,44 @@ class BookingController extends Controller
         return redirect()->back()->with('success', 'Booking completed successfully!');
 
         // return view('frontend.bookings.show', compact('booking', 'bookingDelivery', 'helperData', 'clientData'));
+    }
+
+    // incomplete Booking
+    public function incomplete(Request $request)
+    {
+
+        if (!$request->incomplete_reason) {
+            return redirect()->back()->with('error', 'Please provide incomplete reason');
+        }
+
+        $booking = Booking::where('id', $request->id)
+            ->where('helper_user_id', auth()->user()->id)
+            ->first();
+
+        if (!$booking) {
+            return redirect()->back()->with('error', 'Booking not found');
+        }
+
+        if ($booking->status == 'completed') {
+            return redirect()->back()->with('error', 'Booking already completed');
+        }
+
+
+        // Get booking delivery data
+        $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+        if (!$bookingDelivery) {
+            return redirect()->back()->with('error', 'Booking delivery not found');
+        }
+
+        // Update Booking
+        $booking->status = 'incomplete';
+        $booking->save();
+
+        // Update booking delivery
+        $bookingDelivery->incomplete_reason = $request->incomplete_reason;
+        $bookingDelivery->incomplete_booking_at = Carbon::now();
+        $bookingDelivery->save();
+
+        return redirect()->back()->with('success', 'Booking maked as incomplete!');
     }
 }

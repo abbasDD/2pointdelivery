@@ -13,6 +13,7 @@ use App\Models\TaxSetting;
 use App\Models\VehicleType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class FrontendController extends Controller
 {
@@ -99,7 +100,11 @@ class FrontendController extends Controller
         }
 
         // Get package value and calculate insurance
-        $data['insurance_value'] = $this->calculateInsuranceValue($request->package_value);
+        $data['insurance_value'] = 0;
+
+        if ($request->package_value > 0) {
+            $data['insurance_value'] = $this->calculateInsuranceValue($request->package_value);
+        }
 
 
         // Calculate 
@@ -318,12 +323,9 @@ class FrontendController extends Controller
         return $taxPercentage;
     }
 
-
-    // Get client individual tax calculation
-    private function calculateInsuranceValue($package_value)
+    public function calculateInsuranceValue($package_value)
     {
-
-        // Let isurance value to 0;
+        // Initialize insurance value to 0
         $insuranceValue = 0;
 
         // API endpoint
@@ -331,43 +333,48 @@ class FrontendController extends Controller
 
         // Request data
         $data = [
-            'parcel_value' => $package_value,
-            'currency' => 'cad',
+            'parcel_value' => $package_value, // Use the provided package value
+            'currency' => 'usd',
         ];
 
-        // Authorization token
-        $token = 'Bearer 76a994d52c23d2301e3fa6db0fd9ff4b';
+        // Your API credentials
+        $apiIdentifier = 'ab183263d0f51648bbaaf676eeddf8f8';
+        $apiSecretKey = '76a994d52c23d2301e3fa6db0fd9ff4b';
 
-        // Set up cURL
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: ' . $token,
-            'Content-Type: application/json',
-        ]);
+        // Base64 encode the credentials for Basic Authentication
+        $credentials = base64_encode("$apiIdentifier:$apiSecretKey");
 
-        // Execute the request
-        $response = curl_exec($ch);
+        try {
+            // Make the authenticated POST request
+            $response = Http::withHeaders([
+                'cache-control' => 'no-cache',
+                'Authorization' => 'Basic ' . $credentials,
+                'Content-Type' => 'application/json',
+            ])->post($url, $data);
+            // Check for a successful response
+            if ($response->successful()) {
+                // Process the response data as needed
+                $responseData = $response->json();
 
-        // Check for errors
-        if ($response === false) {
-            $error = curl_error($ch);
-            // Handle the error
-            // echo "cURL Error: $error";
-            $insuranceValue = 0;
-        } else {
-            // Decode the response
-            $responseData = json_decode($response, true);
-            // Process the response data as needed
-            $insuranceValue = $responseData;
-            // print_r($responseData);
+                // Extract specific fields from the response
+                if (isset($responseData['data'])) {
+
+                    $insuranceValue = $responseData['data']['value'];
+                } else {
+                    // Handle the case where 'data' is not present
+                    $insuranceValue = 'N/A';
+                }
+            } else {
+                // Handle unsuccessful response
+                $insuranceValue = 'N/A';
+                // Log or handle the error response
+                // Log::error('Error: ' . $response->body());
+            }
+        } catch (\Exception $ex) {
+            // Handle the exception
+            $insuranceValue = 'N/A';
+            // Log::error('Exception: ' . $ex->getMessage());
         }
-
-        // Close cURL
-        curl_close($ch);
 
         return $insuranceValue;
     }

@@ -41,15 +41,20 @@ class CheckIfClientCreated
 
                 $client = Client::create([
                     'user_id' => auth()->user()->id,
-                    'company_enabled' => $helper->company_enabled,
-                    'first_name' => $helper->first_name,
-                    'middle_name' => $helper->middle_name,
-                    'last_name' => $helper->last_name,
-                    'gender' => $helper->gender,
-                    'date_of_birth' => $helper->date_of_birth,
-                    'tax_id' => $helper->tax_id,
-                    'phone_no' => $helper->phone_no,
-                    'profile_image' => $helper->profile_image,
+                    'company_enabled' => $helper->company_enabled ?? 0,
+                    'first_name' => $helper->first_name ?? '',
+                    'middle_name' => $helper->middle_name ?? '',
+                    'last_name' => $helper->last_name ?? '',
+                    'gender' => $helper->gender ?? '',
+                    'date_of_birth' => $helper->date_of_birth ?? '',
+                    'tax_id' => $helper->tax_id ?? '',
+                    'phone_no' => $helper->phone_no ?? '',
+                    'suite' => $helper->suite ?? '',
+                    'street' => $helper->street ?? '',
+                    'city' => $helper->city     ?? '',
+                    'state' => $helper->state ?? '',
+                    'country' => $helper->country ?? '',
+                    'zip_code' => $helper->zip_code ?? '',
                 ]);
             }
             // If not then create a simple client

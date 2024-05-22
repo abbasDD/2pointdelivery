@@ -19,6 +19,7 @@
     var tax_price = 0;
     var volume_enabled = 0;
     var package_value = 0;
+    var insurance_value = 0;
 
     var prioritySettings = {!! json_encode($prioritySettings) !!};
     if (prioritySettings.length > 0) {
@@ -288,6 +289,7 @@
         weight_price = data.weight_price;
         tax_price = data.tax_price;
         amountToPay = data.amountToPay;
+        insurance_value = data.insurance_value;
         document.getElementById('base-price-value').innerHTML = Math.round(base_price * 100) /
             100;
         document.getElementById('distance-price-value').innerHTML = Math.round(distance_price *
@@ -304,5 +306,7 @@
             100) / 100;
         document.getElementById('amount-to-pay-value').innerHTML = Math.round(amountToPay *
             100) / 100;
+        // Set value to insurance_value text field
+        document.getElementById('insurance_value').value = insurance_value;
     }
 </script>

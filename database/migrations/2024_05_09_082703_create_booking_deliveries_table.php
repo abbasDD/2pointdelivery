@@ -35,6 +35,8 @@ return new class extends Migration
             $table->string('complete_booking_image')->nullable();
             $table->string('signatureCompleted')->nullable();
             $table->timestamp('complete_booking_at')->nullable();
+            $table->text('incomplete_reason')->nullable();
+            $table->timestamp('incomplete_booking_at')->nullable();
             $table->timestamps();
         });
     }
