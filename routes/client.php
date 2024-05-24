@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddressBookController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BookingController;
@@ -81,4 +82,13 @@ Route::prefix('client')->middleware(['auth', 'isClient'])->name('client.')->grou
 
     //Track Order
     Route::get('/track-order', [ClientController::class, 'track_order'])->name('trackOrder');
+
+
+    //Address Book
+    Route::get('/address-books', [AddressBookController::class, 'index'])->name('addressBooks');
+    Route::get('/address-book/create/', [AddressBookController::class, 'create'])->name('addressBook.create');
+    Route::post('/address-book/store/', [AddressBookController::class, 'store'])->name('addressBook.store');
+    Route::get('/address-book/edit/{id}', [AddressBookController::class, 'edit'])->name('addressBook.edit');
+    Route::post('/address-book/update', [AddressBookController::class, 'update'])->name('addressBook.update');
+    Route::get('/address-book/show/{id}', [AddressBookController::class, 'show'])->name('addressBook.show');
 });

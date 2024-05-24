@@ -41,4 +41,12 @@ class Client extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get the address books for the client.
+     */
+    public function addressBooks()
+    {
+        return $this->hasMany(AddressBook::class);
+    }
 }

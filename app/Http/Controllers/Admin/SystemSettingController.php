@@ -143,7 +143,7 @@ class SystemSettingController extends Controller
         ]);
 
         // Store values in updated data array
-        $systemSetting = $request->only('website_name', 'currency', 'auto_assign_driver', 'language', 'dimension', 'weight', 'declare_package_value', 'enable_insurance');
+        $systemSetting = $request->only('website_name', 'currency', 'auto_assign_driver', 'language', 'dimension', 'weight', 'declare_package_value', 'insurance');
 
 
         // Upload the website logo

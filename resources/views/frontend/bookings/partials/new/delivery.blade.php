@@ -69,12 +69,14 @@
 
     {{-- Check if insurance is enabled --}}
     {{-- Insurance --}}
-    <div class="col-md-6">
-        <label for="insurance">Insurance</label>
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Value" id="insurance_value" name="insurance_value"
-                aria-describedby="insurance_value" disabled>
-            <span class="input-group-text text-uppercase" id="insurance_value">$</span>
+    @if (config('insurance') == 'enabled')
+        <div class="col-md-6">
+            <label for="insurance">Insurance</label>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Value" id="insurance_value"
+                    name="insurance_value" aria-describedby="insurance_value" disabled>
+                <span class="input-group-text text-uppercase" id="insurance_value">$</span>
+            </div>
         </div>
-    </div>
+    @endif
 </div>

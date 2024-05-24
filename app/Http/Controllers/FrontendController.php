@@ -103,7 +103,11 @@ class FrontendController extends Controller
         $data['insurance_value'] = 0;
 
         if ($request->package_value > 0) {
-            $data['insurance_value'] = $this->calculateInsuranceValue($request->package_value);
+
+            // Check if insurance enabled
+            if (config('insurance') == 'enabled') {
+                $data['insurance_value'] = $this->calculateInsuranceValue($request->package_value);
+            }
         }
 
 

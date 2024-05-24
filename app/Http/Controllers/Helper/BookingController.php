@@ -202,12 +202,12 @@ class BookingController extends Controller
         // Upload booking image
         if ($request->hasFile('start_booking_image')) {
             $file = $request->file('start_booking_image');
-            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            $updatedBookingFilename = time() . '.' . $file->getClientOriginalExtension();
             $destinationPath = public_path('images/bookings/');
-            $file->move($destinationPath, $updatedFilename);
+            $file->move($destinationPath, $updatedBookingFilename);
 
             // Set the profile image attribute to the new file name
-            $start_booking_image = $updatedFilename;
+            $start_booking_image = $updatedBookingFilename;
         }
 
         // Upload signature start image
@@ -307,12 +307,12 @@ class BookingController extends Controller
         // Upload booking image
         if ($request->hasFile('complete_booking_image')) {
             $file = $request->file('complete_booking_image');
-            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            $updatedBookingFilename = time() . '.' . $file->getClientOriginalExtension();
             $destinationPath = public_path('images/bookings/');
-            $file->move($destinationPath, $updatedFilename);
+            $file->move($destinationPath, $updatedBookingFilename);
 
             // Set the profile image attribute to the new file name
-            $complete_booking_image = $updatedFilename;
+            $complete_booking_image = $updatedBookingFilename;
         }
 
         // Upload completed signature image
@@ -369,7 +369,7 @@ class BookingController extends Controller
         }
 
         // Update Booking
-        $booking->status = 'incomplete';
+        $booking->status = 'accepted';
         $booking->save();
 
         // Update booking delivery

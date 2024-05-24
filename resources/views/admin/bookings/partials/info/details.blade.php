@@ -22,9 +22,9 @@
             <p class="mb-0">Dropoff Address</p>
             <h6 class="mb-0">{{ $booking->dropoff_address }}</h6>
         </div>
-        {{-- Delivery Charges: --}}
+        {{-- Helper Fee: --}}
         <div class="d-flex align-items-center justify-content-between mb-3">
-            <p class="mb-0">Delivery Charges:</p>
+            <p class="mb-0">Helper Fee:</p>
             <h6 class="mb-0">${{ $bookingDelivery->helper_fee }}</h6>
         </div>
         {{-- Amount to Pay --}}

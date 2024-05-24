@@ -20,6 +20,7 @@
     var volume_enabled = 0;
     var package_value = 0;
     var insurance_value = 0;
+    var insurance_enabled = {{ config('insurance') == 'enabled' ? 1 : 0 }};
 
     var prioritySettings = {!! json_encode($prioritySettings) !!};
     if (prioritySettings.length > 0) {
@@ -307,6 +308,8 @@
         document.getElementById('amount-to-pay-value').innerHTML = Math.round(amountToPay *
             100) / 100;
         // Set value to insurance_value text field
-        document.getElementById('insurance_value').value = insurance_value;
+        if (insurance_enabled == 1) {
+            document.getElementById('insurance_value').value = insurance_value;
+        }
     }
 </script>

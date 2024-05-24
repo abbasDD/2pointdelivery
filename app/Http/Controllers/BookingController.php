@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Http\Requests\StoreBookingRequest;
 use App\Http\Requests\UpdateBookingRequest;
+use App\Models\AddressBook;
 use App\Models\BookingDelivery;
 use App\Models\Client;
 use App\Models\ClientCompany;
@@ -229,6 +230,29 @@ class BookingController extends Controller
         if (!$paymentBooking) {
             $booking->delete();
             return response()->json(['success' => false, 'data' => 'Unable to create booking']);
+        }
+
+
+        // After successful booking. Store address book for later use
+        // Data to store
+        $addressBookData = [
+            'user_id' => auth()->user()->id,
+            'client_id' => $client->id,
+            'pickup_address' => $booking->pickup_address ?? null,
+            'dropoff_address' => $booking->dropoff_address ?? null,
+            'pickup_latitude' => $booking->pickup_latitude ?? null,
+            'pickup_longitude' => $booking->pickup_longitude ?? null,
+            'dropoff_latitude' => $booking->dropoff_latitude ?? null,
+            'dropoff_longitude' => $booking->dropoff_longitude ?? null,
+            'receiver_name' => $booking->receiver_name ?? null,
+            'receiver_phone' => $booking->receiver_phone ?? null,
+            'receiver_email' => $booking->receiver_email ?? null,
+        ];
+
+        // Check if addressBook already exist with same data
+        $addressBook = AddressBook::where($addressBookData)->first();
+        if (!$addressBook) {
+            $addressBook = AddressBook::create($addressBookData);
         }
 
         // Response json with success

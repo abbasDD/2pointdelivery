@@ -83,4 +83,12 @@ class User extends Authenticatable
     {
         return $this->hasOne(Helper::class);
     }
+
+    /**
+     * Get the address books for the user.
+     */
+    public function addressBooks()
+    {
+        return $this->hasMany(AddressBook::class);
+    }
 }

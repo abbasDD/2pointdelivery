@@ -59,18 +59,19 @@
             @endif
             <li class="nav-item"><a class="nav-link" href="{{ route('client.bookings') }}"><i class="fa fa-dolly"></i>
                     Bookings</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('client.addressBooks') }}"><i
+                        class="fa-solid fa-address-book"></i> Address Book</a></li>
             {{-- <li class="nav-item"><a class="nav-link" href="{{ route('client.invoices') }}"><i
                         class="fa fa-file-invoice"></i>
                     Invoices</a></li> --}}
             <li class="nav-item"><a class="nav-link" href="{{ route('client.chats') }}"><i class="fa fa-comment"></i>
                     Chat</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.referrals') }}"><i
-                        class="fa-solid fa-repeat"></i>
-                    Referrals</a></li>
+                        class="fa-solid fa-repeat"></i> Referrals</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.trackOrder') }}"><i class="fa fa-map"></i>
                     Track Order</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('client.profile') }}"><i class="fa fa-edit"></i> Edit
-                    Profile</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('client.profile') }}"><i class="fa fa-edit"></i>
+                    Edit Profile</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.settings') }}"><i class="fa fa-cog"></i>
                     Settings</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('logout') }}"
