@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AddressBook;
 use App\Models\Booking;
 use App\Models\Client;
 use App\Models\ClientCompany;
@@ -26,7 +27,7 @@ class FrontendController extends Controller
             ->whereHas('serviceCategories', function ($query) {
                 $query->where('is_active', 1);
             })
-            ->where('type', 'delivery')
+            // ->where('type', 'delivery')      // uncomment if you want to use only delivery
             ->get();
         // dd($serviceTypes);
         return view('frontend.index', compact('serviceTypes'));
@@ -216,7 +217,7 @@ class FrontendController extends Controller
             ->whereHas('serviceCategories', function ($query) {
                 $query->where('is_active', 1);
             })
-            ->where('type', 'delivery')
+            // ->where('type', 'delivery')      // uncomment if you want to use only delivery
             ->get();
 
         // Check if service type exist
@@ -262,8 +263,11 @@ class FrontendController extends Controller
             $draftBooking = Booking::where('client_user_id', auth()->user()->id)->where('status', 'draft')->first();
         }
 
+        // Get addresses of user
+        $addresses = AddressBook::where('user_id', auth()->user()->id)->get();
+
         // return view 
-        return view('frontend.bookings.new', compact('serviceTypes', 'serviceCategories', 'prioritySettings', 'draftBooking'));
+        return view('frontend.bookings.new', compact('serviceTypes', 'serviceCategories', 'prioritySettings', 'draftBooking', 'addresses'));
     }
 
     public function fetch_services_categories(Request $request)

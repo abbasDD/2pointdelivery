@@ -3,24 +3,24 @@
     {{-- Receiver Name --}}
     <div class="col-md-6">
         <div class="mb-3">
-            <label for="receiverName">Receiver Name</label>
-            <input type="text" class="form-control" id="receiverName" name="receiver_name"
+            <label for="receiver_name">Receiver Name</label>
+            <input type="text" class="form-control" id="receiver_name" name="receiver_name"
                 placeholder="Enter receiver name" required>
         </div>
     </div>
     {{-- Receiver Email --}}
     <div class="col-md-6">
         <div class="mb-3">
-            <label for="receiverEmail">Receiver Email</label>
-            <input type="email" class="form-control" id="receiverEmail" name="receiver_email"
+            <label for="receiver_email">Receiver Email</label>
+            <input type="email" class="form-control" id="receiver_email" name="receiver_email"
                 placeholder="Enter receiver email">
         </div>
     </div>
     {{-- Receiver Phone --}}
     <div class="col-md-6">
         <div class="mb-3">
-            <label for="receiverPhone">Receiver Phone</label>
-            <input type="text" class="form-control" id="receiverPhone" name="receiver_phone"
+            <label for="receiver_phone">Receiver Phone</label>
+            <input type="text" class="form-control" id="receiver_phone" name="receiver_phone"
                 placeholder="Enter receiver phone" required>
         </div>
     </div>

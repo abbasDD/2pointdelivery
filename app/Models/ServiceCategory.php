@@ -29,6 +29,7 @@ class ServiceCategory extends Model
         'extra_weight_price',
         'helper_fee',
         'volume_enabled',
+        'moving_price_type',
         'is_active'
     ];
 

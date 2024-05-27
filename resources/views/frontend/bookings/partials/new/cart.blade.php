@@ -17,15 +17,27 @@
                 <h6>Priority Price</h6>
                 <p>$<span id="priority-price-value">0</span></p>
             </div>
-            <div class="item">
+            <div class="item delivery d-none">
                 <h6>Vehicle Price</h6>
                 <p>$<span id="vehicle-price-value">0</span></p>
             </div>
             <div class="item moving d-none">
-                <h6>Floor Price</h6>
-                <p>$<span id="floor-price-value">0</span></p>
+                <h6>No of Room Price</h6>
+                <p>$<span id="no-of-room-price-value">0</span></p>
             </div>
-            <div class="item delivery d-none">
+            <div class="item moving d-none">
+                <h6>Floor Plan Price</h6>
+                <p>$<span id="floor-pan-price-value">0</span></p>
+            </div>
+            <div class="item moving d-none">
+                <h6>Floor Access Price</h6>
+                <p>$<span id="floor-access-price-value">0</span></p>
+            </div>
+            <div class="item moving d-none">
+                <h6>Job Details Price</h6>
+                <p>$<span id="job-details-price-value">0</span></p>
+            </div>
+            <div class="item">
                 <h6>Weight Price</h6>
                 <p>$<span id="weight-price-value">0</span></p>
             </div>
@@ -38,7 +50,7 @@
                 <p><span id="booking-distance-value">0</span> KM</p>
             </div>
             <hr>
-            <div class="item delivery d-none">
+            <div class="item">
                 <h6>Tax Price</h6>
                 <p>$<span id="tax-price-value">0</span></p>
             </div>

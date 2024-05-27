@@ -20,8 +20,8 @@
 
         updateRoute();
 
-        var pickupInput = document.getElementById('pickupLocation');
-        var deliveryInput = document.getElementById('deliveryLocation');
+        var pickupInput = document.getElementById('pickup_address');
+        var deliveryInput = document.getElementById('dropoff_address');
 
         var pickupAutocomplete = new google.maps.places.Autocomplete(pickupInput);
         var deliveryAutocomplete = new google.maps.places.Autocomplete(deliveryInput);

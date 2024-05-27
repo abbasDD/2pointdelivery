@@ -7,6 +7,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\GetEstimateController;
 use App\Http\Controllers\StateController;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
@@ -59,8 +60,7 @@ Route::get('/join-helper', [FrontendController::class, 'join_helper'])->name('jo
 
 //Booking Routes
 Route::get('/new-booking', [FrontendController::class, 'newBooking'])->name('newBooking');
-Route::post('/estimate/delivery', [FrontendController::class, 'deliveryBooking'])->name('estimate.delivery'); //Get order details of delivery type booking
-Route::post('/estimate/moving', [FrontendController::class, 'movingBooking'])->name('estimate.moving'); //Get order details of moving type booking
+Route::post('/estimate/index', [GetEstimateController::class, 'index'])->name('estimate.index'); //Get order details
 Route::get('/fetch/service-categories', [FrontendController::class, 'fetch_services_categories'])->name('fetch.service.categories');
 
 // Route Chat Page

@@ -22,9 +22,21 @@
         <div class="row d-flex justify-content-center align-items-center">
             <div class="col-md-12">
                 <form class="booking-form" id="newBookingForm" onsubmit="return getEstimatedFees(event)">
-                    <div class="heading text-center mb-5">
-                        <h2 class="mb-1">Book with Us</h2>
-                        <p>Please fill out the form below to get a quote for your shipment.</p>
+                    <div class="d-flex align-items-center justify-content-between mb-5">
+                        <div class="heading">
+                            <h2 class="mb-1">Book with Us</h2>
+                            <p>Please fill out the form below to get a quote for your shipment.</p>
+                        </div>
+                        @if (count($addresses) > 0)
+                            <div class="options">
+                                <select class="form-control" onchange="setAddressBook(this.value)">
+                                    <option value="0" selected disabled>Load from Addresses</option>
+                                    @foreach ($addresses as $address)
+                                        <option value="{{ $address->id }}">{{ $address->receiver_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
                     </div>
                     {{-- Booking Form --}}
                     <div class="row">
@@ -42,8 +54,8 @@
                                 {{-- Pickup Location --}}
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="pickupLocation">Pickup Location</label>
-                                        <input id="pickupLocation" class="form-control" type="text" name="pickup_address"
+                                        <label for="pickup_address">Pickup Location</label>
+                                        <input id="pickup_address" class="form-control" type="text" name="pickup_address"
                                             placeholder="Enter pickup location"
                                             value="{{ request()->get('pickup_address') }}" required>
                                         <input type="hidden" id="pickup_latitude" name="pickup_latitude"
@@ -55,8 +67,8 @@
                                 {{-- Delivery Location --}}
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="deliveryLocation">Delivery Location</label>
-                                        <input id="deliveryLocation" class="form-control" type="text"
+                                        <label for="dropoff_address">Delivery Location</label>
+                                        <input id="dropoff_address" class="form-control" type="text"
                                             name="dropoff_address" placeholder="Enter delivery location"
                                             value="{{ request()->get('dropoff_address') }}" required>
                                         <input type="hidden" id="dropoff_latitude" name="dropoff_latitude"

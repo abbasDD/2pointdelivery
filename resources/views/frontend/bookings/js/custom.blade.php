@@ -9,6 +9,7 @@
                 div.classList.remove('active-parcel');
             }
         });
+
         // console.log('Here id is:' + id);
         selectedServiceCategoryUuid = id;
         // Call the function to update the payment amount
@@ -81,6 +82,7 @@
                     console.log('Selected Parcel UUID: is ' + data[0].vehicle_price_type);
                     vehicle_price = data[0].vehicle_price;
                     vehicle_price_type = data[0].vehicle_price_type;
+                    moving_price_type = data[0].moving_price_type;
 
                     toggleBackground(selectedServiceCategoryUuid);
                 }
@@ -212,6 +214,8 @@
             $("#movingPackageDetails input").prop("required", true);
             $("#deliveryPackageDetails input").prop("required", false);
 
+
+
             // Hide and Show Prices
             $(".calculated-amount .moving").removeClass("d-none");
             $(".calculated-amount .delivery").addClass("d-none");
@@ -286,5 +290,56 @@
         console.log('Total Price is : ' + payment_extra_weight_price)
 
         return base_price + distance_price + weight_price + priorityPriceValue + vehicle_price_value;
+    }
+
+    // toggleInsurance
+    function toggleInsurance() {
+        // get the value
+        let insurance_enabled = $('#insurance_enabled').val();
+        if (insurance_enabled == 'yes') {
+            $('#insurance_value_div').removeClass('d-none');
+        } else {
+            $('#insurance_value_div').addClass('d-none');
+        }
+
+        // Call the function updatePaymentAmount
+        updatePaymentAmount();
+    }
+
+    // setAddressBook
+    function setAddressBook(id) {
+        // get the value
+        // let address_book = $('#address_book').val();
+        console.log(id);
+
+        // Get the address from address book id
+
+        for (let i = 0; i < addresses.length; i++) {
+            if (addresses[i].id == id) {
+                addressBook = addresses[i];
+                console.log(addressBook);
+            }
+        }
+
+        // Set the address values to input fields
+
+        // pickup_address
+        $('#pickup_address').val(addressBook.pickup_address);
+        $('#pickup_latitude').val(addressBook.pickup_latitude);
+        $('#pickup_longitude').val(addressBook.pickup_longitude);
+
+        // dropoff_address
+        $('#dropoff_address').val(addressBook.dropoff_address);
+        $('#dropoff_latitude').val(addressBook.dropoff_latitude);
+        $('#dropoff_longitude').val(addressBook.dropoff_longitude);
+
+        // receiver details
+        $('#receiver_name').val(addressBook.receiver_name);
+        $('#receiver_phone').val(addressBook.receiver_phone);
+        $('#receiver_email').val(addressBook.receiver_email);
+
+
+        updateRoute();
+
     }
 </script>

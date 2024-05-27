@@ -71,7 +71,16 @@
     {{-- Insurance --}}
     @if (config('insurance') == 'enabled')
         <div class="col-md-6">
-            <label for="insurance">Insurance</label>
+            <label for="insurance_enabled">Insurance Enable</label>
+            <select class="form-control mb-3" id="insurance_enabled" name="insurance_enabled"
+                onchange="toggleInsurance()">
+                <option value="yes">Yes</option>
+                <option value="no" selected>No</option>
+            </select>
+
+        </div>
+        <div class="col-md-6 d-none" id="insurance_value_div">
+            <label for="insurance">Insurance Value</label>
             <div class="input-group mb-3">
                 <input type="text" class="form-control" placeholder="Value" id="insurance_value"
                     name="insurance_value" aria-describedby="insurance_value" disabled>

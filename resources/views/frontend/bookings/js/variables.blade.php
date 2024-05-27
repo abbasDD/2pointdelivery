@@ -27,6 +27,9 @@
         priorityID = prioritySettings[0].id;
     }
 
+    // Store addresses to JS array
+    var addresses = {!! json_encode($addresses) !!};
+
     // Booking Payment Variables
     var payment_base_price = 0;
     var payment_distance = 0;
@@ -41,6 +44,7 @@
 
     // Check Service Type
     var selectedServiceType = 'delivery';
+    var moving_price_type = 'hour';
     var selectedServiceTypeID = {{ request()->get('serviceType') ? request()->get('serviceType') : 1 }};
 
     // Store $serviceCategories to JS array
@@ -52,6 +56,7 @@
         vehicle_price = serviceCategories[0].vehicle_price;
         vehicle_price_type = serviceCategories[0].vehicle_price_type;
         selectedParcelTypeSecureshipEnable = serviceCategories[0].is_secureship_enabled;
+        moving_price_type = serviceCategories[0].moving_price_type;
         // Update payment details
         payment_base_price = serviceCategories[0].base_price;
         payment_base_distance = serviceCategories[0].base_distance;
@@ -97,6 +102,7 @@
             vehicle_price = serviceCategories[0].vehicle_price;
             vehicle_price_type = serviceCategories[0].vehicle_price_type;
             volume_enabled = serviceCategories[0].volume_enabled;
+            moving_price_type = serviceCategories[0].moving_price_type;
         }
 
         // Get data on selected uuid
@@ -119,6 +125,7 @@
                 vehicle_price = serviceCategories[i].vehicle_price;
                 vehicle_price_type = serviceCategories[i].vehicle_price_type;
                 volume_enabled = serviceCategories[i].volume_enabled;
+                moving_price_type = serviceCategories[i].moving_price_type;
 
                 helper_fee = serviceCategories[i].helper_fee;
 
@@ -134,6 +141,29 @@
         for (let i = 0; i < prioritySettings.length; i++) {
             if (prioritySettings[i].id == priorityID) {
                 priorityPriceValue = prioritySettings[i].price;
+            }
+        }
+
+        // if service type is moving
+        if (selectedServiceType == 'moving') {
+            if (moving_price_type == 'hour') {
+                $("#floor_size_div").addClass("d-none");
+                $("#no_of_hours_div").removeClass("d-none");
+
+                // add required attribute to no_of_hours
+                document.querySelector('input[name="no_of_hours"]').setAttribute('required', 'required');
+
+                // remove required attribute from floor_size
+                document.querySelector('input[name="floor_size"]').removeAttribute('required');
+            } else {
+                $("#floor_size_div").removeClass("d-none");
+                $("#no_of_hours_div").addClass("d-none");
+
+                // remove required attribute from no_of_hours
+                document.querySelector('input[name="no_of_hours"]').removeAttribute('required');
+
+                // add required attribute to floor_size
+                document.querySelector('input[name="floor_size"]').setAttribute('required', 'required');
             }
         }
 
@@ -239,6 +269,7 @@
         formData.append('distance_in_km', distance_in_km); // distance
         formData.append('selectedServiceType', selectedServiceType); // service type
         formData.append('selectedServiceTypeID', selectedServiceTypeID); // service type
+        formData.append('moving_price_type', moving_price_type); // moving_price_type
         formData.append('selectedServiceCategoryUuid', selectedServiceCategoryUuid); // parcel type
         formData.append('priorityID', priorityID); // priority
         formData.append('package_weight', package_weight); // package_weight
@@ -255,13 +286,26 @@
         }
         formData.append('package_value', package_value);
 
+        // Get value of floor_size
+        floor_size = document.querySelector('input[name="floor_size"]').value;
+        if (floor_size == '') {
+            floor_size = 1;
+        }
+        formData.append('floor_size', floor_size);
+
+        // Get value of no_of_hours
+        no_of_hours = document.querySelector('input[name="no_of_hours"]').value;
+        if (no_of_hours == '') {
+            no_of_hours = 1;
+        }
+        formData.append('no_of_hours', no_of_hours);
 
 
         console.log(formData);
 
         // Call Ajax
         $.ajax({
-            url: "{{ route('estimate.delivery') }}",
+            url: "{{ route('estimate.index') }}",
             type: 'POST',
             data: formData,
             cache: false,
@@ -291,6 +335,10 @@
         tax_price = data.tax_price;
         amountToPay = data.amountToPay;
         insurance_value = data.insurance_value;
+        no_of_room_price = data.no_of_room_price;
+        floor_plan_price = data.floor_plan_price;
+        floor_access_price = data.floor_access_price;
+        job_details_price = data.job_details_price;
         document.getElementById('base-price-value').innerHTML = Math.round(base_price * 100) /
             100;
         document.getElementById('distance-price-value').innerHTML = Math.round(distance_price *
@@ -306,6 +354,14 @@
         document.getElementById('tax-price-value').innerHTML = Math.round(tax_price *
             100) / 100;
         document.getElementById('amount-to-pay-value').innerHTML = Math.round(amountToPay *
+            100) / 100;
+        document.getElementById('no-of-room-price-value').innerHTML = Math.round(no_of_room_price *
+            100) / 100;
+        document.getElementById('floor-pan-price-value').innerHTML = Math.round(floor_plan_price *
+            100) / 100;
+        document.getElementById('floor-access-price-value').innerHTML = Math.round(floor_access_price *
+            100) / 100;
+        document.getElementById('job-details-price-value').innerHTML = Math.round(job_details_price *
             100) / 100;
         // Set value to insurance_value text field
         if (insurance_enabled == 1) {

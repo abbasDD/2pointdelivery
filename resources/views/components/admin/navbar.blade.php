@@ -85,6 +85,10 @@
                 <a class="nav-link" href="{{ route('admin.chats') }}"><i class="fa fa-comment"></i>
                     Chat</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.movingConfig') }}"><i class="fa fa-comment"></i>
+                    Moving Config</a>
+            </li>
             {{-- <li class="nav-item has-submenu">
                 <a class="nav-link" href="#"> <i class="fa fa-cog"></i> Settings </a>
                 <ul class="submenu collapse">

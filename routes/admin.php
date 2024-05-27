@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\HelperController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\KycDetailController;
 use App\Http\Controllers\Admin\MessageController;
+use App\Http\Controllers\Admin\MovingConfigController;
 use App\Http\Controllers\Admin\PaymentSettingController;
 use App\Http\Controllers\Admin\PrioritySettingController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
@@ -101,6 +102,9 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     Route::post('/service-category/update-status', [ServiceCategoryController::class, 'updateStatus'])->name('serviceCategory.updateStatus');
     Route::get('/service-category/list/{id}', [ServiceCategoryController::class, 'getVehicleTypes'])->name('serviceCategory.list');
 
+    // Moving Configuration Page Routes
+    Route::get('/moving-config', [MovingConfigController::class, 'index'])->name('movingConfig');
+    Route::post('/moving-config/update', [MovingConfigController::class, 'update'])->name('movingConfig.update');
 
     // Bookings Page Routes
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings');
