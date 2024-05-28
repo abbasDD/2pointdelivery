@@ -21,6 +21,15 @@
     var package_value = 0;
     var insurance_value = 0;
     var insurance_enabled = {{ config('insurance') == 'enabled' ? 1 : 0 }};
+    var no_of_room_enabled = 0;
+    var floor_plan_enabled = 0;
+    var floor_assess_enabled = 0;
+    var job_details_enabled = 0;
+    var selectedNoOfRoomID = 0;
+    var selectedFloorPlanID = 0;
+    var selectedFloorAssessID = 0;
+    var selectedJobDetailsID = [];
+
 
     var prioritySettings = {!! json_encode($prioritySettings) !!};
     if (prioritySettings.length > 0) {
@@ -64,6 +73,11 @@
         payment_base_weight = serviceCategories[0].base_weight;
         payment_extra_weight_price = serviceCategories[0].extra_weight_price;
         volume_enabled = serviceCategories[0].volume_enabled;
+        no_of_room_enabled = serviceCategories[0].no_of_room_enabled;
+        floor_plan_enabled = serviceCategories[0].floor_plan_enabled;
+        floor_assess_enabled = serviceCategories[0].floor_assess_enabled;
+        job_details_enabled = serviceCategories[0].job_details_enabled;
+        updateMovingFormFields();
         // console.log('Selected category vehicle price is ' + serviceCategories[0]);
     }
     // Store $prioritySettings to JS array
@@ -95,6 +109,8 @@
     function updatePaymentAmount() {
         console.log('Distance: ' + distance_in_km);
 
+        updateMovingPackageDetails();
+
         // If selectedServiceCategoryUuid is empty
         if (selectedServiceCategoryUuid == '') {
             // Get from first service type from serviceCategories
@@ -103,6 +119,11 @@
             vehicle_price_type = serviceCategories[0].vehicle_price_type;
             volume_enabled = serviceCategories[0].volume_enabled;
             moving_price_type = serviceCategories[0].moving_price_type;
+            no_of_room_enabled = serviceCategories[0].no_of_room_enabled;
+            floor_plan_enabled = serviceCategories[0].floor_plan_enabled;
+            floor_assess_enabled = serviceCategories[0].floor_assess_enabled;
+            job_details_enabled = serviceCategories[0].job_details_enabled;
+            updateMovingFormFields();
         }
 
         // Get data on selected uuid
@@ -126,6 +147,12 @@
                 vehicle_price_type = serviceCategories[i].vehicle_price_type;
                 volume_enabled = serviceCategories[i].volume_enabled;
                 moving_price_type = serviceCategories[i].moving_price_type;
+
+                no_of_room_enabled = serviceCategories[i].no_of_room_enabled;
+                floor_plan_enabled = serviceCategories[i].floor_plan_enabled;
+                floor_assess_enabled = serviceCategories[i].floor_assess_enabled;
+                job_details_enabled = serviceCategories[i].job_details_enabled;
+                updateMovingFormFields();
 
                 helper_fee = serviceCategories[i].helper_fee;
 
@@ -251,7 +278,7 @@
 
     // Calculate amount to pay
     function calculateDeliveryEstimateUsingAjax() {
-        console.log('Function calling ' + selectedServiceCategoryUuid);
+        console.log('Function calling ' + floor_assess_enabled);
 
         // Create a form data and appnd data
         var formData = new FormData();
@@ -277,6 +304,10 @@
         formData.append('package_width', package_width); // package_width
         formData.append('package_height', package_height); // package_height
         formData.append('calculated_weight', calculated_weight); // calculated_weight
+        formData.append('selectedNoOfRoomID', selectedNoOfRoomID); // selectedNoOfRoomID
+        formData.append('selectedFloorPlanID', selectedFloorPlanID); // selectedFloorPlanID
+        formData.append('selectedFloorAssessID', selectedFloorAssessID); // selectedFloorAssessID
+        formData.append('selectedJobDetailsID', selectedJobDetailsID); // selectedJobDetailsID
 
         // Get declared value of package
         package_value = document.querySelector('input[name="package_value"]').value;
@@ -337,7 +368,7 @@
         insurance_value = data.insurance_value;
         no_of_room_price = data.no_of_room_price;
         floor_plan_price = data.floor_plan_price;
-        floor_access_price = data.floor_access_price;
+        floor_assess_price = data.floor_assess_price;
         job_details_price = data.job_details_price;
         document.getElementById('base-price-value').innerHTML = Math.round(base_price * 100) /
             100;
@@ -359,13 +390,45 @@
             100) / 100;
         document.getElementById('floor-pan-price-value').innerHTML = Math.round(floor_plan_price *
             100) / 100;
-        document.getElementById('floor-access-price-value').innerHTML = Math.round(floor_access_price *
+        document.getElementById('floor-access-price-value').innerHTML = Math.round(floor_assess_price *
             100) / 100;
         document.getElementById('job-details-price-value').innerHTML = Math.round(job_details_price *
             100) / 100;
         // Set value to insurance_value text field
         if (insurance_enabled == 1) {
             document.getElementById('insurance_value').value = insurance_value;
+        }
+    }
+
+    // Update the moving fields as per the service type selected
+    function updateMovingFormFields() {
+
+        // No of Rooms div
+        if (no_of_room_enabled == 1) {
+            $("#no_of_rooms_div").removeClass("d-none");
+        } else {
+            $("#no_of_rooms_div").addClass("d-none");
+        }
+
+        // Floor Plan div
+        if (floor_plan_enabled == 1) {
+            $("#floor_plan_div").removeClass("d-none");
+        } else {
+            $("#floor_plan_div").addClass("d-none");
+        }
+
+        // Floor Access div
+        if (floor_assess_enabled == 1) {
+            $("#floor_assess_div").removeClass("d-none");
+        } else {
+            $("#floor_assess_div").addClass("d-none");
+        }
+
+        // Job Details div
+        if (job_details_enabled == 1) {
+            $("#job_details_div").removeClass("d-none");
+        } else {
+            $("#job_details_div").addClass("d-none");
         }
     }
 </script>

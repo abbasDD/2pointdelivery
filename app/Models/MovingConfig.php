@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MovingConfig extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -22,9 +23,20 @@ class MovingConfig extends Model
      * @var array
      */
     protected $fillable = [
-        'no_of_room_price',
-        'floor_plan_price',
-        'floor_access_price',
-        'job_details_price',
+        'uuid',
+        'type',
+        'name',
+        'description',
+        'price',
+        'helper_fee',
+        'is_active',
+        'is_deleted',
     ];
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
 }

@@ -13,10 +13,15 @@ return new class extends Migration
     {
         Schema::create('moving_configs', function (Blueprint $table) {
             $table->id();
-            $table->string('no_of_room_price')->nullable();
-            $table->string('floor_plan_price')->nullable();
-            $table->string('floor_access_price')->nullable();
-            $table->string('job_details_price')->nullable();
+            $table->string('uuid')->unique();
+            $table->string('type')->nullable();
+            $table->string('name')->nullable();
+            $table->string('description')->nullable();
+            $table->string('price')->nullable();
+            $table->string('helper_fee')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->boolean('is_deleted')->default(false);
+            $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });
     }

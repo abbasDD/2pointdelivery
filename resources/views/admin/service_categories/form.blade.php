@@ -253,7 +253,7 @@
                     id="moving_price_type" name="moving_price_type">
                     {{-- <option value="" selected disabled>Choose Price Type</option> --}}
                     <option value="hour" @if (old('moving_price_type', $serviceCategory['moving_price_type'] ?? '') == 'hour') selected @endif>No of Hours</option>
-                    <option value="sqm" @if (old('moving_price_type', $serviceCategory['moving_price_type'] ?? '') == 'day') selected @endif>Floor Size (SQM)</option>
+                    <option value="sqm" @if (old('moving_price_type', $serviceCategory['moving_price_type'] ?? '') == 'sqm') selected @endif>Floor Size (SQM)</option>
                 </select>
                 @error('moving_price_type')
                     <span class="invalid-feedback" role="alert">
@@ -262,6 +262,103 @@
                 @enderror
             </div>
         </div>
+
+        {{-- Rooms Enabled --}}
+        <div class="col-md-6 moving-field" id="no_of_room_enabled_div">
+            <div class="form-group mb-3">
+                <label for="no_of_room_enabled">Rooms Enabled</label>
+                <select class="form-control input-field @error('no_of_room_enabled') is-invalid @enderror"
+                    id="no_of_room_enabled" name="no_of_room_enabled" required>
+                    {{-- <option value="" selected disabled>Choose Volume Status</option> --}}
+                    <option value="1"
+                        {{ old('no_of_room_enabled', $serviceCategory['no_of_room_enabled'] ?? '') == 1 ? 'selected' : '' }}>
+                        Enabled
+                    </option>
+                    <option value="0"
+                        {{ old('no_of_room_enabled', $serviceCategory['no_of_room_enabled'] ?? '') == 0 ? 'selected' : '' }}>
+                        Disabled
+                    </option>
+                </select>
+                @error('no_of_room_enabled')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
+        </div>
+
+        {{-- Floor Plan Enabled --}}
+        <div class="col-md-6 moving-field" id="floor_plan_enabled_div">
+            <div class="form-group mb-3">
+                <label for="floor_plan_enabled">Floor Plan</label>
+                <select class="form-control input-field @error('floor_plan_enabled') is-invalid @enderror"
+                    id="floor_plan_enabled" name="floor_plan_enabled" required>
+                    {{-- <option value="" selected disabled>Choose Volume Status</option> --}}
+                    <option value="1"
+                        {{ old('floor_plan_enabled', $serviceCategory['floor_plan_enabled'] ?? '') == 1 ? 'selected' : '' }}>
+                        Enabled
+                    </option>
+                    <option value="0"
+                        {{ old('floor_plan_enabled', $serviceCategory['floor_plan_enabled'] ?? '') == 0 ? 'selected' : '' }}>
+                        Disabled
+                    </option>
+                </select>
+                @error('floor_plan_enabled')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
+        </div>
+
+        {{-- Floor Access Enabled --}}
+        <div class="col-md-6 moving-field" id="floor_assess_enabled_div">
+            <div class="form-group mb-3">
+                <label for="floor_assess_enabled">Floor Access</label>
+                <select class="form-control input-field @error('floor_assess_enabled') is-invalid @enderror"
+                    id="floor_assess_enabled" name="floor_assess_enabled" required>
+                    {{-- <option value="" selected disabled>Choose Volume Status</option> --}}
+                    <option value="1"
+                        {{ old('floor_assess_enabled', $serviceCategory['floor_assess_enabled'] ?? '') == 1 ? 'selected' : '' }}>
+                        Enabled
+                    </option>
+                    <option value="0"
+                        {{ old('floor_assess_enabled', $serviceCategory['floor_assess_enabled'] ?? '') == 0 ? 'selected' : '' }}>
+                        Disabled
+                    </option>
+                </select>
+                @error('floor_assess_enabled')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
+        </div>
+
+        {{-- Job Details Enabled --}}
+        <div class="col-md-6 moving-field" id="job_details_enabled_div">
+            <div class="form-group mb-3">
+                <label for="job_details_enabled">Floor Access</label>
+                <select class="form-control input-field @error('job_details_enabled') is-invalid @enderror"
+                    id="job_details_enabled" name="job_details_enabled" required>
+                    {{-- <option value="" selected disabled>Choose Volume Status</option> --}}
+                    <option value="1"
+                        {{ old('job_details_enabled', $serviceCategory['job_details_enabled'] ?? '') == 1 ? 'selected' : '' }}>
+                        Enabled
+                    </option>
+                    <option value="0"
+                        {{ old('job_details_enabled', $serviceCategory['job_details_enabled'] ?? '') == 0 ? 'selected' : '' }}>
+                        Disabled
+                    </option>
+                </select>
+                @error('job_details_enabled')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
+        </div>
+
     </div>
 
 

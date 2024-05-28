@@ -29,6 +29,10 @@ return new class extends Migration
             $table->string('helper_fee')->nullable()->default('0');
             $table->string('volume_enabled')->nullable()->default('0');
             $table->string('moving_price_type')->nullable()->default('hour');
+            $table->string('no_of_room_enabled')->nullable()->default('0');
+            $table->string('floor_plan_enabled')->nullable()->default('0');
+            $table->string('floor_assess_enabled')->nullable()->default('0');
+            $table->string('job_details_enabled')->nullable()->default('0');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 

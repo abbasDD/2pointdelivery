@@ -23,73 +23,70 @@
         </div>
     </div>
     {{-- No of Rooms --}}
-    <div class="col-md-6">
+    <div class="col-md-6" id="no_of_rooms_div">
         <label for="floorPlan">No of Rooms</label>
         <div class="input-group mb-3">
             <select class="form-control moving-field" name="no_of_rooms" aria-label="No of Rooms"
                 onchange="updatePaymentAmount()">
-                <option value="studio">Studio</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="6+">6+</option>
-
+                @forelse($no_of_rooms as $noOfRoom)
+                    <option value="{{ $noOfRoom->id }}">{{ $noOfRoom->name }}</option>
+                @empty
+                    <option value="1">Studio</option>
+                @endforelse
             </select>
         </div>
     </div>
     {{-- Floor Plan --}}
-    <div class="col-md-6">
+    <div class="col-md-6" id="floor_plan_div">
         <label for="floorPlan">Floor Plan</label>
         <div class="input-group mb-3">
             <select class="form-control moving-field" name="floor_plan" aria-label="Floor Plan"
                 onchange="updatePaymentAmount()">
-                <option value="ground">Ground Floor</option>
-                <option value="1st">1st Floor</option>
-                <option value="2nd">2nd Floor</option>
-                <option value="3rd">3rd Floor</option>
-                <option value="4th">4th Floor</option>
-                <option value="5th">5th Floor</option>
-                <option value="5th+">5th+ Floor</option>
+                @forelse($floor_plans as $floor_plan)
+                    <option value="{{ $floor_plan->id }}">{{ $floor_plan->name }}</option>
+                @empty
+                    <option value="1">Ground</option>
+                @endforelse
             </select>
         </div>
     </div>
-    {{-- Floor Assess --}}
-    <div class="col-md-6">
-        <label for="floorAssess">Floor Assess</label>
+    {{-- Floor Access --}}
+    <div class="col-md-6" id="floor_assess_div">
+        <label for="floorAssess">Floor Access</label>
         <div class="input-group mb-3">
-            <select class="form-control moving-field" name="floor_assess" aria-label="Floor Assess"
+            <select class="form-control moving-field" name="floor_assess" aria-label="Floor Access"
                 onchange="updatePaymentAmount()">
-                <option value="elevator">Elevator</option>
-                <option value="stairs">Stairs</option>
+                @forelse($floor_assess as $item)
+                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                @empty
+                    <option value="1">Ground</option>
+                @endforelse
             </select>
         </div>
     </div>
     {{-- Job Details --}}
-    <div class="col-md-12">
+    <div class="col-md-12" id="job_details_div">
         <label for="jobDetails">Job Details</label>
         <div class="row form-group mx-3 mb-3">
-            <div class="col-md-4 form-check">
-                <input class="form-check-input" type="checkbox" name="job_details[]" value="packing" id="packing">
-                <label class="form-check-label" for="packing">
-                    Packing
-                </label>
-            </div>
-            <div class="col-md-4 form-check">
-                <input class="form-check-input" type="checkbox" name="job_details[]" value="loading" id="loading">
-                <label class="form-check-label" for="loading">
-                    Loading
-                </label>
-            </div>
-            <div class="col-md-4 form-check">
-                <input class="form-check-input" type="checkbox" name="job_details[]" value="off_loading"
-                    id="off_loading">
-                <label class="form-check-label" for="off_loading">
-                    Off Loading
-                </label>
-            </div>
+            @forelse($job_details as $item)
+                <div class="col-md-4 form-check">
+                    <input class="form-check-input" type="checkbox" name="job_details[]" value="{{ $item->uuid }}"
+                        id="{{ $item->uuid }}">
+                    <label class="form-check-label" for="{{ $item->uuid }}">
+                        {{ $item->name }}
+                    </label>
+                </div>
+            @empty
+                <div class="col-md-4 form-check">
+                    <input class="form-check-input" type="checkbox" name="job_details[]" value="loading" id="loading">
+                    <label class="form-check-label" for="loading">
+                        Loading
+                    </label>
+                </div>
+            @endforelse
+
+
+
         </div>
     </div>
     {{-- Moving Details --}}

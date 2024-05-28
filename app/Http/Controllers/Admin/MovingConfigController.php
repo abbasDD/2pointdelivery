@@ -22,18 +22,16 @@ class MovingConfigController extends Controller
 
     public function index()
     {
-        $movingConfig = MovingConfig::first();
+        $noOfRooms = MovingConfig::where('type', 'no_of_rooms')->paginate(10);
 
-        if (!$movingConfig) {
-            $movingConfig = new MovingConfig();
-            $movingConfig->no_of_room_price = 1;
-            $movingConfig->floor_plan_price = 1;
-            $movingConfig->floor_access_price = 1;
-            $movingConfig->job_details_price = 1;
-            $movingConfig->save();
-        }
+        $floorPlans = MovingConfig::where('type', 'floor_plan')->paginate(10);
 
-        return view('admin.movingConfig.index', compact('movingConfig'));
+        $floorAssess = MovingConfig::where('type', 'floor_assess')->paginate(10);
+
+        $jobDetails = MovingConfig::where('type', 'job_details')->paginate(10);
+
+
+        return view('admin.movingConfig.index', compact('noOfRooms', 'floorPlans', 'floorAssess', 'jobDetails'));
     }
 
 

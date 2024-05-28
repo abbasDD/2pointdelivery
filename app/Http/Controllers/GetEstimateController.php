@@ -52,9 +52,9 @@ class GetEstimateController extends Controller
             ]);
         }
 
+
         // Get package value and calculate insurance
         $data['insurance_value'] = $this->getInsuranceValue($request->selectedServiceType, $request->package_value);
-
 
         // Get Base Price Value
         $data['base_price'] = $this->getBasePrice($serviceType->type, $serviceCategory->base_price, $serviceCategory->moving_price_type, $request->floor_size, $request->no_of_hours);
@@ -75,30 +75,27 @@ class GetEstimateController extends Controller
         // If service type is moving
         $data['no_of_room_price'] = 0;
         $data['floor_plan_price'] = 0;
-        $data['floor_access_price'] = 0;
+        $data['floor_assess_price'] = 0;
         $data['job_details_price'] = 0;
 
         if ($serviceType->type == 'moving') {
-            // Get moving config
-            $movingConfig = MovingConfig::first();
-            if ($movingConfig) {
+            // Get Room Price
+            $data['no_of_room_price'] = $this->getNoOfRoomPrice($request->selectedNoOfRoomID, $serviceCategory, $request->floor_size, $request->no_of_hours);
 
-                if ($serviceCategory->moving_price_type == 'sqm') {
-                    $data['no_of_room_price'] = $movingConfig->no_of_room_price * $request->floor_size;
-                    $data['floor_plan_price'] = $movingConfig->floor_plan_price * $request->floor_size;
-                    $data['floor_access_price'] = $movingConfig->floor_access_price * $request->floor_size;
-                    $data['job_details_price'] = $movingConfig->job_details_price * $request->floor_size;
-                } else {
-                    $data['no_of_room_price'] = $movingConfig->no_of_room_price * $request->no_of_hours;
-                    $data['floor_plan_price'] = $movingConfig->floor_plan_price * $request->no_of_hours;
-                    $data['floor_access_price'] = $movingConfig->floor_access_price * $request->no_of_hours;
-                    $data['job_details_price'] = $movingConfig->job_details_price * $request->no_of_hours;
-                }
+            // Get Floor Plan Price
+            $data['floor_plan_price'] = $this->getFloorPlanPrice($request->selectedFloorPlanID, $serviceCategory, $request->floor_size, $request->no_of_hours);
+
+            // Get Floor Access Price
+            $data['floor_assess_price'] = $this->getFloorAssessPrice($request->selectedFloorAssessID, $serviceCategory, $request->floor_size, $request->no_of_hours);
+
+            // Get Job Details Price
+            if ($request->selectedJobDetailsID != '') {
+                $data['job_details_price'] = $this->getJobDetailsPrice($request->selectedJobDetailsID, $serviceCategory, $request->floor_size, $request->no_of_hours);
             }
         }
 
         // Sub Total
-        $data['sub_total'] = $data['base_price'] + $data['distance_price'] + $data['priority_price'] + $data['vehicle_price'] + $data['weight_price'] + $data['no_of_room_price'] + $data['floor_plan_price'] + $data['floor_access_price'] + $data['job_details_price'];
+        $data['sub_total'] = $data['base_price'] + $data['distance_price'] + $data['priority_price'] + $data['vehicle_price'] + $data['weight_price'] + $data['no_of_room_price'] + $data['floor_plan_price'] + $data['floor_assess_price'] + $data['job_details_price'];
 
 
         //  Tax Price
@@ -229,6 +226,114 @@ class GetEstimateController extends Controller
         }
 
         return $weight_price;
+    }
+
+    // getNoOfRoomPrice
+    private function getNoOfRoomPrice($selectedNoOfRoomID, $serviceCategory,  $floor_size, $no_of_hours)
+    {
+        // Get selected no of room id
+        $noOfRoomData = MovingConfig::where('id', $selectedNoOfRoomID)->where('type', 'no_of_rooms')->first();
+        if (!$noOfRoomData) {
+            return 0;
+        }
+
+        if ($serviceCategory->no_of_room_enabled == 0) {
+            return 0;
+        }
+
+        if ($serviceCategory->moving_price_type == 'hour') {
+            return $no_of_hours * $noOfRoomData->price;
+        }
+
+        if ($serviceCategory->moving_price_type == 'sqm') {
+            return $floor_size * $noOfRoomData->price;
+        }
+
+        return 0;
+    }
+
+    // getFloorPlanPrice
+    private function getFloorPlanPrice($selectedFloorPlanID, $serviceCategory,  $floor_size, $no_of_hours)
+    {
+        // Get selected no of room id
+        $floorPlanData = MovingConfig::where('id', $selectedFloorPlanID)->where('type', 'floor_plan')->first();
+        if (!$floorPlanData) {
+            return 0;
+        }
+
+        if ($serviceCategory->floor_plan_enabled == 0) {
+            return 0;
+        }
+
+        if ($serviceCategory->moving_price_type == 'hour') {
+            return $no_of_hours * $floorPlanData->price;
+        }
+
+        if ($serviceCategory->moving_price_type == 'sqm') {
+            return $floor_size * $floorPlanData->price;
+        }
+
+        return 0;
+    }
+
+    // getFloorAssessPrice
+    private function getFloorAssessPrice($selectedFloorAssessID, $serviceCategory,  $floor_size, $no_of_hours)
+    {
+        // Get selected no of room id
+        $floorAssessData = MovingConfig::where('id', $selectedFloorAssessID)->where('type', 'floor_assess')->first();
+        if (!$floorAssessData) {
+            return 0;
+        }
+
+        if ($serviceCategory->floor_assess_enabled == 0) {
+            return 0;
+        }
+
+        if ($serviceCategory->moving_price_type == 'hour') {
+            return $no_of_hours * $floorAssessData->price;
+        }
+
+        if ($serviceCategory->moving_price_type == 'sqm') {
+            return $floor_size * $floorAssessData->price;
+        }
+
+        return 0;
+    }
+
+    // getJobDetailsPrice
+    private function getJobDetailsPrice($selectedJobDetailsID, $serviceCategory,  $floor_size, $no_of_hours)
+    {
+        // Split $selectedFloorAssessID into array
+        $selectedJobDetailsIDs = explode(',', $selectedJobDetailsID);
+        if (count($selectedJobDetailsIDs) == 0) {
+            return 0;
+        }
+
+        $selectedJobDetailsPrice = 0;
+
+        // Loop through selectedJobDetailsIDs
+        foreach ($selectedJobDetailsIDs as $selectedJobDetailsID) {
+            // Get selected no of room id
+            $jobDetailsData = MovingConfig::where('uuid', $selectedJobDetailsID)->where('type', 'job_details')->first();
+            if (!$jobDetailsData) {
+                continue;
+            }
+
+            if ($serviceCategory->job_details_enabled == 0) {
+                continue;
+            }
+
+            if ($serviceCategory->moving_price_type == 'hour') {
+                $selectedJobDetailsPrice += $no_of_hours * $jobDetailsData->price;
+            }
+
+            if ($serviceCategory->moving_price_type == 'sqm') {
+                $selectedJobDetailsPrice += $floor_size * $jobDetailsData->price;
+            }
+        }
+
+
+        return $selectedJobDetailsPrice;
     }
 
     // Get tax price

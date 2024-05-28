@@ -6,11 +6,15 @@ use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\FloorAssessController;
+use App\Http\Controllers\Admin\FloorPlanController;
 use App\Http\Controllers\Admin\HelperController;
 use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\Admin\JobDetailController;
 use App\Http\Controllers\Admin\KycDetailController;
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\MovingConfigController;
+use App\Http\Controllers\Admin\NoOfRoomController;
 use App\Http\Controllers\Admin\PaymentSettingController;
 use App\Http\Controllers\Admin\PrioritySettingController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
@@ -103,9 +107,39 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     Route::get('/service-category/list/{id}', [ServiceCategoryController::class, 'getVehicleTypes'])->name('serviceCategory.list');
 
     // Moving Configuration Page Routes
-    Route::get('/moving-config', [MovingConfigController::class, 'index'])->name('movingConfig');
-    Route::post('/moving-config/update', [MovingConfigController::class, 'update'])->name('movingConfig.update');
+    // Settings Page Routes
+    Route::prefix('moving-config')->name('movingConfig.')->group(function () {
+        Route::get('/', [MovingConfigController::class, 'index'])->name('index');
+        // Route::post('/moving-config/update', [MovingConfigController::class, 'update'])->name('movingConfig.update');
 
+        // No of Rooms Page Routes
+        Route::get('/no-of-rooms/create', [NoOfRoomController::class, 'create'])->name('noOfRooms.create');
+        Route::post('/no-of-rooms/store', [NoOfRoomController::class, 'store'])->name('noOfRooms.store');
+        Route::get('/no-of-rooms/edit/{id}', [NoOfRoomController::class, 'edit'])->name('noOfRooms.edit');
+        Route::post('/no-of-rooms/update', [NoOfRoomController::class, 'update'])->name('noOfRooms.update');
+        Route::post('/no-of-rooms/update-status', [NoOfRoomController::class, 'updateStatus'])->name('noOfRooms.updateStatus');
+
+        // Floor Plan Page Routes
+        Route::get('/floor-plan/create', [FloorPlanController::class, 'create'])->name('floorPlan.create');
+        Route::post('/floor-plan/store', [FloorPlanController::class, 'store'])->name('floorPlan.store');
+        Route::get('/floor-plan/edit/{id}', [FloorPlanController::class, 'edit'])->name('floorPlan.edit');
+        Route::post('/floor-plan/update', [FloorPlanController::class, 'update'])->name('floorPlan.update');
+        Route::post('/floor-plan/update-status', [FloorPlanController::class, 'updateStatus'])->name('floorPlan.updateStatus');
+
+        // Floor Access Page Routes
+        Route::get('/floor-assess/create', [FloorAssessController::class, 'create'])->name('floorAssess.create');
+        Route::post('/floor-assess/store', [FloorAssessController::class, 'store'])->name('floorAssess.store');
+        Route::get('/floor-assess/edit/{id}', [FloorAssessController::class, 'edit'])->name('floorAssess.edit');
+        Route::post('/floor-assess/update', [FloorAssessController::class, 'update'])->name('floorAssess.update');
+        Route::post('/floor-assess/update-status', [FloorAssessController::class, 'updateStatus'])->name('floorAssess.updateStatus');
+
+        // Job Details Page Routes
+        Route::get('/job-detail/create', [JobDetailController::class, 'create'])->name('jobDetails.create');
+        Route::post('/job-detail/store', [JobDetailController::class, 'store'])->name('jobDetails.store');
+        Route::get('/job-detail/edit/{id}', [JobDetailController::class, 'edit'])->name('jobDetails.edit');
+        Route::post('/job-detail/update', [JobDetailController::class, 'update'])->name('jobDetails.update');
+        Route::post('/job-detail/update-status', [JobDetailController::class, 'updateStatus'])->name('jobDetails.updateStatus');
+    });
     // Bookings Page Routes
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings');
     Route::get('/bookings/view/{id}', [BookingController::class, 'show'])->name('booking.show');

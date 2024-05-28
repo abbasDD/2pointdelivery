@@ -116,6 +116,12 @@
             if (serviceCategories[i].uuid == selectedServiceCategoryUuid) {
                 selectedParcelTypeSecureshipEnable = serviceCategories[i].is_secureship_enabled;
                 volume_enabled = serviceCategories[i].volume_enabled;
+
+                no_of_room_enabled = serviceCategories[i].no_of_room_enabled;
+                floor_plan_enabled = serviceCategories[i].floor_plan_enabled;
+                floor_assess_enabled = serviceCategories[i].floor_assess_enabled;
+                job_details_enabled = serviceCategories[i].job_details_enabled;
+                updateMovingFormFields();
             }
         }
 
@@ -340,6 +346,29 @@
 
 
         updateRoute();
+
+    }
+
+    function updateMovingPackageDetails() {
+        // get value from select field name no_of_rooms
+        selectedNoOfRoomID = $("select[name='no_of_rooms']").val();
+
+        // get value from select field name floor_plan
+        selectedFloorPlanID = $("select[name='floor_plan']").val();
+
+        // get value from select field name floor_assess
+        selectedFloorAssessID = $("select[name='floor_assess']").val();
+
+        // get value from radio button field name job_details[]
+        const checkboxes = document.querySelectorAll('input[name="job_details[]"]:checked');
+
+        selectedJobDetailsID = [];
+
+        checkboxes.forEach((checkbox) => {
+            selectedJobDetailsID.push(checkbox.id);
+        });
+
+        console.log('Selected Job Details ID: ' + selectedFloorAssessID);
 
     }
 </script>

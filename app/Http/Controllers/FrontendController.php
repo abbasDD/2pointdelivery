@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Client;
 use App\Models\ClientCompany;
 use App\Models\Faq;
+use App\Models\MovingConfig;
 use App\Models\PrioritySetting;
 use App\Models\ServiceCategory;
 use App\Models\ServiceType;
@@ -264,10 +265,22 @@ class FrontendController extends Controller
         }
 
         // Get addresses of user
-        $addresses = AddressBook::where('user_id', auth()->user()->id)->get();
+        $addresses = [];
+
+        if (Auth::check()) {
+            $addresses = AddressBook::where('user_id', auth()->user()->id)->get();
+        }
+
+
+        // Get moving config for no_of_rooms, floor_plans, floor_assess, job_details
+        $no_of_rooms = MovingConfig::where('type', 'no_of_rooms')->where('is_active', 1)->get();
+        $floor_plans = MovingConfig::where('type', 'floor_plan')->where('is_active', 1)->get();
+        $floor_assess = MovingConfig::where('type', 'floor_assess')->where('is_active', 1)->get();
+        $job_details = MovingConfig::where('type', 'job_details')->where('is_active', 1)->get();
+
 
         // return view 
-        return view('frontend.bookings.new', compact('serviceTypes', 'serviceCategories', 'prioritySettings', 'draftBooking', 'addresses'));
+        return view('frontend.bookings.new', compact('serviceTypes', 'serviceCategories', 'prioritySettings', 'draftBooking', 'addresses', 'no_of_rooms', 'floor_plans', 'floor_assess', 'job_details'));
     }
 
     public function fetch_services_categories(Request $request)

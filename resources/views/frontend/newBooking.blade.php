@@ -669,12 +669,12 @@
                                         </select>
                                     </div>
                                 </div>
-                                {{-- Floor Assess --}}
+                                {{-- Floor Access --}}
                                 <div class="col-md-6">
-                                    <label for="floorAssess">Floor Assess</label>
+                                    <label for="floorAssess">Floor Access</label>
                                     <div class="input-group mb-3">
                                         <select class="form-control moving-field" name="floor_assess"
-                                            aria-label="Floor Assess" onchange="updatePaymentAmount()">
+                                            aria-label="Floor Access" onchange="updatePaymentAmount()">
                                             <option value="elevator">Elevator</option>
                                             <option value="stairs">Stairs</option>
                                         </select>
