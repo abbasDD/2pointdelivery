@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\MovingConfig;
+use App\Models\MovingDetail;
 use Illuminate\Http\Request;
 
 class MovingConfigController extends Controller
@@ -30,8 +31,10 @@ class MovingConfigController extends Controller
 
         $jobDetails = MovingConfig::where('type', 'job_details')->paginate(10);
 
+        $movingDetails = MovingDetail::paginate(10);
 
-        return view('admin.movingConfig.index', compact('noOfRooms', 'floorPlans', 'floorAssess', 'jobDetails'));
+
+        return view('admin.movingConfig.index', compact('noOfRooms', 'floorPlans', 'floorAssess', 'jobDetails', 'movingDetails'));
     }
 
 

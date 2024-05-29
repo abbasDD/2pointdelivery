@@ -86,7 +86,7 @@
                     Chat</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.movingConfig.index') }}"><i class="fa fa-comment"></i>
+                <a class="nav-link" href="{{ route('admin.movingConfig.index') }}"><i class="fa-solid fa-sliders"></i>
                     Moving Config</a>
             </li>
             {{-- <li class="nav-item has-submenu">

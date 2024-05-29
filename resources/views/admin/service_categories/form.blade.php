@@ -338,7 +338,7 @@
         {{-- Job Details Enabled --}}
         <div class="col-md-6 moving-field" id="job_details_enabled_div">
             <div class="form-group mb-3">
-                <label for="job_details_enabled">Floor Access</label>
+                <label for="job_details_enabled">Job Details</label>
                 <select class="form-control input-field @error('job_details_enabled') is-invalid @enderror"
                     id="job_details_enabled" name="job_details_enabled" required>
                     {{-- <option value="" selected disabled>Choose Volume Status</option> --}}

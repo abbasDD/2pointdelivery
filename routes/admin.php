@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\JobDetailController;
 use App\Http\Controllers\Admin\KycDetailController;
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\MovingConfigController;
+use App\Http\Controllers\Admin\MovingDetailController;
 use App\Http\Controllers\Admin\NoOfRoomController;
 use App\Http\Controllers\Admin\PaymentSettingController;
 use App\Http\Controllers\Admin\PrioritySettingController;
@@ -140,6 +141,17 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
         Route::post('/job-detail/update', [JobDetailController::class, 'update'])->name('jobDetails.update');
         Route::post('/job-detail/update-status', [JobDetailController::class, 'updateStatus'])->name('jobDetails.updateStatus');
     });
+
+    // Moving Detail Categories Page Routes
+    Route::post('/moving-detail-category/store', [MovingDetailController::class, 'storeCategory'])->name('movingDetailCategory.store');
+
+    // Moving Detail Page Routes
+    Route::get('/moving-detail/create', [MovingDetailController::class, 'create'])->name('movingDetail.create');
+    Route::post('/moving-detail/store', [MovingDetailController::class, 'store'])->name('movingDetail.store');
+    Route::get('/moving-detail/edit/{id}', [MovingDetailController::class, 'edit'])->name('movingDetail.edit');
+    Route::post('/moving-detail/update', [MovingDetailController::class, 'update'])->name('movingDetail.update');
+    Route::post('/moving-detail/update-status', [MovingDetailController::class, 'updateStatus'])->name('movingDetail.updateStatus');
+
     // Bookings Page Routes
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings');
     Route::get('/bookings/view/{id}', [BookingController::class, 'show'])->name('booking.show');

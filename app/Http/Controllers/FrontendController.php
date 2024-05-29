@@ -8,6 +8,7 @@ use App\Models\Client;
 use App\Models\ClientCompany;
 use App\Models\Faq;
 use App\Models\MovingConfig;
+use App\Models\MovingDetailCategory;
 use App\Models\PrioritySetting;
 use App\Models\ServiceCategory;
 use App\Models\ServiceType;
@@ -278,9 +279,13 @@ class FrontendController extends Controller
         $floor_assess = MovingConfig::where('type', 'floor_assess')->where('is_active', 1)->get();
         $job_details = MovingConfig::where('type', 'job_details')->where('is_active', 1)->get();
 
+        // Get all moving details categories that have at least one moving detail
+        $movingDetails = MovingDetailCategory::has('movingDetails')->with('movingDetails')->get();
+
+        // dd($movingDetails[0]->movingDetails);
 
         // return view 
-        return view('frontend.bookings.new', compact('serviceTypes', 'serviceCategories', 'prioritySettings', 'draftBooking', 'addresses', 'no_of_rooms', 'floor_plans', 'floor_assess', 'job_details'));
+        return view('frontend.bookings.new', compact('serviceTypes', 'serviceCategories', 'prioritySettings', 'draftBooking', 'addresses', 'no_of_rooms', 'floor_plans', 'floor_assess', 'job_details', 'movingDetails'));
     }
 
     public function fetch_services_categories(Request $request)

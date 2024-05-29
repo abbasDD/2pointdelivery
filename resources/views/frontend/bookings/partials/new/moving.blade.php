@@ -71,7 +71,7 @@
             @forelse($job_details as $item)
                 <div class="col-md-4 form-check">
                     <input class="form-check-input" type="checkbox" name="job_details[]" value="{{ $item->uuid }}"
-                        id="{{ $item->uuid }}">
+                        id="{{ $item->uuid }}" onchange="updatePaymentAmount()">
                     <label class="form-check-label" for="{{ $item->uuid }}">
                         {{ $item->name }}
                     </label>
@@ -89,16 +89,8 @@
 
         </div>
     </div>
-    {{-- Moving Details --}}
-    {{-- <div class="col-md-12">
-        <div class="mb-3">
-            <label for="movingDetails">Moving Details</label>
-            <textarea class="form-control moving-field" name="moving_details" id="movingDetails" rows="3"
-                placeholder="Enter moving details"></textarea>
-        </div>
-    </div> --}}
 
     {{-- Include a Moving Options Multiple Select Field --}}
-    @include('frontend.bookings.partials.new.moving-options')
+    @include('frontend.bookings.partials.new.moving-details')
 
 </div>

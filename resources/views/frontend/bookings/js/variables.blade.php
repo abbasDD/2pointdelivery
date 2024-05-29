@@ -29,7 +29,10 @@
     var selectedFloorPlanID = 0;
     var selectedFloorAssessID = 0;
     var selectedJobDetailsID = [];
-
+    var selectedMovingDetailsID = [];
+    var movingDetailsTotalItems = 0;
+    var movingDetailsTotalWeight = 0;
+    var movingDetailsTotalVolume = 0;
 
     var prioritySettings = {!! json_encode($prioritySettings) !!};
     if (prioritySettings.length > 0) {
