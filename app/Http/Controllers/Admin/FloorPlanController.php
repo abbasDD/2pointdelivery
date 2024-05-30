@@ -31,7 +31,7 @@ class FloorPlanController extends Controller
         $request['type'] = 'floor_plan';
 
         MovingConfig::create($request->all());
-        return redirect()->route('admin.movingConfig.index')->with('success', 'No of rooms updated successfully');
+        return redirect()->route('admin.movingConfig.index')->with('success', 'Floor Plan updated successfully');
     }
 
     public function edit(Request $request)
@@ -45,7 +45,7 @@ class FloorPlanController extends Controller
     {
         $floorPlan = MovingConfig::where('id', $request->id)->first();
         $floorPlan->update($request->all());
-        return redirect()->route('admin.movingConfig.index')->with('success', 'No of rooms updated successfully');
+        return redirect()->route('admin.movingConfig.index')->with('success', 'Floor Plan updated successfully');
     }
 
     public function updateStatus(Request $request)

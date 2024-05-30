@@ -315,6 +315,7 @@
         formData.append('selectedFloorPlanID', selectedFloorPlanID); // selectedFloorPlanID
         formData.append('selectedFloorAssessID', selectedFloorAssessID); // selectedFloorAssessID
         formData.append('selectedJobDetailsID', selectedJobDetailsID); // selectedJobDetailsID
+        formData.append('selectedMovingDetailsID', selectedMovingDetailsID); // selectedMovingDetailsID
 
         // Get declared value of package
         package_value = document.querySelector('input[name="package_value"]').value;

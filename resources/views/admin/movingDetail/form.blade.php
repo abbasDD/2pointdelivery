@@ -63,7 +63,7 @@
             <div class="input-group">
                 <input type="text" id="volume" class="form-control" placeholder="Volume" name="volume"
                     value="{{ old('volume', $movingDetail['volume'] ?? '') }}" aria-describedby="volume"
-                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required>
+                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                 <span class="input-group-text text-uppercase" id="volume">SQM</span>
             </div>
             @error('volume')

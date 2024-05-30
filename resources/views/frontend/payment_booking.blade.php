@@ -66,43 +66,45 @@
                         {{-- Distance Price --}}
                         <div class="d-flex align-items-center justify-content-between">
                             <h6>Distance Price:</h6>
-                            <p>${{ $bookingDelivery->distance_price }}</p>
+                            <p>${{ $bookingData->distance_price }}</p>
                         </div>
                         {{-- Weight Price --}}
                         <div class="d-flex align-items-center justify-content-between">
                             <h6>Weight Price:</h6>
-                            <p>${{ $bookingDelivery->weight_price }}</p>
+                            <p>${{ $bookingData->weight_price }}</p>
                         </div>
                         {{-- Service Price --}}
                         <div class="d-flex align-items-center justify-content-between">
                             <h6>Service Price:</h6>
-                            <p>${{ $bookingDelivery->service_price }}</p>
+                            <p>${{ $bookingData->service_price }}</p>
                         </div>
-                        {{-- Vehicle Price --}}
-                        <div class="d-flex align-items-center justify-content-between">
-                            <h6>Vehicle Price:</h6>
-                            <p>${{ $bookingDelivery->vehicle_price }}</p>
-                        </div>
+                        @if ($booking->booking_type == 'delivery')
+                            {{-- Vehicle Price --}}
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h6>Vehicle Price:</h6>
+                                <p>${{ $bookingData->vehicle_price }}</p>
+                            </div>
+                        @endif
                         {{-- Tax Price --}}
                         <div class="d-flex align-items-center justify-content-between">
                             <h6>Tax Price:</h6>
-                            <p>${{ $bookingDelivery->tax_price }}</p>
+                            <p>${{ $bookingData->tax_price }}</p>
                         </div>
                         {{-- Total Price --}}
                         <div class="d-flex align-items-center justify-content-between">
                             <h6>Total Price:</h6>
-                            <p>${{ $bookingDelivery->total_price }}</p>
+                            <p>${{ $bookingData->total_price }}</p>
                         </div>
-                        @if ($bookingDelivery->payment_status == 'unpaid')
+                        @if ($bookingData->payment_status == 'unpaid')
                             {{-- Payment Status --}}
                             <div class="d-flex align-items-center justify-content-between">
                                 <h6>Payment Status:</h6>
-                                <p>{{ $bookingDelivery->payment_status }}</p>
+                                <p>{{ $bookingData->payment_status }}</p>
                             </div>
                             {{-- Payment Method --}}
                             <div class="d-flex align-items-center justify-content-between">
                                 <h6>Payment Method:</h6>
-                                <p>{{ $bookingDelivery->payment_method }}</p>
+                                <p>{{ $bookingData->payment_method }}</p>
                             </div>
                         @endif
 
@@ -123,7 +125,7 @@
                                             <!-- Assuming $booking is available with the booking details -->
 
                                             <input type="hidden" name="total_price"
-                                                value="{{ $bookingDelivery->total_price }}">
+                                                value="{{ $bookingData->total_price }}">
                                             <!-- Assuming the total_price is fixed -->
                                             <button type="submit" class="btn btn-paypal d-flex align-items-center">
                                                 <i class="fab fa-paypal"></i>

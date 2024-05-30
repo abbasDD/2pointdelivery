@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\ClientCompany;
 use App\Models\MovingConfig;
+use App\Models\MovingDetail;
 use App\Models\PrioritySetting;
 use App\Models\ServiceCategory;
 use App\Models\ServiceType;
@@ -69,7 +70,7 @@ class GetEstimateController extends Controller
         $data['vehicle_price'] = $this->getVehiclePrice($serviceType->type, $serviceCategory->vehicle_type_id, $request->distance_in_km);
 
         // Weight Price
-        $data['weight_price'] = $this->getWeightPrice($serviceType->type, $serviceCategory, $request->package_weight, $request->package_length, $request->package_width, $request->package_height);
+        $data['weight_price'] = $this->getWeightPrice($serviceType->type, $serviceCategory, $request->package_weight, $request->package_length, $request->package_width, $request->package_height, $request->selectedMovingDetailsID);
 
 
         // If service type is moving
@@ -86,7 +87,7 @@ class GetEstimateController extends Controller
             $data['floor_plan_price'] = $this->getFloorPlanPrice($request->selectedFloorPlanID, $serviceCategory, $request->floor_size, $request->no_of_hours);
 
             // Get Floor Access Price
-            $data['floor_assess_price'] = $this->getFloorAssessPrice($request->selectedFloorAssessID, $serviceCategory, $request->floor_size, $request->no_of_hours);
+            $data['floor_assess_price'] = $this->getFloorAccessPrice($request->selectedFloorAssessID, $serviceCategory, $request->floor_size, $request->no_of_hours);
 
             // Get Job Details Price
             if ($request->selectedJobDetailsID != '') {
@@ -116,7 +117,7 @@ class GetEstimateController extends Controller
 
 
     // Get insurance value
-    private function getInsuranceValue($serviceType, $package_value)
+    public function getInsuranceValue($serviceType, $package_value)
     {
         $insuranceValue = 0;
 
@@ -136,7 +137,7 @@ class GetEstimateController extends Controller
     }
 
     // getBasePrice
-    private function getBasePrice($serviceType, $base_price, $moving_price_type, $floor_size, $no_of_hours)
+    public function getBasePrice($serviceType, $base_price, $moving_price_type, $floor_size, $no_of_hours)
     {
         // return $base_price;
 
@@ -152,7 +153,7 @@ class GetEstimateController extends Controller
     }
 
     // getDistancePrice
-    private function getDistancePrice($base_distance, $extra_distance_price, $distance_in_km)
+    public function getDistancePrice($base_distance, $extra_distance_price, $distance_in_km)
     {
         $distance_price = 0;
 
@@ -165,7 +166,7 @@ class GetEstimateController extends Controller
     }
 
     // getVehiclePrice
-    private function getVehiclePrice($service_type, $vehicle_type_id, $distance_in_km)
+    public function getVehiclePrice($service_type, $vehicle_type_id, $distance_in_km)
     {
         $vehicle_price  = 0;
 
@@ -187,18 +188,22 @@ class GetEstimateController extends Controller
     }
 
     // getWeightPrice
-    private function getWeightPrice($service_type, $serviceCategory, $package_weight, $package_length, $package_width, $package_height)
+    public function getWeightPrice($service_type, $serviceCategory, $package_weight, $package_length, $package_width, $package_height, $selectedMovingDetailsID)
     {
         $weight_price = 0;
         if ($service_type == 'delivery') {
             $weight_price =  $this->getDeliveryWeightPrice($serviceCategory, $package_weight, $package_length, $package_width, $package_height);
         }
 
+        if ($service_type == 'moving') {
+            $weight_price =  $this->getMovingWeightPrice($serviceCategory, $selectedMovingDetailsID);
+        }
+
         return $weight_price;
     }
 
     // Get weight price value of delivery
-    private function getDeliveryWeightPrice($serviceCategory, $package_weight, $package_length, $package_width, $package_height)
+    public function getDeliveryWeightPrice($serviceCategory, $package_weight, $package_length, $package_width, $package_height)
     {
         $weight_price = 0;
         // Calculate cubic volume
@@ -228,16 +233,56 @@ class GetEstimateController extends Controller
         return $weight_price;
     }
 
-    // getNoOfRoomPrice
-    private function getNoOfRoomPrice($selectedNoOfRoomID, $serviceCategory,  $floor_size, $no_of_hours)
+    // Get weight price value of delivery
+    public function getMovingWeightPrice($serviceCategory, $selectedMovingDetailsID)
     {
-        // Get selected no of room id
-        $noOfRoomData = MovingConfig::where('id', $selectedNoOfRoomID)->where('type', 'no_of_rooms')->first();
-        if (!$noOfRoomData) {
+
+        // IF moving details for this category is false then return 0
+
+        if ($serviceCategory->moving_details_enabled == 0) {
             return 0;
         }
 
+        $weight_price = 0;
+
+        $total_weight = 0;
+
+        $selectedMovingDetailsID = explode(',', $selectedMovingDetailsID);
+        if (count($selectedMovingDetailsID) == 0) {
+            return 0;
+        }
+
+        // Loop through selectedMovingDetailsID
+        foreach ($selectedMovingDetailsID as $selectedMovingDetailsID) {
+            // Get from movingdetails
+            $movingDetails = MovingDetail::where('uuid', $selectedMovingDetailsID)->first();
+            if (!$movingDetails) {
+                continue;
+            }
+
+            $total_weight += $movingDetails->weight;
+        }
+
+        // If total_weight id greater than base weight
+        if ($total_weight > $serviceCategory->base_weight) {
+            $weight_price = ($total_weight - $serviceCategory->base_weight) * $serviceCategory->extra_weight_price;
+        }
+
+        return $weight_price;
+    }
+
+    // getNoOfRoomPrice
+    public function getNoOfRoomPrice($selectedNoOfRoomID, $serviceCategory,  $floor_size, $no_of_hours)
+    {
+        // IF no_of_room_enabled for this category is false then return 0
+
         if ($serviceCategory->no_of_room_enabled == 0) {
+            return 0;
+        }
+
+        // Get selected no of room id
+        $noOfRoomData = MovingConfig::where('id', $selectedNoOfRoomID)->where('type', 'no_of_rooms')->first();
+        if (!$noOfRoomData) {
             return 0;
         }
 
@@ -253,15 +298,16 @@ class GetEstimateController extends Controller
     }
 
     // getFloorPlanPrice
-    private function getFloorPlanPrice($selectedFloorPlanID, $serviceCategory,  $floor_size, $no_of_hours)
+    public function getFloorPlanPrice($selectedFloorPlanID, $serviceCategory,  $floor_size, $no_of_hours)
     {
-        // Get selected no of room id
-        $floorPlanData = MovingConfig::where('id', $selectedFloorPlanID)->where('type', 'floor_plan')->first();
-        if (!$floorPlanData) {
+        // IF floor_plan_enabled for this category is false then return 0
+        if ($serviceCategory->floor_plan_enabled == 0) {
             return 0;
         }
 
-        if ($serviceCategory->floor_plan_enabled == 0) {
+        // Get selected no of room id
+        $floorPlanData = MovingConfig::where('id', $selectedFloorPlanID)->where('type', 'floor_plan')->first();
+        if (!$floorPlanData) {
             return 0;
         }
 
@@ -276,15 +322,17 @@ class GetEstimateController extends Controller
         return 0;
     }
 
-    // getFloorAssessPrice
-    private function getFloorAssessPrice($selectedFloorAssessID, $serviceCategory,  $floor_size, $no_of_hours)
+    // getFloorAccessPrice
+    public function getFloorAccessPrice($selectedFloorAssessID, $serviceCategory,  $floor_size, $no_of_hours)
     {
+
         // Get selected no of room id
         $floorAssessData = MovingConfig::where('id', $selectedFloorAssessID)->where('type', 'floor_assess')->first();
         if (!$floorAssessData) {
             return 0;
         }
 
+        // IF floor_assess_enabled for this category is false then return 0
         if ($serviceCategory->floor_assess_enabled == 0) {
             return 0;
         }
@@ -301,8 +349,14 @@ class GetEstimateController extends Controller
     }
 
     // getJobDetailsPrice
-    private function getJobDetailsPrice($selectedJobDetailsID, $serviceCategory,  $floor_size, $no_of_hours)
+    public function getJobDetailsPrice($selectedJobDetailsID, $serviceCategory,  $floor_size, $no_of_hours)
     {
+        // IF job_details_enabled for this category is false then return 0
+
+        if ($serviceCategory->job_details_enabled == 0) {
+            return 0;
+        }
+
         // Split $selectedFloorAssessID into array
         $selectedJobDetailsIDs = explode(',', $selectedJobDetailsID);
         if (count($selectedJobDetailsIDs) == 0) {
@@ -337,7 +391,7 @@ class GetEstimateController extends Controller
     }
 
     // Get tax price
-    private function getTaxPrice($sub_total)
+    public function getTaxPrice($sub_total)
     {
         $taxPrice = 0;
 
@@ -366,7 +420,7 @@ class GetEstimateController extends Controller
     }
 
     // Get client individual tax calculation
-    private function getClientTax()
+    public function getClientTax()
     {
         $taxPercentage = 0;
 
@@ -389,7 +443,7 @@ class GetEstimateController extends Controller
         return $taxPercentage;
     }
 
-    private function getClientCompanyTax()
+    public function getClientCompanyTax()
     {
         $taxPercentage = 0;
 

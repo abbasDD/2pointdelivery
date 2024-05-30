@@ -29,7 +29,7 @@ class FloorAssessController extends Controller
         $request['type'] = 'floor_assess';
 
         MovingConfig::create($request->all());
-        return redirect()->route('admin.movingConfig.index')->with('success', 'No of rooms updated successfully');
+        return redirect()->route('admin.movingConfig.index')->with('success', 'Floor Assess updated successfully');
     }
 
     public function edit(Request $request)
@@ -43,7 +43,7 @@ class FloorAssessController extends Controller
     {
         $floorAssess = MovingConfig::where('id', $request->id)->first();
         $floorAssess->update($request->all());
-        return redirect()->route('admin.movingConfig.index')->with('success', 'No of rooms updated successfully');
+        return redirect()->route('admin.movingConfig.index')->with('success', 'Floor Assess updated successfully');
     }
 
     public function updateStatus(Request $request)

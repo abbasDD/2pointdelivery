@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\BookingDelivery;
+use App\Models\BookingMoving;
 use App\Models\Client;
 use App\Models\Helper;
 use App\Models\HelperVehicle;
@@ -59,8 +60,19 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking not found');
         }
 
-        // Getting booking payment data
-        $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+
+        $bookingData = null;
+
+        // Getting booking delivery data
+        if ($booking->booking_type == 'delivery') {
+            $bookingData = BookingDelivery::where('booking_id', $booking->id)->first();
+        }
+
+        // get booking moving
+        if ($booking->booking_type == 'moving') {
+            $bookingData = BookingMoving::where('booking_id', $booking->id)->first();
+        }
+
 
         // Get helper Data
         $helperData = null;
@@ -92,6 +104,6 @@ class BookingController extends Controller
 
         // dd($booking->helper_user_id);
 
-        return view('admin.bookings.show', compact('booking', 'bookingDelivery', 'helperData', 'clientData', 'vehicleTypeData', 'helperVehicleData'));
+        return view('admin.bookings.show', compact('booking', 'bookingData', 'helperData', 'clientData', 'vehicleTypeData', 'helperVehicleData'));
     }
 }

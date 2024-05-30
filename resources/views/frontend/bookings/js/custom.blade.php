@@ -159,6 +159,24 @@
         formData.append('weight_price', Math.round(weight_price * 100) / 100);
         formData.append('total_price', Math.round(amountToPay * 100) / 100);
 
+        formData.append('distance_in_km', distance_in_km); // distance
+        formData.append('selectedServiceType', selectedServiceType); // service type
+        formData.append('selectedServiceTypeID', selectedServiceTypeID); // service type
+        formData.append('moving_price_type', moving_price_type); // moving_price_type
+        formData.append('selectedServiceCategoryUuid', selectedServiceCategoryUuid); // parcel type
+        formData.append('priorityID', priorityID); // priority
+        formData.append('package_weight', package_weight); // package_weight
+        formData.append('package_length', package_length); // package_length
+        formData.append('package_width', package_width); // package_width
+        formData.append('package_height', package_height); // package_height
+        formData.append('calculated_weight', calculated_weight); // calculated_weight
+        formData.append('selectedNoOfRoomID', selectedNoOfRoomID); // selectedNoOfRoomID
+        formData.append('selectedFloorPlanID', selectedFloorPlanID); // selectedFloorPlanID
+        formData.append('selectedFloorAssessID', selectedFloorAssessID); // selectedFloorAssessID
+        formData.append('selectedJobDetailsID', selectedJobDetailsID); // selectedJobDetailsID
+        formData.append('selectedMovingDetailsID', selectedMovingDetailsID); // selectedMovingDetailsID
+
+
 
         // Calculate total price
 
@@ -173,7 +191,7 @@
 
         console.log(formData);
 
-        return false;
+        // return false;
 
         // Append csrf token
         // formData.append('_token', '{{ csrf_token() }}');

@@ -14,6 +14,7 @@ use App\Models\HelperVehicle;
 use App\Models\PaymentSetting;
 use App\Models\PrioritySetting;
 use App\Models\ServiceCategory;
+use App\Models\ServiceType;
 use App\Models\TaxSetting;
 use App\Models\VehicleType;
 use Carbon\Carbon;
@@ -22,13 +23,19 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use App\Http\Controllers\GetEstimateController;
+use App\Models\BookingMoving;
 
 class BookingController extends Controller
 {
 
-    public function __construct()
+    protected $getEstimateController;
+
+    public function __construct(GetEstimateController $getEstimateController)
     {
         $this->middleware('auth');
+
+        $this->getEstimateController = $getEstimateController;
     }
 
     /**
@@ -60,18 +67,234 @@ class BookingController extends Controller
         return view('client.bookings.index', compact('bookings'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
+    {
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'service_type_id' => 'required|integer|exists:service_types,id',
+            'priority_setting_id' => 'required|integer|exists:priority_settings,id',
+            'service_category_id' => 'required|string|exists:service_categories,uuid',
+            'pickup_address' => 'required|string|max:255',
+            'dropoff_address' => 'required|string|max:255',
+            'pickup_latitude' => 'required|string|max:255',
+            'pickup_longitude' => 'required|string|max:255',
+            'dropoff_latitude' => 'required|string|max:255',
+            'dropoff_longitude' => 'required|string|max:255',
+            'booking_date' => 'required|string|max:255',
+            'booking_time' => 'required|string|max:255',
+            'booking_type' => 'required|string|max:255',
+            'total_price' => 'required|string|max:255',
+            'base_price' => 'nullable|string|max:255',
+            'distance' => 'nullable|string|max:255',
+            'base_distance' => 'nullable|string|max:255',
+            'extra_distance_price' => 'nullable|string|max:255',
+            'weight' => 'nullable|string|max:255',
+            'base_weight' => 'nullable|string|max:255',
+            'extra_weight_price' => 'nullable|string|max:255',
+        ]);
+
+        // Check if service type available for booking
+        $serviceType = ServiceType::where('id', $request->service_type_id)->where('is_active', 1)->first();
+        if ($serviceType) {
+            $request->request->add(['service_type_id' => $serviceType->id]);
+        }
+
+        // Get service_category_id from uuid
+        $serviceCategory = ServiceCategory::where('uuid', $request->service_category_id)->first();
+        if ($serviceCategory) {
+            $request->request->add(['service_category_id' => $serviceCategory->id]);
+        }
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()]);
+        }
+
+
+
+        // Generate uuid
+        $uuid = Str::random(8);
+
+        // Check if uuid exists
+        $booking = Booking::where('uuid', $uuid)->first();
+        if ($booking) {
+            $uuid = Str::random(8);
+        }
+
+        // String uuid
+        $request->request->add([
+            'uuid' => $uuid,
+        ]);
+
+        // Add client_user_id
+        $client = Client::where('user_id', auth()->user()->id)->first();
+        // if not found then create
+        if (!$client) {
+            $newClient = Client::create([
+                'user_id' => auth()->user()->id,
+            ]);
+            $client = Client::where('user_id', auth()->user()->id)->first();
+        }
+
+        $client_user_id = $client->id;
+
+        $request->request->add(['client_user_id' => auth()->user()->id]);
+
+        // Add booking_at to current datetime
+        $request->request->add(['booking_at' => now()]);
+
+        // Create new booking
+        $booking = Booking::create($request->all());
+
+        // Calculate prices
+
+        // Get package value and calculate insurance
+        $insurance_value = $this->getEstimateController->getInsuranceValue($request->selectedServiceType, $request->package_value);
+
+        // Get Base Price Value
+        $service_price = $this->getEstimateController->getBasePrice($serviceType->type, $serviceCategory->base_price, $serviceCategory->moving_price_type, $request->floor_size, $request->no_of_hours);
+
+        // Distance Price
+        $distance_price = $this->getEstimateController->getDistancePrice($serviceCategory->base_distance, $serviceCategory->extra_distance_price, $request->distance_in_km);
+
+        // Get priority_price
+        $priority_price  = 0;
+        // Check if priority setting exist
+        if (isset($request->priority_setting_id)) {
+            $priority_setting = PrioritySetting::find($request->priority_setting_id);
+            if ($priority_setting) {
+                $priority_price = $priority_setting->price;
+            }
+        }
+
+        // Vehicle Price
+        $vehicle_price = $this->getEstimateController->getVehiclePrice($serviceType->type, $serviceCategory->vehicle_type_id, $request->distance_in_km);
+
+        // Weight Price
+        $weight_price = $this->getEstimateController->getWeightPrice($serviceType->type, $serviceCategory, $request->package_weight, $request->package_length, $request->package_width, $request->package_height, $request->selectedMovingDetailsID);
+
+
+        // If service type is moving
+        $no_of_room_price = 0;
+        $floor_plan_price = 0;
+        $floor_assess_price = 0;
+        $job_details_price = 0;
+
+        if ($serviceType->type == 'moving') {
+            // Get Room Price
+            $no_of_room_price = $this->getEstimateController->getNoOfRoomPrice($request->selectedNoOfRoomID, $serviceCategory, $request->floor_size, $request->no_of_hours);
+
+            // Get Floor Plan Price
+            $floor_plan_price = $this->getEstimateController->getFloorPlanPrice($request->selectedFloorPlanID, $serviceCategory, $request->floor_size, $request->no_of_hours);
+
+            // Get Floor Access Price
+            $floor_assess_price = $this->getEstimateController->getFloorAccessPrice($request->selectedFloorAssessID, $serviceCategory, $request->floor_size, $request->no_of_hours);
+
+            // Get Job Details Price
+            if ($request->selectedJobDetailsID != '') {
+                $job_details_price = $this->getEstimateController->getJobDetailsPrice($request->selectedJobDetailsID, $serviceCategory, $request->floor_size, $request->no_of_hours);
+            }
+        }
+
+        // Sub Total
+        $sub_total = $service_price + $distance_price + $priority_price + $vehicle_price + $weight_price + $no_of_room_price + $floor_plan_price + $floor_assess_price + $job_details_price;
+
+
+        //  Tax Price
+        $tax_price = $this->getEstimateController->getTaxPrice($sub_total);
+
+
+        // Total amountToPay
+        $amountToPay = $service_price + $distance_price + $priority_price + $vehicle_price + $weight_price + $tax_price;
+
+        // helper_fee
+        $helper_fee = $serviceCategory->helper_fee;
+
+
+        if ($serviceType->type == 'delivery') {
+            // Create Booking Payment
+            $deliveryBooking = BookingDelivery::create([
+                'booking_id' => $booking->id,
+                'distance_price' => number_format((float)$distance_price, 2, '.', ''),
+                'weight_price' => number_format((float)$weight_price, 2, '.', ''),
+                'priority_price' => number_format((float)$priority_price, 2, '.', ''),
+                'service_price' => number_format((float)$service_price, 2, '.', ''),
+                'sub_total' => number_format((float)$sub_total, 2, '.', ''),
+                'vehicle_price' => number_format((float)$vehicle_price, 2, '.', ''),
+                'tax_price' => number_format((float)$tax_price, 2, '.', ''),
+                'helper_fee' => number_format((float)$helper_fee, 2, '.', ''),
+                'total_price' => number_format((float)$amountToPay, 2, '.', ''),
+                'payment_method' => 'cod',
+                'payment_status' => 'unpaid',
+            ]);
+
+            // if unable to create deliveryBooking then rollback booking
+            if (!$deliveryBooking) {
+                $booking->delete();
+                return response()->json(['success' => false, 'data' => 'Unable to create booking']);
+            }
+        }
+
+
+        if ($serviceType->type == 'moving') {
+            // Create Booking Payment
+            $movingBooking = BookingMoving::create([
+                'booking_id' => $booking->id,
+                'service_price' => number_format((float)$service_price, 2, '.', ''),
+                'distance_price' => number_format((float)$distance_price, 2, '.', ''),
+                'floor_assess_price' => number_format((float)$floor_assess_price, 2, '.', ''),
+                'floor_plan_price' => number_format((float)$floor_plan_price, 2, '.', ''),
+                'job_details_price' => number_format((float)$job_details_price, 2, '.', ''),
+                'no_of_room_price' => number_format((float)$no_of_room_price, 2, '.', ''),
+                'priority_price' => number_format((float)$priority_price, 2, '.', ''),
+                'weight_price' => number_format((float)$weight_price, 2, '.', ''),
+                'sub_total' => number_format((float)$sub_total, 2, '.', ''),
+                'tax_price' => number_format((float)$tax_price, 2, '.', ''),
+                'helper_fee' => number_format((float)$helper_fee, 2, '.', ''),
+                'total_price' => number_format((float)$amountToPay, 2, '.', ''),
+                'payment_method' => 'cod',
+                'payment_status' => 'unpaid',
+            ]);
+
+            // if unable to create movingBooking then rollback booking
+            if (!$movingBooking) {
+                $booking->delete();
+                return response()->json(['success' => false, 'data' => 'Unable to create booking']);
+            }
+        }
+
+
+        // After successful booking. Store address book for later use
+        // Data to store
+        $addressBookData = [
+            'user_id' => auth()->user()->id,
+            'client_id' => $client->id,
+            'pickup_address' => $booking->pickup_address ?? null,
+            'dropoff_address' => $booking->dropoff_address ?? null,
+            'pickup_latitude' => $booking->pickup_latitude ?? null,
+            'pickup_longitude' => $booking->pickup_longitude ?? null,
+            'dropoff_latitude' => $booking->dropoff_latitude ?? null,
+            'dropoff_longitude' => $booking->dropoff_longitude ?? null,
+            'receiver_name' => $booking->receiver_name ?? null,
+            'receiver_phone' => $booking->receiver_phone ?? null,
+            'receiver_email' => $booking->receiver_email ?? null,
+        ];
+
+        // Check if addressBook already exist with same data
+        $addressBook = AddressBook::where($addressBookData)->first();
+        if (!$addressBook) {
+            $addressBook = AddressBook::create($addressBookData);
+        }
+
+        // Response json with success
+        return response()->json(['success' => true, 'data' => $booking, 'message' => 'Booking created successfully'], 201);
+    }
+
+    public function store_backup(Request $request)
     {
         // Validate request
         $validator = Validator::make($request->all(), [
@@ -208,7 +431,7 @@ class BookingController extends Controller
                 } else {
                     $taxPercentage = $this->getClientTax();
                 }
-                $data['tax_price'] = $taxPercentage;
+                $tax_price = $taxPercentage;
             }
         }
 
@@ -339,11 +562,20 @@ class BookingController extends Controller
             $stripeEnabled = true;
         }
 
-        $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+        $bookingData = null;
 
+        // Getting booking delivery data
+        if ($booking->booking_type == 'delivery') {
+            $bookingData = BookingDelivery::where('booking_id', $booking->id)->first();
+        }
+
+        // get booking moving
+        if ($booking->booking_type == 'moving') {
+            $bookingData = BookingMoving::where('booking_id', $booking->id)->first();
+        }
         // dd($bookingDelivery);
 
-        return view('frontend.payment_booking', compact('booking', 'bookingDelivery', 'paypalEnabled', 'stripeEnabled'));
+        return view('frontend.payment_booking', compact('booking', 'bookingData', 'paypalEnabled', 'stripeEnabled'));
     }
 
     // Make Online Payment using Paypal
@@ -475,7 +707,13 @@ class BookingController extends Controller
             $booking->update(['status' => 'pending', 'payment_status' => 'paid', 'payment_method' => 'paypal']);
 
             // Update booking payment details
-            BookingDelivery::where('booking_id', $booking->id)->update(['transaction_id' =>  $paymentDetails['id'], 'payment_status' => 'paid', 'payment_method' => 'paypal', 'payment_at' => Carbon::now()]);
+            if ($booking->booking_type == 'delivery') {
+                BookingDelivery::where('booking_id', $booking->id)->update(['transaction_id' =>  $paymentDetails['id'], 'payment_status' => 'paid', 'payment_method' => 'paypal', 'payment_at' => Carbon::now()]);
+            }
+
+            if ($booking->booking_type == 'moving') {
+                BookingMoving::where('booking_id', $booking->id)->update(['transaction_id' =>  $paymentDetails['id'], 'payment_status' => 'paid', 'payment_method' => 'paypal', 'payment_at' => Carbon::now()]);
+            }
 
             // Redirect to booking detail page
             // return redirect()->route('client.booking.show', $booking->id);

@@ -30,7 +30,7 @@ class JobDetailController extends Controller
         $request['type'] = 'job_details';
 
         MovingConfig::create($request->all());
-        return redirect()->route('admin.movingConfig.index')->with('success', 'No of rooms updated successfully');
+        return redirect()->route('admin.movingConfig.index')->with('success', 'Job Details updated successfully');
     }
 
     public function edit(Request $request)
@@ -44,7 +44,7 @@ class JobDetailController extends Controller
     {
         $jobDetails = MovingConfig::where('id', $request->id)->first();
         $jobDetails->update($request->all());
-        return redirect()->route('admin.movingConfig.index')->with('success', 'No of rooms updated successfully');
+        return redirect()->route('admin.movingConfig.index')->with('success', 'Job Details updated successfully');
     }
 
     public function updateStatus(Request $request)

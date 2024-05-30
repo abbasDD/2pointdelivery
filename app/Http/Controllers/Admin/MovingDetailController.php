@@ -41,15 +41,19 @@ class MovingDetailController extends Controller
             'moving_detail_category_id' => 'required',
             'name' => 'required',
             'weight' => 'required',
-            'volume' => 'required',
         ]);
+
+        // Check if volume is empty or null then set to 0
+        if (empty($request->volume)) {
+            $request['volume'] = 0;
+        }
 
         // numeric 6 random value as uuid
         $request['uuid'] = random_int(100000, 999999);
 
         MovingDetail::create($request->all());
 
-        return redirect()->route('admin.movingConfig.index')->with('success', 'No of rooms updated successfully');
+        return redirect()->route('admin.movingConfig.index')->with('success', 'Moving Detail updated successfully');
     }
 
     public function edit(Request $request)
@@ -65,8 +69,14 @@ class MovingDetailController extends Controller
     public function update(Request $request)
     {
         $movingDetail = MovingDetail::where('id', $request->id)->first();
+
+        // Check if volume is empty or null then set to 0
+        if (empty($request->volume)) {
+            $request['volume'] = 0;
+        }
+
         $movingDetail->update($request->all());
-        return redirect()->route('admin.movingConfig.index')->with('success', 'No of rooms updated successfully');
+        return redirect()->route('admin.movingConfig.index')->with('success', 'Moving Detail updated successfully');
     }
 
     public function updateStatus(Request $request)
