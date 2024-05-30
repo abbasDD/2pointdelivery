@@ -33,6 +33,7 @@ return new class extends Migration
             $table->string('floor_plan_enabled')->nullable()->default('0');
             $table->string('floor_assess_enabled')->nullable()->default('0');
             $table->string('job_details_enabled')->nullable()->default('0');
+            $table->string('moving_details_enabled')->nullable()->default('0');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 

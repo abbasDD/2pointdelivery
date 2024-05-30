@@ -110,6 +110,7 @@
             alert('Please select a parcel type');
             return;
         }
+
         // Find the selected parcel type from serviceCategories
         var selectedParcelTypeSecureshipEnable = false;
         for (let i = 0; i < serviceCategories.length; i++) {
@@ -121,6 +122,7 @@
                 floor_plan_enabled = serviceCategories[i].floor_plan_enabled;
                 floor_assess_enabled = serviceCategories[i].floor_assess_enabled;
                 job_details_enabled = serviceCategories[i].job_details_enabled;
+                moving_details_enabled = serviceCategories[i].moving_details_enabled;
                 updateMovingFormFields();
             }
         }
@@ -171,7 +173,7 @@
 
         console.log(formData);
 
-        // return false;
+        return false;
 
         // Append csrf token
         // formData.append('_token', '{{ csrf_token() }}');
@@ -246,6 +248,7 @@
         // Call the function
         updateServiceFormData();
         toggleBackground(selectedServiceCategoryUuid);
+
     }
     // Update the payment card
     // updatePaymentAmount();
@@ -359,16 +362,19 @@
         // get value from select field name floor_assess
         selectedFloorAssessID = $("select[name='floor_assess']").val();
 
-        // get value from radio button field name job_details[]
-        const checkboxes = document.querySelectorAll('input[name="job_details[]"]:checked');
+        // chheck if job details is enabled
+        if (job_details_enabled == 1) {
+            // get value from radio button field name job_details[]
+            const checkboxes = document.querySelectorAll('input[name="job_details[]"]:checked');
 
-        selectedJobDetailsID = [];
+            selectedJobDetailsID = [];
 
-        checkboxes.forEach((checkbox) => {
-            selectedJobDetailsID.push(checkbox.id);
-        });
+            checkboxes.forEach((checkbox) => {
+                selectedJobDetailsID.push(checkbox.id);
+            });
+        }
 
-        console.log('Selected Job Details ID: ' + selectedFloorAssessID);
+
 
     }
 </script>

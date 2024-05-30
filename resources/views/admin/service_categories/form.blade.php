@@ -359,6 +359,30 @@
             </div>
         </div>
 
+        {{-- Moving Details Enabled --}}
+        <div class="col-md-6 moving-field" id="moving_details_enabled_div">
+            <div class="form-group mb-3">
+                <label for="moving_details_enabled">Moving Details</label>
+                <select class="form-control input-field @error('moving_details_enabled') is-invalid @enderror"
+                    id="moving_details_enabled" name="moving_details_enabled" required>
+                    {{-- <option value="" selected disabled>Choose Volume Status</option> --}}
+                    <option value="1"
+                        {{ old('moving_details_enabled', $serviceCategory['moving_details_enabled'] ?? '') == 1 ? 'selected' : '' }}>
+                        Enabled
+                    </option>
+                    <option value="0"
+                        {{ old('moving_details_enabled', $serviceCategory['moving_details_enabled'] ?? '') == 0 ? 'selected' : '' }}>
+                        Disabled
+                    </option>
+                </select>
+                @error('moving_details_enabled')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
+        </div>
+
     </div>
 
 

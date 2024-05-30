@@ -1,5 +1,5 @@
 {{-- Moving Details List --}}
-<div class="col-md-12">
+<div class="col-md-12" id="moving_details_div">
     <div class="d-flex align-items-center justify-content-between mb-3">
         <label class="mb-0" for="movingDetails">Moving Details</label>
         <button type="button" class="btn btn-primary btn-sm" onclick="openMovingDetailModal()">Add</button>

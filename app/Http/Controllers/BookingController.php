@@ -42,6 +42,21 @@ class BookingController extends Controller
             ->with('serviceType')
             ->with('serviceCategory')
             ->orderBy('bookings.created_at', 'desc')->get();
+
+        foreach ($bookings as $booking) {
+            if ($booking->helper_user_id != NULL) {
+                $booking->helper = Helper::where('user_id', $booking->helper_user_id)->first();
+            }
+
+            $booking->client = Client::where('user_id', $booking->client_user_id)->first();
+
+            $booking->moving = null;
+
+            if ($booking->booking_type == 'delivery') {
+                $booking->delivery = BookingDelivery::where('booking_id', $booking->id)->first();
+            }
+        }
+
         return view('client.bookings.index', compact('bookings'));
     }
 

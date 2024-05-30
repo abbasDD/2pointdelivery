@@ -1,12 +1,13 @@
 <table class="table table-striped">
     <thead class="thead-primary">
         <tr>
-            <th>ID</th>
-            {{-- <th>Client</th> --}}
+            <th>Order#</th>
+            <th>Date</th>
+            <th>Time</th>
             <th>Priority</th>
             <th>Service Type</th>
             <th>Address</th>
-            <th>Price</th>
+            <th>Fee</th>
             <th>Status</th>
             <th>Action</th>
         </tr>
@@ -14,8 +15,10 @@
     <tbody>
         @forelse ($bookings as $booking)
             <tr>
-                <td>{{ $loop->index + 1 }}</td>
-                {{-- <td>{{ $booking->client->first_name }}</td> --}}
+                <td>{{ $booking->uuid }}</td>
+                <td>{{ app('dateHelper')->formatTimestamp($booking->created_at, 'Y-m-d') }}
+                </td>
+                <td>{{ $booking->booking_time }}</td>
                 <td>{{ $booking->prioritySetting->name }}</td>
                 <td>
                     {{-- Service Type --}}

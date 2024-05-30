@@ -22,6 +22,22 @@ class BookingController extends Controller
             ->with('serviceCategory')
             ->paginate(10);
 
+        foreach ($bookings as $booking) {
+            if ($booking->helper_user_id != NULL) {
+                $booking->helper = Helper::where('user_id', $booking->helper_user_id)->first();
+            }
+
+            $booking->client = Client::where('user_id', $booking->client_user_id)->first();
+
+            $booking->moving = null;
+
+            if ($booking->booking_type == 'delivery') {
+                $booking->delivery = BookingDelivery::where('booking_id', $booking->id)->first();
+            }
+        }
+
+        // dd($bookings);
+
 
         if ($request->ajax()) {
             return view('admin.bookings.partials.list', compact('bookings'))->render();

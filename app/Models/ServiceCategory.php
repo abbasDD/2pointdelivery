@@ -30,6 +30,11 @@ class ServiceCategory extends Model
         'helper_fee',
         'volume_enabled',
         'moving_price_type',
+        'no_of_room_enabled',
+        'floor_plan_enabled',
+        'floor_assess_enabled',
+        'job_details_enabled',
+        'moving_details_enabled',
         'is_active'
     ];
 

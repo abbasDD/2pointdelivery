@@ -25,6 +25,7 @@
     var floor_plan_enabled = 0;
     var floor_assess_enabled = 0;
     var job_details_enabled = 0;
+    var moving_details_enabled = 0;
     var selectedNoOfRoomID = 0;
     var selectedFloorPlanID = 0;
     var selectedFloorAssessID = 0;
@@ -80,6 +81,7 @@
         floor_plan_enabled = serviceCategories[0].floor_plan_enabled;
         floor_assess_enabled = serviceCategories[0].floor_assess_enabled;
         job_details_enabled = serviceCategories[0].job_details_enabled;
+        moving_details_enabled = serviceCategories[0].moving_details_enabled;
         updateMovingFormFields();
         // console.log('Selected category vehicle price is ' + serviceCategories[0]);
     }
@@ -126,6 +128,7 @@
             floor_plan_enabled = serviceCategories[0].floor_plan_enabled;
             floor_assess_enabled = serviceCategories[0].floor_assess_enabled;
             job_details_enabled = serviceCategories[0].job_details_enabled;
+            moving_details_enabled = serviceCategories[0].moving_details_enabled;
             updateMovingFormFields();
         }
 
@@ -155,6 +158,7 @@
                 floor_plan_enabled = serviceCategories[i].floor_plan_enabled;
                 floor_assess_enabled = serviceCategories[i].floor_assess_enabled;
                 job_details_enabled = serviceCategories[i].job_details_enabled;
+                moving_details_enabled = serviceCategories[i].moving_details_enabled;
                 updateMovingFormFields();
 
                 helper_fee = serviceCategories[i].helper_fee;
@@ -433,5 +437,17 @@
         } else {
             $("#job_details_div").addClass("d-none");
         }
+
+        document.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
+            checkbox.required = false;
+        });
+
+        // Moving Details div
+        if (moving_details_enabled == 1) {
+            $("#moving_details_div").removeClass("d-none");
+        } else {
+            $("#moving_details_div").addClass("d-none");
+        }
+
     }
 </script>
