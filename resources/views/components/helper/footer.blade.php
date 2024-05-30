@@ -13,8 +13,8 @@
                     <div>
                         <a class="text-white mr-3" href="https://elabdtech.com/">Privacy Policy</a>
                         <span class="text-white">|</span>
-                        <span class="text-white ml-3">Designed by <a class="text-white"
-                                href="https://elabdtech.com/">Elabd Technologies</a></span>
+                        <span class="text-white ml-3">Designed by <a class="text-white" href="https://elabdtech.com/"
+                                target="_blank">Elabd Technologies</a></span>
                     </div>
                 </div>
             </div>

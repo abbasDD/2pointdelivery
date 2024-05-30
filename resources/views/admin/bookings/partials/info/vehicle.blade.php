@@ -20,6 +20,10 @@
                         <h6 class="mb-0">{{ $helperVehicleData->vehicle_model }}</h6>
                     </div>
                     <div class="d-flex align-items-center justify-content-between mb-3">
+                        <p class="mb-0">Make:</p>
+                        <h6 class="mb-0">{{ $helperVehicleData->vehicle_make }}</h6>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between mb-3">
                         <p class="mb-0">Number:</p>
                         <h6 class="mb-0">{{ $helperVehicleData->vehicle_number }}</h6>
                     </div>

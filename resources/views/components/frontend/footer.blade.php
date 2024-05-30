@@ -121,8 +121,8 @@
                         <a class="text-white" href="#">{{ config('website_name') ?: '2 Point' }}</a>
                     </div>
                     <div>
-                        <span class="text-white ml-3">Designed by <a class="text-white"
-                                href="https://elabdtech.com/">Elabd Technologies</a></span>
+                        <span class="text-white ml-3">Designed by <a class="text-white" href="https://elabdtech.com/"
+                                target="_blank">Elabd Technologies</a></span>
                     </div>
                 </div>
             </div>

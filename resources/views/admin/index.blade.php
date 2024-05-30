@@ -70,9 +70,9 @@
                             <p class="mb-0 fs-14"><i class="fa-solid fa-motorcycle text-warning"></i> Total Helpers</p>
                             <h6 class="mb-0">{{ $statistics['total_helpers'] }}</h6>
                         </div>
-                        {{-- Requested Helpers --}}
+                        {{-- New Helpers --}}
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <p class="mb-0 fs-14"><i class="fa-solid fa-question text-danger"></i> Requested Helpers</p>
+                            <p class="mb-0 fs-14"><i class="fa-solid fa-question text-danger"></i> New Helpers</p>
                             <h6 class="mb-0">{{ $statistics['requested_helpers'] }}</h6>
 
                         </div>

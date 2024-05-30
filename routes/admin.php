@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AuthenticationSettingController;
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\DeliveryConfigController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\FloorAssessController;
 use App\Http\Controllers\Admin\FloorPlanController;
@@ -71,7 +72,7 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
 
     // Helpers Page Routes
     Route::get('/helpers', [HelperController::class, 'index'])->name('helpers');
-    Route::get('/requested-helpers', [HelperController::class, 'requestedHelpers'])->name('requestedHelpers');
+    Route::get('/requested-helpers', [HelperController::class, 'newHelpers'])->name('newHelpers');
     Route::get('/helpers/create', [HelperController::class, 'create'])->name('helper.create');
     Route::get('/helpers/show/{id}', [HelperController::class, 'show'])->name('helper.show');
     Route::post('/helpers/store', [HelperController::class, 'store'])->name('helper.store');
@@ -108,7 +109,6 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     Route::get('/service-category/list/{id}', [ServiceCategoryController::class, 'getVehicleTypes'])->name('serviceCategory.list');
 
     // Moving Configuration Page Routes
-    // Settings Page Routes
     Route::prefix('moving-config')->name('movingConfig.')->group(function () {
         Route::get('/', [MovingConfigController::class, 'index'])->name('index');
         // Route::post('/moving-config/update', [MovingConfigController::class, 'update'])->name('movingConfig.update');
@@ -140,6 +140,17 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
         Route::get('/job-detail/edit/{id}', [JobDetailController::class, 'edit'])->name('jobDetails.edit');
         Route::post('/job-detail/update', [JobDetailController::class, 'update'])->name('jobDetails.update');
         Route::post('/job-detail/update-status', [JobDetailController::class, 'updateStatus'])->name('jobDetails.updateStatus');
+    });
+
+    // Delivery Configuration Page Routes
+    Route::prefix('delivery-config')->name('deliveryConfig.')->group(function () {
+        Route::get('/', [DeliveryConfigController::class, 'index'])->name('index');
+
+        // Update Insurance API
+        Route::post('/update-insurance', [DeliveryConfigController::class, 'updateInsurance'])->name('insurance.update');
+
+        // Update Secureship API
+        Route::post('/update-secureship', [DeliveryConfigController::class, 'updateSecureship'])->name('secureship.update');
     });
 
     // Moving Detail Categories Page Routes

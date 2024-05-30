@@ -53,7 +53,7 @@ class HomeController extends Controller
         ];
 
         // Top Helpers List
-        $requestedHelpers = [
+        $newHelpers = [
             [
                 'name' => 'John Doe',
                 'image' => 'https://via.placeholder.com/50x50',

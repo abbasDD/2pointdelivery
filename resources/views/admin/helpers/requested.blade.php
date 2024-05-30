@@ -8,7 +8,7 @@
         <div class="container-fluid">
             <div class="section-header mb-2">
                 <div class="d-flex justify-content-between">
-                    <h4 class="mb-0">Requested Helpers</h4>
+                    <h4 class="mb-0">New Helpers</h4>
                 </div>
             </div>
             <div class="section-body">

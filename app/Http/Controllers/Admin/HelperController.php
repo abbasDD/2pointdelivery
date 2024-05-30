@@ -23,7 +23,7 @@ class HelperController extends Controller
         return view('admin.helpers.index', compact('helpers'));
     }
 
-    public function requestedHelpers(Request $request)
+    public function newHelpers(Request $request)
     {
         $helpers = Helper::select('helpers.*', 'users.email', 'users.is_active')
             ->join('users', 'helpers.user_id', '=', 'users.id')
