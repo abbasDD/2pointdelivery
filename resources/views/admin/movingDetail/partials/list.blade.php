@@ -16,7 +16,7 @@
                 <td>{{ $loop->index + 1 }}</td>
                 <td>{{ $movingDetail->name }}</td>
                 <td>{{ $movingDetail->weight }} Kgs</td>
-                <td>{{ $movingDetail->volume }} SQM</td>
+                <td>{{ $movingDetail->volume }} Cu Ft</td>
                 <td>{{ $movingDetail->description ?? '-' }}</td>
                 <td>
                     <button type="button" id="statusmovingDetailButton_{{ $movingDetail->id }}"

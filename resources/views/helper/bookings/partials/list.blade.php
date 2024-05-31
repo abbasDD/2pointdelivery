@@ -2,8 +2,7 @@
     <thead class="thead-primary">
         <tr>
             <th>Order#</th>
-            <th>Date</th>
-            <th>Time</th>
+            <th>Date Time</th>
             <th>Priority</th>
             <th>Service Type</th>
             <th>Address</th>
@@ -16,9 +15,10 @@
         @forelse ($bookings as $booking)
             <tr>
                 <td>{{ $booking->uuid }}</td>
-                <td>{{ app('dateHelper')->formatTimestamp($booking->created_at, 'Y-m-d') }}
+                <td>
+                    <p>{{ app('dateHelper')->formatTimestamp($booking->created_at, 'Y-m-d') }} </p>
+                    <p>{{ $booking->booking_time }}</p>
                 </td>
-                <td>{{ $booking->booking_time }}</td>
                 <td>{{ $booking->prioritySetting->name }}</td>
                 <td>
                     {{-- Service Type --}}

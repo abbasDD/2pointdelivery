@@ -21,6 +21,7 @@ class BookingController extends Controller
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
+            ->where('status', '!=', 'draft') //Where booking status is not draft
             ->paginate(10);
 
         foreach ($bookings as $booking) {
@@ -34,6 +35,10 @@ class BookingController extends Controller
 
             if ($booking->booking_type == 'delivery') {
                 $booking->delivery = BookingDelivery::where('booking_id', $booking->id)->first();
+            }
+
+            if ($booking->booking_type == 'moving') {
+                $booking->moving = BookingMoving::where('booking_id', $booking->id)->first();
             }
         }
 

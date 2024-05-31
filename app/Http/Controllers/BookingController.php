@@ -209,7 +209,7 @@ class BookingController extends Controller
 
 
         // Total amountToPay
-        $amountToPay = $service_price + $distance_price + $priority_price + $vehicle_price + $weight_price + $tax_price;
+        $amountToPay = $service_price + $distance_price + $priority_price + $vehicle_price + $weight_price + $no_of_room_price + $floor_plan_price + $floor_assess_price + $job_details_price + $tax_price;
 
         // helper_fee
         $helper_fee = $serviceCategory->helper_fee;

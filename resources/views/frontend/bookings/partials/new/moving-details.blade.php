@@ -15,7 +15,7 @@
             <p> Total Weight : <span id="movingDetailsFormTotalWeight">0</span> Kgs</p>
         </div>
         <div class="col-md-4">
-            <p> Total Volume : <span id="movingDetailsFormTotalVolume">0</span> cbm</p>
+            <p> Total Volume : <span id="movingDetailsFormTotalVolume">0</span> cu ft</p>
         </div>
     </div>
 </div>

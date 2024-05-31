@@ -18,7 +18,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Weight <span class="fs-xxs">(Kgs)</span></th>
-                        <th>Volume <span class="fs-xxs">(Cms)</span></th>
+                        <th>Volume <span class="fs-xxs">(Cu Ft)</span></th>
                         <th>Quantity</th>
                         <th>Action</th>
                     </tr>
@@ -61,7 +61,7 @@
         <p> Total Weight : <span id="movingDetailsTotalWeight">0</span> Kgs</p>
     </div>
     <div class="col-md-4">
-        <p> Total Volume : <span id="movingDetailsTotalVolume">0</span> cbm</p>
+        <p> Total Volume : <span id="movingDetailsTotalVolume">0</span> cu ft</p>
     </div>
 
 </div>

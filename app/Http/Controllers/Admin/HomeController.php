@@ -104,7 +104,9 @@ class HomeController extends Controller
         $latestBookings = Booking::with('client')
             ->with('prioritySetting')
             ->with('serviceType')
-            ->with('serviceCategory')->latest()->take(5)->get();
+            ->with('serviceCategory')
+            ->where('status', '!=', 'draft') //Where booking status is not draft
+            ->latest()->take(5)->get();
         // dd($latestBookings);
 
         return view('admin.index', compact('helperRequests', 'lastSixMonths', 'statistics', 'latestBookings'));

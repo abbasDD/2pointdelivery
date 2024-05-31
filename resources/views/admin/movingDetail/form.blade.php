@@ -44,7 +44,8 @@
             <div class="input-group">
                 <input type="text" id="weight" class="form-control" placeholder="Weight" name="weight"
                     value="{{ old('weight', $movingDetail['weight'] ?? '') }}" aria-describedby="weight"
-                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required>
+                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                    onchange="calculateVolume()" required>
                 <span class="input-group-text text-uppercase" id="weight">Kgs</span>
             </div>
             @error('weight')
@@ -63,8 +64,8 @@
             <div class="input-group">
                 <input type="text" id="volume" class="form-control" placeholder="Volume" name="volume"
                     value="{{ old('volume', $movingDetail['volume'] ?? '') }}" aria-describedby="volume"
-                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
-                <span class="input-group-text text-uppercase" id="volume">SQM</span>
+                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" readonly>
+                <span class="input-group-text text-uppercase" id="volume">Cu Ft</span>
             </div>
             @error('volume')
                 <span class="invalid-feedback" role="alert">
@@ -99,3 +100,14 @@
 
 
 </div>
+
+<script>
+    function calculateVolume() {
+        // Update volume from weight field -> 1 Kg = 0.0414 Cu Ft
+        if ($("#weight").val() == '') {
+            $("#volume").val(0);
+        }
+
+        $("#volume").val($("#weight").val() * 0.0414);
+    }
+</script>

@@ -8,7 +8,7 @@
         <div class="container">
             <div class="section-header mb-2">
                 <div class="d-flex justify-content-between">
-                    <h4>Edit Floor Plan</h4>
+                    <h4>Edit Moving Detail</h4>
                 </div>
             </div>
             <div class="section-body">

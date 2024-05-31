@@ -2,13 +2,11 @@
     <thead class="thead-primary">
         <tr>
             <th>Order#</th>
-            <th>Date</th>
-            <th>Time</th>
+            <th>Date Time</th>
             <th>Priority</th>
             <th>Service Type</th>
             <th>Address</th>
             <th>Price</th>
-            <th>Tax</th>
             <th>Status</th>
             <th>Action</th>
         </tr>
@@ -17,9 +15,11 @@
         @forelse ($bookings as $booking)
             <tr>
                 <td>{{ $booking->uuid }}</td>
-                <td>{{ app('dateHelper')->formatTimestamp($booking->created_at, 'Y-m-d') }}
+                <td>
+                    <p>{{ app('dateHelper')->formatTimestamp($booking->created_at, 'Y-m-d') }} </p>
+                    <p>{{ $booking->booking_time }}</p>
                 </td>
-                <td>{{ $booking->booking_time }}</td>
+
                 <td>{{ $booking->prioritySetting->name }}</td>
                 <td>
                     {{-- Service Type --}}
@@ -33,14 +33,17 @@
                     {{-- Dropoff Address --}}
                     <p><span class="fw-bold">Dropoff:</span> {{ $booking->dropoff_address }}</p>
                 </td>
-                <td>{{ $booking->total_price }}</td>
-
-                @if ($booking->booking_type == 'delivery')
-                    <td>{{ $booking->delivery->tax_price }}</td>
-                @else
-                    <td>0</td>
-                @endif
-
+                <td>
+                    <p>${{ $booking->total_price }}</p>
+                    <p>
+                        <span class="fw-bold">Tax:</span>
+                        @if ($booking->booking_type == 'delivery' && $booking->delivery != null)
+                            ${{ $booking->delivery->tax_price }}
+                        @else
+                            $0
+                        @endif
+                    </p>
+                </td>
                 <td>
                     <p class="badge {{ $booking->status == 'completed' ? 'bg-primary' : 'bg-danger' }}">
                         {{ $booking->status }}
