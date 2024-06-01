@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\MovingConfig;
 use App\Models\MovingDetail;
+use App\Models\PrioritySetting;
 use Illuminate\Http\Request;
 
 class MovingConfigController extends Controller
@@ -33,8 +34,11 @@ class MovingConfigController extends Controller
 
         $movingDetails = MovingDetail::paginate(10);
 
+        // Priority Settings
+        $prioritySettings = PrioritySetting::where('type', 'moving')->where('is_deleted', 0)->paginate(10); // 10 items per page
 
-        return view('admin.movingConfig.index', compact('noOfRooms', 'floorPlans', 'floorAssess', 'jobDetails', 'movingDetails'));
+
+        return view('admin.movingConfig.index', compact('noOfRooms', 'floorPlans', 'floorAssess', 'jobDetails', 'movingDetails', 'prioritySettings'));
     }
 
 

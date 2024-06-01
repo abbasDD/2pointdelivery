@@ -22,6 +22,11 @@
                                 aria-controls="v-pills-secureshipApi" aria-selected="true">
                                 <i class="fas fa-map-marker-alt"></i> <span class="d-none d-lg-inline">Secureship</span>
                             </button>
+                            <button class="nav-link" id="v-pills-priority-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-priority" type="button" role="tab"
+                                aria-controls="v-pills-priority" aria-selected="true">
+                                <i class="fas fa-map-marker-alt"></i> <span class="d-none d-lg-inline">Priority</span>
+                            </button>
 
                         </div>
                     </div>
@@ -41,6 +46,11 @@
                         {{-- Load secureshipApi Tab  --}}
                         @include('admin.deliveryConfig.secureshipApi.index')
                     </div>
+                    {{-- Priority Tab  --}}
+                    <div class="tab-pane fade" id="v-pills-priority" role="tabpanel" aria-labelledby="v-pills-priority-tab">
+                        {{-- Load priority Tab  --}}
+                        @include('admin.deliveryConfig.priority.index')
+                    </div>
                 </div>
             </div>
             {{-- Show on right side on Desktop --}}
@@ -58,6 +68,11 @@
                                 data-bs-target="#v-pills-secureshipApi" type="button" role="tab"
                                 aria-controls="v-pills-secureshipApi" aria-selected="true">
                                 <i class="fas fa-map-marker-alt"></i> <span class="d-none d-lg-inline">Secureship</span>
+                            </button>
+                            <button class="nav-link" id="v-pills-priority-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-priority" type="button" role="tab"
+                                aria-controls="v-pills-priority" aria-selected="true">
+                                <i class="fas fa-map-marker-alt"></i> <span class="d-none d-lg-inline">Priority</span>
                             </button>
                         </div>
                     </div>

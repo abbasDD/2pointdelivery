@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\DeliveryConfig;
+use App\Models\PrioritySetting;
 use Illuminate\Http\Request;
 
 class DeliveryConfigController extends Controller
@@ -46,8 +47,11 @@ class DeliveryConfigController extends Controller
             $secureshipApi['secureship_api_key'] = $secureship_api_key->value;
         }
 
+        // Priority Settings
+        $prioritySettings = PrioritySetting::where('type', 'delivery')->where('is_deleted', 0)->paginate(10); // 10 items per page
 
-        return view('admin.deliveryConfig.index', compact('insuranceApi', 'secureshipApi'));
+
+        return view('admin.deliveryConfig.index', compact('insuranceApi', 'secureshipApi', 'prioritySettings'));
     }
 
     public function updateInsurance(Request $request)

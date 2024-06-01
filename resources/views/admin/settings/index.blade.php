@@ -27,11 +27,6 @@
                                 aria-controls="v-pills-paymentSettings" aria-selected="false">
                                 <i class="fas fa-building"></i> <span class="d-none d-lg-inline">Company</span>
                             </button>
-                            <button class="nav-link" id="v-pills-priority-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-priority" type="button" role="tab"
-                                aria-controls="v-pills-priority" aria-selected="false">
-                                <i class="fas fa-key"></i> <span class="d-none d-lg-inline">Priority</span>
-                            </button>
                             <button class="nav-link" id="v-pills-authentication-tab" data-bs-toggle="pill"
                                 data-bs-target="#v-pills-authentication" type="button" role="tab"
                                 aria-controls="v-pills-authentication" aria-selected="false">
@@ -61,11 +56,6 @@
                         {{-- Load taxSetting Tab --}}
                         @include('admin.settings.payment.index')
                     </div>
-                    {{--  Priority Tab --}}
-                    <div class="tab-pane fade" id="v-pills-priority" role="tabpanel" aria-labelledby="v-pills-priority-tab">
-                        {{-- Load  Priority Tab --}}
-                        @include('admin.settings.priority.index')
-                    </div>
                     {{-- Authentication Links Tab --}}
                     <div class="tab-pane fade" id="v-pills-authentication" role="tabpanel"
                         aria-labelledby="v-pills-authentication-tab">
@@ -94,11 +84,6 @@
                                 data-bs-target="#v-pills-paymentSettings" type="button" role="tab"
                                 aria-controls="v-pills-paymentSettings" aria-selected="false">
                                 <i class="fas fa-building"></i> <span class="d-none d-lg-inline">Payment</span>
-                            </button>
-                            <button class="nav-link" id="v-pills-priority-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-priority" type="button" role="tab"
-                                aria-controls="v-pills-priority" aria-selected="false">
-                                <i class="fas fa-key"></i> <span class="d-none d-lg-inline">Priority</span>
                             </button>
                             <button class="nav-link" id="v-pills-authentication-tab" data-bs-toggle="pill"
                                 data-bs-target="#v-pills-authentication" type="button" role="tab"

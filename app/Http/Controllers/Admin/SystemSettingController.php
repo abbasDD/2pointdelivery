@@ -68,10 +68,6 @@ class SystemSettingController extends Controller
             $paymentSettings = [];
         }
 
-        // Priority Settings
-
-        $prioritySettings = PrioritySetting::where('is_deleted', 0)->paginate(10); // 10 items per page
-
         // Get Authentication Settings
         $AuthenticationSettings = [];
 
@@ -95,7 +91,7 @@ class SystemSettingController extends Controller
         }
 
         // dd($AuthenticationSettings);
-        return view('admin.settings.index', compact('systemSettings', 'taxCountries', 'paymentSettings', 'prioritySettings', 'AuthenticationSettings'));
+        return view('admin.settings.index', compact('systemSettings', 'taxCountries', 'paymentSettings',  'AuthenticationSettings'));
     }
 
     public function system()

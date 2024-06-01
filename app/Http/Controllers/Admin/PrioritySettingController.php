@@ -12,32 +12,43 @@ class PrioritySettingController extends Controller
     {
         $prioritySettings = PrioritySetting::where('is_deleted', 0)->paginate(10); // 10 items per page
         if (request()->ajax()) {
-            return response()->json(view('admin.settings.priority.partials.list', compact('prioritySettings'))->render());
+            return response()->json(view('admin.deliveryConfig.priority.partials.list', compact('prioritySettings'))->render());
         }
 
-        return view('admin.settings.priority.index', compact('prioritySettings'));
+        return view('admin.deliveryConfig.priority.index', compact('prioritySettings'));
     }
 
     public function create()
     {
-        return view('admin.settings.priority.create');
+        return view('admin.movingConfig.priority.create');
+    }
+
+    public function createDelivery()
+    {
+        return view('admin.deliveryConfig.priority.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
+            'type' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'price' => 'required|integer|max:255',
             'description' => 'required|string',
         ]);
 
         $prioritySetting = new PrioritySetting();
+        $prioritySetting->type = $request->type;
         $prioritySetting->name = $request->name;
         $prioritySetting->price = $request->price;
         $prioritySetting->description = $request->description;
         $prioritySetting->save();
 
-        return redirect()->route('admin.settings')->with('success', 'Priority created successfully');
+        if ($request->type == 'moving') {
+            return redirect()->route('admin.movingConfig.index')->with('success', 'Priority created successfully');
+        }
+
+        return redirect()->route('admin.deliveryConfig.index')->with('success', 'Priority created successfully');
     }
 
     public function edit(Request $request)
@@ -48,7 +59,18 @@ class PrioritySettingController extends Controller
         if (!$prioritySetting) {
             return redirect()->back()->with('error', 'Priority Setting not found');
         }
-        return view('admin.settings.priority.edit', compact('prioritySetting'));
+        return view('admin.movingConfig.priority.edit', compact('prioritySetting'));
+    }
+
+    public function editDelivery(Request $request)
+    {
+        $prioritySetting = PrioritySetting::where('id', $request->id)->first();
+        // dd($prioritySetting);;
+        // Redirect to listing page if not found
+        if (!$prioritySetting) {
+            return redirect()->back()->with('error', 'Priority Setting not found');
+        }
+        return view('admin.deliveryConfig.priority.edit', compact('prioritySetting'));
     }
 
     public function update(Request $request)
@@ -68,7 +90,11 @@ class PrioritySettingController extends Controller
             // If the admin is found, update its attributes
             $prioritySetting->update($request->all());
             // Optionally, return a success response or do other actions
-            return redirect()->route('admin.settings')->with('success', 'prioritySetting updated successfully!');
+            if ($request->type == 'moving') {
+                return redirect()->route('admin.movingConfig.index')->with('success', 'Priority updated successfully');
+            }
+
+            return redirect()->route('admin.deliveryConfig.index')->with('success', 'Priority updated successfully');
         } else {
             // If the admin is not found, handle the error
             // For example, return a response indicating the admin was not found

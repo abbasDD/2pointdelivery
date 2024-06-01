@@ -140,6 +140,13 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
         Route::get('/job-detail/edit/{id}', [JobDetailController::class, 'edit'])->name('jobDetails.edit');
         Route::post('/job-detail/update', [JobDetailController::class, 'update'])->name('jobDetails.update');
         Route::post('/job-detail/update-status', [JobDetailController::class, 'updateStatus'])->name('jobDetails.updateStatus');
+
+        // Priority
+        Route::get('/priority/create', [PrioritySettingController::class, 'create'])->name('priority.create');
+        Route::post('/priority/store', [PrioritySettingController::class, 'store'])->name('priority.store');
+        Route::get('/priority/edit/{id}', [PrioritySettingController::class, 'edit'])->name('priority.edit');
+        Route::post('/priority/update', [PrioritySettingController::class, 'update'])->name('priority.update');
+        Route::post('/priority/update-status', [PrioritySettingController::class, 'updateStatus'])->name('priority.updateStatus');
     });
 
     // Delivery Configuration Page Routes
@@ -151,6 +158,13 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
 
         // Update Secureship API
         Route::post('/update-secureship', [DeliveryConfigController::class, 'updateSecureship'])->name('secureship.update');
+
+        // Priority
+        Route::get('/priority/create', [PrioritySettingController::class, 'createDelivery'])->name('priority.create');
+        Route::post('/priority/store', [PrioritySettingController::class, 'store'])->name('priority.store');
+        Route::get('/priority/edit/{id}', [PrioritySettingController::class, 'editDelivery'])->name('priority.edit');
+        Route::post('/priority/update', [PrioritySettingController::class, 'update'])->name('priority.update');
+        Route::post('/priority/update-status', [PrioritySettingController::class, 'updateStatus'])->name('priority.updateStatus');
     });
 
     // Moving Detail Categories Page Routes
@@ -199,14 +213,6 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
         // Payment
         // Route::get('/payment', [PaymentSettingController::class, 'index'])->name('paymentSettings');
         Route::post('/payment/update', [PaymentSettingController::class, 'update'])->name('paymentSetting.update');
-
-        // Priority
-        // Route::get('/priority', [PrioritySettingController::class, 'index'])->name('prioritySettings');
-        Route::get('/priority/create', [PrioritySettingController::class, 'create'])->name('prioritySetting.create');
-        Route::post('/priority/store', [PrioritySettingController::class, 'store'])->name('prioritySetting.store');
-        Route::get('/priority/edit/{id}', [PrioritySettingController::class, 'edit'])->name('prioritySetting.edit');
-        Route::post('/priority/update', [PrioritySettingController::class, 'update'])->name('prioritySetting.update');
-        Route::post('/priority/update-status', [PrioritySettingController::class, 'updateStatus'])->name('prioritySetting.updateStatus');
 
         // Authentication
         // Route::get('/authentication', [AuthenticationSettingController::class, 'index'])->name('authenticationSettings');

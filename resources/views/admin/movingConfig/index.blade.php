@@ -37,6 +37,11 @@
                                 aria-controls="v-pills-movingDetail" aria-selected="false">
                                 <i class="fas fa-link"></i> <span class="d-none d-lg-inline">Moving Details</span>
                             </button>
+                            <button class="nav-link" id="v-pills-priority-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-priority" type="button" role="tab"
+                                aria-controls="v-pills-priority" aria-selected="true">
+                                <i class="fas fa-map-marker-alt"></i> <span class="d-none d-lg-inline">Priority</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -73,6 +78,11 @@
                         {{-- Load  Authentication Links Tab --}}
                         @include('admin.movingDetail.index')
                     </div>
+                    {{-- Priority Tab  --}}
+                    <div class="tab-pane fade" id="v-pills-priority" role="tabpanel" aria-labelledby="v-pills-priority-tab">
+                        {{-- Load priority Tab  --}}
+                        @include('admin.movingConfig.priority.index')
+                    </div>
                 </div>
             </div>
             {{-- Show on right side on Desktop --}}
@@ -82,8 +92,8 @@
                         <div class="d-flex flex-column nav flex-column nav-pills" id="v-pills-tab" role="tablist"
                             aria-orientation="vertical">
                             <button class="nav-link active" id="v-pills-rooms-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-rooms" type="button" role="tab" aria-controls="v-pills-rooms"
-                                aria-selected="true">
+                                data-bs-target="#v-pills-rooms" type="button" role="tab"
+                                aria-controls="v-pills-rooms" aria-selected="true">
                                 <i class="fas fa-user"></i> <span class="d-none d-lg-inline">Rooms</span>
                             </button>
                             <button class="nav-link" id="v-pills-floorPlan-tab" data-bs-toggle="pill"
@@ -105,6 +115,11 @@
                                 data-bs-target="#v-pills-movingDetail" type="button" role="tab"
                                 aria-controls="v-pills-movingDetail" aria-selected="false">
                                 <i class="fas fa-link"></i> <span class="d-none d-lg-inline">Moving Details</span>
+                            </button>
+                            <button class="nav-link" id="v-pills-priority-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-priority" type="button" role="tab"
+                                aria-controls="v-pills-priority" aria-selected="true">
+                                <i class="fas fa-map-marker-alt"></i> <span class="d-none d-lg-inline">Priority</span>
                             </button>
                         </div>
                     </div>

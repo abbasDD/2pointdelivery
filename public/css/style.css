@@ -17,6 +17,7 @@
 
 body {
     font-family: 'Poppins', sans-serif;
+    font-size: 14px;
 }
 
 /* Generic CSS */
@@ -49,6 +50,7 @@ svg {
 .form-control {
     padding: 10px 15px;
     /* border: none; */
+    font-size: 14px;
 }
 
 .row {
@@ -848,6 +850,7 @@ footer hr {
     border: 1px solid var(--primary-light);
     color: var(--primary-light);
     margin-bottom: 0.5rem;
+    font-size: 14px;
 }
 
 

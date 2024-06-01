@@ -15,6 +15,7 @@ class PrioritySetting extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'type',
         'name',
         'price',
         'description',

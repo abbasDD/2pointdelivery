@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('priority_settings', function (Blueprint $table) {
             $table->id();
+            $table->enum('type', ['delivery', 'moving'])->default('delivery');
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('price')->nullable();
