@@ -28,9 +28,9 @@
                 </td>
                 <td>
                     {{-- Pickup Address --}}
-                    <p>Pickup: {{ $booking->pickup_address }}</p>
+                    <p><span class="fw-bold">Pickup:</span> {{ $booking->pickup_address }}</p>
                     {{-- Dropoff Address --}}
-                    <p>Dropoff: {{ $booking->dropoff_address }}</p>
+                    <p><span class="fw-bold">Dropoff:</span> {{ $booking->dropoff_address }}</p>
                 </td>
                 <td>${{ $booking->helper_fee }}</td>
                 <td>
@@ -38,8 +38,15 @@
                         {{ $booking->status }}
                     </p>
                 </td>
-                <td><a href="{{ route('helper.booking.show', $booking->id) }}" class="btn btn-sm btn-primary"><i
-                            class="fas fa-eye"></i></a></td>
+                @if ($booking->status == 'pending')
+                    <td>
+                        <a class="btn btn-sm btn-primary"
+                            href="{{ route('helper.booking.accept', $booking->id) }}">Accept</a>
+                    </td>
+                @else
+                    <td><a href="{{ route('helper.booking.show', $booking->id) }}" class="btn btn-sm btn-primary"><i
+                                class="fas fa-eye"></i></a></td>
+                @endif
             </tr>
         @empty
             <tr>

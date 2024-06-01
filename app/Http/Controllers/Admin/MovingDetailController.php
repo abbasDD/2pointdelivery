@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\MovingDetail;
 use App\Models\MovingDetailCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class MovingDetailController extends Controller
 {
@@ -16,7 +17,7 @@ class MovingDetailController extends Controller
             'name' => 'required',
         ]);
 
-        // Check is name already exist
+        // Check if name already exist
         $isExist = MovingDetailCategory::where('name', $request->name)->first();
         if ($isExist) {
             return redirect()->back()->with('error', 'Category already exist');
@@ -48,8 +49,16 @@ class MovingDetailController extends Controller
             $request['volume'] = 0;
         }
 
+        // Get a unique UUID
+        $uuid = Str::random(8);
+
+        do {
+            $uuid = Str::random(8);
+            $uuidExist = MovingDetail::where('uuid', $uuid)->first();
+        } while ($uuidExist);
+
         // numeric 6 random value as uuid
-        $request['uuid'] = random_int(100000, 999999);
+        $request['uuid'] = $uuid;
 
         MovingDetail::create($request->all());
 

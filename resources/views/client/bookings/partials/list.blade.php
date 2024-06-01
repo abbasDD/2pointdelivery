@@ -49,8 +49,19 @@
                         {{ $booking->status }}
                     </p>
                 </td>
-                <td><a href="{{ route('admin.booking.show', $booking->id) }}" class="btn btn-sm btn-primary"><i
-                            class="fas fa-eye"></i></a></td>
+                <td>
+                    {{-- If booking status is draft then ask client to payment --}}
+                    @if ($booking->status == 'draft')
+                        <a href="{{ route('client.booking.payment', $booking->id) }}" class="btn btn-sm btn-primary"
+                            data-toggle="tooltip" data-placement="top" title="Pay Now"><i
+                                class="fas fa-credit-card"></i></a>
+                    @else
+                        {{-- Else show view button --}}
+                        <a href="{{ route('client.booking.show', $booking->id) }}" class="btn btn-sm btn-primary"
+                            data-toggle="tooltip" data-placement="top" title="View Booking"><i
+                                class="fas fa-eye"></i></a>
+                    @endif
+                </td>
             </tr>
         @empty
             <tr>

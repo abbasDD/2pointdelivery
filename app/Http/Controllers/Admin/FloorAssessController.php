@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\MovingConfig;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class FloorAssessController extends Controller
 {
@@ -22,13 +23,22 @@ class FloorAssessController extends Controller
             'helper_fee' => 'required',
         ]);
 
+        // Get a unique UUID
+        $uuid = Str::random(8);
+
+        do {
+            $uuid = Str::random(8);
+            $uuidExist = MovingConfig::where('uuid', $uuid)->first();
+        } while ($uuidExist);
+
         // numeric 6 random value as uuid
-        $request['uuid'] = random_int(100000, 999999);
+        $request['uuid'] = $uuid;
 
         // type as floor_assess
         $request['type'] = 'floor_assess';
 
         MovingConfig::create($request->all());
+
         return redirect()->route('admin.movingConfig.index')->with('success', 'Floor Assess updated successfully');
     }
 

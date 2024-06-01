@@ -424,21 +424,16 @@ class GetEstimateController extends Controller
     {
         $taxPercentage = 0;
 
-        // Check if user has added the tax detail
-        $clientStateTaxID = Client::where('user_id', Auth::user()->id)->first()->tax_id;
-
-        // If user has not added tax detail then only apply tax
-        if (!$clientStateTaxID) {
-            // Get client address state
-            $clientStateID = Client::where('user_id', Auth::user()->id)->first()->state;
-            // $taxPercentage = Auth::user()->id;
-            if ($clientStateID) {
-                $taxSetting = TaxSetting::where('state_id', $clientStateID)->first();
-                if ($taxSetting) {
-                    $taxPercentage = $taxSetting->gst_rate + $taxSetting->hst_rate + $taxSetting->pst_rate;
-                }
+        // Get client address state
+        $clientStateID = Client::where('user_id', Auth::user()->id)->first()->state;
+        // $taxPercentage = Auth::user()->id;
+        if ($clientStateID) {
+            $taxSetting = TaxSetting::where('state_id', $clientStateID)->first();
+            if ($taxSetting) {
+                $taxPercentage = $taxSetting->gst_rate + $taxSetting->hst_rate + $taxSetting->pst_rate;
             }
         }
+
 
         return $taxPercentage;
     }

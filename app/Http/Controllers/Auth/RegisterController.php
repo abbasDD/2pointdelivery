@@ -67,7 +67,15 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+
         $referralCode = strtoupper(Str::random(8));
+
+        // Generate uuid and ensure it is unique
+        do {
+            $referralCode = Str::random(8);
+            $codeExist = User::where('referral_code', $referralCode)->first();
+        } while ($codeExist);
+
         // dd($referralCode);
         return User::create([
             'email' => $data['email'],

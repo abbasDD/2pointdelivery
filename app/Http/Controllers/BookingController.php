@@ -119,11 +119,11 @@ class BookingController extends Controller
         // Generate uuid
         $uuid = Str::random(8);
 
-        // Check if uuid exists
-        $booking = Booking::where('uuid', $uuid)->first();
-        if ($booking) {
+        // Generate uuid and ensure it is unique
+        do {
             $uuid = Str::random(8);
-        }
+            $booking = Booking::where('uuid', $uuid)->first();
+        } while ($booking);
 
         // String uuid
         $request->request->add([
@@ -334,11 +334,11 @@ class BookingController extends Controller
         // Generate uuid
         $uuid = Str::random(8);
 
-        // Check if uuid exists
-        $booking = Booking::where('uuid', $uuid)->first();
-        if ($booking) {
+        // Generate uuid and ensure it is unique
+        do {
             $uuid = Str::random(8);
-        }
+            $booking = Booking::where('uuid', $uuid)->first();
+        } while ($booking);
 
         // String uuid
         $request->request->add([

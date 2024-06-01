@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\MovingConfig;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class NoOfRoomController extends Controller
 {
@@ -24,13 +25,22 @@ class NoOfRoomController extends Controller
             'helper_fee' => 'required',
         ]);
 
+        // Get a unique UUID
+        $uuid = Str::random(8);
+
+        do {
+            $uuid = Str::random(8);
+            $uuidExist = MovingConfig::where('uuid', $uuid)->first();
+        } while ($uuidExist);
+
         // numeric 6 random value as uuid
-        $request['uuid'] = random_int(100000, 999999);
+        $request['uuid'] = $uuid;
 
         // type as no_of_rooms
         $request['type'] = 'no_of_rooms';
 
         MovingConfig::create($request->all());
+
         return redirect()->route('admin.movingConfig.index')->with('success', 'No of rooms updated successfully');
     }
 

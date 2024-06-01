@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\BookingDelivery;
+use App\Models\BookingMoving;
 use App\Models\Client;
 use App\Models\Helper;
 use App\Models\HelperCompany;
@@ -178,11 +179,24 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking not accepted');
         }
 
-        // Get booking delivery data
-        $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
-        if (!$bookingDelivery) {
-            return redirect()->back()->with('error', 'Booking delivery not found');
+        // Check if booking->booking_type is delivery
+        if ($booking->booking_type == 'delivery') {
+            // Get booking delivery data
+            $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+            if (!$bookingDelivery) {
+                return redirect()->back()->with('error', 'Booking delivery not found');
+            }
         }
+
+        // Check if booking->booking_type is moving
+        if ($booking->booking_type == 'moving') {
+            // Get booking moving data
+            $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
+            if (!$bookingMoving) {
+                return redirect()->back()->with('error', 'Booking moving not found');
+            }
+        }
+
 
         // if start_booking_image is not set then back with error
         if (!$request->hasFile('start_booking_image')) {
@@ -222,10 +236,22 @@ class BookingController extends Controller
         }
 
 
-        $bookingDelivery->signatureStart = $signatureStart;
-        $bookingDelivery->start_booking_image = $start_booking_image;
-        $bookingDelivery->start_booking_at = Carbon::now();
-        $bookingDelivery->save();
+        // Update Booking for delivery
+        if ($booking->booking_type == 'delivery') {
+            $bookingDelivery->signatureStart = $signatureStart;
+            $bookingDelivery->start_booking_image = $start_booking_image;
+            $bookingDelivery->start_booking_at = Carbon::now();
+            $bookingDelivery->save();
+        }
+
+        // Update Booking for moving
+        if ($booking->booking_type == 'moving') {
+            $bookingMoving->signatureStart = $signatureStart;
+            $bookingMoving->start_booking_image = $start_booking_image;
+            $bookingMoving->start_booking_at = Carbon::now();
+            $bookingMoving->save();
+        }
+
 
         $booking->status = 'started';
         $booking->save();
@@ -252,19 +278,37 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking not started');
         }
 
-        // Get booking delivery data
-        $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
-        if (!$bookingDelivery) {
-            return redirect()->back()->with('error', 'Booking delivery not found');
+        // Check if booking->booking_type is delivery
+        if ($booking->booking_type == 'delivery') {
+            // Get booking delivery data
+            $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+            if (!$bookingDelivery) {
+                return redirect()->back()->with('error', 'Booking delivery not found');
+            }
+
+            // Update booking delivery
+            $bookingDelivery->start_intransit_at = Carbon::now();
+            $bookingDelivery->save();
         }
+
+
+        // Check if booking->booking_type is moving
+        if ($booking->booking_type == 'moving') {
+            // Get booking moving data
+            $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
+            if (!$bookingMoving) {
+                return redirect()->back()->with('error', 'Booking moving not found');
+            }
+
+            // Update booking moving
+            $bookingMoving->start_intransit_at = Carbon::now();
+            $bookingMoving->save();
+        }
+
 
         // Update Booking
         $booking->status = 'in_transit';
         $booking->save();
-
-        // Update booking delivery
-        $bookingDelivery->start_intransit_at = Carbon::now();
-        $bookingDelivery->save();
 
         return redirect()->back()->with('success', 'Booking in transit successfully!');
     }
@@ -284,11 +328,25 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking is not in transit');
         }
 
-        // Get booking delivery data
-        $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
-        if (!$bookingDelivery) {
-            return redirect()->back()->with('error', 'Booking delivery not found');
+        // Check if booking->booking_type is delivery
+        if ($booking->booking_type == 'delivery') {
+            // Get booking delivery data
+            $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+            if (!$bookingDelivery) {
+                return redirect()->back()->with('error', 'Booking delivery not found');
+            }
         }
+
+
+        // Check if booking->booking_type is moving
+        if ($booking->booking_type == 'moving') {
+            // Get booking moving data
+            $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
+            if (!$bookingMoving) {
+                return redirect()->back()->with('error', 'Booking moving not found');
+            }
+        }
+
 
         // if complete_booking_image is not set then back with error
         if (!$request->hasFile('complete_booking_image')) {
@@ -326,10 +384,24 @@ class BookingController extends Controller
             $signatureCompleted = $updatedFilename;
         }
 
-        $bookingDelivery->signatureCompleted = $signatureCompleted;
-        $bookingDelivery->complete_booking_image = $complete_booking_image;
-        $bookingDelivery->complete_booking_at = Carbon::now();
-        $bookingDelivery->save();
+
+        // Update Booking for delivery
+        if ($booking->booking_type == 'delivery') {
+            $bookingDelivery->signatureCompleted = $signatureCompleted;
+            $bookingDelivery->complete_booking_image = $complete_booking_image;
+            $bookingDelivery->complete_booking_at = Carbon::now();
+            $bookingDelivery->save();
+        }
+
+
+        // Update Booking for moving
+        if ($booking->booking_type == 'moving') {
+            $bookingMoving->signatureCompleted = $signatureCompleted;
+            $bookingMoving->complete_booking_image = $complete_booking_image;
+            $bookingMoving->complete_booking_at = Carbon::now();
+            $bookingMoving->save();
+        }
+
 
         $booking->status = 'completed';
         $booking->save();
@@ -362,20 +434,48 @@ class BookingController extends Controller
         }
 
 
-        // Get booking delivery data
-        $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
-        if (!$bookingDelivery) {
-            return redirect()->back()->with('error', 'Booking delivery not found');
+
+        // Check if booking->booking_type is delivery
+        if ($booking->booking_type == 'delivery') {
+            // Get booking delivery data
+            $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+            if (!$bookingDelivery) {
+                return redirect()->back()->with('error', 'Booking delivery not found');
+            }
         }
+
+        // Check if booking->booking_type is moving
+        if ($booking->booking_type == 'moving') {
+            // Get booking moving data
+            $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
+            if (!$bookingMoving) {
+                return redirect()->back()->with('error', 'Booking moving not found');
+            }
+        }
+
 
         // Update Booking
         $booking->status = 'accepted';
         $booking->save();
 
-        // Update booking delivery
-        $bookingDelivery->incomplete_reason = $request->incomplete_reason;
-        $bookingDelivery->incomplete_booking_at = Carbon::now();
-        $bookingDelivery->save();
+
+        // Check if booking->booking_type is delivery
+        if ($booking->booking_type == 'delivery') {
+            // Update booking delivery
+            $bookingDelivery->incomplete_reason = $request->incomplete_reason;
+            $bookingDelivery->incomplete_booking_at = Carbon::now();
+            $bookingDelivery->save();
+        }
+
+
+        // Check if booking->booking_type is moving
+        if ($booking->booking_type == 'moving') {
+            // Update booking moving
+            $bookingMoving->incomplete_reason = $request->incomplete_reason;
+            $bookingMoving->incomplete_booking_at = Carbon::now();
+            $bookingMoving->save();
+        }
+
 
         return redirect()->back()->with('success', 'Booking maked as incomplete!');
     }
