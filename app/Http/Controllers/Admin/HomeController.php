@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\BookingDelivery;
+use App\Models\BookingMoving;
 use App\Models\Helper;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -26,6 +27,18 @@ class HomeController extends Controller
     // Dashboard
     public function index()
     {
+        // Get delivery earning data
+        $total_earnings_delivery = (BookingDelivery::where('payment_status', 'paid')->sum('sub_total') - BookingDelivery::where('payment_status', 'paid')->sum('helper_fee'));
+        $total_payments_delivery = BookingDelivery::where('payment_status', 'paid')->sum('helper_fee');
+        $total_taxes_delivery = BookingDelivery::where('payment_status', 'paid')->sum('tax_price');
+        $total_revenue_delivery = BookingDelivery::where('payment_status', 'paid')->sum('sub_total');
+
+        // Get moving earning data
+        $total_earnings_moving = (BookingMoving::where('payment_status', 'paid')->sum('sub_total') - BookingMoving::where('payment_status', 'paid')->sum('helper_fee'));
+        $total_payments_moving = BookingMoving::where('payment_status', 'paid')->sum('helper_fee');
+        $total_taxes_moving = BookingMoving::where('payment_status', 'paid')->sum('tax_price');
+        $total_revenue_moving = BookingMoving::where('payment_status', 'paid')->sum('sub_total');
+
         // Statistics
         $statistics = [
             // Bookings Data
@@ -39,10 +52,10 @@ class HomeController extends Controller
             'total_clients' => User::where('helper_enabled', 1)->count(),
             'requested_helpers' => Helper::where('is_approved', 0)->count(),
             // Earning Data
-            'total_earnings' => (BookingDelivery::sum('sub_total') - BookingDelivery::sum('helper_fee')),
-            'total_payments' => BookingDelivery::sum('helper_fee'),
-            'total_taxes' => BookingDelivery::sum('tax_price'),
-            'total_revenue' => BookingDelivery::sum('sub_total'),
+            'total_earnings' => ($total_earnings_delivery + $total_earnings_moving),
+            'total_payments' => ($total_payments_delivery + $total_payments_moving),
+            'total_taxes' => ($total_taxes_delivery + $total_taxes_moving),
+            'total_revenue' => ($total_revenue_delivery + $total_revenue_moving),
             // Old Data
             'delivery_successful' => Booking::where('status', 'completed')->where('booking_type', 'delivery')->count(),
             'delivery_cancelled' => Booking::where('status', 'cancelled')->where('booking_type', 'delivery')->count(),
@@ -105,7 +118,7 @@ class HomeController extends Controller
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
-            ->where('status', '!=', 'draft') //Where booking status is not draft
+            // ->where('status', '!=', 'draft') //Where booking status is not draft
             ->latest()->take(5)->get();
         // dd($latestBookings);
 
