@@ -755,10 +755,20 @@ class BookingController extends Controller
             return response()->json(['success' => false, 'data' => 'Unable to find booking']);
         }
 
-        $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+        if ($booking->booking_type == 'delivery') {
+            $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
 
-        if ($bookingDelivery->payment_status == 'paid') {
-            return response()->json(['success' => false, 'data' => 'Booking already paid']);
+            if ($bookingDelivery->payment_status == 'paid') {
+                return response()->json(['success' => false, 'data' => 'Booking already paid']);
+            }
+        }
+
+        if ($booking->booking_type == 'moving') {
+            $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
+
+            if ($bookingMoving->payment_status == 'paid') {
+                return response()->json(['success' => false, 'data' => 'Booking already paid']);
+            }
         }
 
         // dd($booking);
@@ -769,11 +779,22 @@ class BookingController extends Controller
             'status' => 'pending',
         ]);
 
-        $bookingDelivery->update([
-            'payment_method' => 'cod',
-            'payment_status' => 'paid',
-            'payment_at' => Carbon::now(),
-        ]);
+        if ($booking->booking_type == 'delivery') {
+            $bookingDelivery->update([
+                'payment_method' => 'cod',
+                'payment_status' => 'paid',
+                'payment_at' => Carbon::now(),
+            ]);
+        }
+
+        if ($booking->booking_type == 'moving') {
+            $bookingMoving->update([
+                'payment_method' => 'cod',
+                'payment_status' => 'paid',
+                'payment_at' => Carbon::now(),
+            ]);
+        }
+
 
         return response()->json(['success' => true, 'data' => 'Booking paid successfully']);
     }
@@ -800,8 +821,14 @@ class BookingController extends Controller
         // Helper view false
         $helperView = false;
 
-        // Getting booking payment data
-        $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+        if ($booking->booking_type == 'delivery') {
+            // Getting booking payment data
+            $bookingPayment = BookingDelivery::where('booking_id', $booking->id)->first();
+        }
+
+        if ($booking->booking_type == 'moving') {
+            $bookingPayment = BookingMoving::where('booking_id', $booking->id)->first();
+        }
 
         // Get helper Data
         $helperData = null;
@@ -834,7 +861,7 @@ class BookingController extends Controller
 
         // dd($vehicleTypeData);
 
-        return view('frontend.bookings.show', compact('booking', 'bookingDelivery', 'helperData', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'clientView', 'helperView'));
+        return view('frontend.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'clientView', 'helperView'));
     }
 
     // Get client individual tax calculation

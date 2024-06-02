@@ -63,28 +63,11 @@
                         <h5 class="card-title">Payment Information</h5>
                     </div>
                     <div class="card-body">
-                        {{-- Distance Price --}}
-                        <div class="d-flex align-items-center justify-content-between">
-                            <h6>Distance Price:</h6>
-                            <p>${{ $bookingData->distance_price }}</p>
-                        </div>
-                        {{-- Weight Price --}}
-                        <div class="d-flex align-items-center justify-content-between">
-                            <h6>Weight Price:</h6>
-                            <p>${{ $bookingData->weight_price }}</p>
-                        </div>
                         {{-- Service Price --}}
                         <div class="d-flex align-items-center justify-content-between">
                             <h6>Service Price:</h6>
-                            <p>${{ $bookingData->service_price }}</p>
+                            <p>${{ $bookingData->sub_total }}</p>
                         </div>
-                        @if ($booking->booking_type == 'delivery')
-                            {{-- Vehicle Price --}}
-                            <div class="d-flex align-items-center justify-content-between">
-                                <h6>Vehicle Price:</h6>
-                                <p>${{ $bookingData->vehicle_price }}</p>
-                            </div>
-                        @endif
                         {{-- Tax Price --}}
                         <div class="d-flex align-items-center justify-content-between">
                             <h6>Tax Price:</h6>

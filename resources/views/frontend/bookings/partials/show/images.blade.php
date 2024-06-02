@@ -7,14 +7,14 @@
             <div class="col-md-6">
                 <p class="mb-2">Start Booking</p>
                 <div class="d-flex align-items-center justify-content-between mb-3">
-                    <img src="{{ $bookingDelivery->start_booking_image ? asset('images/bookings/' . $bookingDelivery->start_booking_image) : asset('images/bookings/default.png') }}"
+                    <img src="{{ $bookingPayment->start_booking_image ? asset('images/bookings/' . $bookingPayment->start_booking_image) : asset('images/bookings/default.png') }}"
                         alt="Truck" class="w-100 image-popup">
                 </div>
             </div>
             <div class="col-md-6">
                 <p class="mb-2">Start Signature</p>
                 <div class="d-flex align-items-center justify-content-between mb-3">
-                    <img src="{{ $bookingDelivery->signatureStart ? asset('images/bookings/' . $bookingDelivery->signatureStart) : asset('images/bookings/default.png') }}"
+                    <img src="{{ $bookingPayment->signatureStart ? asset('images/bookings/' . $bookingPayment->signatureStart) : asset('images/bookings/default.png') }}"
                         alt="Truck" class="w-100 image-popup" id="signatureImage">
                 </div>
             </div>
@@ -23,14 +23,14 @@
             <div class="col-md-6">
                 <p class="mb-2">Complete Booking</p>
                 <div class="d-flex align-items-center justify-content-between mb-3">
-                    <img src="{{ $bookingDelivery->complete_booking_image ? asset('images/bookings/' . $bookingDelivery->complete_booking_image) : asset('images/bookings/default.png') }}"
+                    <img src="{{ $bookingPayment->complete_booking_image ? asset('images/bookings/' . $bookingPayment->complete_booking_image) : asset('images/bookings/default.png') }}"
                         alt="Truck" class="w-100 image-popup">
                 </div>
             </div>
             <div class="col-md-6">
                 <p class="mb-2">Completed Signature</p>
                 <div class="d-flex align-items-center justify-content-between mb-3">
-                    <img src="{{ $bookingDelivery->signatureCompleted ? asset('images/bookings/' . $bookingDelivery->signatureCompleted) : asset('images/bookings/default.png') }}"
+                    <img src="{{ $bookingPayment->signatureCompleted ? asset('images/bookings/' . $bookingPayment->signatureCompleted) : asset('images/bookings/default.png') }}"
                         alt="Truck" class="w-100 image-popup">
                 </div>
             </div>

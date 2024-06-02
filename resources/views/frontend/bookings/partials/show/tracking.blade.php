@@ -33,7 +33,7 @@
                                 src="https://raw.githubusercontent.com/shajo/portfolio/a02c5579c3ebe185bb1fc085909c582bf5fad802/delivery.svg"
                                 class="img-responsive" alt="order-placed" /></div>
                         <div class="tracking-content">Order Placed
-                            <span>{{ $bookingDelivery->created_at ? app('dateHelper')->formatTimestamp($bookingDelivery->created_at, 'd M Y H:i') : 'Expected' }}</span>
+                            <span>{{ $bookingPayment->created_at ? app('dateHelper')->formatTimestamp($bookingPayment->created_at, 'd M Y H:i') : 'Expected' }}</span>
                         </div>
                     </div>
                     {{-- Accepted --}}
@@ -51,7 +51,7 @@
                                 src="https://raw.githubusercontent.com/shajo/portfolio/a02c5579c3ebe185bb1fc085909c582bf5fad802/delivery.svg"
                                 class="img-responsive" alt="order-placed" /></div>
                         <div class="tracking-content">Order Assigned
-                            <span>{{ $bookingDelivery->accepted_at ? app('dateHelper')->formatTimestamp($bookingDelivery->accepted_at, 'd M Y H:i') : 'Expected' }}</span>
+                            <span>{{ $bookingPayment->accepted_at ? app('dateHelper')->formatTimestamp($bookingPayment->accepted_at, 'd M Y H:i') : 'Expected' }}</span>
                         </div>
                     </div>
                     {{-- Started --}}
@@ -69,7 +69,7 @@
                                 src="https://raw.githubusercontent.com/shajo/portfolio/a02c5579c3ebe185bb1fc085909c582bf5fad802/delivery.svg"
                                 class="img-responsive" alt="order-placed" /></div>
                         <div class="tracking-content">Package Received
-                            <span>{{ $bookingDelivery->start_booking_at ? app('dateHelper')->formatTimestamp($bookingDelivery->start_booking_at, 'd M Y H:i') : 'Expected' }}</span>
+                            <span>{{ $bookingPayment->start_booking_at ? app('dateHelper')->formatTimestamp($bookingPayment->start_booking_at, 'd M Y H:i') : 'Expected' }}</span>
                         </div>
                     </div>
                     {{-- In Transit --}}
@@ -87,7 +87,7 @@
                                 src="https://raw.githubusercontent.com/shajo/portfolio/a02c5579c3ebe185bb1fc085909c582bf5fad802/delivery.svg"
                                 class="img-responsive" alt="order-placed" /></div>
                         <div class="tracking-content">Delivering
-                            <span>{{ $bookingDelivery->start_intransit_at ? app('dateHelper')->formatTimestamp($bookingDelivery->start_intransit_at, 'd M Y H:i') : 'Expected' }}</span>
+                            <span>{{ $bookingPayment->start_intransit_at ? app('dateHelper')->formatTimestamp($bookingPayment->start_intransit_at, 'd M Y H:i') : 'Expected' }}</span>
                         </div>
                     </div>
                     {{-- Completed --}}
@@ -105,7 +105,7 @@
                                 src="https://raw.githubusercontent.com/shajo/portfolio/a02c5579c3ebe185bb1fc085909c582bf5fad802/delivery.svg"
                                 class="img-responsive" alt="order-placed" /></div>
                         <div class="tracking-content">Receipent Received
-                            <span>{{ $bookingDelivery->complete_booking_at ? app('dateHelper')->formatTimestamp($bookingDelivery->complete_booking_at, 'd M Y H:i') : 'Expected' }}</span>
+                            <span>{{ $bookingPayment->complete_booking_at ? app('dateHelper')->formatTimestamp($bookingPayment->complete_booking_at, 'd M Y H:i') : 'Expected' }}</span>
                         </div>
                     </div>
 
