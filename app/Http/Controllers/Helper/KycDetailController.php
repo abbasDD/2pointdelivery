@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\KycDetail;
+use App\Models\KycType;
 use App\Models\State;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class KycDetailController extends Controller
     public function index()
     {
         // Get kyc details of logged in user
-        $kycDetails = KycDetail::where('user_id', auth()->user()->id)->get();
+        $kycDetails = KycDetail::with('kycType')->where('user_id', auth()->user()->id)->get();
         // dd($kycDetails->front_image);
         return view('helper.kycDetails.index', compact('kycDetails'));
     }
@@ -34,11 +35,14 @@ class KycDetailController extends Controller
             'selectedCities' => [],
         ];
 
-        // Get already added kycdetails
-        $kycDetailTypes = KycDetail::where('user_id', auth()->user()->id)->pluck('id_type')->toArray();
-        // dd($kycDetailTypes);
+        // Get already added Kyc Types
+        $existedKycTypes = KycDetail::where('user_id', auth()->user()->id)->pluck('kyc_type_id')->toArray();
 
-        return view('helper.kycDetails.create', compact('addressData', 'kycDetailTypes'));
+
+        // Get KYC Types not present in the existedKycTypes array
+        $kycTypes = KycType::whereNotIn('id', $existedKycTypes)->get();
+
+        return view('helper.kycDetails.create', compact('addressData', 'existedKycTypes', 'kycTypes'));
     }
 
     // Store new kyc
@@ -47,7 +51,7 @@ class KycDetailController extends Controller
     {
         // Validate the request
         $request->validate([
-            'id_type' => 'required|string|max:255',
+            'kyc_type_id' => 'required|string|max:255',
             'id_number' => 'required|string|max:255',
             'country' => 'required|string|max:255',
             'state' => 'required|string|max:255',
@@ -100,7 +104,7 @@ class KycDetailController extends Controller
         }
 
         // Update kyc
-        $kycDetail->id_type = $request->id_type;
+        $kycDetail->kyc_type_id = $request->kyc_type_id;
         $kycDetail->id_number = $request->id_number;
         $kycDetail->country = $request->country;
         $kycDetail->state = $request->state;
@@ -135,11 +139,15 @@ class KycDetailController extends Controller
             'selectedCities' => $selectedCities,
         ];
 
+
+        // Get KYC Type
+        $kycTypes = KycType::where('id', $kycDetails->kyc_type_id)->first();
+
         // Get already added kycdetails
-        $kycDetailTypes = KycDetail::where('user_id', auth()->user()->id)->where('id_type', '!=', $kycDetails->id_type)->pluck('id_type')->toArray();
+        $ExistedKycTypes = KycDetail::where('user_id', auth()->user()->id)->where('kyc_type_id', '!=', $kycDetails->kyc_type_id)->pluck('kyc_type_id')->toArray();
 
 
-        return view('helper.kycDetails.edit', compact('kycDetails', 'addressData', 'kycDetailTypes'));
+        return view('helper.kycDetails.edit', compact('kycDetails', 'addressData', 'ExistedKycTypes', 'kycTypes'));
     }
 
 
@@ -161,7 +169,6 @@ class KycDetailController extends Controller
     {
         // Validate the request
         $request->validate([
-            'id_type' => 'required|string|max:255',
             'id_number' => 'required|string|max:255',
             'country' => 'required|string|max:255',
             'state' => 'required|string|max:255',
@@ -210,8 +217,7 @@ class KycDetailController extends Controller
             $kycDetail->back_image = $updatedFilename;
         }
 
-        // Update kyc
-        $kycDetail->id_type = $request->id_type;
+        // Update kyc details
         $kycDetail->id_number = $request->id_number;
         $kycDetail->country = $request->country;
         $kycDetail->state = $request->state;

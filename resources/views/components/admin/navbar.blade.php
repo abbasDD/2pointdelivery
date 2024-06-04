@@ -69,9 +69,21 @@
                     <li><a class="nav-link" href="{{ route('admin.serviceCategories') }}">Categories </a></li>
                 </ul>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.kycDetails') }}"><i class="fa-solid fa-bank"></i> KYC
-                </a>
+            {{-- KYC --}}
+            <li class="nav-item has-submenu">
+                <a class="nav-link" href="#"> <i class="fa-solid fa-bank"></i> KYC </a>
+                <ul class="submenu collapse">
+                    <li>
+                        <a class="nav-link" href="{{ route('admin.kycTypes') }}">
+                            Types
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="{{ route('admin.kycDetails') }}">
+                            Details
+                        </a>
+                    </li>
+                </ul>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.bookings') }}"><i class="fa fa-dolly"></i>
@@ -95,6 +107,7 @@
                 <a class="nav-link" href="#"> <i class="fa fa-tools"></i> Tools </a>
                 <ul class="submenu collapse">
                     <li><a class="nav-link" href="{{ route('admin.faqs') }}">FAQs </a></li>
+                    <li><a class="nav-link" href="{{ route('admin.helpQuestions') }}">Help </a></li>
                 </ul>
             </li>
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.settings') }}"><i class="fa fa-cog"></i>

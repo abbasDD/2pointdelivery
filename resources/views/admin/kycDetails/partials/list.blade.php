@@ -21,7 +21,7 @@
                 <td>{{ $loop->index + 1 }}</td>
                 <td>{{ $kycDetail->user_email }}</td>
                 <td>{{ $kycDetail->type }}</td>
-                <td>{{ $kycDetail->id_type }}</td>
+                <td>{{ $kycDetail->kycType->name }}</td>
                 <td>{{ $kycDetail->id_number }}</td>
                 <td>{{ app('addressHelper')->getCityName($kycDetail->city) }}</td>
                 <td>{{ app('addressHelper')->getStateName($kycDetail->state) }}</td>

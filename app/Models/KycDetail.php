@@ -11,6 +11,7 @@ class KycDetail extends Model
 
     protected $fillable = [
         'user_id',
+        'kyc_type_id',
         'front_image',
         'back_image',
         'id_type',
@@ -29,5 +30,13 @@ class KycDetail extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the category that owns the moving detail.
+     */
+    public function kycType()
+    {
+        return $this->belongsTo(KycType::class, 'kyc_type_id');
     }
 }

@@ -19,6 +19,7 @@ class KycDetailController extends Controller
         $kycDetails = KycDetail::select('kyc_details.*', 'users.email as user_email')
             ->join('users', 'users.id', '=', 'kyc_details.user_id')
             // ->where('is_verified', 0)
+            ->with('kycType')
             ->get();
 
         // dd($kycDetails->front_image);

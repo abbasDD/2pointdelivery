@@ -17,7 +17,7 @@
         @forelse ($kycDetails as $kycDetail)
             <tr>
                 <td>{{ $loop->index + 1 }}</td>
-                <td>{{ $kycDetail->id_type }}</td>
+                <td>{{ $kycDetail->kycType->name }}</td>
                 <td>{{ $kycDetail->id_number }}</td>
                 <td>{{ app('addressHelper')->getCityName($kycDetail->city) }}</td>
                 <td>{{ app('addressHelper')->getStateName($kycDetail->state) }}</td>

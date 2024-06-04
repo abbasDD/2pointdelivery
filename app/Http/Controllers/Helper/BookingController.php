@@ -96,9 +96,18 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking already accepted');
         }
 
+        if ($booking->booking_type == 'moving') {
+            $bookingPayment = BookingMoving::where('booking_id', $booking->id)->first();
+        } else {
+            $bookingPayment = BookingDelivery::where('booking_id', $booking->id)->first();
+        }
+
         $booking->status = 'accepted';
         $booking->helper_user_id = auth()->user()->id;
         $booking->save();
+
+        $bookingPayment->accepted_at = Carbon::now();
+        $bookingPayment->save();
 
         return redirect()->back()->with('success', 'Booking accepted successfully!');
     }
@@ -126,7 +135,14 @@ class BookingController extends Controller
         $helperView = true;
 
         // Getting booking payment data
-        $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+        if ($booking->booking_type == 'delivery') {
+            // Getting booking payment data
+            $bookingPayment = BookingDelivery::where('booking_id', $booking->id)->first();
+        }
+
+        if ($booking->booking_type == 'moving') {
+            $bookingPayment = BookingMoving::where('booking_id', $booking->id)->first();
+        }
 
         // Get helper Data
         $helperData = null;
@@ -159,7 +175,7 @@ class BookingController extends Controller
 
         // dd($booking);
 
-        return view('frontend.bookings.show', compact('booking', 'bookingDelivery', 'helperData', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'clientView', 'helperView'));
+        return view('frontend.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'clientView', 'helperView'));
     }
     // Start Booking
     public function start(Request $request)

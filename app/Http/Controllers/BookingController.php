@@ -548,19 +548,24 @@ class BookingController extends Controller
         }
 
         // Get payment settings
-        $paymentSetting = PaymentSetting::all();
+        $paypal_client_id = PaymentSetting::where('key', 'paypal_client_id')->first();
+        $paypal_secret_id = PaymentSetting::where('key', 'paypal_secret_id')->first();
+        $stripe_publishable_key = PaymentSetting::where('key', 'stripe_publishable_key')->first();
+        $stripe_secret_key = PaymentSetting::where('key', 'stripe_secret_key')->first();
 
         $paypalEnabled = false;
         $stripeEnabled = false;
 
-        if (isset($paymentSetting->paypal_client_id) && isset($paymentSetting->paypal_secret_id)) {
+        if (isset($paypal_client_id) && isset($paypal_secret_id)) {
             $paypalEnabled = true;
         }
 
         // for stripe
-        if (isset($paymentSetting->stripe_publishable_key) && isset($paymentSetting->stripe_secret_key)) {
+        if (isset($stripe_publishable_key) && isset($stripe_secret_key)) {
             $stripeEnabled = true;
         }
+
+        // dd($paypalEnabled, $stripeEnabled);
 
         $bookingData = null;
 

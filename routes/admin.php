@@ -10,9 +10,12 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\FloorAssessController;
 use App\Http\Controllers\Admin\FloorPlanController;
 use App\Http\Controllers\Admin\HelperController;
+use App\Http\Controllers\Admin\HelpQuestionController;
+use App\Http\Controllers\Admin\HelpTopicController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\JobDetailController;
 use App\Http\Controllers\Admin\KycDetailController;
+use App\Http\Controllers\Admin\KycTypeController;
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\MovingConfigController;
 use App\Http\Controllers\Admin\MovingDetailController;
@@ -53,6 +56,14 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
 
     // Search Users Route
     Route::post('/users/search', [AdminController::class, 'searchUsers'])->name('users.search');
+
+    // KYC Type Routes
+    Route::get('/kyc-types', [KycTypeController::class, 'index'])->name('kycTypes');
+    Route::get('/kyc-types/create', [KycTypeController::class, 'create'])->name('kycType.create');
+    Route::post('/kyc-types/store', [KycTypeController::class, 'store'])->name('kycType.store');
+    Route::get('/kyc-types/edit/{id}', [KycTypeController::class, 'edit'])->name('kycType.edit');
+    Route::post('/kyc-types/update', [KycTypeController::class, 'update'])->name('kycType.update');
+    Route::post('/kyc-types/update-status', [KycTypeController::class, 'updateStatus'])->name('kycType.updateStatus');
 
     //KYC Details
     Route::get('/kyc-details', [KycDetailController::class, 'index'])->name('kycDetails');
@@ -222,6 +233,16 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
         // End of Settings Prefix Route
     });
 
+    // Help Topic Page Routes
+    Route::post('/help-topic/store', [HelpTopicController::class, 'store'])->name('helpTopic.store');
+
+    // Help Questions Page Routes
+    Route::get('/help-questions', [HelpQuestionController::class, 'index'])->name('helpQuestions');
+    Route::get('/help-question/create', [HelpQuestionController::class, 'create'])->name('helpQuestion.create');
+    Route::post('help-question/store', [HelpQuestionController::class, 'store'])->name('helpQuestion.store');
+    Route::get('/help-question/edit/{id}', [HelpQuestionController::class, 'edit'])->name('helpQuestion.edit');
+    Route::post('/help-question/update', [HelpQuestionController::class, 'update'])->name('helpQuestion.update');
+    Route::post('/help-question/update-status', [HelpQuestionController::class, 'updateStatus'])->name('helpQuestion.updateStatus');
 
     // End of Admin Routes
 });

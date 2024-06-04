@@ -52,7 +52,7 @@
                     Dashboard</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.kyc_details') }}"><i
                         class="fa fa-bank"></i>
-                    KYC Detail</a>
+                    KYC </a>
             </li>
             @if (Auth::user()->account_type == 'company')
                 <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-users"></i> Teams</a></li>

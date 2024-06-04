@@ -30,45 +30,29 @@
                 class="img-fluid mx-auto d-block p-2 selected-image h-100" alt="ID Card back">
         </div>
     </div>
-
-    <div class="col-md-6 mb-3">
-        <div class="form-group">
-            <label for="id_type">ID Card Type:</label>
-            <select class="form-control" id="id_type" name="id_type" required>
-                <option value="" disabled selected>Select ID Card Type</option>
-                @if (!in_array('residence ID', $kycDetailTypes))
-                    <option value="residence ID"
-                        {{ old('id_type', $kycDetails->id_type ?? '') == 'residence ID' ? 'selected' : '' }}>
-                        Residence ID
-                    </option>
-                @endif
-                @if (!in_array('drivers license', $kycDetailTypes))
-                    <option value="drivers license"
-                        {{ old('id_type', $kycDetails->id_type ?? '') == 'drivers license' ? 'selected' : '' }}>
-                        Drivers License
-                    </option>
-                @endif
-                @if (!in_array('insurance card', $kycDetailTypes))
-                    <option value="insurance card"
-                        {{ old('id_type', $kycDetails->id_type ?? '') == 'insurance card' ? 'selected' : '' }}>
-                        Insurance Card
-                    </option>
-                @endif
-                @if (!in_array('passport', $kycDetailTypes))
-                    <option value="passport"
-                        {{ old('id_type', $kycDetails->id_type ?? '') == 'passport' ? 'selected' : '' }}>
-                        Passport
-                    </option>
-                @endif
-                @if (!in_array('voters ID', $kycDetailTypes))
-                    <option value="voters ID"
-                        {{ old('id_type', $kycDetails->id_type ?? '') == 'voters ID' ? 'selected' : '' }}>
-                        Voters ID
-                    </option>
-                @endif
-            </select>
+    @if (!isset($kycDetails))
+        <div class="col-md-6 mb-3">
+            <div class="form-group">
+                <label for="kyc_type_id">KYC Type:</label>
+                <select class="form-control" id="kyc_type_id" name="kyc_type_id" required>
+                    <option value="" disabled selected>Select ID Card Type</option>
+                    @foreach ($kycTypes as $kycType)
+                        <option value="{{ $kycType->id }}"
+                            {{ old('kyc_type_id', $kycDetails->kyc_type_id ?? '') == $kycType->id ? 'selected' : '' }}>
+                            {{ $kycType->name }}</option>
+                    @endforeach
+                </select>
+            </div>
         </div>
-    </div>
+    @else
+        <div class="col-md-6 mb-3">
+            <div class="form-group">
+                <label for="kyc_type_id">KYC Type:</label>
+                {{-- Read only Name of KYC Type --}}
+                <input class="form-control" type="text" value="{{ $kycTypes->name ?? '' }}" readonly>
+            </div>
+        </div>
+    @endif
 
     <div class="col-md-6 mb-3">
         <div class="form-group">

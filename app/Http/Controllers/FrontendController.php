@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Client;
 use App\Models\ClientCompany;
 use App\Models\Faq;
+use App\Models\HelpTopic;
 use App\Models\MovingConfig;
 use App\Models\MovingDetailCategory;
 use App\Models\PrioritySetting;
@@ -51,10 +52,13 @@ class FrontendController extends Controller
     // Help Page
     public function help()
     {
+        // Get all active Help Topics
+        $helpTopics = HelpTopic::where('is_active', 1)->get();
+
         // Get all active Faqs
         $faqs = Faq::where('is_active', 1)->get();
 
-        return view('frontend.help', compact('faqs'));
+        return view('frontend.help', compact('faqs', 'helpTopics'));
     }
 
     // Join Helper Page

@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'referral_code',
+        'language_code',
         'is_active',
         'is_updated',
         'is_deleted',
