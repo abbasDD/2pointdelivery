@@ -32,7 +32,7 @@
                     {{-- Dropoff Address --}}
                     <p><span class="fw-bold">Dropoff:</span> {{ $booking->dropoff_address }}</p>
                 </td>
-                <td>${{ $booking->helper_fee }}</td>
+                <td>${{ $booking->payment->helper_fee }}</td>
                 <td>
                     <p class="badge {{ $booking->status == 'completed' ? 'bg-primary' : 'bg-danger' }}">
                         {{ $booking->status }}

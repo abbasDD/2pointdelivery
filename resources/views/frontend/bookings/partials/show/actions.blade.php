@@ -26,7 +26,7 @@
     @if (
         $helperView &&
             auth()->user()->helper_enabled &&
-            $booking->helper_user_id == auth()->user()->id &&
+            ($booking->helper_user_id == auth()->user()->id || $booking->helper_user_id2 == auth()->user()->id) &&
             $booking->status == 'accepted')
         <div class="">
             <a onclick="startBooking('{{ $booking->id }}')" class="btn btn-success"><i class="fa fa-bicycle"
@@ -37,7 +37,7 @@
     @if (
         $helperView &&
             auth()->user()->helper_enabled &&
-            $booking->helper_user_id == auth()->user()->id &&
+            ($booking->helper_user_id == auth()->user()->id || $booking->helper_user_id2 == auth()->user()->id) &&
             $booking->status == 'started')
         <div class="">
             <a onclick="inTransitBooking('{{ $booking->id }}')" class="btn btn-success"><i class="fa fa-bicycle"
@@ -48,7 +48,7 @@
     @if (
         $helperView &&
             auth()->user()->helper_enabled &&
-            $booking->helper_user_id == auth()->user()->id &&
+            ($booking->helper_user_id == auth()->user()->id || $booking->helper_user_id2 == auth()->user()->id) &&
             $booking->status == 'in_transit')
         <div class="">
             <a onclick="completeBooking('{{ $booking->id }}')" class="btn btn-success"><i class="fa fa-bicycle"
@@ -59,7 +59,7 @@
     @if (
         $helperView &&
             auth()->user()->helper_enabled &&
-            $booking->helper_user_id == auth()->user()->id &&
+            ($booking->helper_user_id == auth()->user()->id || $booking->helper_user_id2 == auth()->user()->id) &&
             ($booking->status != 'completed' && $booking->status != 'incomplete'))
         <div class="">
             <a onclick="inCompleteBooking('{{ $booking->id }}')" class="btn btn-danger"><i class="fa fa-xmark"
@@ -71,7 +71,7 @@
 @if (
     $helperView &&
         auth()->user()->helper_enabled &&
-        $booking->helper_user_id == auth()->user()->id &&
+        ($booking->helper_user_id == auth()->user()->id || $booking->helper_user_id2 == auth()->user()->id) &&
         $booking->status == 'accepted')
     {{-- Start Booking Modal --}}
     <div class="modal fade" id="startBookingModal" tabindex="-1" aria-labelledby="startBookingModalLabel"
@@ -130,7 +130,7 @@
 @if (
     $helperView &&
         auth()->user()->helper_enabled &&
-        $booking->helper_user_id == auth()->user()->id &&
+        ($booking->helper_user_id == auth()->user()->id || $booking->helper_user_id2 == auth()->user()->id) &&
         $booking->status == 'started')
     {{-- inTransitBooking Modal --}}
     <div class="modal fade" id="inTransitBookingModal" tabindex="-1" aria-labelledby="inTransitBookingModalLabel"
@@ -163,7 +163,7 @@
 @if (
     $helperView &&
         auth()->user()->helper_enabled &&
-        $booking->helper_user_id == auth()->user()->id &&
+        ($booking->helper_user_id == auth()->user()->id || $booking->helper_user_id2 == auth()->user()->id) &&
         $booking->status == 'in_transit')
     {{-- Complete Booking Modal --}}
     <div class="modal fade" id="completeBookingModal" tabindex="-1" aria-labelledby="completeBookingModalLabel"
@@ -223,7 +223,7 @@
 @if (
     $helperView &&
         auth()->user()->helper_enabled &&
-        $booking->helper_user_id == auth()->user()->id &&
+        ($booking->helper_user_id == auth()->user()->id || $booking->helper_user_id2 == auth()->user()->id) &&
         ($booking->status != 'completed' && $booking->status != 'incomplete'))
     {{-- inCompleteBooking Modal --}}
     <div class="modal fade" id="inCompleteBookingModal" tabindex="-1" aria-labelledby="inCompleteBookingModalLabel"

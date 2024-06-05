@@ -21,14 +21,37 @@ class BookingController extends Controller
     public function index()
     {
 
-        $bookings = Booking::select('bookings.*', 'booking_deliveries.helper_fee')
-            ->where('helper_user_id', auth()->user()->id)
-            ->with('helper')
-            ->join('booking_deliveries', 'bookings.id', '=', 'booking_deliveries.booking_id')
+        $bookings = Booking::where('client_user_id', auth()->user()->id)
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
+            ->where('helper_user_id', auth()->user()->id)
+            ->orWhere('helper_user_id2', auth()->user()->id)
             ->orderBy('bookings.created_at', 'desc')->get();
+
+
+
+        foreach ($bookings as $booking) {
+            if ($booking->helper_user_id != NULL) {
+                $booking->helper = Helper::where('user_id', $booking->helper_user_id)->first();
+            }
+
+            if ($booking->helper_user_id2 != NULL) {
+                $booking->helper = Helper::where('user_id', $booking->helper_user_id2)->first();
+            }
+
+            $booking->client = Client::where('user_id', $booking->client_user_id)->first();
+
+            $booking->payment = null;
+
+            if ($booking->booking_type == 'delivery') {
+                $booking->payment = BookingDelivery::where('booking_id', $booking->id)->first();
+            }
+
+            if ($booking->booking_type == 'moving') {
+                $booking->payment = BookingMoving::where('booking_id', $booking->id)->first();
+            }
+        }
 
         return view('helper.bookings.index', compact('bookings'));
     }
@@ -98,13 +121,28 @@ class BookingController extends Controller
 
         if ($booking->booking_type == 'moving') {
             $bookingPayment = BookingMoving::where('booking_id', $booking->id)->first();
+
+            // Check if helper_user_id is null
+            if ($booking->helper_user_id == null) {
+                // $booking->status = 'accepted';
+                $booking->helper_user_id = auth()->user()->id;
+                $booking->save();
+            } else {
+                // Check if same user_id is in helper_user_id
+                if ($booking->helper_user_id == auth()->user()->id) {
+                    return redirect()->back()->with('error', 'You have already accepted this booking');
+                }
+                $booking->status = 'accepted';
+                $booking->helper_user_id2 = auth()->user()->id;
+                $booking->save();
+            }
         } else {
             $bookingPayment = BookingDelivery::where('booking_id', $booking->id)->first();
-        }
 
-        $booking->status = 'accepted';
-        $booking->helper_user_id = auth()->user()->id;
-        $booking->save();
+            $booking->status = 'accepted';
+            $booking->helper_user_id = auth()->user()->id;
+            $booking->save();
+        }
 
         $bookingPayment->accepted_at = Carbon::now();
         $bookingPayment->save();
@@ -119,6 +157,7 @@ class BookingController extends Controller
     {
         $booking = Booking::where('id', $request->id)
             ->where('helper_user_id', auth()->user()->id)
+            ->orWhere('helper_user_id2', auth()->user()->id)
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
@@ -127,6 +166,34 @@ class BookingController extends Controller
         if (!$booking) {
             return redirect()->back()->with('error', 'Booking not found');
         }
+
+        $booking->currentStatus = 1;
+        // switch to manage booking status
+        switch ($booking->status) {
+            case 'pending':
+                $booking->currentStatus = 0;
+                break;
+            case 'accepted':
+                $booking->currentStatus = 1;
+                break;
+            case 'started':
+                $booking->currentStatus = 2;
+                break;
+            case 'in_transit':
+                $booking->currentStatus = 3;
+                break;
+            case 'completed':
+                $booking->currentStatus = 4;
+                break;
+            case 'incomplete':
+                $booking->currentStatus = 5;
+                break;
+            default:
+                $booking->currentStatus = 1;
+                break;
+        }
+
+        // dd($booking->currentStatus);
 
         // Client view false
         $clientView = false;
@@ -148,6 +215,11 @@ class BookingController extends Controller
         $helperData = null;
         if ($booking->helper_user_id) {
             $helperData = Helper::where('user_id', $booking->helper_user_id)->first();
+        }
+
+        $helper2Data = null;
+        if ($booking->helper_user_id2) {
+            $helper2Data = Helper::where('user_id', $booking->helper_user_id2)->first();
         }
 
         // Get client data
@@ -175,7 +247,7 @@ class BookingController extends Controller
 
         // dd($booking);
 
-        return view('frontend.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'clientView', 'helperView'));
+        return view('frontend.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'helper2Data', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'clientView', 'helperView'));
     }
     // Start Booking
     public function start(Request $request)
@@ -185,6 +257,7 @@ class BookingController extends Controller
 
         $booking = Booking::where('id', $request->id)
             ->where('helper_user_id', auth()->user()->id)
+            ->orWhere('helper_user_id2', auth()->user()->id)
             ->first();
 
         if (!$booking) {
@@ -284,6 +357,7 @@ class BookingController extends Controller
     {
         $booking = Booking::where('id', $request->id)
             ->where('helper_user_id', auth()->user()->id)
+            ->orWhere('helper_user_id2', auth()->user()->id)
             ->first();
 
         if (!$booking) {
@@ -334,6 +408,7 @@ class BookingController extends Controller
     {
         $booking = Booking::where('id', $request->id)
             ->where('helper_user_id', auth()->user()->id)
+            ->orWhere('helper_user_id2', auth()->user()->id)
             ->first();
 
         if (!$booking) {
@@ -439,6 +514,7 @@ class BookingController extends Controller
 
         $booking = Booking::where('id', $request->id)
             ->where('helper_user_id', auth()->user()->id)
+            ->orWhere('helper_user_id2', auth()->user()->id)
             ->first();
 
         if (!$booking) {

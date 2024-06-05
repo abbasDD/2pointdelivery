@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('uuid')->unique()->index(); // Random generated alpha numeric unique id
             $table->unsignedBigInteger('client_user_id');
             $table->unsignedBigInteger('helper_user_id')->nullable();
+            $table->unsignedBigInteger('helper_user_id2')->nullable();
             $table->unsignedBigInteger('service_type_id');
             $table->unsignedBigInteger('priority_setting_id');
             $table->unsignedBigInteger('service_category_id');
@@ -47,6 +48,7 @@ return new class extends Migration
 
             $table->foreign('client_user_id')->references('id')->on('users');
             $table->foreign('helper_user_id')->references('id')->on('users');
+            $table->foreign('helper_user_id2')->references('id')->on('users');
             $table->foreign('service_type_id')->references('id')->on('service_types');
             $table->foreign('priority_setting_id')->references('id')->on('priority_settings');
             $table->foreign('service_category_id')->references('id')->on('service_categories');

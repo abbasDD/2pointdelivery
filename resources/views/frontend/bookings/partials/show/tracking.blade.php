@@ -19,7 +19,7 @@
             <div id="tracking" class="tracking">
                 <div class="tracking-list">
                     {{-- Pending --}}
-                    <div class="{{ $booking->status == 'pending' ? 'tracking-item' : 'tracking-item-pending' }}">
+                    <div class="{{ $booking->currentStatus >= 0 ? 'tracking-item' : 'tracking-item-pending' }}">
                         <div
                             class="tracking-icon {{ $booking->status == 'pending' ? 'status-current' : 'status-intransit' }}">
                             <svg class="svg-inline--fa fa-circle fa-w-16" aria-hidden="true" data-prefix="fas"
@@ -37,7 +37,7 @@
                         </div>
                     </div>
                     {{-- Accepted --}}
-                    <div class="{{ $booking->status == 'accepted' ? 'tracking-item' : 'tracking-item-pending' }}">
+                    <div class="{{ $booking->currentStatus >= 1 ? 'tracking-item' : 'tracking-item-pending' }}">
                         <div
                             class="tracking-icon {{ $booking->status == 'accepted' ? 'status-current' : 'status-intransit' }}">
                             <svg class="svg-inline--fa fa-circle fa-w-16" aria-hidden="true" data-prefix="fas"
@@ -55,7 +55,7 @@
                         </div>
                     </div>
                     {{-- Started --}}
-                    <div class="{{ $booking->status == 'started' ? 'tracking-item' : 'tracking-item-pending' }}">
+                    <div class="{{ $booking->currentStatus >= 2 ? 'tracking-item' : 'tracking-item-pending' }}">
                         <div
                             class="tracking-icon {{ $booking->status == 'started' ? 'status-current' : 'status-intransit' }}">
                             <svg class="svg-inline--fa fa-circle fa-w-16" aria-hidden="true" data-prefix="fas"
@@ -73,7 +73,7 @@
                         </div>
                     </div>
                     {{-- In Transit --}}
-                    <div class="{{ $booking->status == 'in_transit' ? 'tracking-item' : 'tracking-item-pending' }}">
+                    <div class="{{ $booking->currentStatus >= 3 ? 'tracking-item' : 'tracking-item-pending' }}">
                         <div
                             class="tracking-icon {{ $booking->status == 'in_transit' ? 'status-current' : 'status-intransit' }}">
                             <svg class="svg-inline--fa fa-circle fa-w-16" aria-hidden="true" data-prefix="fas"
@@ -91,7 +91,7 @@
                         </div>
                     </div>
                     {{-- Completed --}}
-                    <div class="{{ $booking->status == 'completed' ? 'tracking-item' : 'tracking-item-pending' }}">
+                    <div class="{{ $booking->currentStatus >= 4 ? 'tracking-item' : 'tracking-item-pending' }}">
                         <div
                             class="tracking-icon {{ $booking->status == 'completed' ? 'status-current' : 'status-intransit' }}">
                             <svg class="svg-inline--fa fa-circle fa-w-16" aria-hidden="true" data-prefix="fas"

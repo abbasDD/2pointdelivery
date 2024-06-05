@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreHelperRequest;
 use App\Http\Requests\UpdateHelperRequest;
 use App\Models\Booking;
+use App\Models\BookingDelivery;
+use App\Models\BookingMoving;
 use App\Models\City;
 use App\Models\Client;
 use App\Models\Country;
@@ -90,15 +92,32 @@ class HelperController extends Controller
             'total_earnings' => $helper_earnings,
         ];
 
-        $bookings = Booking::select('bookings.*', 'booking_deliveries.helper_fee')
-            ->where('status', 'pending')
-            ->join('booking_deliveries', 'bookings.id', '=', 'booking_deliveries.booking_id')
-            ->with('helper')
-            ->with('prioritySetting')
+        $bookings = Booking::with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
-            ->orderBy('bookings.created_at', 'desc')
-            ->take(10)->get();
+            ->where('status', 'pending')
+            ->orderBy('bookings.created_at', 'desc')->get();
+
+        // dd($bookings);
+
+        foreach ($bookings as $booking) {
+            if ($booking->helper_user_id != NULL) {
+                $booking->helper = Helper::where('user_id', $booking->helper_user_id)->first();
+            }
+
+            $booking->client = Client::where('user_id', $booking->client_user_id)->first();
+
+            $booking->payment = null;
+
+            if ($booking->booking_type == 'delivery') {
+                $booking->payment = BookingDelivery::where('booking_id', $booking->id)->first();
+            }
+
+            if ($booking->booking_type == 'moving') {
+                $booking->payment = BookingMoving::where('booking_id', $booking->id)->first();
+            }
+        }
+
 
         // Booking Client Detail
         // $bookingClient = Client::where('user_id', auth()->user()->id)->first();

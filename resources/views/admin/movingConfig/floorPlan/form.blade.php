@@ -1,4 +1,4 @@
-{{-- No of Rooms Form --}}
+{{-- Floor Plan Form --}}
 <div class="row">
     {{-- Name --}}
     <div class="col-md-6">
@@ -21,7 +21,9 @@
             <div class="input-group">
                 <input type="text" id="price" class="form-control" placeholder="Price" name="price"
                     value="{{ old('price', $floorPlan['price'] ?? '') }}" aria-describedby="price"
-                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required>
+                    pattern="\d+(\.\d{2})?" inputmode="decimal"
+                    oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/^(\d*\.?\d{0,2}).*$/g, '$1');"
+                    required>
                 <span class="input-group-text text-uppercase" id="price">$</span>
             </div>
             @error('price')
@@ -53,7 +55,9 @@
             <div class="input-group">
                 <input type="text" id="helper_fee" class="form-control" placeholder="Helper Fee" name="helper_fee"
                     value="{{ old('helper_fee', $floorPlan['helper_fee'] ?? '') }}" aria-describedby="helper_fee"
-                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required>
+                    pattern="\d+(\.\d{0,2})?" inputmode="decimal"
+                    oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/^(\d*\.?\d{0,2}).*$/g, '$1');"
+                    required>
                 <span class="input-group-text text-uppercase" id="helper_fee">$</span>
             </div>
             @error('helper_fee')

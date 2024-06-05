@@ -74,8 +74,9 @@
             <div class="input-group">
                 <input type="text" class="form-control @error('price') is-invalid @enderror" id="price"
                     name="price" value="{{ old('price', $vehicle_type['price'] ?? '') }}"
-                    placeholder="Enter Vehicle Price"
-                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required>
+                    placeholder="Enter Vehicle Price" pattern="\d+(\.\d{0,2})?" inputmode="decimal"
+                    oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/^(\d*\.?\d{0,2}).*$/g, '$1');"
+                    required>
                 <span class="input-group-text text-uppercase" id="price">$</span>
             </div>
             @error('price')

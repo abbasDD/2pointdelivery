@@ -116,22 +116,22 @@
         </div>
         <div class="row">
             <div class="col-md-4">
-                {{-- Helpers Request --}}
+                {{-- New Helpers --}}
                 <div class="card">
                     <div class="card-body">
                         {{-- Heading --}}
-                        <h6>Helpers Request</h6>
+                        <h6>New Helpers</h6>
                         {{-- Helper List --}}
                         @forelse ($helperRequests as $helperRequest)
                             {{-- Top Helper Item --}}
                             <div class="d-flex align-items-center justify-content-between mb-3">
                                 <div class="d-flex align-items-center">
-                                    <img class="rounded mr-3"
+                                    <img class="rounded mr-1"
                                         src="{{ $helperRequest['profile_image'] ? asset('images/users/' . $helperRequest['profile_image']) : asset('images/users/default.png') }}"
-                                        width="50" height="50" alt="profile">
+                                        width="35" height="35" alt="profile">
                                     <div class="info">
                                         <h6 class="mb-0">{{ $helperRequest['first_name'] }}</h6>
-                                        <p class="mb-0">{{ $helperRequest['email'] }}</p>
+                                        <p class="mb-0 fs-xxs">{{ $helperRequest['email'] }}</p>
                                     </div>
                                 </div>
                                 <div class="action">
@@ -236,10 +236,10 @@
         var myChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: @json($lastSixMonths['labels']),
+                labels: @json($deliveryMovingChartData['labels']),
                 datasets: [{
                     label: 'Delivery',
-                    data: @json($lastSixMonths['delivery']),
+                    data: @json($deliveryMovingChartData['delivery']),
                     borderColor: 'rgba(0, 73, 56, 1)',
                     borderWidth: 2,
                     fill: false,
@@ -248,7 +248,7 @@
                     pointStyle: 'crossRot'
                 }, {
                     label: 'Moving',
-                    data: @json($lastSixMonths['moving']),
+                    data: @json($deliveryMovingChartData['moving']),
                     borderColor: 'rgba(50, 170, 42, 1)',
                     borderWidth: 2,
                     fill: false,

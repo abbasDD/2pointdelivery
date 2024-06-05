@@ -28,16 +28,18 @@ class HomeController extends Controller
     public function index()
     {
         // Get delivery earning data
-        $total_earnings_delivery = (BookingDelivery::where('payment_status', 'paid')->sum('sub_total') - BookingDelivery::where('payment_status', 'paid')->sum('helper_fee'));
         $total_payments_delivery = BookingDelivery::where('payment_status', 'paid')->sum('helper_fee');
         $total_taxes_delivery = BookingDelivery::where('payment_status', 'paid')->sum('tax_price');
         $total_revenue_delivery = BookingDelivery::where('payment_status', 'paid')->sum('sub_total');
+        // $total_earnings_delivery = (BookingDelivery::where('payment_status', 'paid')->sum('sub_total') - BookingDelivery::where('payment_status', 'paid')->sum('helper_fee'));
+        $total_earnings_delivery = $total_revenue_delivery - $total_taxes_delivery - $total_payments_delivery;
 
         // Get moving earning data
-        $total_earnings_moving = (BookingMoving::where('payment_status', 'paid')->sum('sub_total') - BookingMoving::where('payment_status', 'paid')->sum('helper_fee'));
         $total_payments_moving = BookingMoving::where('payment_status', 'paid')->sum('helper_fee');
         $total_taxes_moving = BookingMoving::where('payment_status', 'paid')->sum('tax_price');
         $total_revenue_moving = BookingMoving::where('payment_status', 'paid')->sum('sub_total');
+        // $total_earnings_moving = (BookingMoving::where('payment_status', 'paid')->sum('sub_total') - BookingMoving::where('payment_status', 'paid')->sum('helper_fee'));
+        $total_earnings_moving = $total_revenue_moving - $total_taxes_moving - $total_payments_moving;
 
         // Statistics
         $statistics = [
@@ -94,16 +96,16 @@ class HomeController extends Controller
             ->join('users', 'users.id', '=', 'helpers.user_id')
             ->where('helpers.is_approved', 0)->get();
 
-        // Get last 6 months data of delivery and moving
-        $lastSixMonths = [
+        // Get last 12 months data of delivery and moving
+        $deliveryMovingChartData = [
             'labels' => [],
             'delivery' => [],
             'moving' => [],
         ];
-        for ($i = 5; $i >= 0; $i--) {
-            $lastSixMonths['labels'][] = date('F', strtotime("-$i month"));
-            $lastSixMonths['delivery'][] = Booking::where('booking_type', 'delivery')->whereMonth('created_at', date('m', strtotime("-$i month")))->whereYear('created_at', date('Y', strtotime("-$i month")))->count();
-            $lastSixMonths['moving'][] = Booking::where('booking_type', 'moving')->whereMonth('created_at', date('m', strtotime("-$i month")))->whereYear('created_at', date('Y', strtotime("-$i month")))->count();
+        for ($i = 11; $i >= 0; $i--) {
+            $deliveryMovingChartData['labels'][] = date('M', strtotime("-$i month"));
+            $deliveryMovingChartData['delivery'][] = Booking::where('booking_type', 'delivery')->whereMonth('created_at', date('m', strtotime("-$i month")))->whereYear('created_at', date('Y', strtotime("-$i month")))->count();
+            $deliveryMovingChartData['moving'][] = Booking::where('booking_type', 'moving')->whereMonth('created_at', date('m', strtotime("-$i month")))->whereYear('created_at', date('Y', strtotime("-$i month")))->count();
         }
 
         // Dummy Data for Chart
@@ -122,7 +124,7 @@ class HomeController extends Controller
             ->latest()->take(5)->get();
         // dd($latestBookings);
 
-        return view('admin.index', compact('helperRequests', 'lastSixMonths', 'statistics', 'latestBookings'));
+        return view('admin.index', compact('helperRequests', 'deliveryMovingChartData', 'statistics', 'latestBookings'));
 
         // return view('admin.index', compact('chartData'));
     }

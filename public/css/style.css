@@ -1541,3 +1541,16 @@ body {
         transform: scale(1)
     }
 }
+
+/* Pagination CSS Start  */
+
+.page-link {
+    color: var(--primary-color);
+}
+
+.page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Pagination CSS End */

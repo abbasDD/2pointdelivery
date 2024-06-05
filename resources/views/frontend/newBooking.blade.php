@@ -620,7 +620,8 @@
                                         <div class="input-group mb-3">
                                             <input type="text" class="form-control" placeholder="Value"
                                                 name="package_value" aria-describedby="package_value"
-                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                                                pattern="\d+(\.\d{0,2})?" inputmode="decimal"
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/^(\d*\.?\d{0,2}).*$/g, '$1');"
                                                 onchange="updatePaymentAmount()">
                                             <span class="input-group-text text-uppercase" id="package_value">$</span>
                                         </div>

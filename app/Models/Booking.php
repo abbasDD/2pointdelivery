@@ -18,6 +18,7 @@ class Booking extends Model
         'uuid',
         'client_user_id',
         'helper_user_id',
+        'helper_user_id2',
         'service_type_id',
         'priority_setting_id',
         'service_category_id',
@@ -61,6 +62,14 @@ class Booking extends Model
     public function helper()
     {
         return $this->belongsTo(User::class, 'helper_user_id');
+    }
+
+    /**
+     * Get the helper user associated with the booking.
+     */
+    public function helper2()
+    {
+        return $this->belongsTo(User::class, 'helper_user_id2');
     }
 
     /**

@@ -835,10 +835,44 @@ class BookingController extends Controller
             $bookingPayment = BookingMoving::where('booking_id', $booking->id)->first();
         }
 
+        $booking->currentStatus = 1;
+        // switch to manage booking status
+        switch ($booking->status) {
+            case 'pending':
+                $booking->currentStatus = 0;
+                break;
+            case 'accepted':
+                $booking->currentStatus = 1;
+                break;
+            case 'started':
+                $booking->currentStatus = 2;
+                break;
+            case 'in_transit':
+                $booking->currentStatus = 3;
+                break;
+            case 'completed':
+                $booking->currentStatus = 4;
+                break;
+            case 'incomplete':
+                $booking->currentStatus = 5;
+                break;
+            default:
+                $booking->currentStatus = 1;
+                break;
+        }
+
+        // dd($booking->currentStatus);
+
         // Get helper Data
         $helperData = null;
         if ($booking->helper_user_id) {
             $helperData = Helper::where('user_id', $booking->helper_user_id)->first();
+        }
+
+        // Get helper2 Data
+        $helper2Data = null;
+        if ($booking->helper_user_id2) {
+            $helper2Data = Helper::where('user_id', $booking->helper_user_id2)->first();
         }
 
         // Get client data
@@ -866,7 +900,7 @@ class BookingController extends Controller
 
         // dd($vehicleTypeData);
 
-        return view('frontend.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'clientView', 'helperView'));
+        return view('frontend.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'helper2Data', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'clientView', 'helperView'));
     }
 
     // Get client individual tax calculation
