@@ -118,7 +118,7 @@
             </div>
         </div>
 
-        {{-- Base Price Distance --}}
+        {{-- Base Distance --}}
         <div class="col-md-6" id="base_distance_div">
             <div class="form-group mb-3">
                 <label for="base_distance">Base Distance</label>

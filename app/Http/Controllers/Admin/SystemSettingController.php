@@ -68,6 +68,8 @@ class SystemSettingController extends Controller
             $paymentSettings = [];
         }
 
+        // dd($paymentSettings);
+
         // Get Authentication Settings
         $AuthenticationSettings = [];
 

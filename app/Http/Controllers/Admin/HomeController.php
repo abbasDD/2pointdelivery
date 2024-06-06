@@ -67,53 +67,18 @@ class HomeController extends Controller
             'moving_pending' => Booking::where('status', 'pending')->where('booking_type', 'moving')->count(),
         ];
 
-        // Top Helpers List
-        $newHelpers = [
-            [
-                'name' => 'John Doe',
-                'image' => 'https://via.placeholder.com/50x50',
-                'email' => 'johndoe@gmail.com',
-            ],
-            [
-                'name' => 'Ghulam Abbas',
-                'image' => 'https://via.placeholder.com/50x50',
-                'email' => 'ghulamabbas@gmailcom',
-            ],
-            [
-                'name' => 'Bob Smith',
-                'image' => 'https://via.placeholder.com/50x50',
-                'email' => 'bobsmith@gmailcom',
-            ],
-            [
-                'name' => 'Abdul Shakoor',
-                'image' => 'https://via.placeholder.com/50x50',
-                'email' => 'abdulshakoor@gmailcom',
-            ]
-        ];
-
         // Helper Requets
         $helperRequests = Helper::select('helpers.*', 'users.email', 'users.is_active')
             ->join('users', 'users.id', '=', 'helpers.user_id')
             ->where('helpers.is_approved', 0)->get();
 
-        // Get last 12 months data of delivery and moving
-        $deliveryMovingChartData = [
-            'labels' => [],
-            'delivery' => [],
-            'moving' => [],
-        ];
-        for ($i = 11; $i >= 0; $i--) {
-            $deliveryMovingChartData['labels'][] = date('M', strtotime("-$i month"));
-            $deliveryMovingChartData['delivery'][] = Booking::where('booking_type', 'delivery')->whereMonth('created_at', date('m', strtotime("-$i month")))->whereYear('created_at', date('Y', strtotime("-$i month")))->count();
-            $deliveryMovingChartData['moving'][] = Booking::where('booking_type', 'moving')->whereMonth('created_at', date('m', strtotime("-$i month")))->whereYear('created_at', date('Y', strtotime("-$i month")))->count();
-        }
+        // New Registered Users
+        $newRegisteredUsers = User::where('user_type', 'user')->where('created_at', '>=', now()->subDays(30))->get();
 
-        // Dummy Data for Chart
-        // $chartData = [
-        //     'labels' => ['January', 'February', 'March', 'April', 'May'],
-        //     'delivery' => [65, 59, 20, 71, 56],
-        //     'moving' => [55, 9, 40, 51, 76],
-        // ];
+
+        // Get deliveryMovingChartData
+        $deliveryMovingChartData = $this->getChartData();
+
 
         // Latest Bookings
         $latestBookings = Booking::with('client')
@@ -124,8 +89,41 @@ class HomeController extends Controller
             ->latest()->take(5)->get();
         // dd($latestBookings);
 
-        return view('admin.index', compact('helperRequests', 'deliveryMovingChartData', 'statistics', 'latestBookings'));
+        return view('admin.index', compact('helperRequests', 'deliveryMovingChartData', 'statistics', 'latestBookings', 'newRegisteredUsers'));
 
         // return view('admin.index', compact('chartData'));
+    }
+
+    private function getChartData()
+    {
+        // Get current year
+        $currentYear = date('Y');
+
+        // Initialize data arrays
+        $deliveryMovingChartData = [
+            'labels' => [],
+            'delivery' => [],
+            'moving' => [],
+        ];
+
+        // Loop through each month from January to December
+        for ($month = 1; $month <= 12; $month++) {
+            // Format month as three-letter abbreviation
+            $deliveryMovingChartData['labels'][] = date('M', mktime(0, 0, 0, $month, 10));
+
+            // Get count of delivery bookings for the current month and year
+            $deliveryMovingChartData['delivery'][] = Booking::where('booking_type', 'delivery')
+                ->whereMonth('created_at', $month)
+                ->whereYear('created_at', $currentYear)
+                ->count();
+
+            // Get count of moving bookings for the current month and year
+            $deliveryMovingChartData['moving'][] = Booking::where('booking_type', 'moving')
+                ->whereMonth('created_at', $month)
+                ->whereYear('created_at', $currentYear)
+                ->count();
+        }
+
+        return $deliveryMovingChartData;
     }
 }

@@ -548,20 +548,26 @@ class BookingController extends Controller
         }
 
         // Get payment settings
-        $paypal_client_id = PaymentSetting::where('key', 'paypal_client_id')->first();
-        $paypal_secret_id = PaymentSetting::where('key', 'paypal_secret_id')->first();
-        $stripe_publishable_key = PaymentSetting::where('key', 'stripe_publishable_key')->first();
-        $stripe_secret_key = PaymentSetting::where('key', 'stripe_secret_key')->first();
+        $cod_enabled = PaymentSetting::where('key', 'cod_enabled')->first();
+        $paypal_enabled = PaymentSetting::where('key', 'paypal_enabled')->first();
+        $stripe_enabled = PaymentSetting::where('key', 'stripe_enabled')->first();
 
+        // COD Enabled
+        $codEnabled = false;
+        if (isset($cod_enabled) && $cod_enabled->value == 'yes') {
+            $codEnabled = true;
+        }
+        // dd($cod_enabled->value);
+
+        // Paypal Enabled
         $paypalEnabled = false;
-        $stripeEnabled = false;
-
-        if (isset($paypal_client_id) && isset($paypal_secret_id)) {
+        if (isset($paypal_enabled) && $paypal_enabled->value == 'yes') {
             $paypalEnabled = true;
         }
 
-        // for stripe
-        if (isset($stripe_publishable_key) && isset($stripe_secret_key)) {
+        // Stripe Enabled
+        $stripeEnabled = false;
+        if (isset($stripe_enabled) && $stripe_enabled->value == 'yes') {
             $stripeEnabled = true;
         }
 
@@ -580,7 +586,7 @@ class BookingController extends Controller
         }
         // dd($bookingDelivery);
 
-        return view('frontend.payment_booking', compact('booking', 'bookingData', 'paypalEnabled', 'stripeEnabled'));
+        return view('frontend.payment_booking', compact('booking', 'bookingData', 'paypalEnabled', 'stripeEnabled', 'codEnabled'));
     }
 
     // Make Online Payment using Paypal
@@ -861,6 +867,17 @@ class BookingController extends Controller
                 break;
         }
 
+        $booking->moverCount = 0;
+
+        if ($booking->helper_user_id !== null) {
+            $booking->moverCount++;
+        }
+
+        if ($booking->helper_user_id2 !== null) {
+            $booking->moverCount++;
+        }
+
+
         // dd($booking->currentStatus);
 
         // Get helper Data
@@ -896,11 +913,17 @@ class BookingController extends Controller
             $helperVehicleData = HelperVehicle::where('user_id', $booking->helper_user_id)->first();
         }
 
+        // Get helper2 vehicle data
+        $helper2VehicleData = null;
+        if ($booking->helper_user_id2) {
+            $helper2VehicleData = HelperVehicle::where('user_id', $booking->helper_user_id2)->first();
+        }
+
 
 
         // dd($vehicleTypeData);
 
-        return view('frontend.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'helper2Data', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'clientView', 'helperView'));
+        return view('frontend.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'helper2Data', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'helper2VehicleData', 'clientView', 'helperView'));
     }
 
     // Get client individual tax calculation

@@ -68,7 +68,8 @@
                         <div class="tracking-date"><img
                                 src="https://raw.githubusercontent.com/shajo/portfolio/a02c5579c3ebe185bb1fc085909c582bf5fad802/delivery.svg"
                                 class="img-responsive" alt="order-placed" /></div>
-                        <div class="tracking-content">Package Received
+                        <div class="tracking-content">
+                            {{ $booking->booking_type == 'delivery' ? 'Package Received' : 'Movers in-transit' }}
                             <span>{{ $bookingPayment->start_booking_at ? app('dateHelper')->formatTimestamp($bookingPayment->start_booking_at, 'd M Y H:i') : 'Expected' }}</span>
                         </div>
                     </div>
@@ -86,7 +87,8 @@
                         <div class="tracking-date"><img
                                 src="https://raw.githubusercontent.com/shajo/portfolio/a02c5579c3ebe185bb1fc085909c582bf5fad802/delivery.svg"
                                 class="img-responsive" alt="order-placed" /></div>
-                        <div class="tracking-content">Delivering
+                        <div class="tracking-content">
+                            {{ $booking->booking_type == 'delivery' ? 'Delivering' : 'Moving Started' }}
                             <span>{{ $bookingPayment->start_intransit_at ? app('dateHelper')->formatTimestamp($bookingPayment->start_intransit_at, 'd M Y H:i') : 'Expected' }}</span>
                         </div>
                     </div>
@@ -104,7 +106,8 @@
                         <div class="tracking-date"><img
                                 src="https://raw.githubusercontent.com/shajo/portfolio/a02c5579c3ebe185bb1fc085909c582bf5fad802/delivery.svg"
                                 class="img-responsive" alt="order-placed" /></div>
-                        <div class="tracking-content">Receipent Received
+                        <div class="tracking-content">
+                            {{ $booking->booking_type == 'delivery' ? 'Receipent Received' : 'Moving Completed' }}
                             <span>{{ $bookingPayment->complete_booking_at ? app('dateHelper')->formatTimestamp($bookingPayment->complete_booking_at, 'd M Y H:i') : 'Expected' }}</span>
                         </div>
                     </div>

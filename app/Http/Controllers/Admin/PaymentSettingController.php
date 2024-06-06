@@ -41,22 +41,25 @@ class PaymentSettingController extends Controller
     {
         // dd($request->all());
 
-        // Validate the request
-        $request->validate([
-            'paypal_client_id' => 'required|string|max:255',
-            'paypal_secret_id' => 'required|string|max:255',
-            'stripe_publishable_key' => 'required|string|max:255',
-            'stripe_secret_key' => 'required|string|max:255',
-        ]);
-
         // Store values in updated data array
-        $paymentSetting = $request->only('paypal_client_id', 'paypal_secret_id', 'stripe_publishable_key', 'stripe_secret_key',);
+        $paymentSetting = $request->only('cod_enabled', 'paypal_enabled', 'paypal_client_id', 'paypal_secret_id', 'stripe_enabled', 'stripe_publishable_key', 'stripe_secret_key',);
 
 
         // dd($paymentSetting);
         // Update the system settings
         foreach ($paymentSetting as $key => $value) {
             $paymentSetting = PaymentSetting::where('key', $key)->first();
+            // if payment exists and value is empty, delete the payment setting
+            if ($paymentSetting && ($value === null || $value === '')) {
+                $paymentSetting->delete();
+                continue;
+            }
+
+            // if value is empty, continue
+            if (($value === null || $value === '')) {
+                continue;
+            }
+            // if payment setting exists, update the value
             if ($paymentSetting) {
                 $paymentSetting->value = $value;
                 $paymentSetting->save();

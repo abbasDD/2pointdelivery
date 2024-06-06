@@ -75,6 +75,14 @@ class ServiceCategoryController extends Controller
             'uuid' => Str::random(32),
         ]);
 
+        // Convvert prices to 2 decimal places
+        $request->request->add([
+            'base_price' => number_format($request->base_price, 2),
+            'extra_distance_price' => number_format($request->extra_distance_price, 2),
+            'extra_weight_price' => number_format($request->extra_weight_price, 2),
+            'helper_fee' => number_format($request->helper_fee, 2),
+        ]);
+
         // Create the serviceCategory
         $serviceCategory = new ServiceCategory($request->all());
 
@@ -118,6 +126,15 @@ class ServiceCategoryController extends Controller
 
         unset($request['_token']);
         // dd($request->all());
+
+        // Convvert prices to 2 decimal places
+        $request->request->add([
+            'base_price' => number_format($request->base_price, 2),
+            'extra_distance_price' => number_format($request->extra_distance_price, 2),
+            'extra_weight_price' => number_format($request->extra_weight_price, 2),
+            'helper_fee' => number_format($request->helper_fee, 2),
+        ]);
+
         // Update the serviceCategory
         $serviceCategory = ServiceCategory::where('id', $request->id)->update($request->all());
 

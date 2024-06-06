@@ -117,24 +117,26 @@
                                         </form>
                                     </div>
                                 @endif
+                                {{-- Stripe --}}
                                 @if ($stripeEnabled)
-                                    {{-- Stripe --}}
                                     <div class="stripe ml-2">
                                         <button class="btn btn-stripe d-flex align-items-center"
-                                            onclick="paymentMethodSelection('stripe')" target="_blank">
+                                            onclick="paymentMethodSelection('stripe')">
                                             <i class="fa-brands fa-stripe"></i>
                                             <span class="d-none d-md-block ml-2">Stripe</span>
                                         </button>
                                     </div>
                                 @endif
                                 {{-- Cash On Delivery --}}
-                                <div class="cod ml-2">
-                                    <button class="btn btn-primary d-flex align-items-center"
-                                        onclick="paymentMethodSelection('cod')">
-                                        <i class="fa-solid fa-money-bill-1"></i>
-                                        <span class="d-none d-md-block ml-2">COD</span>
-                                    </button>
-                                </div>
+                                @if ($codEnabled)
+                                    <div class="cod ml-2">
+                                        <button class="btn btn-primary d-flex align-items-center"
+                                            onclick="paymentMethodSelection('cod')">
+                                            <i class="fa-solid fa-money-bill-1"></i>
+                                            <span class="d-none d-md-block ml-2">COD</span>
+                                        </button>
+                                    </div>
+                                @endif
                             </div>
                         @else
                             <h6 class="text-center">Payment Successful</h6>

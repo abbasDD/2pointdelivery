@@ -130,14 +130,15 @@
                                         src="{{ $helperRequest['profile_image'] ? asset('images/users/' . $helperRequest['profile_image']) : asset('images/users/default.png') }}"
                                         width="35" height="35" alt="profile">
                                     <div class="info">
-                                        <h6 class="mb-0">{{ $helperRequest['first_name'] }}</h6>
+                                        <h6 class="mb-0">
+                                            {{ $helperRequest['first_name'] . ' ' . $helperRequest['last_name'] }}</h6>
                                         <p class="mb-0 fs-xxs">{{ $helperRequest['email'] }}</p>
                                     </div>
                                 </div>
                                 <div class="action">
                                     {{-- <a href="#" class="fs-xxs text-primary">View </a> --}}
                                     <a href="{{ route('admin.helper.show', $helperRequest['id']) }}"
-                                        class="btn btn-sm btn-primary">View</a>
+                                        class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>
                                 </div>
                             </div>
                             <hr class="mt-1">
@@ -167,7 +168,46 @@
 
     {{-- Latest Bookings --}}
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-4">
+            {{-- New Registrations --}}
+            <div class="card">
+                <div class="card-body">
+                    {{-- Heading --}}
+                    <h6>New Registrations</h6>
+                    {{-- Helper List --}}
+                    @forelse ($newRegisteredUsers as $newRegisteredUser)
+                        {{-- Top Helper Item --}}
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center">
+                                <img class="rounded mr-1"
+                                    src="{{ $newRegisteredUser['profile_image'] ? asset('images/users/' . $newRegisteredUser['profile_image']) : asset('images/users/default.png') }}"
+                                    width="35" height="35" alt="profile">
+                                <div class="info">
+                                    @if ($newRegisteredUser['helper_enabled'])
+                                        <h6 class="mb-0">Helper</h6>
+                                    @else
+                                        <h6 class="mb-0">Client</h6>
+                                    @endif
+                                    <p class="mb-0 fs-xxs">{{ $newRegisteredUser['email'] }}</p>
+                                </div>
+                            </div>
+                            <div class="action">
+                                {{-- <a href="#" class="fs-xxs text-primary">View </a> --}}
+                                <a href="{{ route('admin.helper.show', $newRegisteredUser['id']) }}"
+                                    class="btn btn-sm btn-primary">View</a>
+                            </div>
+                        </div>
+                        <hr class="mt-1">
+                    @empty
+                        <div class="text-center">
+                            <p>No Requests Available</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+        {{-- Latest Bookings --}}
+        <div class="col-md-8">
             <div class="card">
                 <div class="card-body">
                     {{-- Heading --}}

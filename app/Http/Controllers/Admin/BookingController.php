@@ -78,6 +78,42 @@ class BookingController extends Controller
             $bookingData = BookingMoving::where('booking_id', $booking->id)->first();
         }
 
+        $booking->currentStatus = 1;
+        // switch to manage booking status
+        switch ($booking->status) {
+            case 'pending':
+                $booking->currentStatus = 0;
+                break;
+            case 'accepted':
+                $booking->currentStatus = 1;
+                break;
+            case 'started':
+                $booking->currentStatus = 2;
+                break;
+            case 'in_transit':
+                $booking->currentStatus = 3;
+                break;
+            case 'completed':
+                $booking->currentStatus = 4;
+                break;
+            case 'incomplete':
+                $booking->currentStatus = 5;
+                break;
+            default:
+                $booking->currentStatus = 1;
+                break;
+        }
+
+        $booking->moverCount = 0;
+
+        if ($booking->helper_user_id !== null) {
+            $booking->moverCount++;
+        }
+
+        if ($booking->helper_user_id2 !== null) {
+            $booking->moverCount++;
+        }
+
 
         // Get helper Data
         $helperData = null;
@@ -107,8 +143,15 @@ class BookingController extends Controller
         }
 
 
+        // Get helper2 vehicle data
+        $helper2VehicleData = null;
+        if ($booking->helper_user_id2) {
+            $helper2VehicleData = HelperVehicle::where('user_id', $booking->helper_user_id2)->first();
+        }
+
+
         // dd($booking->helper_user_id);
 
-        return view('admin.bookings.show', compact('booking', 'bookingData', 'helperData', 'clientData', 'vehicleTypeData', 'helperVehicleData'));
+        return view('admin.bookings.show', compact('booking', 'bookingData', 'helperData', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'helper2VehicleData'));
     }
 }

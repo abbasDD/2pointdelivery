@@ -6,7 +6,7 @@
             <th>Category Name</th>
             <th>Secureship API</th>
             <th>Base Price</th>
-            <th>Base Price Distance</th>
+            <th>Base Distance</th>
             <th>Extra Distance Price</th>
             <th>Volume</th>
             <th>Status</th>
@@ -26,7 +26,7 @@
                 </td>
                 <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->base_price : '-' }}
                 </td>
-                <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->base_distance : '-' }}
+                <td>{{ $service_category->is_secureship_enabled == 0 ? $service_category->base_distance . ' km' : '-' }}
                 </td>
                 <td>{{ $service_category->is_secureship_enabled == 0 ? '$' . $service_category->extra_distance_price : '-' }}
                 </td>

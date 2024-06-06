@@ -193,6 +193,16 @@ class BookingController extends Controller
                 break;
         }
 
+        $booking->moverCount = 0;
+
+        if ($booking->helper_user_id !== null) {
+            $booking->moverCount++;
+        }
+
+        if ($booking->helper_user_id2 !== null) {
+            $booking->moverCount++;
+        }
+
         // dd($booking->currentStatus);
 
         // Client view false
@@ -245,9 +255,15 @@ class BookingController extends Controller
         }
         // dd($helperVehicleData);
 
+        // Get helper2 vehicle data
+        $helper2VehicleData = null;
+        if ($booking->helper_user_id2) {
+            $helper2VehicleData = HelperVehicle::where('user_id', $booking->helper_user_id2)->first();
+        }
+
         // dd($booking);
 
-        return view('frontend.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'helper2Data', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'clientView', 'helperView'));
+        return view('frontend.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'helper2Data', 'clientData', 'vehicleTypeData', 'helper2VehicleData', 'helperVehicleData', 'clientView', 'helperView'));
     }
     // Start Booking
     public function start(Request $request)
