@@ -9,11 +9,11 @@
             <label for="cod_enabled">COD Enabled</label>
             <select class="form-control @error('cod_enabled') is-invalid @enderror" id="cod_enabled" name="cod_enabled">
                 <option value="yes"
-                    {{ old('cod_enabled', $paymentSettings['cod_enabled'] ?? '') == 'yes' ? 'selected' : '' }}>
+                    {{ old('cod_enabled', isset($paymentSettings['cod_enabled']) && $paymentSettings['cod_enabled'] ?? '') == 'yes' ? 'selected' : '' }}>
                     Yes
                 </option>
                 <option value="no"
-                    {{ old('cod_enabled', $paymentSettings['cod_enabled'] ?? '') == 'no' ? 'selected' : '' }}>
+                    {{ old('cod_enabled', isset($paymentSettings['cod_enabled']) && $paymentSettings['cod_enabled'] ?? '') == 'no' ? 'selected' : '' }}>
                     No
                 </option>
             </select>
@@ -23,6 +23,11 @@
                 </span>
             @enderror
         </div>
+    </div>
+
+    {{-- Seprator --}}
+    <div class="col-md-12">
+        <hr>
     </div>
 
     {{-- Paypal Heading --}}
@@ -36,11 +41,11 @@
             <select class="form-control @error('paypal_enabled') is-invalid @enderror" id="paypal_enabled"
                 name="paypal_enabled" onchange="paypalEnabled(this.value)">
                 <option value="yes"
-                    {{ old('paypal_enabled', $paymentSettings['paypal_enabled'] == 'yes' ?? '') == 'yes' ? 'selected' : '' }}>
+                    {{ old('paypal_enabled', isset($paymentSettings['paypal_enabled']) && $paymentSettings['paypal_enabled'] == 'yes' ?? '') == 'yes' ? 'selected' : '' }}>
                     Yes
                 </option>
                 <option value="no"
-                    {{ old('paypal_enabled', $paymentSettings['paypal_enabled'] == 'no' ?? '') == 'no' ? 'selected' : '' }}>
+                    {{ old('paypal_enabled', isset($paymentSettings['paypal_enabled']) && $paymentSettings['paypal_enabled'] == 'no' ?? '') == 'no' ? 'selected' : '' }}>
                     No
                 </option>
             </select>
@@ -57,7 +62,7 @@
             <label for="paypal_client_id">Paypal Client ID</label>
             <input type="text" class="form-control @error('paypal_client_id') is-invalid @enderror"
                 id="paypal_client_id" name="paypal_client_id"
-                value="{{ old('paypal_client_id', $paymentSettings['paypal_client_id'] ?? '') }}"
+                value="{{ old('paypal_client_id', isset($paymentSettings['paypal_client_id']) && $paymentSettings['paypal_client_id'] ? $paymentSettings['paypal_client_id'] : '') }}"
                 placeholder="Enter Paypal Client ID">
             @error('paypal_client_id')
                 <span class="invalid-feedback" role="alert">
@@ -73,7 +78,7 @@
             <label for="paypal_secret_id">Paypal Secret ID</label>
             <input type="text" class="form-control @error('paypal_secret_id') is-invalid @enderror"
                 id="paypal_secret_id" name="paypal_secret_id"
-                value="{{ old('paypal_secret_id', $paymentSettings['paypal_secret_id'] ?? '') }}"
+                value="{{ old('paypal_secret_id', isset($paymentSettings['paypal_secret_id']) && $paymentSettings['paypal_secret_id'] ? $paymentSettings['paypal_secret_id'] : '') }}"
                 placeholder="Enter Paypal Secret ID">
             @error('paypal_secret_id')
                 <span class="invalid-feedback" role="alert">
@@ -99,11 +104,11 @@
             <select class="form-control @error('stripe_enabled') is-invalid @enderror" id="stripe_enabled"
                 name="stripe_enabled" onchange="stripeEnabled(this.value)">
                 <option value="yes"
-                    {{ old('stripe_enabled', $paymentSettings['stripe_enabled'] ?? '') == 'yes' ? 'selected' : '' }}>
+                    {{ old('stripe_enabled', isset($paymentSettings['stripe_enabled']) && $paymentSettings['stripe_enabled'] ?? '') == 'yes' ? 'selected' : '' }}>
                     Yes
                 </option>
                 <option value="no"
-                    {{ old('stripe_enabled', $paymentSettings['stripe_enabled'] ?? '') == 'no' ? 'selected' : '' }}>
+                    {{ old('stripe_enabled', isset($paymentSettings['stripe_enabled']) && $paymentSettings['stripe_enabled'] ?? '') == 'no' ? 'selected' : '' }}>
                     No
                 </option>
             </select>
@@ -121,7 +126,7 @@
             <label for="stripe_publishable_key">Stripe Publishable Key</label>
             <input type="text" class="form-control @error('stripe_publishable_key') is-invalid @enderror"
                 id="stripe_publishable_key" name="stripe_publishable_key"
-                value="{{ old('stripe_publishable_key', $paymentSettings['stripe_publishable_key'] ?? '') }}"
+                value="{{ old('stripe_publishable_key', isset($paymentSettings['stripe_publishable_key']) && $paymentSettings['stripe_publishable_key'] ? $paymentSettings['stripe_publishable_key'] : '') }}"
                 placeholder="Enter Stripe Publishable Key">
             @error('stripe_publishable_key')
                 <span class="invalid-feedback" role="alert">
@@ -136,7 +141,7 @@
             <label for="stripe_secret_key">Stripe Secret Key</label>
             <input type="text" class="form-control @error('stripe_secret_key') is-invalid @enderror"
                 id="stripe_secret_key" name="stripe_secret_key"
-                value="{{ old('stripe_secret_key', $paymentSettings['stripe_secret_key'] ?? '') }}"
+                value="{{ old('stripe_secret_key', isset($paymentSettings['stripe_secret_key']) && $paymentSettings['stripe_secret_key'] ? $paymentSettings['stripe_secret_key'] : '') }}"
                 placeholder="Enter Stripe Secret Key">
             @error('stripe_secret_key')
                 <span class="invalid-feedback" role="alert">

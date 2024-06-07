@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\MovingConfigController;
 use App\Http\Controllers\Admin\MovingDetailController;
 use App\Http\Controllers\Admin\NoOfRoomController;
 use App\Http\Controllers\Admin\PaymentSettingController;
+use App\Http\Controllers\Admin\SocialLoginSettingController;
 use App\Http\Controllers\Admin\PrioritySettingController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\ServiceTypeController;
@@ -224,6 +225,10 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
         // Payment
         // Route::get('/payment', [PaymentSettingController::class, 'index'])->name('paymentSettings');
         Route::post('/payment/update', [PaymentSettingController::class, 'update'])->name('paymentSetting.update');
+
+        // Social Login
+        // Route::get('/social-logins', [SocialLoginSettingController::class, 'index'])->name('socialLoginSettings');
+        Route::post('/social-login/update', [SocialLoginSettingController::class, 'update'])->name('socialLoginSetting.update');
 
         // Authentication
         // Route::get('/authentication', [AuthenticationSettingController::class, 'index'])->name('authenticationSettings');

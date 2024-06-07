@@ -98,18 +98,22 @@
                         </div>
 
                         {{-- Google Login Button  --}}
-                        <div class="mb-3">
-                            <a href="{{ route('google.redirect') }}" class="btn btn-google w-100">
-                                Continue with Google | <i class="fa-brands fa-google"></i>
-                            </a>
-                        </div>
+                        @if (isset($socialLoginSettingPair['google_enabled']) && $socialLoginSettingPair['google_enabled'] == 'yes')
+                            <div class="mb-3">
+                                <a href="{{ route('google.redirect') }}" class="btn btn-google w-100">
+                                    Continue with Google | <i class="fa-brands fa-google"></i>
+                                </a>
+                            </div>
+                        @endif
 
                         {{-- Facebook Login Button  --}}
-                        <div class="mb-3">
-                            <a href="#" class="btn btn-facebook w-100">
-                                Continue with Google | <i class="fa-brands fa-facebook"></i>
-                            </a>
-                        </div>
+                        @if (isset($socialLoginSettingPair['facebook_enabled']) && $socialLoginSettingPair['facebook_enabled'] == 'yes')
+                            <div class="mb-3">
+                                <a href="#" class="btn btn-facebook w-100">
+                                    Continue with Facebook | <i class="fa-brands fa-facebook"></i>
+                                </a>
+                            </div>
+                        @endif
 
                         <div class="mb-3">
                             <p>

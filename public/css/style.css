@@ -177,7 +177,21 @@ svg {
     font-size: 11px;
 }
 
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #c0c0c0 #ffffff;
+}
 
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 2px;
+}
+
+.scroll-div {
+    overflow-y: auto;
+}
 
 
 .btn-primary {

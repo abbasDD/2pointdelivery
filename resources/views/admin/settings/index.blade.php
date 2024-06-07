@@ -12,25 +12,35 @@
                     <div class="card-body p-3">
                         <div class="d-flex nav nav-pills justify-content-between" id="v-pills-tab" role="tablist"
                             aria-orientation="vertical">
+                            {{-- System Settings --}}
                             <button class="nav-link active" id="v-pills-system-tab" data-bs-toggle="pill"
                                 data-bs-target="#v-pills-system" type="button" role="tab"
                                 aria-controls="v-pills-system" aria-selected="true">
                                 <i class="fas fa-user"></i> <span class="d-none d-lg-inline">System</span>
                             </button>
+                            {{-- Tax Settings --}}
                             <button class="nav-link" id="v-pills-taxSetting-tab" data-bs-toggle="pill"
                                 data-bs-target="#v-pills-taxSetting" type="button" role="tab"
                                 aria-controls="v-pills-taxSetting" aria-selected="true">
                                 <i class="fas fa-map-marker-alt"></i> <span class="d-none d-lg-inline">taxSetting</span>
                             </button>
+                            {{-- Payment Settings --}}
                             <button class="nav-link" id="v-pills-paymentSettings-tab" data-bs-toggle="pill"
                                 data-bs-target="#v-pills-paymentSettings" type="button" role="tab"
                                 aria-controls="v-pills-paymentSettings" aria-selected="false">
-                                <i class="fas fa-building"></i> <span class="d-none d-lg-inline">Company</span>
+                                <i class="fas fa-building"></i> <span class="d-none d-lg-inline">Payment</span>
                             </button>
+                            {{-- Authentication Settings --}}
                             <button class="nav-link" id="v-pills-authentication-tab" data-bs-toggle="pill"
                                 data-bs-target="#v-pills-authentication" type="button" role="tab"
                                 aria-controls="v-pills-authentication" aria-selected="false">
                                 <i class="fas fa-link"></i> <span class="d-none d-lg-inline">Authentication</span>
+                            </button>
+                            {{-- Social Login Settings --}}
+                            <button class="nav-link" id="v-pills-socialLogin-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-socialLogin" type="button" role="tab"
+                                aria-controls="v-pills-socialLogin" aria-selected="false">
+                                <i class="fa-solid fa-hashtag"></i> <span class="d-none d-lg-inline">Social Login</span>
                             </button>
                         </div>
                     </div>
@@ -62,6 +72,12 @@
                         {{-- Load  Authentication Links Tab --}}
                         @include('admin.settings.authentication.index')
                     </div>
+                    {{-- Social Login Tab --}}
+                    <div class="tab-pane fade" id="v-pills-socialLogin" role="tabpanel"
+                        aria-labelledby="v-pills-socialLogin-tab">
+                        {{-- Load Social Login Tab --}}
+                        @include('admin.settings.socialLogin.index')
+                    </div>
                 </div>
             </div>
             {{-- Show on right side on Desktop --}}
@@ -70,25 +86,35 @@
                     <div class="card-body p-3">
                         <div class="d-flex flex-column nav flex-column nav-pills" id="v-pills-tab" role="tablist"
                             aria-orientation="vertical">
+                            {{-- System Settings --}}
                             <button class="nav-link active" id="v-pills-system-tab" data-bs-toggle="pill"
                                 data-bs-target="#v-pills-system" type="button" role="tab"
                                 aria-controls="v-pills-system" aria-selected="true">
                                 <i class="fas fa-user"></i> <span class="d-none d-lg-inline">System</span>
                             </button>
+                            {{-- Tax Settings --}}
                             <button class="nav-link" id="v-pills-taxSetting-tab" data-bs-toggle="pill"
                                 data-bs-target="#v-pills-taxSetting" type="button" role="tab"
                                 aria-controls="v-pills-taxSetting" aria-selected="true">
                                 <i class="fas fa-map-marker-alt"></i> <span class="d-none d-lg-inline">Tax</span>
                             </button>
+                            {{-- Payment Settings --}}
                             <button class="nav-link" id="v-pills-paymentSettings-tab" data-bs-toggle="pill"
                                 data-bs-target="#v-pills-paymentSettings" type="button" role="tab"
                                 aria-controls="v-pills-paymentSettings" aria-selected="false">
                                 <i class="fas fa-building"></i> <span class="d-none d-lg-inline">Payment</span>
                             </button>
+                            {{-- Authentication Settings --}}
                             <button class="nav-link" id="v-pills-authentication-tab" data-bs-toggle="pill"
                                 data-bs-target="#v-pills-authentication" type="button" role="tab"
                                 aria-controls="v-pills-authentication" aria-selected="false">
                                 <i class="fas fa-link"></i> <span class="d-none d-lg-inline">Authentication</span>
+                            </button>
+                            {{-- Social Login Settings --}}
+                            <button class="nav-link" id="v-pills-socialLogin-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-socialLogin" type="button" role="tab"
+                                aria-controls="v-pills-socialLogin" aria-selected="false">
+                                <i class="fa-solid fa-hashtag"></i> <span class="d-none d-lg-inline">Social Login</span>
                             </button>
                         </div>
                     </div>

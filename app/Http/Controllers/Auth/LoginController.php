@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\SocialLoginSetting;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -47,7 +48,16 @@ class LoginController extends Controller
     public function showLoginFormClient()
     {
         Session::put('intended_url', url()->previous());
-        return view('client.auth.login');
+
+        // Get Social Login Settings
+        $socialLoginSetting = SocialLoginSetting::all();
+
+        // Format it as a key-value associative array
+        $socialLoginSettingPair = $socialLoginSetting->pluck('value', 'key')->all();
+
+        // dd($socialLoginSettingPair);
+
+        return view('client.auth.login', compact('socialLoginSettingPair'));
     }
 
     public function postClientLoginForm(Request $request)
@@ -83,7 +93,15 @@ class LoginController extends Controller
 
     public function showLoginFormHelper()
     {
-        return view('helper.auth.login');
+        // Get Social Login Settings
+        $socialLoginSetting = SocialLoginSetting::all();
+
+        // Format it as a key-value associative array
+        $socialLoginSettingPair = $socialLoginSetting->pluck('value', 'key')->all();
+
+        // dd($socialLoginSettingPair);
+
+        return view('helper.auth.login', compact('socialLoginSettingPair'));
     }
 
 

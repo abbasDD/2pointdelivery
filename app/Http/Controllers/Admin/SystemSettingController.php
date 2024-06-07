@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AuthenticationSetting;
 use App\Models\PaymentSetting;
 use App\Models\PrioritySetting;
+use App\Models\SocialLoginSetting;
 use App\Models\SystemSetting;
 use App\Models\TaxSetting;
 use Illuminate\Http\Request;
@@ -92,8 +93,20 @@ class SystemSettingController extends Controller
             $AuthenticationSettings = [];
         }
 
+        // socialLoginSettings
+        $socialLoginSettings = [];
+
+        // Retrieve settings from the database if the table exists
+        $socialSettings = SocialLoginSetting::all();
+
+        // Set each setting as a configuration value
+        foreach ($socialSettings as $setting) {
+            // config([$setting->key => $setting->value]);
+            $socialLoginSettings[$setting->key] = $setting->value ? $setting->value : null;
+        }
+
         // dd($AuthenticationSettings);
-        return view('admin.settings.index', compact('systemSettings', 'taxCountries', 'paymentSettings',  'AuthenticationSettings'));
+        return view('admin.settings.index', compact('systemSettings', 'taxCountries', 'paymentSettings',  'AuthenticationSettings', 'socialLoginSettings'));
     }
 
     public function system()
