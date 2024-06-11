@@ -12,9 +12,12 @@
     <link rel="icon" type="image/x-icon"
         href="{{ config('website_favicon') ? asset('images/logo/' . config('website_favicon')) : asset('images/logo/icon.png') }}">
 
-    {{-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"> --}}
-    <link rel="stylesheet"
-        href="{{ asset('fonts/poppins/css2.css?family=Poppins:wght@400;500;600;700&display=swap') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap"
+        rel="stylesheet">
+
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
@@ -29,7 +32,7 @@
 
 </head>
 
-<body>
+<body style="background-image: url({{ asset('frontend/images/pattern.png') }})">
 
     <div id="loading-screen"
         style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 9999; display: flex; justify-content: center; align-items: center;">

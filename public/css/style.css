@@ -3,10 +3,14 @@
     --primary-color: #038164;
     --primary-dark: #004938;
     --primary-light: #32aa8e;
+    /* 0.3 opacity of primary color */
+    --primary-color-3: rgba(3, 129, 100, 0.3);
     --gray-color: #6b6b6b;
     --light-gray-color: #f9f9f9;
-    --black: #000000;
+    --black: #212529;
     --white: #ffffff;
+    --text-black: #212529;
+    --text-gray: #414141;
 
     --card-gradient-1: linear-gradient(170deg, #01E4F8 0%, #1D3EDE 100%);
     --card-gradient-2: linear-gradient(170deg, #B4EC51 0%, #429321 100%);
@@ -16,14 +20,17 @@
 /* This file is to add custom css for FRONTEND of this website */
 
 body {
-    font-family: 'Poppins', sans-serif;
-    font-size: 14px;
+    font-family: "Nunito Sans", sans-serif;
+    font-size: 1rem;
 }
 
 /* Generic CSS */
 h1, h2, h3, h4, h5, h6 {
+    text-transform: capitalize;
+    line-height: 3rem;
+    margin-bottom: 0;
     font-weight: 600;
-    margin-bottom: 20px;
+    margin-bottom: 1rem;
 }
 
 .h6, h6 {
@@ -31,8 +38,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 p {
-    font-size: 12px;
+    font-size: 1rem;
     margin-bottom: 10px;
+    color: var(--text-gray);
 }
 
 label {
@@ -43,6 +51,14 @@ svg {
     width: 20px;
 }
 
+img {
+    border-radius: 5px;
+}
+
+section {
+    padding: 4rem 1rem;
+}
+
 .top-5 {
     top: 5rem;
 }
@@ -50,7 +66,7 @@ svg {
 .form-control {
     padding: 10px 15px;
     /* border: none; */
-    font-size: 14px;
+    font-size: 1rem;
 }
 
 .row {
@@ -80,6 +96,22 @@ svg {
 .bg-gradient {
     background-color: var(--primary-color);
     /* background-image: linear-gradient(to right, var(--primary-color) 100%, var(--primary-color) 60%); */
+}
+
+.bg-round-radient {
+    background: radial-gradient(circle, var(--primary-color) 0%, var(--primary-color-3) 100%);
+    border-radius: 50%;
+    height: 400px;
+    width: 350px;
+    position: relative;
+}
+
+.bg-round-radient img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 500px;
 }
 
 .text-logo {
@@ -251,6 +283,46 @@ svg {
 }
 
 
+.read-more a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    position: relative;
+    text-transform: capitalize;
+    -webkit-transition: all 350ms ease-in-out;
+    -o-transition: all 350ms ease-in-out;
+    transition: all 350ms ease-in-out;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    height: 50px;
+    border-radius: 4px;
+    padding-right: 20px;
+}
+
+.read-more a i {
+    font-size: 1rem !important;
+    margin-right: 5px;
+}
+
+.read-more:hover a {
+    padding-left: 20px;
+    background-color: var(--primary-color);
+    color: #ffffff !important;
+}
+
+.read-more:hover a i {
+    color: #ffffff !important;
+}
+
+
 .btn-primary-outline {
     background-color: transparent;
     color: var(--primary-color);
@@ -263,36 +335,29 @@ svg {
 }
 
 .heading h2 {
-    color: var(--primary-color);
-    font-size: 32px;
-    font-weight: 700;
-    margin-bottom: 25px;
-    position: relative;
+    text-transform: capitalize;
+    font-size: 2rem;
+    line-height: 3rem;
+    margin-bottom: 0;
+    font-weight: 500;
+    color: #1b1a1a;
+    margin-bottom: 1rem;
 }
 
-/* .heading h2:after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -5px; 
-    width: 50px; 
-    height: 2px;
-    background-color: black; 
-} */
 
-.heading p {
-    font-size: 16px;
-    /* font-weight: 500; */
-    margin-bottom: 15px;
+.heading h6 {
+    color: var(--primary-color);
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0;
+    line-height: 1.2rem;
+
 }
 
 .vertical-line {
     width: 2px;
-    /* Adjust the width as needed */
     height: 100px;
-    /* Adjust the height as needed */
     background-color: black;
-    /* Adjust the color as needed */
 }
 
 .rounded-10 {
@@ -309,11 +374,11 @@ svg {
 }
 
 table thead tr th {
-    font-size: 14px;
+    font-size: 1rem;
 }
 
 table tbody tr td {
-    font-size: 14px;
+    font-size: 1rem;
 }
 
 .w-30 {
@@ -408,19 +473,180 @@ w-70 {
     padding-bottom: 20px;
 }
 
-/* About Us Section  */
+/* About Us Section START  */
 
-#aboutus .content h2 {
-    font-size: 36px;
-    font-weight: 700;
-    margin-bottom: 20px;
+.about .about-img {
+    position: relative;
+    border-radius: 3px;
+    height: 510px;
 }
+
+.bg-section {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 100%;
+    height: 100%;
+}
+
+.about .about-img .about-img-warp {
+    position: absolute;
+    right: 0;
+    max-width: 400px;
+    border-radius: 3px;
+    height: 510px;
+}
+
+.about .about-img.about-img-left .about-img-warp {
+    right: auto;
+    left: 0;
+}
+
+.counter {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    border-radius: 4px;
+    padding: 25px 40px 30px;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.about .about-img .counter {
+    width: 207px;
+    position: absolute;
+    bottom: 80px;
+    left: 0;
+    z-index: 1;
+}
+
+.about .about-img.about-img-left .counter {
+    right: 0;
+    left: auto;
+}
+
+.counter .counter-icon {
+    margin-bottom: 15px;
+}
+
+.counter .counter-icon i {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.counter .counter-num {
+    margin-bottom: 6px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.counter .counter-num span, .counter .counter-num p {
+    font-size: 38px;
+    font-weight: 400;
+    line-height: 29px;
+    display: inline-block;
+    color: #ffffff;
+}
+
+.counter .counter-name h6 {
+    margin-bottom: 0;
+    font-family: "Roboto", sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 29px;
+    color: #ffffff;
+    text-transform: capitalize;
+}
+
+
+.about .about-text {
+    padding: 1rem;
+}
+
+
+/* About Us Section END */
 
 /* How It Works Section */
 
 .howitworks {
     padding: 50px 0;
     margin: 50px 0;
+}
+
+.howitworks .card .card-body {
+    position: relative;
+    overflow: hidden;
+}
+
+.howitworks .card .card-body:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+    background-color: var(--primary-color);
+    height: 3px;
+    width: calc(100% - 100px);
+}
+
+
+.howitworks .card .card-body .icon {
+    position: absolute;
+    top: -50px;
+    right: -100px;
+}
+
+.howitworks .card .card-body .icon i::before {
+    color: var(--primary-color);
+    margin-left: 0;
+    font-size: 200px;
+    opacity: 0;
+    -webkit-transform: translateY(10px);
+    -ms-transform: translateY(10px);
+    transform: translateY(10px);
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    visibility: hidden;
+    -webkit-transition: 0.35s ease-in-out;
+    -o-transition: 0.35s ease-in-out;
+    transition: 0.35s ease-in-out;
+}
+
+.howitworks .card .card-body .content {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+}
+
+.howitworks .card .card-body .content i {
+    font-size: 3.5rem;
+    color: var(--primary-color);
+    margin: 2rem 0;
+}
+
+.howitworks .card .card-body .content h4 {
+    font-size: 1.2rem;
+    margin-bottom: 0;
 }
 
 /* Chat Button CSS */
@@ -448,10 +674,35 @@ w-70 {
     height: 200px;
 }
 
+/* Testimonial CSS Start */
 
-/* Chat Page CSS */
+.carousel-inner {
+    margin: 1rem 3rem;
+}
+
+/* Mobile Responsive */
+
+@media only screen and (max-width: 600px) {
+    .carousel-inner {
+        margin: 0;
+    }
+}
 
 
+/* Testimonial CSS End */
+
+
+/* Get Apps CTA CSS Start */
+
+#getapps {
+    margin: 5rem 0;
+}
+
+
+/* Get Apps CTA CSS End */
+
+
+/* Chat Page CSS Start */
 
 .people-list {}
 
@@ -572,7 +823,7 @@ w-70 {
 }
 
 .chat .chat-history .message-text {
-    font-size: 14px;
+    font-size: 1rem;
     margin-bottom: 0;
 }
 
@@ -719,7 +970,7 @@ w-70 {
 }
 
 .authpage .card .card-body p {
-    font-size: 14px;
+    font-size: 1rem;
     margin-bottom: 20px;
 }
 
@@ -763,6 +1014,11 @@ w-70 {
 }
 
 /* Footer CSS  */
+
+footer p {
+    color: var(--white);
+}
+
 footer p a {
     text-decoration: none;
 }
@@ -865,7 +1121,7 @@ footer hr {
     border: 1px solid var(--primary-light);
     color: var(--primary-light);
     margin-bottom: 0.5rem;
-    font-size: 14px;
+    font-size: 1rem;
 }
 
 
@@ -1068,7 +1324,7 @@ footer hr {
 .progressdiv .progressbar li h6 {
     color: var(--gray-color);
     margin-bottom: 5px;
-    font-size: 14px;
+    font-size: 1rem;
     width: 120px;
 }
 
@@ -1080,7 +1336,7 @@ footer hr {
 .progressdiv .progressbar li h5 {
     color: var(--gray-color);
     margin-bottom: 5px;
-    font-size: 14px;
+    font-size: 1rem;
     width: 100px;
 }
 
@@ -1316,7 +1572,7 @@ body {
 
     .notfound a {
         padding: 7px 15px;
-        font-size: 14px
+        font-size: 1rem
     }
 }
 
@@ -1422,7 +1678,7 @@ body {
 
 .tracking .tracking-item-pending .tracking-content {
     font-weight: 600;
-    font-size: 14px;
+    font-size: 1rem;
 }
 
 .tracking .tracking-item .tracking-icon.status-current {
@@ -1485,7 +1741,7 @@ body {
 
 .tracking .tracking-item .tracking-content {
     font-weight: 600;
-    font-size: 14px;
+    font-size: 1rem;
 }
 
 

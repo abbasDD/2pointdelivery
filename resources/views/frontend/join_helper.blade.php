@@ -11,7 +11,13 @@
                 <div class="col-md-6 px-5">
                     <h3>Join Us as a helper and earn money with us</h3>
                     <p>Be active, meet new people & make up to $2.5k/week!</p>
-                    <a href="{{ route('helper.register') }}" class="btn btn-primary mt-3">Join as Helper</a>
+                    {{-- <a href="{{ route('helper.register') }}" class="btn btn-primary mt-3">Join as Helper</a> --}}
+                    {{-- Redirect to Helper Register --}}
+                    <div class="read-more">
+                        <a href="{{ route('helper.register') }}">
+                            <i class="fas fa-long-arrow-alt-right mr-2"></i> {{ __('frontend.join_as_helper') }}
+                        </a>
+                    </div>
                 </div>
                 <div class="col-md-6 text-center">
                     <img src="{{ asset('frontend/images/join-helper.png') }}" alt="Image" class="img-fluid">
@@ -27,6 +33,7 @@
         <div class="row align-items-center">
             <div class="col-lg-6 content">
                 <div class="heading">
+                    <h6>Vehicle Issue</h6>
                     <h2>Don't have your own vehicle?</h2>
                     <p>
                         Don't worry you can still apply as a helper! Owning a vehicle is not a requirement to becoming a
@@ -37,7 +44,12 @@
                         providing top-notch service every step of the way. From carefully packing and loading your
                         belongings to navigating the logistics of transportation and delivery, we've got you covered.
                     </p>
-                    <a href="{{ route('helper.register') }}" class="btn btn-primary mt-3">Join as Helper</a>
+                    {{-- Redirect to Helper Register --}}
+                    <div class="read-more">
+                        <a href="{{ route('helper.register') }}">
+                            <i class="fas fa-long-arrow-alt-right mr-2"></i> {{ __('frontend.join_as_helper') }}
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-6 slider">
@@ -77,6 +89,7 @@
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <div class="heading">
+                        <h6>Join as Helper</h6>
                         <h2>What does it meant to become a helper?</h2>
                         <p>Anything can more or deliver with in 3 easy steps</p>
                     </div>
@@ -118,6 +131,7 @@
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <div class="heading">
+                        <h6>Want to become a helper?</h6>
                         <h2>Who qualifies?</h2>
                         <p>Anything can more or deliver with in 3 easy steps</p>
                     </div>
@@ -173,6 +187,7 @@
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <div class="heading">
+                        <h6>Need help?</h6>
                         <h2>Frequently Asked Questions</h2>
                         <p>Here are some of our FAQs</p>
                     </div>
@@ -185,9 +200,9 @@
                         @forelse($faqs as $faq)
                             <div class="accordion-item mb-3">
                                 <h2 class="accordion-header" id="faq_{{ $faq->id }}">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapse{{ $faq->id }}" aria-expanded="true"
-                                        aria-controls="collapse{{ $faq->id }}">
+                                    <button class="accordion-button py-0 collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapse{{ $faq->id }}"
+                                        aria-expanded="true" aria-controls="collapse{{ $faq->id }}">
                                         {{ $faq->question }}
                                     </button>
                                 </h2>
@@ -202,8 +217,9 @@
                             {{-- <p>No FAQs Found</p> --}}
                             <div class="accordion-item mb-3">
                                 <h2 class="accordion-header" id="heading3">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapse3" aria-expanded="true" aria-controls="collapse3">
+                                    <button class="accordion-button py-0 collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="true"
+                                        aria-controls="collapse3">
                                         How many items are include in the price of delivery?
                                     </button>
                                 </h2>
@@ -225,45 +241,6 @@
     </section>
 
     {{-- Get Apps Section  --}}
-    <section id="getapps" class="container mt-5">
-        <div class="row align-items-center">
-            <!-- Left Side (Image and Heading) -->
-            <div class="col-lg-8">
-                <div class="row align-items-center">
-                    <div class="col-sm-6">
-                        <img src="{{ asset('frontend/images/mobile.png') }}" alt="Image" class="img-fluid">
-                    </div>
-                    <div class="col-sm-6">
-                        <h2>Try 2 point client app</h2>
-                        <p>make your items get delivered or pack&move</p>
-                    </div>
-                </div>
-
-
-            </div>
-
-            <!-- Right Side (App Store and Play Store Links) -->
-            <div class="col-lg-4 mt-4 mt-lg-0">
-                <div class="row mx-3">
-                    <div class="col-md-12">
-                        <h2>Get your app today</h2>
-                    </div>
-                    <div class="col-sm-6">
-                        <a href="#" target="_blank">
-                            <img src="{{ asset('frontend/images/play-store.png') }}" alt="Play Store" class="img-fluid">
-                        </a>
-                    </div>
-                    <div class="col-sm-6">
-                        <a href="#" target="_blank">
-                            <img src="{{ asset('frontend/images/app-store.png') }}" alt="App Store" class="img-fluid">
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-
+    @include('frontend.includes.getapps')
 
 @endsection

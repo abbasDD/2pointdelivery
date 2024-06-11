@@ -65,26 +65,6 @@
 
 
     {{-- Still looking for help ? --}}
-
-    <section>
-
-        <div class="container my-5">
-            <div class="row align-items-center bg-primary-light text-white p-5 rounded-10">
-                <div class="col-md-8">
-                    <div class="heading">
-                        <h2 class="mb-1 text-white">Still looking for help?</h2>
-                        <p>Count on us for assistance whenever you need it. Our 24/7 operation ensures we're here for you
-                            anytime, day or night.</p>
-                        <a class="btn btn-white" href="#">Contact Us</a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <img src="{{ asset('frontend/images/help-cta.png') }}" alt="Image" class="img-fluid mx-auto">
-                </div>
-            </div>
-        </div>
-
-    </section>
-
+    @include('frontend.includes.ctahelp')
 
 @endsection
