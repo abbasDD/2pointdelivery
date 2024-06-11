@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\AuthenticationSettingController;
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\ClientController;
@@ -229,11 +228,6 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
         // Social Login
         // Route::get('/social-logins', [SocialLoginSettingController::class, 'index'])->name('socialLoginSettings');
         Route::post('/social-login/update', [SocialLoginSettingController::class, 'update'])->name('socialLoginSetting.update');
-
-        // Authentication
-        // Route::get('/authentication', [AuthenticationSettingController::class, 'index'])->name('authenticationSettings');
-        Route::post('/authentication/update', [AuthenticationSettingController::class, 'update'])->name('authenticationSetting.update');
-
 
         // End of Settings Prefix Route
     });

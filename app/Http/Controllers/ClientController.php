@@ -412,9 +412,20 @@ class ClientController extends Controller
     }
 
 
-    public function track_order()
+    public function track_order(Request $request)
     {
-        return view('client.track_order');
+        // dd($request->id);
+        $booking = null;
+        if (isset($request->id)) {
+            $booking = Booking::where('uuid', $request->id)->first();
+
+            if (!$booking) {
+                redirect()->back()->with('error', 'Booking not found');
+            }
+            // dd($booking);
+            return view('client.track_order', compact('booking'));
+        }
+        return view('client.track_order', compact('booking'));
     }
 
 

@@ -1,6 +1,14 @@
 <div class="card">
     <div class="card-header d-flex align-items-center justify-content-between">
         <h5 class="card-title mb-0">Personal</h5>
+        {{-- Show Referral Code with copy button --}}
+        @if (isset(auth()->user()->referral_code))
+            <div class="d-flex align-items-center">
+                <p class="mb-0 fs-18" onclick="copyToClipboard('{{ auth()->user()->referral_code }}')">
+                    <span class="badge bg-primary">{{ auth()->user()->referral_code }}</span>
+                </p>
+            </div>
+        @endif
     </div>
     <form action="{{ route('helper.update.personal') }}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -110,8 +118,8 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="gender" class="form-label">Gender</label>
-                        <select class="form-control @error('gender') is-invalid @enderror" id="gender" name="gender"
-                            required>
+                        <select class="form-control @error('gender') is-invalid @enderror" id="gender"
+                            name="gender" required>
                             <option value="" selected disabled>Choose Gender</option>
                             <option value="male"
                                 {{ old('gender', $helperData['gender'] ?? '') == 'male' ? 'selected' : '' }}>
@@ -214,4 +222,15 @@
 
         reader.readAsDataURL(file);
     });
+
+    // Copy to clip board
+    function copyToClipboard(element) {
+        var $temp = element;
+        // Caopy this newPassword value to clipboard
+        navigator.clipboard.writeText($temp);
+        // Trigger Notification
+        triggerToast('Success', 'Password copied to clipboard');
+
+
+    }
 </script>

@@ -562,8 +562,19 @@ class HelperController extends Controller
         return view('helper.teams');
     }
 
-    public function track_order()
+    public function track_order(Request $request)
     {
+        // dd($request->id);
+        if (isset($request->id)) {
+            $booking = Booking::where('uuid', $request->id)->first();
+
+            if (!$booking) {
+                redirect()->back()->with('error', 'Booking not found');
+            }
+
+            // dd($booking);
+            return view('helper.track_order', compact('booking'));
+        }
         return view('helper.track_order');
     }
 

@@ -39,10 +39,16 @@
                     </p>
                 </td>
                 @if ($booking->status == 'pending')
-                    <td>
-                        <a class="btn btn-sm btn-primary"
-                            href="{{ route('helper.booking.accept', $booking->id) }}">Accept</a>
-                    </td>
+                    {{-- CHeck if user already accepted this booking --}}
+                    @if ($booking->helper_user_id == auth()->user()->id)
+                        <td><a href="{{ route('helper.booking.show', $booking->id) }}" class="btn btn-sm btn-primary"><i
+                                    class="fas fa-eye"></i></a></td>
+                    @else
+                        <td>
+                            <a class="btn btn-sm btn-primary"
+                                href="{{ route('helper.booking.accept', $booking->id) }}">Accept</a>
+                        </td>
+                    @endif
                 @else
                     <td><a href="{{ route('helper.booking.show', $booking->id) }}" class="btn btn-sm btn-primary"><i
                                 class="fas fa-eye"></i></a></td>

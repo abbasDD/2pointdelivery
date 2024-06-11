@@ -21,15 +21,14 @@ class BookingController extends Controller
     public function index()
     {
 
-        $bookings = Booking::where('client_user_id', auth()->user()->id)
-            ->with('prioritySetting')
+        $bookings = Booking::with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
             ->where('helper_user_id', auth()->user()->id)
             ->orWhere('helper_user_id2', auth()->user()->id)
             ->orderBy('bookings.created_at', 'desc')->get();
 
-
+        // dd($bookings);
 
         foreach ($bookings as $booking) {
             if ($booking->helper_user_id != NULL) {

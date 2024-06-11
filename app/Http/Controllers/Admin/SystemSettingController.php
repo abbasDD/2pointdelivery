@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\AuthenticationSetting;
 use App\Models\PaymentSetting;
 use App\Models\PrioritySetting;
 use App\Models\SocialLoginSetting;
@@ -71,28 +70,6 @@ class SystemSettingController extends Controller
 
         // dd($paymentSettings);
 
-        // Get Authentication Settings
-        $AuthenticationSettings = [];
-
-        try {
-            // Retrieve settings from the database if the table exists
-            $settings = AuthenticationSetting::all();
-
-            // Set each setting as a configuration value
-            foreach ($settings as $setting) {
-                // config([$setting->key => $setting->value]);
-                $AuthenticationSettings[$setting->key] = $setting->value ? $setting->value : null;
-            }
-
-            // dd($AuthenticationSettings);
-        } catch (QueryException $e) {
-            // Handle the case where the table does not exist
-            // For now, we can just log the error
-            // \Log::error("Error retrieving system settings: {$e->getMessage()}");
-
-            $AuthenticationSettings = [];
-        }
-
         // socialLoginSettings
         $socialLoginSettings = [];
 
@@ -105,8 +82,7 @@ class SystemSettingController extends Controller
             $socialLoginSettings[$setting->key] = $setting->value ? $setting->value : null;
         }
 
-        // dd($AuthenticationSettings);
-        return view('admin.settings.index', compact('systemSettings', 'taxCountries', 'paymentSettings',  'AuthenticationSettings', 'socialLoginSettings'));
+        return view('admin.settings.index', compact('systemSettings', 'taxCountries', 'paymentSettings',  'socialLoginSettings'));
     }
 
     public function system()

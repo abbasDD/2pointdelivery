@@ -80,8 +80,8 @@ Route::prefix('client')->middleware(['auth', 'isClient'])->name('client.')->grou
     Route::post('/update/social', [ClientController::class, 'socialInfo'])->name('update.social');
     Route::post('/update/password', [ClientController::class, 'passwordInfo'])->name('update.password');
 
-    //Track Order
-    Route::get('/track-order', [ClientController::class, 'track_order'])->name('trackOrder');
+    //Track Booking
+    Route::get('/track-order/{id?}', [ClientController::class, 'track_order'])->name('trackOrder');
 
 
     //Address Book

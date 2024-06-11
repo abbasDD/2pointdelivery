@@ -30,12 +30,6 @@
                                 aria-controls="v-pills-paymentSettings" aria-selected="false">
                                 <i class="fas fa-building"></i> <span class="d-none d-lg-inline">Payment</span>
                             </button>
-                            {{-- Authentication Settings --}}
-                            <button class="nav-link" id="v-pills-authentication-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-authentication" type="button" role="tab"
-                                aria-controls="v-pills-authentication" aria-selected="false">
-                                <i class="fas fa-link"></i> <span class="d-none d-lg-inline">Authentication</span>
-                            </button>
                             {{-- Social Login Settings --}}
                             <button class="nav-link" id="v-pills-socialLogin-tab" data-bs-toggle="pill"
                                 data-bs-target="#v-pills-socialLogin" type="button" role="tab"
@@ -65,12 +59,6 @@
                         aria-labelledby="v-pills-paymentSettings-tab">
                         {{-- Load taxSetting Tab --}}
                         @include('admin.settings.payment.index')
-                    </div>
-                    {{-- Authentication Links Tab --}}
-                    <div class="tab-pane fade" id="v-pills-authentication" role="tabpanel"
-                        aria-labelledby="v-pills-authentication-tab">
-                        {{-- Load  Authentication Links Tab --}}
-                        @include('admin.settings.authentication.index')
                     </div>
                     {{-- Social Login Tab --}}
                     <div class="tab-pane fade" id="v-pills-socialLogin" role="tabpanel"
@@ -103,12 +91,6 @@
                                 data-bs-target="#v-pills-paymentSettings" type="button" role="tab"
                                 aria-controls="v-pills-paymentSettings" aria-selected="false">
                                 <i class="fas fa-building"></i> <span class="d-none d-lg-inline">Payment</span>
-                            </button>
-                            {{-- Authentication Settings --}}
-                            <button class="nav-link" id="v-pills-authentication-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-authentication" type="button" role="tab"
-                                aria-controls="v-pills-authentication" aria-selected="false">
-                                <i class="fas fa-link"></i> <span class="d-none d-lg-inline">Authentication</span>
                             </button>
                             {{-- Social Login Settings --}}
                             <button class="nav-link" id="v-pills-socialLogin-tab" data-bs-toggle="pill"

@@ -80,6 +80,7 @@ Route::prefix('helper')->middleware(['auth', 'isHelper'])->name('helper.')->grou
     //Teams
     Route::get('/teams', [HelperController::class, 'teams'])->name('teams');
 
-    //Track Order
-    Route::get('/track-order', [HelperController::class, 'track_order'])->name('trackOrder');
+    //Track Booking
+    // Route::get('/track-order', [HelperController::class, 'track_order'])->name('trackOrder');
+    Route::get('/track-order/{id?}', [HelperController::class, 'track_order'])->name('trackOrder');
 });

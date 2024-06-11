@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AuthenticationSetting;
-use App\Http\Requests\StoreAuthenticationSettingRequest;
-use App\Http\Requests\UpdateAuthenticationSettingRequest;
+use App\Models\UserNotification;
+use App\Http\Requests\StoreUserNotificationRequest;
+use App\Http\Requests\UpdateUserNotificationRequest;
 
-class AuthenticationSettingController extends Controller
+class UserNotificationController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +27,7 @@ class AuthenticationSettingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAuthenticationSettingRequest $request)
+    public function store(StoreUserNotificationRequest $request)
     {
         //
     }
@@ -35,7 +35,7 @@ class AuthenticationSettingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(AuthenticationSetting $authenticationSetting)
+    public function show(UserNotification $userNotification)
     {
         //
     }
@@ -43,7 +43,7 @@ class AuthenticationSettingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(AuthenticationSetting $authenticationSetting)
+    public function edit(UserNotification $userNotification)
     {
         //
     }
@@ -51,7 +51,7 @@ class AuthenticationSettingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAuthenticationSettingRequest $request, AuthenticationSetting $authenticationSetting)
+    public function update(UpdateUserNotificationRequest $request, UserNotification $userNotification)
     {
         //
     }
@@ -59,7 +59,7 @@ class AuthenticationSettingController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(AuthenticationSetting $authenticationSetting)
+    public function destroy(UserNotification $userNotification)
     {
         //
     }

@@ -72,10 +72,10 @@
                         {{-- Load  Priority Tab --}}
                         @include('admin.movingConfig.jobDetails.index')
                     </div>
-                    {{-- Authentication Links Tab --}}
+                    {{-- Moving Details Links Tab --}}
                     <div class="tab-pane fade" id="v-pills-movingDetail" role="tabpanel"
                         aria-labelledby="v-pills-movingDetail-tab">
-                        {{-- Load  Authentication Links Tab --}}
+                        {{-- Load  Moving Details Links Tab --}}
                         @include('admin.movingDetail.index')
                     </div>
                     {{-- Priority Tab  --}}

@@ -92,4 +92,20 @@ class User extends Authenticatable
     {
         return $this->hasMany(AddressBook::class);
     }
+
+    /**
+     * Get the notifications sent by the user.
+     */
+    public function sentNotifications()
+    {
+        return $this->hasMany(UserNotification::class, 'sender_user_id');
+    }
+
+    /**
+     * Get the notifications received by the user.
+     */
+    public function receivedNotifications()
+    {
+        return $this->hasMany(UserNotification::class, 'receiver_user_id');
+    }
 }
