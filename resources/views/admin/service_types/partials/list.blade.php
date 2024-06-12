@@ -2,6 +2,7 @@
     <thead class="thead-primary">
         <tr>
             <th>ID</th>
+            <th>Image</th>
             <th>Service Name</th>
             <th>Service Type</th>
             <th>Description</th>
@@ -13,6 +14,8 @@
         @forelse ($service_types as $service_type)
             <tr>
                 <td>{{ $loop->index + 1 }}</td>
+                <td><img src="{{ $service_type->image ? asset('images/service_types/' . $service_type->image) : asset('images/service_types/default.png') }}"
+                        alt="image" width="50" height="50"></td>
                 <td>{{ $service_type->name }}</td>
                 <td>{{ $service_type->type }}</td>
                 <td>{{ $service_type->description }}</td>

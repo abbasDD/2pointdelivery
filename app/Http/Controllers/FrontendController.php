@@ -40,13 +40,22 @@ class FrontendController extends Controller
     // Services Page
     public function services()
     {
-        return view('frontend.services');
+        // Get all services types
+        $serviceTypes = ServiceType::where('is_active', 1)->get();
+
+        return view('frontend.services', compact('serviceTypes'));
     }
 
     // About Us Page
     public function about_us()
     {
         return view('frontend.about_us');
+    }
+
+    // About Us Page
+    public function contact_us()
+    {
+        return view('frontend.contact_us');
     }
 
     // Help Page

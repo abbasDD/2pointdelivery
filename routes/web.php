@@ -53,6 +53,8 @@ Route::get('/index', [FrontendController::class, 'index'])->name('index');
 Route::get('/services', [FrontendController::class, 'services'])->name('services');
 // About Us Page
 Route::get('/about-us', [FrontendController::class, 'about_us'])->name('about-us');
+// Contact Us Page
+Route::get('/contact-us', [FrontendController::class, 'contact_us'])->name('contact-us');
 // Help Page
 Route::get('/help', [FrontendController::class, 'help'])->name('help');
 // Join Helper Page

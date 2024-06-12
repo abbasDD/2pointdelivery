@@ -33,16 +33,34 @@ class ServiceTypeController extends Controller
             'type' => 'required|string|in:delivery,moving',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',  // allows null or string values
-            'image' => 'nullable|string|max:255',        // allows null or string values
-            'is_active' => 'sometimes|boolean'
         ]);
 
         $request->request->add([
-            'uuid' => Str::random(32),
+            'uuid' => Str::random(16),
         ]);
 
+        // Upload the image if provided
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('images/service_types/');
+            $file->move($destinationPath, $updatedFilename);
+        } else {
+            // If image not provided, set to null
+            $updatedFilename = null;
+        }
+
+        // New Data
+        $new_data = [
+            'uuid' => $request->uuid,
+            'type' => $request->type,
+            'name' => $request->name,
+            'description' => $request->description,
+            'image' => $updatedFilename,
+        ];
+
         // Create the serviceType
-        $serviceType = new ServiceType($request->all());
+        $serviceType = new ServiceType($new_data);
 
         $serviceType->save();
 
@@ -62,20 +80,58 @@ class ServiceTypeController extends Controller
 
     public function update(Request $request)
     {
+        // dd($request->all());
         // Validate the request
         $request->validate([
             // enum of service_type with option delivery & moving
             'type' => 'required|string|in:delivery,moving',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',  // allows null or string values
-            'image' => 'nullable|string|max:255',        // allows null or string values
-            'is_active' => 'sometimes|boolean'
         ]);
 
+        $serviceType = ServiceType::where('id', $request->id)->first();
+
+        if (!$serviceType) {
+            return redirect()->route('admin.serviceTypes')->with('error', 'Service Type not found!');
+        }
+
         unset($request['_token']);
-        // dd($request->all());
+
+
+        // Set default  image to null
+        $service_image = $serviceType->image ?? null;
+
+        // Upload the  image if provided
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('images/service_types/');
+
+            // Check if the directory exists and create it if it doesn't
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+
+            // Move the file to the destination path
+            $file->move($destinationPath, $updatedFilename);
+
+            // Set the  image attribute to the new file name
+            $service_image = $updatedFilename;
+
+            unset($request['image']);
+        }
+
+        $new_data = [
+            'type' => $request->type,
+            'name' => $request->name,
+            'description' => $request->description,
+            'image' => $service_image
+        ];
+
+
+        // dd($new_data);
         // Update the serviceType
-        $serviceType = ServiceType::where('id', $request->id)->update($request->all());
+        ServiceType::where('id', $request->id)->update($new_data);
 
         return redirect()->route('admin.serviceTypes')->with('success', 'Service Type updated successfully!');
     }

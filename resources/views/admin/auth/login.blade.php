@@ -6,7 +6,7 @@
     <div class="authpage">
         <div class="row align-content-center justify-content-center">
             <div class="col-md-6 d-grid align-items-center justify-content-center vh-100">
-                <div class="card" style="box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);">
+                <div class="card w-100">
                     <div class="card-body text-center">
                         <a href="{{ route('index') }}">
                             <img src="{{ config('website_logo') ? asset('images/logo/' . config('website_logo')) : asset('images/logo/icon.png') }}"

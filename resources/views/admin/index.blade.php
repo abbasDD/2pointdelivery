@@ -117,11 +117,11 @@
         <div class="row">
             <div class="col-md-4">
                 {{-- New Helpers --}}
-                <div class="card mb-1">
+                <div class="card mb-2">
                     <div class="card-body">
                         {{-- Heading --}}
-                        <h6>New Helpers</h6>
-                        <div class="scroll-div" style="max-height: 200px">
+                        <h5 class="card-title">New Helpers</h5>
+                        <div class="scroll-div" style="height: 200px">
                             {{-- Helper List --}}
                             @forelse ($helperRequests as $helperRequest)
                                 {{-- Top Helper Item --}}
@@ -155,8 +155,8 @@
                 <div class="card">
                     <div class="card-body">
                         {{-- Heading --}}
-                        <h6>New Registrations</h6>
-                        <div class="scroll-div" style="max-height: 200px">
+                        <h5 class="card-title">New Registrations</h5>
+                        <div class="scroll-div" style="height: 200px">
                             {{-- Helper List --}}
                             @forelse ($newRegisteredUsers as $newRegisteredUser)
                                 {{-- Top Helper Item --}}
@@ -195,10 +195,10 @@
                 <div class="card">
                     <div class="card-body">
                         {{-- Heading --}}
-                        <h6>Delivery & Moving Statistics</h6>
+                        <h5 class="card-title">Delivery & Moving Statistics</h5>
 
                         {{-- Delivery Moving Chart --}}
-                        <canvas id="deliveryMovingChart"></canvas>
+                        <canvas id="deliveryMovingChart" class="my-3"></canvas>
                     </div>
                 </div>
             </div>
@@ -213,7 +213,7 @@
             <div class="card">
                 <div class="card-body">
                     {{-- Heading --}}
-                    <h6>Latest Bookings</h6>
+                    <h5 class="card-title">Latest Bookings</h5>
 
                     {{-- Booking List --}}
                     <table class="table table-striped">

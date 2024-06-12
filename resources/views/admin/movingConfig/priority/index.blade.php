@@ -1,4 +1,4 @@
-<section class="section">
+<section class="section p-0">
     <div class="container-fluid">
         <div class="section-header mb-2">
             <div class="d-flex justify-content-between">

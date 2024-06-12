@@ -27,10 +27,13 @@ body {
 /* Generic CSS */
 h1, h2, h3, h4, h5, h6 {
     text-transform: capitalize;
-    line-height: 3rem;
     margin-bottom: 0;
     font-weight: 600;
     margin-bottom: 1rem;
+}
+
+h1, h2, h3 {
+    line-height: 3rem;
 }
 
 .h6, h6 {
@@ -43,6 +46,15 @@ p {
     color: var(--text-gray);
 }
 
+a {
+    text-decoration: none;
+    color: var(--black);
+    -webkit-transition: all 350ms ease-in-out;
+    -o-transition: all 350ms ease-in-out;
+    transition: all 350ms ease-in-out;
+    font-size: 1rem;
+}
+
 label {
     margin-bottom: 15px;
 }
@@ -52,7 +64,7 @@ svg {
 }
 
 img {
-    border-radius: 5px;
+    border-radius: 0.3rem;
 }
 
 section {
@@ -303,7 +315,7 @@ section {
     -ms-flex-align: center;
     align-items: center;
     height: 50px;
-    border-radius: 4px;
+    border-radius: 0.3rem;
     padding-right: 20px;
 }
 
@@ -364,6 +376,10 @@ section {
     border-radius: 25px;
 }
 
+.rounded-1 {
+    border-radius: 0.3rem !important;
+}
+
 .border-left {
     border-left: 1px solid var(--black);
 }
@@ -422,7 +438,7 @@ w-70 {
 .card {
     min-width: 100px;
     border: none;
-    border-radius: 5px;
+    border-radius: 0.3rem;
     box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
     margin-bottom: 3rem;
 }
@@ -443,6 +459,21 @@ w-70 {
 
 .card .card-body {
     padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.card .card-body:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+    background-color: var(--primary-color);
+    height: 3px;
+    width: calc(100% - 100px);
 }
 
 
@@ -477,7 +508,7 @@ w-70 {
 
 .about .about-img {
     position: relative;
-    border-radius: 3px;
+    border-radius: 0.3rem;
     height: 510px;
 }
 
@@ -496,7 +527,7 @@ w-70 {
     position: absolute;
     right: 0;
     max-width: 400px;
-    border-radius: 3px;
+    border-radius: 0.3rem;
     height: 510px;
 }
 
@@ -508,7 +539,7 @@ w-70 {
 .counter {
     background-color: var(--primary-color);
     color: #ffffff;
-    border-radius: 4px;
+    border-radius: 0.3rem;
     padding: 25px 40px 30px;
     display: -webkit-inline-box;
     display: -ms-inline-flexbox;
@@ -561,7 +592,6 @@ w-70 {
 
 .counter .counter-name h6 {
     margin-bottom: 0;
-    font-family: "Roboto", sans-serif;
     font-weight: 700;
     font-size: 1rem;
     line-height: 29px;
@@ -674,6 +704,8 @@ w-70 {
     height: 200px;
 }
 
+
+
 /* Testimonial CSS Start */
 
 .carousel-inner {
@@ -701,6 +733,175 @@ w-70 {
 
 /* Get Apps CTA CSS End */
 
+/* Accordion CSS Start */
+.accordion .heading {
+    margin-bottom: 23px;
+}
+
+.accordion .heading .heading-title {
+    font-size: 24px;
+    line-height: 29px;
+    font-weight: 500;
+    color: #1b1a1a;
+    margin-bottom: 0;
+}
+
+.accordion .card,
+.accordion .card:first-of-type,
+.accordion .card:not(:first-of-type):not(:last-of-type) {
+    padding: 1rem 2rem;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border: 2px solid #eaeaea;
+    margin-bottom: 30px;
+    border-radius: 0.3rem;
+    -webkit-transition: 0.3s ease-in-out;
+    -o-transition: 0.3s ease-in-out;
+    transition: 0.3s ease-in-out;
+    min-height: 0;
+    min-width: 0;
+}
+
+.accordion .card .card-heading,
+.accordion .card:first-of-type .card-heading,
+.accordion .card:not(:first-of-type):not(:last-of-type) .card-heading {
+    padding: 0;
+    margin: 0;
+}
+
+.accordion .card .card-heading a,
+.accordion .card:first-of-type .card-heading a,
+.accordion .card:not(:first-of-type):not(:last-of-type) .card-heading a {
+    font-size: 16px;
+    color: #222222;
+    font-weight: 500;
+    text-transform: capitalize;
+    position: relative;
+    -webkit-transition: 0.3s ease-in-out;
+    -o-transition: 0.3s ease-in-out;
+    transition: 0.3s ease-in-out;
+    display: block;
+    padding-left: 0;
+    text-decoration: none;
+}
+
+.accordion .card .card-heading .card-link:after,
+.accordion .card:first-of-type .card-heading .card-link:after,
+.accordion .card:not(:first-of-type):not(:last-of-type) .card-heading .card-link:after {
+    /* symbol for "opening" cards */
+    -webkit-transition: 0.3s ease-in-out;
+    -o-transition: 0.3s ease-in-out;
+    transition: 0.3s ease-in-out;
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 700;
+    content: "\f068";
+    font-size: 11px;
+    color: var(--primary-color);
+}
+
+.accordion .card .card-heading .card-link.collapsed:after,
+.accordion .card:first-of-type .card-heading .card-link.collapsed:after,
+.accordion .card:not(:first-of-type):not(:last-of-type) .card-heading .card-link.collapsed:after {
+    /* symbol for "collapsed" cards */
+    content: "\f067";
+}
+
+.accordion .card .card-body,
+.accordion .card:first-of-type .card-body,
+.accordion .card:not(:first-of-type):not(:last-of-type) .card-body {
+    color: #9b9b9b;
+    padding: 5px 0 0 0;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+.accordion .card .card-body::before {
+    background-color: white
+}
+
+.accordion .card.active-acc,
+.accordion .card:first-of-type.active-acc,
+.accordion .card:not(:first-of-type):not(:last-of-type).active-acc {
+    border-color: var(--primary-color);
+}
+
+.accordion .card.active-acc .card-heading .card-link,
+.accordion .card:first-of-type.active-acc .card-heading .card-link,
+.accordion .card:not(:first-of-type):not(:last-of-type).active-acc .card-heading .card-link {
+    color: var(--primary-color);
+}
+
+.accordion .card.active-acc .card-heading .card-link::after,
+.accordion .card:first-of-type.active-acc .card-heading .card-link::after,
+.accordion .card:not(:first-of-type):not(:last-of-type).active-acc .card-heading .card-link::after {
+    color: var(--primary-color);
+    content: "\f068";
+}
+
+.accordion .card:hover,
+.accordion .card:first-of-type:hover,
+.accordion .card:not(:first-of-type):not(:last-of-type):hover {
+    border-color: var(--primary-color);
+}
+
+.accordion .card:hover .card-heading a,
+.accordion .card:first-of-type:hover .card-heading a,
+.accordion .card:not(:first-of-type):not(:last-of-type):hover .card-heading a {
+    color: var(--primary-color);
+}
+
+.accordion .card:hover .card-heading a::after,
+.accordion .card:first-of-type:hover .card-heading a::after,
+.accordion .card:not(:first-of-type):not(:last-of-type):hover .card-heading a::after {
+    color: var(--primary-color);
+}
+
+.accordion .card:last-of-type {
+    margin-bottom: 15px;
+}
+
+
+/* Accordion  CSS End */
+
+
+/* Contact Us Page CSS Start */
+
+
+.map {
+    position: relative;
+    height: 720px;
+}
+
+.map iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.map iframe.map-gray {
+    -webkit-filter: brightness(104%) contrast(99%) saturate(0%) blur(0px) hue-rotate(0deg);
+    filter: brightness(104%) contrast(99%) saturate(0%) blur(0px) hue-rotate(0deg);
+}
+
+.map.map-2 {
+    padding: 0;
+    height: 520px;
+}
+
+.map.map-3 {
+    height: auto;
+    padding: 90px 0;
+}
+
+
+/* Contact Us Page CSS End */
 
 /* Chat Page CSS Start */
 
@@ -713,7 +914,7 @@ w-70 {
 }
 
 .people-list input {
-    border-radius: 3px;
+    border-radius: 0.3rem;
     border: none;
     padding: 12px;
     color: var(--white);
@@ -731,7 +932,7 @@ w-70 {
 .people-list .list .item {
     cursor: pointer;
     border: 1px solid var(--primary-color);
-    border-radius: 5px;
+    border-radius: 0.3rem;
 }
 
 .people-list .list .item p {
@@ -881,7 +1082,7 @@ w-70 {
     padding: 10px 20px;
     font-size: 12px;
     margin-bottom: 10px;
-    border-radius: 5px;
+    border-radius: 0.3rem;
     resize: none;
 }
 
@@ -936,6 +1137,49 @@ w-70 {
     height: 0;
 }
 
+/* Services CSS Start */
+
+.service-slider .carousel-inner {
+    margin: 0;
+}
+
+
+@media (max-width: 767px) {
+    .service-slider .carousel-inner .carousel-item>div {
+        display: none;
+    }
+
+    .service-slider .carousel-inner .carousel-item>div:first-child {
+        display: block;
+    }
+}
+
+.service-slider .carousel-inner .carousel-item.active,
+.service-slider .carousel-inner .carousel-item-next,
+.service-slider .carousel-inner .carousel-item-prev {
+    display: flex;
+}
+
+/* medium and up screens */
+@media (min-width: 768px) {
+
+    .service-slider .carousel-inner .carousel-item-end.active,
+    .service-slider .carousel-inner .carousel-item-next {
+        transform: translateX(25%);
+    }
+
+    .service-slider .carousel-inner .carousel-item-start.active,
+    .service-slider .carousel-inner .carousel-item-prev {
+        transform: translateX(-25%);
+    }
+}
+
+.service-slider .carousel-inner .carousel-item-end,
+.service-slider .carousel-inner .carousel-item-start {
+    transform: translateX(0);
+}
+
+/* Services CSS End */
 
 
 /* Auth Pages CSS  */
@@ -1144,7 +1388,7 @@ footer hr {
     background-color: var(--light-gray-color);
     color: var(--black);
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 0.3rem;
 }
 
 
@@ -1157,7 +1401,6 @@ footer hr {
 .booking-form #regForm {
     background-color: #ffffff;
     margin: 0px auto;
-    font-family: Raleway;
     padding: 40px;
     border-radius: 10px
 }
@@ -1501,7 +1744,6 @@ body {
 }
 
 .notfound .notfound-404 h1 {
-    font-family: montserrat, sans-serif;
     font-size: 236px;
     font-weight: 200;
     margin: 0;
@@ -1516,7 +1758,6 @@ body {
 }
 
 .notfound .notfound-404 h2 {
-    font-family: montserrat, sans-serif;
     font-size: 28px;
     font-weight: 400;
     text-transform: uppercase;
@@ -1532,7 +1773,6 @@ body {
 }
 
 .notfound a {
-    font-family: montserrat, sans-serif;
     display: inline-block;
     font-weight: 700;
     text-decoration: none;

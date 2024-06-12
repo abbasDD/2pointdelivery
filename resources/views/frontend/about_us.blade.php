@@ -5,7 +5,7 @@
 @section('content')
 
     {{-- Header Section  --}}
-    <section class="py-5 bg-light-gray">
+    <section class="bg-light-gray">
         <div class="container my-5">
             <div class="row justify-content-center">
                 <div class="col-md-8 px-5 heading">
@@ -26,7 +26,7 @@
 
     {{-- + 7800 Successful deliveries --}}
 
-    <section class="py-5 bg-light-gray">
+    <section>
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-9">

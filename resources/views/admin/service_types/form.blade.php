@@ -1,5 +1,24 @@
-{{-- Sub Admin Form --}}
+{{-- Form --}}
 <div class="row">
+    {{-- Service Image --}}
+    <div class="col-md-12">
+        <div class="form-group mb-3">
+            <div class="image-selection">
+                <div class="mx-auto" style="max-width: 150px;">
+                    <img id="image_img"
+                        src="{{ isset($serviceType) && $serviceType->image !== null ? asset('images/service_types/' . $serviceType->image) : asset('images/service_types/default.png') }}"
+                        alt="image" class=" border w-100" onclick="document.getElementById('image').click()">
+                    <input type="file" name="image" id="image" class="d-none" accept="image/*"
+                        @if (!isset($serviceType)) required @endif>
+                </div>
+            </div>
+            @if ($errors->has('image'))
+                <span class="invalid-feedback" role="alert">
+                    <strong>Image is required</strong>
+                </span>
+            @endif
+        </div>
+    </div>
     {{-- Select Services --}}
     <div class="col-md-6">
         <div class="form-group mb-3">
@@ -80,3 +99,22 @@
         </button>
     </div>
 </div>
+
+
+<script>
+    document.querySelector('#image').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (!file.type.startsWith('image/')) {
+            alert('Please select an image file.');
+            event.target.value = null;
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            document.querySelector('#image_img').src = event.target.result;
+        }
+
+        reader.readAsDataURL(file);
+    });
+</script>

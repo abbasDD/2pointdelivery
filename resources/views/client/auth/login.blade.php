@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div class="col-md-6 d-grid align-items-center justify-content-center">
-                <div class="card">
+                <div class="card w-100">
                     <div class="w-100 mb-3 switch-user">
                         <a class="" href="{{ route('helper.login') }}">
                             Login as Helper

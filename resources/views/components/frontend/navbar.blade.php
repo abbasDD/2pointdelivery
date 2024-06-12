@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top py-3">
     <div class="container">
         <a class="navbar-brand" href="{{ route('index') }}">
             <img src="{{ config('website_logo') ? asset('images/logo/' . config('website_logo')) : asset('images/logo/icon.png') }}"
@@ -70,8 +70,14 @@
                     </div>
                 @else
                     <!-- If user is not logged in, show sign in button -->
-                    <a href="{{ route('client.login') }}" class="nav-link"><i class="fa-regular fa-user mx-2"></i>Sign
-                        In</a>
+                    {{-- <a href="{{ route('client.login') }}" class="nav-link"><i class="fa-regular fa-user mx-2"></i>Sign
+                        In</a> --}}
+                    {{-- Redirect to Helper Register --}}
+                    <div class="read-more">
+                        <a href="{{ route('client.login') }}">
+                            <i class="fas fa-long-arrow-alt-right mr-2"></i> Sign In
+                        </a>
+                    </div>
                 @endauth
             </div>
         </div>
