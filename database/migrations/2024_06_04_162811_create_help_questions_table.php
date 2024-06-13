@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('uuid')->unique();
             $table->foreignId('help_topic_id')->constrained();
-            $table->string('question');
-            $table->string('answer');
+            $table->text('question');
+            $table->text('answer');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

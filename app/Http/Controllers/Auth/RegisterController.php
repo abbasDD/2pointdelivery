@@ -72,7 +72,7 @@ class RegisterController extends Controller
 
         // Generate uuid and ensure it is unique
         do {
-            $referralCode = Str::random(8);
+            $referralCode = strtoupper(Str::random(8));
             $codeExist = User::where('referral_code', $referralCode)->first();
         } while ($codeExist);
 

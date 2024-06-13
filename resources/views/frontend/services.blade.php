@@ -15,7 +15,7 @@
                         interaction leaves you not just satisfied, but delighted. </p>
                     {{-- <a href="#" class="btn btn-primary mt-3">Book a Service</a> --}}
                     {{-- Redirect to Book Service --}}
-                    <div class="read-more">
+                    <div class="arrow-button">
                         <a href="{{ route('newBooking') }}">
                             <i class="fas fa-long-arrow-alt-right mr-2"></i> Book a Service
                         </a>

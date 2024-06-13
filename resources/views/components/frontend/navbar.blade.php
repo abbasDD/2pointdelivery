@@ -73,7 +73,7 @@
                     {{-- <a href="{{ route('client.login') }}" class="nav-link"><i class="fa-regular fa-user mx-2"></i>Sign
                         In</a> --}}
                     {{-- Redirect to Helper Register --}}
-                    <div class="read-more">
+                    <div class="arrow-button">
                         <a href="{{ route('client.login') }}">
                             <i class="fas fa-long-arrow-alt-right mr-2"></i> Sign In
                         </a>

@@ -1,7 +1,7 @@
 {{--   Form --}}
 <div class="row">
     {{-- List of $helpTopics --}}
-    <div class="col-md-6">
+    <div class="col-md-12">
         <div class="form-group mb-3">
             <label for="help_topic_id">Category</label>
             <select class="form-control @error('help_topic_id') is-invalid @enderror" id="help_topic_id"
@@ -38,7 +38,7 @@
     <div class="col-md-12">
         <div class="form-group mb-3">
             <label for="answer">Answer</label>
-            <textarea class="form-control @error('answer') is-invalid @enderror" id="answer" name="answer" rows="3"
+            <textarea class="form-control @error('answer') is-invalid @enderror" id="answer" name="answer" rows="6"
                 placeholder="Enter Answer" required>{{ old('answer', $helpQuestion['answer'] ?? '') }}</textarea>
             @error('answer')
                 <span class="invalid-feedback" role="alert">

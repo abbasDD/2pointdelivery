@@ -16,7 +16,7 @@
                         step of the way!</p>
                     {{-- <a href="{{ route('helper.register') }}" class="btn btn-primary">{{ __('frontend.join_as_helper') }}</a> --}}
                     {{-- Redirect to Helper Register --}}
-                    <div class="read-more">
+                    <div class="arrow-button">
                         <a href="{{ route('helper.register') }}" class="text-white">
                             <i class="fas fa-long-arrow-alt-right mr-2"></i> {{ __('frontend.join_as_helper') }}
                         </a>

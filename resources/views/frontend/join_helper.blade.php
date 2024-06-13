@@ -13,7 +13,7 @@
                     <p>Be active, meet new people & make up to $2.5k/week!</p>
                     {{-- <a href="{{ route('helper.register') }}" class="btn btn-primary mt-3">Join as Helper</a> --}}
                     {{-- Redirect to Helper Register --}}
-                    <div class="read-more">
+                    <div class="arrow-button">
                         <a href="{{ route('helper.register') }}">
                             <i class="fas fa-long-arrow-alt-right mr-2"></i> {{ __('frontend.join_as_helper') }}
                         </a>
@@ -46,7 +46,7 @@
                             belongings to navigating the logistics of transportation and delivery, we've got you covered.
                         </p>
                         {{-- Redirect to Helper Register --}}
-                        <div class="read-more">
+                        <div class="arrow-button">
                             <a href="{{ route('helper.register') }}">
                                 <i class="fas fa-long-arrow-alt-right mr-2"></i> {{ __('frontend.join_as_helper') }}
                             </a>

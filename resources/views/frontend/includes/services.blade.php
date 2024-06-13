@@ -29,7 +29,7 @@
                                                 {{ $serviceType->description }}
                                             </p>
                                             {{-- Redirect to Booking --}}
-                                            <div class="read-more">
+                                            <div class="arrow-button">
                                                 <a href="{{ route('newBooking') }}">
                                                     <i class="fas fa-long-arrow-alt-right mr-2"></i> Book This Service
                                                 </a>
@@ -58,7 +58,7 @@
                                                 reach
                                                 out to us, and consider it delivered!</p>
                                             {{-- Redirect to Booking --}}
-                                            <div class="read-more">
+                                            <div class="arrow-button">
                                                 <a href="{{ route('newBooking') }}">
                                                     <i class="fas fa-long-arrow-alt-right mr-2"></i> Book This Service
                                                 </a>

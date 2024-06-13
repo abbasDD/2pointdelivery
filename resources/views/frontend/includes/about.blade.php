@@ -43,7 +43,7 @@
                             covered.
                         </p>
                         {{-- Redirect to About Us --}}
-                        <div class="read-more">
+                        <div class="arrow-button">
                             <a href="{{ route('about-us') }}">
                                 <i class="fas fa-long-arrow-alt-right mr-2"></i> Read More
                             </a>

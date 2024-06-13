@@ -12,7 +12,7 @@
                     will help you analyze, develop and implement successful supply chain management strategies from
                     end-to-end.</p>
                 {{-- Redirect to About Us --}}
-                <div class="read-more">
+                <div class="arrow-button">
                     <a href="{{ route('about-us') }}">
                         <i class="fas fa-long-arrow-alt-right mr-2"></i> Read More
                     </a>
@@ -37,7 +37,7 @@
                                 service.</p>
 
                             {{-- Redirect to New Booking --}}
-                            <div class="read-more">
+                            <div class="arrow-button">
                                 <a href="{{ route('newBooking') }}">
                                     <i class="fas fa-long-arrow-alt-right mr-2"></i> View Services
                                 </a>
@@ -63,7 +63,7 @@
                                 you.</p>
 
                             {{-- Redirect to New Booking --}}
-                            <div class="read-more">
+                            <div class="arrow-button">
                                 <a href="{{ route('newBooking') }}">
                                     <i class="fas fa-long-arrow-alt-right mr-2"></i> Book Now
                                 </a>
@@ -88,7 +88,7 @@
                             <p>Track your booking, and get your goods delivered to your door.</p>
 
                             {{-- Redirect to Track Booking --}}
-                            <div class="read-more">
+                            <div class="arrow-button">
                                 <a href="#">
                                     <i class="fas fa-long-arrow-alt-right mr-2"></i> Track Now
                                 </a>

@@ -14,7 +14,7 @@
             </div>
             <div class="col-md-2">
                 {{-- Redirect to About Us --}}
-                <div class="read-more">
+                <div class="arrow-button">
                     <a href="{{ route('contact-us') }}" class="text-white">
                         <i class="fas fa-long-arrow-alt-right mr-2"></i> Contact Us
                     </a>

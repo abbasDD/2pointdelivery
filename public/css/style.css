@@ -295,7 +295,7 @@ section {
 }
 
 
-.read-more a {
+.arrow-button a {
     color: var(--primary-color);
     text-decoration: none;
     font-weight: 700;
@@ -319,18 +319,18 @@ section {
     padding-right: 20px;
 }
 
-.read-more a i {
+.arrow-button a i {
     font-size: 1rem !important;
-    margin-right: 5px;
+    margin-right: 5px !important;
 }
 
-.read-more:hover a {
+.arrow-button:hover a {
     padding-left: 20px;
     background-color: var(--primary-color);
     color: #ffffff !important;
 }
 
-.read-more:hover a i {
+.arrow-button:hover a i {
     color: #ffffff !important;
 }
 

@@ -17,7 +17,7 @@
     <div class="col-md-12">
         <div class="form-group mb-3">
             <label for="answer">Answer</label>
-            <textarea class="form-control @error('answer') is-invalid @enderror" id="answer" name="answer" rows="3"
+            <textarea class="form-control @error('answer') is-invalid @enderror" id="answer" name="answer" rows="6"
                 placeholder="Enter Answer" required>{{ old('answer', $faq['answer'] ?? '') }}</textarea>
             @error('answer')
                 <span class="invalid-feedback" role="alert">
