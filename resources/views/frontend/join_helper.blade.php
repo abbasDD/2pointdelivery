@@ -8,7 +8,7 @@
     <section class=" bg-light-gray">
         <div class="container ">
             <div class="row align-items-center">
-                <div class="col-md-6 px-5">
+                <div class="col-md-7 px-5">
                     <h3>Join Us as a helper and earn money with us</h3>
                     <p>Be active, meet new people & make up to $2.5k/week!</p>
                     {{-- <a href="{{ route('helper.register') }}" class="btn btn-primary mt-3">Join as Helper</a> --}}
@@ -19,8 +19,8 @@
                         </a>
                     </div>
                 </div>
-                <div class="col-md-6 text-center">
-                    <img src="{{ asset('frontend/images/join-helper.png') }}" alt="Image" class="img-fluid">
+                <div class="col-md-5 d-none d-md-block text-center">
+                    <img src="{{ asset('frontend/images/join-helper/header.png') }}" alt="Image" class="img-fluid">
                 </div>
             </div>
         </div>
@@ -62,10 +62,13 @@
                                     height="400" alt="Image 1">
                             </div>
                             <div class="carousel-item">
-                                <img src="{{ asset('frontend/images/join-helper/image-1.png') }}" class="d-block mx-auto"
+                                <img src="{{ asset('frontend/images/join-helper/image-2.png') }}" class="d-block mx-auto"
                                     height="400" alt="Image 2">
                             </div>
-                            <!-- Add more carousel items here -->
+                            <div class="carousel-item">
+                                <img src="{{ asset('frontend/images/join-helper/image-3.png') }}" class="d-block mx-auto"
+                                    height="400" alt="Image 2">
+                            </div>
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselAboutIndicators"
                             data-bs-slide="prev">

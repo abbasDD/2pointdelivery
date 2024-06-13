@@ -8,7 +8,7 @@
     <section class="py-5 bg-light-gray">
         <div class="container my-5">
             <div class="row align-items-center">
-                <div class="col-md-6 px-5">
+                <div class="col-md-8 px-5">
                     <h3 class="mb-1">How can we help you?</h3>
                     <p class="mb-3">At 2 Point, we operate around the clock to serve you whenever you need us. Day or
                         night, our delivery services are at your disposal, ensuring convenience at every hour.</p>
@@ -22,9 +22,6 @@
                             </div>
                         </div>
                     </form>
-                </div>
-                <div class="col-md-6 text-center">
-                    <img src="{{ asset('frontend/images/help-bg.png') }}" alt="Help Image" width="300" class="img-fluid">
                 </div>
             </div>
         </div>

@@ -121,6 +121,15 @@ class BookingController extends Controller
             $helperData = Helper::where('user_id', $booking->helper_user_id)->first();
         }
 
+
+        // Get helper2 Data
+        $helperData2 = null;
+        if ($booking->helper_user_id2) {
+            $helperData2 = Helper::where('user_id', $booking->helper_user_id2)->first();
+        }
+
+        // dd($helperData2);
+
         // Get client data
         $clientData = null;
         if ($booking->client_user_id) {
@@ -152,6 +161,6 @@ class BookingController extends Controller
 
         // dd($booking->helper_user_id);
 
-        return view('admin.bookings.show', compact('booking', 'bookingData', 'helperData', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'helper2VehicleData'));
+        return view('admin.bookings.show', compact('booking', 'bookingData', 'helperData', 'helperData2', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'helper2VehicleData'));
     }
 }
