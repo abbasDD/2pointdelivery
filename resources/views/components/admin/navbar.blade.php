@@ -109,6 +109,7 @@
                     <li><a class="nav-link" href="{{ route('admin.faqs') }}">FAQs </a></li>
                     <li><a class="nav-link" href="{{ route('admin.helpQuestions') }}">Help </a></li>
                     <li><a class="nav-link" href="{{ route('admin.emailTemplates.index') }}">Email Templates </a>
+                    <li><a class="nav-link" href="{{ route('admin.frontendSettings.index') }}">Frontend Settings </a>
                     </li>
                 </ul>
             </li>

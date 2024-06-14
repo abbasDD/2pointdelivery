@@ -83,6 +83,9 @@
                         <p>
                             <a href="#!" class="text-white">Privacy Policy</a>
                         </p>
+                        <p>
+                            <a href="#!" class="text-white">Cancellation Policy</a>
+                        </p>
                     </div>
                     <!-- Grid column -->
 

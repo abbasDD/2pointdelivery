@@ -12,27 +12,7 @@ class SocialLoginSettingController extends Controller
 
     public function index()
     {
-        $socialLoginSettings = [];
-
-        try {
-            // Retrieve settings from the database if the table exists
-            $settings = SocialLoginSetting::all();
-
-            // Set each setting as a configuration value
-            foreach ($settings as $setting) {
-                // config([$setting->key => $setting->value]);
-                $socialLoginSettings[$setting->key] = $setting->value ? $setting->value : null;
-            }
-
-            // dd($socialLoginSettings);
-        } catch (QueryException $e) {
-            // Handle the case where the table does not exist
-            // For now, we can just log the error
-            // \Log::error("Error retrieving system settings: {$e->getMessage()}");
-
-            $socialLoginSettings = [];
-        }
-
+        $socialLoginSettings = SocialLoginSetting::all()->pluck('value', 'key')->toArray();
 
         // dd($socialLoginSettings);
         return view('admin.settings.socialLogin.index', compact('socialLoginSettings'));

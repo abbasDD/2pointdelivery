@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Email Templates')
+@section('title', 'Front End Settings')
 
 @section('content')
 
@@ -10,12 +10,12 @@
         <div class="container-fluid">
             <div class="section-header mb-2">
                 <div class="d-flex justify-content-between">
-                    <h4 class="mb-0">Email Templates</h4>
+                    <h4 class="mb-0">Front End Settings</h4>
                 </div>
             </div>
             <div class="section-body">
                 <div id="clientTable">
-                    @include('admin.emailTemplates.partials.tabs')
+                    @include('admin.frontendSettings.partials.tabs')
                 </div>
             </div>
         </div>

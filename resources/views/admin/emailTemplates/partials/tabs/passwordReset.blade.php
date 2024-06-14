@@ -14,8 +14,10 @@
                             placeholder="Enter Subject" value="{{ $passwordResetEmail->subject ?? '' }}" required>
                     </div>
                     <div class="form-group mb-3">
-                        <label for="body">Body</label>
-                        <textarea class="form-control" name="body" id="body" rows="10" placeholder="Enter Body" required>{{ $passwordResetEmail->body ?? '' }}</textarea>
+                        <label for="passwordResetBody">Body</label>
+                        <input id="passwordResetBody" type="hidden" name="body"
+                            value="{{ old('body', $passwordResetEmail->body ?? '') }}">
+                        <trix-editor input="passwordResetBody" class="trix-content"></trix-editor>
                     </div>
 
                     <div class="text-right">

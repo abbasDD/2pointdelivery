@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\EmailTemplateController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\FloorAssessController;
 use App\Http\Controllers\Admin\FloorPlanController;
+use App\Http\Controllers\Admin\FrontendSettingController;
 use App\Http\Controllers\Admin\HelperController;
 use App\Http\Controllers\Admin\HelpQuestionController;
 use App\Http\Controllers\Admin\HelpTopicController;
@@ -243,6 +244,14 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
         Route::get('/', [EmailTemplateController::class, 'index'])->name('index');
         Route::post('/welcome/store', [EmailTemplateController::class, 'welcomeEmailStore'])->name('welcome.store');
         Route::post('/password-reset/store', [EmailTemplateController::class, 'passwordResetEmailStore'])->name('passwordReset.store');
+    });
+
+    // Frontend Settings
+    Route::prefix('frontend-settings')->name('frontendSettings.')->group(function () {
+        Route::get('/', [FrontendSettingController::class, 'index'])->name('index');
+        Route::post('/privacy-policy/store', [FrontendSettingController::class, 'privacyPolicyStore'])->name('privacyPolicy.store');
+        Route::post('/terms-and-conditions/store', [FrontendSettingController::class, 'termsAndConditionsStore'])->name('termsAndConditions.store');
+        Route::post('/canellation-policy/store', [FrontendSettingController::class, 'cancellationPolicyStore'])->name('cancellationPolicy.store');
     });
 
     // Help Topic Page Routes

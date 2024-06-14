@@ -95,13 +95,25 @@ class PassportAuthController extends Controller
             $helper->save();
         }
 
+        $userData = [
+            'email' => $user->email,
+            'referral_code' => $user->referral_code,
+            'language_code' => $user->language_code,
+            'is_active' => $user->is_active,
+            'company_enabled' => null,
+            'first_name' => null,
+            'middle_name' => null,
+            'last_name' => null,
+            'profile_image' => asset('images/users/default.png'),
+        ];
+
 
         return response()->json([
             'success' => true,
             'statusCode' => 200,
             'message' => 'User has been registered successfully.',
             'accessToken' => $accessToken,
-            'data' => $user,
+            'data' => $userData,
         ], 200);
     }
 
@@ -135,7 +147,7 @@ class PassportAuthController extends Controller
                 $user->tokens()->delete();
 
                 return response()->json([
-                    'success' => true,
+                    'success' => false,
                     'statusCode' => 401,
                     'message' => 'Unauthorized.',
                     'errors' => 'Unauthorized',
@@ -149,7 +161,7 @@ class PassportAuthController extends Controller
                 $user->tokens()->delete();
 
                 return response()->json([
-                    'success' => true,
+                    'success' => false,
                     'statusCode' => 401,
                     'message' => 'Your account is not active.',
                     'errors' => 'Inactive',
@@ -161,19 +173,55 @@ class PassportAuthController extends Controller
             $tokenResult = $user->createToken('2PointDeliveryJWTAuthenticationToken');
             $accessToken = $tokenResult->accessToken;
 
+            // remove extra field from user
+
+            $userData = [
+                'email' => $user->email,
+                'referral_code' => $user->referral_code,
+                'language_code' => $user->language_code,
+                'is_active' => $user->is_active,
+                'company_enabled' => null,
+                'first_name' => null,
+                'middle_name' => null,
+                'last_name' => null,
+                'profile_image' => asset('images/users/default.png'),
+            ];
+
+            // If user is client
+            if ($request->user_type == 'client') {
+
+                $client = Client::where('user_id', $user->id)->first();
+                $userData['company_enabled'] = $client->company_enabled;
+                $userData['first_name'] = $client->first_name;
+                $userData['middle_name'] = $client->middle_name;
+                $userData['last_name'] = $client->last_name;
+                $userData['profile_image'] = $client->profile_image == null ? asset('images/users/default.png') : asset('images/users/' . $client->profile_image);
+            }
+
+            // If user is helper
+
+            if ($request->user_type == 'helper') {
+
+                $helper = Helper::where('user_id', $user->id)->first();
+                $userData['company_enabled'] = $helper->company_enabled;
+                $userData['first_name'] = $helper->first_name;
+                $userData['middle_name'] = $helper->middle_name;
+                $userData['last_name'] = $helper->last_name;
+                $userData['profile_image'] = $helper->profile_image == null ? asset('images/users/default.png') : asset('images/users/' . $helper->profile_image);
+            }
 
             return response()->json([
                 'success' => true,
                 'statusCode' => 200,
                 'message' => 'User has been logged successfully.',
                 'accessToken' => $accessToken,
-                'data' => $user,
+                'data' => $userData,
             ], 200);
 
             // return $this->respondWithToken($token);
         } else {
             return response()->json([
-                'success' => true,
+                'success' => false,
                 'statusCode' => 401,
                 'message' => 'Unauthorized.',
                 'errors' => 'Unauthorized',
@@ -188,6 +236,17 @@ class PassportAuthController extends Controller
      */
     public function me(): JsonResponse
     {
+
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
 
         $user = auth()->user();
 
@@ -205,6 +264,18 @@ class PassportAuthController extends Controller
      */
     public function logout(): JsonResponse
     {
+
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
         Auth::user()->tokens()->delete();
 
         return response()->json([

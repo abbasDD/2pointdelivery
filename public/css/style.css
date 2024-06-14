@@ -738,6 +738,14 @@ w-70 {
     color: var(--primary-color);
 }
 
+.trix-content {
+    min-height: 300px;
+    /* Adjust the height as per your requirement */
+}
+
+.trix-button--icon-attach {
+    display: none !important;
+}
 
 /* Help Topic CSS End */
 

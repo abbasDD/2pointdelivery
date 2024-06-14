@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\EmailTemplate;
 use Illuminate\Http\Request;
+use Mews\Purifier\Facades\Purifier;
 
 class EmailTemplateController extends Controller
 {
@@ -46,8 +47,10 @@ class EmailTemplateController extends Controller
         $welcomeEmail = EmailTemplate::where('slug', 'welcome-email')->first();
 
         if ($welcomeEmail) {
+            $request['body'] = Purifier::clean($request->input('body'));
             $welcomeEmail->update($request->all());
         } else {
+            $request['body'] = Purifier::clean($request->input('body'));
             $welcomeEmail = EmailTemplate::create($request->all());
         }
 
@@ -65,8 +68,10 @@ class EmailTemplateController extends Controller
         $passwordResetEmail = EmailTemplate::where('slug', 'password-reset-email')->first();
 
         if ($passwordResetEmail) {
+            $request['body'] = Purifier::clean($request->input('body'));
             $passwordResetEmail->update($request->all());
         } else {
+            $request['body'] = Purifier::clean($request->input('body'));
             $passwordResetEmail = EmailTemplate::create($request->all());
         }
 

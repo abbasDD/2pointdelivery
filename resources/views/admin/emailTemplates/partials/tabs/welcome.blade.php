@@ -13,9 +13,16 @@
                         <input type="text" class="form-control" name="subject" id="subject"
                             placeholder="Enter Subject" value="{{ $welcomeEmail->subject ?? '' }}" required>
                     </div>
-                    <div class="form-group mb-3">
+                    {{-- <div class="form-group mb-3">
                         <label for="body">Body</label>
                         <textarea class="form-control" name="body" id="body" rows="10" placeholder="Enter Body" required>{{ $welcomeEmail->body ?? '' }}</textarea>
+                    </div> --}}
+
+                    <div class="form-group mb-3">
+                        <label for="welcomeEmailBody">Body</label>
+                        <input id="welcomeEmailBody" type="hidden" name="body"
+                            value="{{ old('body', $welcomeEmail->body ?? '') }}">
+                        <trix-editor input="welcomeEmailBody" class="trix-content"></trix-editor>
                     </div>
 
                     <div class="text-right">
