@@ -36,6 +36,12 @@
                                 aria-controls="v-pills-socialLogin" aria-selected="false">
                                 <i class="fa-solid fa-hashtag"></i> <span class="d-none d-lg-inline">Social Login</span>
                             </button>
+                            {{-- SMTP Settings --}}
+                            <button class="nav-link" id="v-pills-smtpSettings-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-smtpSettings" type="button" role="tab"
+                                aria-controls="v-pills-smtpSettings" aria-selected="false">
+                                <i class="fas fa-envelope"></i> <span class="d-none d-lg-inline">SMTP</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -65,6 +71,12 @@
                         aria-labelledby="v-pills-socialLogin-tab">
                         {{-- Load Social Login Tab --}}
                         @include('admin.settings.socialLogin.index')
+                    </div>
+                    {{-- SMTP Tab --}}
+                    <div class="tab-pane fade" id="v-pills-smtpSettings" role="tabpanel"
+                        aria-labelledby="v-pills-smtpSettings-tab">
+                        {{-- Load SMTP Tab --}}
+                        @include('admin.settings.smtp.index')
                     </div>
                 </div>
             </div>
@@ -97,6 +109,12 @@
                                 data-bs-target="#v-pills-socialLogin" type="button" role="tab"
                                 aria-controls="v-pills-socialLogin" aria-selected="false">
                                 <i class="fa-solid fa-hashtag"></i> <span class="d-none d-lg-inline">Social Login</span>
+                            </button>
+                            {{-- SMTP Settings --}}
+                            <button class="nav-link" id="v-pills-smtpSettings-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-smtpSettings" type="button" role="tab"
+                                aria-controls="v-pills-smtpSettings" aria-selected="false">
+                                <i class="fas fa-envelope"></i> <span class="d-none d-lg-inline">SMTP</span>
                             </button>
                         </div>
                     </div>

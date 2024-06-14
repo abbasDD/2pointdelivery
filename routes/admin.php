@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\DeliveryConfigController;
+use App\Http\Controllers\Admin\EmailTemplateController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\FloorAssessController;
 use App\Http\Controllers\Admin\FloorPlanController;
@@ -24,6 +25,7 @@ use App\Http\Controllers\Admin\SocialLoginSettingController;
 use App\Http\Controllers\Admin\PrioritySettingController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\ServiceTypeController;
+use App\Http\Controllers\Admin\SmtpSettingController;
 use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Admin\TaxSettingController;
 use Illuminate\Support\Facades\Route;
@@ -228,8 +230,19 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
         // Social Login
         // Route::get('/social-logins', [SocialLoginSettingController::class, 'index'])->name('socialLoginSettings');
         Route::post('/social-login/update', [SocialLoginSettingController::class, 'update'])->name('socialLoginSetting.update');
+        // Social Login
+        // Route::get('/smtps', [SmtpSettingController::class, 'index'])->name('smtpSettings');
+        Route::post('/smtp/update', [SmtpSettingController::class, 'update'])->name('smtpSetting.update');
+
 
         // End of Settings Prefix Route
+    });
+
+    // Email Templates Page Routes
+    Route::prefix('email-templates')->name('emailTemplates.')->group(function () {
+        Route::get('/', [EmailTemplateController::class, 'index'])->name('index');
+        Route::post('/welcome/store', [EmailTemplateController::class, 'welcomeEmailStore'])->name('welcome.store');
+        Route::post('/password-reset/store', [EmailTemplateController::class, 'passwordResetEmailStore'])->name('passwordReset.store');
     });
 
     // Help Topic Page Routes

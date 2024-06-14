@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Client;
 use App\Models\ClientCompany;
 use App\Models\Faq;
+use App\Models\HelpQuestion;
 use App\Models\HelpTopic;
 use App\Models\MovingConfig;
 use App\Models\MovingDetailCategory;
@@ -68,6 +69,33 @@ class FrontendController extends Controller
         $faqs = Faq::where('is_active', 1)->get();
 
         return view('frontend.help', compact('faqs', 'helpTopics'));
+    }
+
+    // topicQuestion
+    public function topicQuestion(Request $request)
+    {
+        // dd($request->all());
+        // Topic Details
+        $topic = HelpTopic::where('id', $request->id)->where('is_active', 1)->first();
+
+        if (!$topic) {
+            return redirect()->back()->with('error', 'Help Topic not found');
+        }
+        // Get all questions for selected topic
+        $helpQuestions = HelpQuestion::where('help_topic_id', $request->id)->where('is_active', 1)->get();
+
+        return view('frontend.topicQuestion', compact('helpQuestions', 'topic'));
+    }
+
+    // topic search
+    public function topicSearch(Request $request)
+    {
+        $query = $request->input('query');
+
+        // Perform your search logic here, for example:
+        $results = HelpTopic::where('name', 'LIKE', "%{$query}%")->get();
+
+        return response()->json($results);
     }
 
     // Join Helper Page

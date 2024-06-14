@@ -724,6 +724,24 @@ w-70 {
 /* Testimonial CSS End */
 
 
+/* Help Topic CSS Start */
+
+.topic-list {
+    margin: 1rem 0;
+}
+
+.topic-list .item a {
+    text-decoration: none;
+}
+
+.topic-list .item a:hover {
+    color: var(--primary-color);
+}
+
+
+/* Help Topic CSS End */
+
+
 /* Get Apps CTA CSS Start */
 
 #getapps {

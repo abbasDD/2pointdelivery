@@ -108,6 +108,8 @@
                 <ul class="submenu collapse">
                     <li><a class="nav-link" href="{{ route('admin.faqs') }}">FAQs </a></li>
                     <li><a class="nav-link" href="{{ route('admin.helpQuestions') }}">Help </a></li>
+                    <li><a class="nav-link" href="{{ route('admin.emailTemplates.index') }}">Email Templates </a>
+                    </li>
                 </ul>
             </li>
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.settings') }}"><i class="fa fa-cog"></i>

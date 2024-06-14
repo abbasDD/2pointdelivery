@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\PaymentSetting;
 use App\Models\PrioritySetting;
+use App\Models\SmtpSetting;
 use App\Models\SocialLoginSetting;
 use App\Models\SystemSetting;
 use App\Models\TaxSetting;
@@ -17,25 +18,7 @@ class SystemSettingController extends Controller
     {
         // Get System Settings
         $systemSettings = [];
-
-        try {
-            // Retrieve settings from the database if the table exists
-            $settings = SystemSetting::all();
-
-            // Set each setting as a configuration value
-            foreach ($settings as $setting) {
-                // config([$setting->key => $setting->value]);
-                $systemSettings[$setting->key] = $setting->value ? $setting->value : null;
-            }
-
-            // dd($systemSettings);
-        } catch (QueryException $e) {
-            // Handle the case where the table does not exist
-            // For now, we can just log the error
-            // \Log::error("Error retrieving system settings: {$e->getMessage()}");
-
-            $systemSettings = [];
-        }
+        $systemSettings = SystemSetting::all()->pluck('value', 'key')->toArray();
 
         // Tax Countries List
         $taxCountries = TaxSetting::select('tax_settings.*', 'countries.name as country_name', 'states.name as state_name'/*, 'cities.name as city_name' */)
@@ -46,43 +29,15 @@ class SystemSettingController extends Controller
 
         // Payment Settings
 
+        $paymentSettings = PaymentSetting::all()->pluck('value', 'key')->toArray();
 
-        $paymentSettings = [];
+        // Social Login Settings
+        $socialLoginSettings = SocialLoginSetting::all()->pluck('value', 'key')->toArray();
 
-        try {
-            // Retrieve settings from the database if the table exists
-            $settings = PaymentSetting::all();
+        // SMTP Settings
+        $smtpSettings = SmtpSetting::all()->pluck('value', 'key')->toArray();
 
-            // Set each setting as a configuration value
-            foreach ($settings as $setting) {
-                // config([$setting->key => $setting->value]);
-                $paymentSettings[$setting->key] = $setting->value ? $setting->value : null;
-            }
-
-            // dd($paymentSettings);
-        } catch (QueryException $e) {
-            // Handle the case where the table does not exist
-            // For now, we can just log the error
-            // \Log::error("Error retrieving system settings: {$e->getMessage()}");
-
-            $paymentSettings = [];
-        }
-
-        // dd($paymentSettings);
-
-        // socialLoginSettings
-        $socialLoginSettings = [];
-
-        // Retrieve settings from the database if the table exists
-        $socialSettings = SocialLoginSetting::all();
-
-        // Set each setting as a configuration value
-        foreach ($socialSettings as $setting) {
-            // config([$setting->key => $setting->value]);
-            $socialLoginSettings[$setting->key] = $setting->value ? $setting->value : null;
-        }
-
-        return view('admin.settings.index', compact('systemSettings', 'taxCountries', 'paymentSettings',  'socialLoginSettings'));
+        return view('admin.settings.index', compact('systemSettings', 'taxCountries', 'paymentSettings',  'socialLoginSettings', 'smtpSettings'));
     }
 
     public function system()

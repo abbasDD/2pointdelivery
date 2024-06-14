@@ -57,6 +57,9 @@ Route::get('/about-us', [FrontendController::class, 'about_us'])->name('about-us
 Route::get('/contact-us', [FrontendController::class, 'contact_us'])->name('contact-us');
 // Help Page
 Route::get('/help', [FrontendController::class, 'help'])->name('help');
+Route::get('/topic/{id}', [FrontendController::class, 'topicQuestion'])->name('topicQuestion');
+Route::get('/topic-search', [FrontendController::class, 'topicSearch'])->name('topic.search');
+
 // Join Helper Page
 Route::get('/join-helper', [FrontendController::class, 'join_helper'])->name('join_helper');
 
