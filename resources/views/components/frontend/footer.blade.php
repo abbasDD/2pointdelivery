@@ -8,7 +8,9 @@
             <div class="container d-md-flex justify-content-between p-4">
                 <!-- Left -->
                 <div class="">
-                    <p class="mb-0">Get connected with us on social networks:</p>
+                    <p class="mb-0">
+                        {{ __('frontend.social_links_title') }}
+                    </p>
                 </div>
                 <!-- Left -->
 
@@ -43,8 +45,7 @@
                             <span class=" ml-2">{{ config('website_name') ?: 'Website Name' }} </span>
                         </div>
                         <p>
-                            Let us shoulder the weight of delivering your cherished possessions with ease. Entrust us
-                            with the responsibility of ensuring your items reach their destination stress-free.
+                            {{ __('frontend.footer_description') }}
                         </p>
                     </div>
                     <!-- Grid column -->
@@ -52,19 +53,20 @@
                     <!-- Grid column -->
                     <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
                         <!-- Links -->
-                        <h6 class="text-uppercase fw-bold">Quick Links</h6>
+                        <h6 class="text-uppercase fw-bold">{{ __('frontend.quick_links') }}</h6>
                         <hr class="mb-4 bg-white mt-0 d-inline-block mx-auto" />
                         <p>
-                            <a href="{{ route('services') }}" class="text-white">Services</a>
+                            <a href="{{ route('services') }}" class="text-white">{{ __('frontend.services') }}</a>
                         </p>
                         <p>
-                            <a href="{{ route('about-us') }}" class="text-white">About Us</a>
+                            <a href="{{ route('about-us') }}" class="text-white">{{ __('frontend.about_us') }}</a>
                         </p>
                         <p>
-                            <a href="{{ route('helper.register') }}" class="text-white">Join as Helper</a>
+                            <a href="{{ route('helper.register') }}"
+                                class="text-white">{{ __('frontend.join_as_helper') }}</a>
                         </p>
                         <p>
-                            <a href="{{ route('help') }}" class="text-white">Help</a>
+                            <a href="{{ route('help') }}" class="text-white">{{ __('frontend.help') }}</a>
                         </p>
                     </div>
                     <!-- Grid column -->
@@ -72,19 +74,22 @@
                     <!-- Grid column -->
                     <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
                         <!-- Links -->
-                        <h6 class="text-uppercase fw-bold">Useful links</h6>
+                        <h6 class="text-uppercase fw-bold">{{ __('frontend.useful_links') }}</h6>
                         <hr class="mb-4 bg-white mt-0 d-inline-block mx-auto" />
                         <p>
-                            <a href="{{ route('contact-us') }}" class="text-white">Contact Us</a>
+                            <a href="{{ route('contact-us') }}" class="text-white">{{ __('frontend.contact_us') }}</a>
                         </p>
                         <p>
-                            <a href="{{ route('terms_and_conditions') }}" class="text-white">Terms & Conditions</a>
+                            <a href="{{ route('terms_and_conditions') }}"
+                                class="text-white">{{ __('frontend.terms_and_conditions') }}</a>
                         </p>
                         <p>
-                            <a href="{{ route('privacy_policy') }}" class="text-white">Privacy Policy</a>
+                            <a href="{{ route('privacy_policy') }}"
+                                class="text-white">{{ __('frontend.privacy_policy') }}</a>
                         </p>
                         <p>
-                            <a href="{{ route('cancellation_policy') }}" class="text-white">Cancellation Policy</a>
+                            <a href="{{ route('cancellation_policy') }}"
+                                class="text-white">{{ __('frontend.cancellation_policy') }}</a>
                         </p>
                     </div>
                     <!-- Grid column -->
@@ -92,7 +97,7 @@
                     <!-- Grid column -->
                     <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
                         <!-- Links -->
-                        <h6 class="text-uppercase fw-bold">Contact</h6>
+                        <h6 class="text-uppercase fw-bold">{{ __('frontend.contact_us') }}</h6>
                         <hr class="mb-4 bg-white mt-0 d-inline-block mx-auto" />
                         <p><i class="fas fa-home mr-3"></i> 7551 Mapleford Blvd, Regina, S4Y0C6</p>
                         <p><i class="fas fa-envelope mr-3"></i> info@2pointdelivery.com</p>
@@ -111,12 +116,12 @@
             <div class="container">
                 <div class="d-md-flex justify-content-between align-items-center p-3">
                     <div>
-                        © 2024 Copyright:
+                        {{ __('frontend.copyright') }}
                         <a class="text-white" href="#">{{ config('website_name') ?: '2 Point' }}</a>
                     </div>
                     <div>
-                        <span class="text-white ml-3">Designed by <a class="text-white" href="https://elabdtech.com/"
-                                target="_blank">Elabd Technologies</a></span>
+                        <span class="text-white ml-3">{{ __('frontend.designed_by') }} <a class="text-white"
+                                href="https://elabdtech.com/" target="_blank">{{ __('frontend.elabdtech') }}</a></span>
                     </div>
                 </div>
             </div>

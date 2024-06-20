@@ -16,6 +16,7 @@ use App\Models\PrioritySetting;
 use App\Models\ServiceCategory;
 use App\Models\ServiceType;
 use App\Models\TaxSetting;
+use App\Models\User;
 use App\Models\VehicleType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -487,5 +488,24 @@ class FrontendController extends Controller
         }
 
         return $insuranceValue;
+    }
+
+    // Change language
+    public function changeLanguage(Request $request)
+    {
+        // If user logged in
+        if (Auth::check()) {
+            // Get user language
+            $userLanguage = User::where('id', Auth::user()->id)->first()->language_code;
+
+            // Update language
+            User::where('id', Auth::user()->id)->update([
+                'language_code' => $request->lang,
+            ]);
+        }
+
+        session()->put('applocale', $request->lang);
+        session()->save();
+        return back();
     }
 }

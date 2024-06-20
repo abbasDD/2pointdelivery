@@ -9,11 +9,8 @@
         <div class="container h-100">
             <div class="d-flex align-items-center h-100">
                 <div class="content">
-                    <h3 class="mb-2">Booking & Moving Simplified: Your Journey, Our Priority!</h3>
-                    <p class="text-white">From the first click to the final destination, we make booking and moving
-                        effortless. Trust us to
-                        handle your logistics with precision and care, ensuring a smooth and stress-free experience every
-                        step of the way!</p>
+                    <h3 class="mb-2">{{ __('frontend.header_title') }}</h3>
+                    <p class="text-white">{{ __('frontend.header_subtitle') }}</p>
                     {{-- <a href="{{ route('helper.register') }}" class="btn btn-primary">{{ __('frontend.join_as_helper') }}</a> --}}
                     {{-- Redirect to Helper Register --}}
                     <div class="arrow-button">
@@ -29,8 +26,8 @@
     {{-- Move & Delivery Form Section  --}}
     <section class="container mt-5">
         <div class="text-center heading">
-            <h6>Move or Deliver Anything</h6>
-            <h2>Efficient logistics solutions to transport or deliver any item, anywhere, anytime.</h2>
+            <h6>{{ __('frontend.move_and_deliver.title') }}</h6>
+            <h2>{{ __('frontend.move_and_deliver.subtitle') }}</h2>
         </div>
         <form action="{{ route('newBooking') }}" method="GET">
             <div class="row">
@@ -69,7 +66,8 @@
                     </div>
                 </div>
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">Get Estimate</button>
+                    <button type="submit" class="btn arrow-button w-100"><i class="fas fa-long-arrow-alt-right"></i> Get
+                        Estimate </button>
                 </div>
             </div>
         </form>

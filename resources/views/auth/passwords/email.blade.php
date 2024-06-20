@@ -3,66 +3,67 @@
 @section('title', 'Reset Password')
 
 @section('content')
+
     <div class="authpage">
-        <div class="row align-content-center m-0">
-            <div class="bg-gradient col-md-6 d-none d-md-block align-content-center">
-                <div class="d-flex align-items-center justify-content-center">
-                    <img src="{{ asset('images/auth/client-bg.png') }}" width="400" alt="auth image">
+        <div class="wrapper" style="background-image: url('{{ asset('frontend/images/client-bg.png') }}');">
+            <div class="inner">
+                <div class="image-holder text-center">
+                    <img class="img-fluid mb-3" src="{{ asset('frontend/images/client.png') }}" alt="2 Point">
                 </div>
-            </div>
-            <div class="col-md-6 d-grid align-items-center justify-content-center">
-                <div class="card">
+                {{-- Forget Password Form --}}
+                <form method="POST" action="{{ route('password.email') }}">
+                    @csrf
 
-                    <div class="card-body text-center">
-                        <img src="{{ config('website_logo') ? asset('images/logo/' . config('website_logo')) : asset('images/logo/icon.png') }}"
-                            alt="2 Point" height="50">
-                        <h3>Reset Password</h3>
-                        <p>Please enter your email to reset password</p>
-                        @if (session('status'))
-                            <div class="alert alert-success" role="alert">
-                                {{ session('status') }}
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="heading">
+                                <h6>
+                                    <a class="text-primary" href="{{ route('index') }}">
+                                        2 Point Delivery
+                                    </a>
+                                </h6>
+                                <h2 class="mb-1">{{ __('auth.forgot_password') }}</h2>
+                                <p>{{ __('auth.login.subtitle') }}</p>
                             </div>
-                        @endif
+                        </div>
 
-                        <form method="POST" action="{{ route('password.email') }}">
-                            @csrf
+                        <div class="col-md-12">
+                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
+                                name="email" value="{{ old('email') }}" placeholder="Email" required autocomplete="email"
+                                autofocus>
 
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <input id="email" type="email"
-                                        class="form-control @error('email') is-invalid @enderror" name="email"
-                                        value="{{ old('email') }}" placeholder="Email" required autocomplete="email"
-                                        autofocus>
-
-                                    @error('email')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="row mb-5">
-                                <div class="col-md-12">
-                                    <button type="submit" class="btn btn-primary w-100">
-                                        {{ __('Send Password Reset Link') }}
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                        <div class="mb-3">
-
-                            <p>
-                                Alrady have an account?
-                                <a class="" href="{{ route('client.login') }}">
-                                    Login
-                                </a>
-                            </p>
+                            @error('email')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                         </div>
                     </div>
-                </div>
+
+                    <div class="row mb-5">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-primary w-100">
+                                {{ __('Send Password Reset Link') }}
+                            </button>
+                        </div>
+                    </div>
+
+
+                    <div class="mb-3 text-center">
+
+                        <p>
+                            Alrady have an account?
+                            <a class="" href="{{ route('client.login') }}">
+                                Login
+                            </a>
+                        </p>
+                    </div>
+                </form>
+
             </div>
         </div>
     </div>
+
 
 @endsection

@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 
-// Public routes accessible without authentication
-
 //Front End Routes
 
 
@@ -27,72 +25,73 @@ use Illuminate\Support\Facades\Route;
 //     return 'Test email sent.';
 // });
 
-//Redirect to Home page as login is valid for user
-Route::get('/login', [FrontendController::class, 'index'])->name('login');
-
-// Custom route for password reset
-Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+Route::middleware(['app_language'])->group(function () {
 
 
-// Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
-// Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
-// Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
+    //Redirect to Home page as login is valid for user
+    Route::get('/login', [FrontendController::class, 'index'])->name('login');
 
-// Google URL
-Route::get('/google/redirect', [App\Http\Controllers\GoogleLoginController::class, 'redirectToGoogle'])->name('google.redirect');
-Route::get('/google/callback', [App\Http\Controllers\GoogleLoginController::class, 'handleGoogleCallback'])->name('google.callback');
-
-// Home Page
-Route::get('/', [FrontendController::class, 'index'])->name('index');
-Route::get('/index', [FrontendController::class, 'index'])->name('index');
-
-// Service Page
-Route::get('/services', [FrontendController::class, 'services'])->name('services');
-// About Us Page
-Route::get('/about-us', [FrontendController::class, 'about_us'])->name('about-us');
-// Contact Us Page
-Route::get('/contact-us', [FrontendController::class, 'contact_us'])->name('contact-us');
-// Help Page
-Route::get('/help', [FrontendController::class, 'help'])->name('help');
-Route::get('/topic/{id}', [FrontendController::class, 'topicQuestion'])->name('topicQuestion');
-Route::get('/topic-search', [FrontendController::class, 'topicSearch'])->name('topic.search');
-
-// Join Helper Page
-Route::get('/join-helper', [FrontendController::class, 'join_helper'])->name('join_helper');
-
-// Terms & Conditions Page
-Route::get('/terms-and-conditions', [FrontendController::class, 'terms_and_conditions'])->name('terms_and_conditions');
-
-// Privacy Policy Page
-Route::get('/privacy-policy', [FrontendController::class, 'privacy_policy'])->name('privacy_policy');
-
-// Cancellation & Refund Policy Page
-Route::get('/cancellation-policy', [FrontendController::class, 'cancellation_policy'])->name('cancellation_policy');
-//Booking Routes
-Route::get('/new-booking', [FrontendController::class, 'newBooking'])->name('newBooking');
-Route::post('/estimate/index', [GetEstimateController::class, 'index'])->name('estimate.index'); //Get order details
-Route::get('/fetch/service-categories', [FrontendController::class, 'fetch_services_categories'])->name('fetch.service.categories');
-
-// Route Chat Page
-Route::get('/chat', [ChatController::class, 'redirectChat'])->name('chat');
-
-// Route::get('/booking-detail', function () {
-//     return view('frontend.booking_detail');
-// })->name('booking_detail');
+    // Custom route for password reset
+    Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+    Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 
-// Change Language Routes
-Route::get('/change-language/{lang}', function ($lang) {
-    // session(['applocale' => $lang]);
-    session()->put('applocale', $lang);
-    // app()->setLocale($lang);
-    // dd(session('applocale'));
-    session()->save();
-    return back();
-})->name('change-language');
+    // Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+    // Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+    // Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
+
+    // Google URL
+    Route::get('/google/redirect', [App\Http\Controllers\GoogleLoginController::class, 'redirectToGoogle'])->name('google.redirect');
+    Route::get('/google/callback', [App\Http\Controllers\GoogleLoginController::class, 'handleGoogleCallback'])->name('google.callback');
+
+    // Home Page
+    Route::get('/', [FrontendController::class, 'index'])->name('index');
+    Route::get('/index', [FrontendController::class, 'index'])->name('index');
+
+    // Service Page
+    Route::get('/services', [FrontendController::class, 'services'])->name('services');
+    // About Us Page
+    Route::get('/about-us', [FrontendController::class, 'about_us'])->name('about-us');
+    // Contact Us Page
+    Route::get('/contact-us', [FrontendController::class, 'contact_us'])->name('contact-us');
+
+    // Help Page
+    Route::get('/help', [FrontendController::class, 'help'])->name('help');
+    Route::get('/topic/{id}', [FrontendController::class, 'topicQuestion'])->name('topicQuestion');
+    Route::get('/topic-search', [FrontendController::class, 'topicSearch'])->name('topic.search');
+
+    // Join Helper Page
+    Route::get('/join-helper', [FrontendController::class, 'join_helper'])->name('join_helper');
+
+    // Terms & Conditions Page
+    Route::get('/terms-and-conditions', [FrontendController::class, 'terms_and_conditions'])->name('terms_and_conditions');
+
+    // Privacy Policy Page
+    Route::get('/privacy-policy', [FrontendController::class, 'privacy_policy'])->name('privacy_policy');
+
+    // Cancellation & Refund Policy Page
+    Route::get('/cancellation-policy', [FrontendController::class, 'cancellation_policy'])->name('cancellation_policy');
+
+    //Booking Routes
+    Route::get('/new-booking', [FrontendController::class, 'newBooking'])->name('newBooking');
+    Route::post('/estimate/index', [GetEstimateController::class, 'index'])->name('estimate.index'); //Get order details
+    Route::get('/fetch/service-categories', [FrontendController::class, 'fetch_services_categories'])->name('fetch.service.categories');
+
+    // Route Chat Page
+    Route::get('/chat', [ChatController::class, 'redirectChat'])->name('chat');
+
+    // Change Language Routes
+    Route::get('/change-language/{lang}', [FrontendController::class, 'changeLanguage'])->name('change-language');
+    // Route::get('/change-language/{lang}', function ($lang) {
+    //     session()->put('applocale', $lang);
+    //     session()->save();
+    //     return back();
+    // })->name('change-language');
+});
+
+
 
 
 
