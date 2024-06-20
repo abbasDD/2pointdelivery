@@ -245,6 +245,77 @@
         </div>
     </div>
 
+    {{-- Timezone Selection --}}
+    <div class="col-md-6">
+        <div class="form-group mb-3">
+            <label for="timezone">Timezone</label>
+            <select class="form-control @error('timezone') is-invalid @enderror" id="timezone" name="timezone"
+                required>
+                <option value="" disabled>Select Timezone</option>
+                @foreach ($timezones as $timezone)
+                    <option value="{{ $timezone }}"
+                        {{ old('timezone', $systemSettings['timezone'] ?? '') == $timezone ? 'selected' : '' }}>
+                        {{ $timezone }}
+                    </option>
+                @endforeach
+            </select>
+            @error('timezone')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
+    {{-- Time Format --}}
+    <div class="col-md-6">
+        <div class="form-group mb-3">
+            <label for="time_format">Time Format</label>
+            <select class="form-control @error('time_format') is-invalid @enderror" id="time_format"
+                name="time_format" required>
+                <option value="" disabled>Select Time Format</option>
+                <option value="AM/PM"
+                    {{ old('time_format', $systemSettings['time_format'] ?? '') == 'AM/PM' ? 'selected' : '' }}>
+                    AM/PM
+                </option>
+                <option value="24"
+                    {{ old('time_format', $systemSettings['time_format'] ?? '') == '24' ? 'selected' : '' }}>
+                    24
+                </option>
+            </select>
+            @error('time_format')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
+    {{-- Date Format --}}
+    <div class="col-md-6">
+        <div class="form-group mb-3">
+            <label for="date_format">Date Format</label>
+            <select class="form-control @error('date_format') is-invalid @enderror" id="date_format"
+                name="date_format" required>
+                <option value="" disabled>Select Date Format</option>
+                <option value="DD/MM/YYYY"
+                    {{ old('date_format', $systemSettings['date_format'] ?? '') == 'DD/MM/YYYY' ? 'selected' : '' }}>
+                    DD/MM/YYYY
+                </option>
+                <option value="MM/DD/YYYY"
+                    {{ old('date_format', $systemSettings['date_format'] ?? '') == 'MM/DD/YYYY' ? 'selected' : '' }}>
+                    MM/DD/YYYY
+                </option>
+            </select>
+            @error('date_format')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
+
     {{-- Submit Button --}}
     <div class="col-md-12 text-right">
         <button type="submit" class="btn btn-primary btn-block">

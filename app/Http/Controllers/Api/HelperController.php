@@ -11,6 +11,63 @@ use Illuminate\Support\Facades\Validator;
 
 class HelperController extends Controller
 {
+
+    // getPersonalInfo
+    function getPersonalInfo(): JsonResponse
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+
+        $helper = Helper::where('user_id', $user->id)->first();
+        if (!$helper) {
+            // Create a new helper
+            $helper = new Helper();
+            $helper->user_id = $user->id;
+            $helper->save();
+        }
+
+        $helperData = [
+            'account_type' => $helper->company_enabled ? 'company' : 'individual',
+            'first_name' => $helper->first_name,
+            'middle_name' => $helper->middle_name,
+            'last_name' => $helper->last_name,
+            'phone_no' => $helper->phone_no,
+            'gender' => $helper->gender,
+            'date_of_birth' => $helper->date_of_birth,
+            'email' => $user->email,
+            'profile_image' => $helper->profile_image ? asset('images/users/' . $helper->profile_image) : asset('images/users/default.png'),
+            'tax_id' => $helper->tax_id
+        ];
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Helper Profile fetched successfully',
+            'data' => $helperData
+        ], 200);
+    }
+
     // personalUpdate
     function personalUpdate(Request $request): JsonResponse
     {
@@ -99,6 +156,133 @@ class HelperController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Helper Profile updated successfully',
+            'data' => []
+        ], 200);
+    }
+
+    // getAddressInfo
+    function getAddressInfo(): JsonResponse
+    {
+
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+
+        $helper = Helper::where('user_id', $user->id)->first();
+        if (!$helper) {
+            // Create a new helper
+            $helper = new Helper();
+            $helper->user_id = $user->id;
+            $helper->save();
+        }
+
+
+        $helperData = [
+            'suite' => $helper->suite,
+            'street' => $helper->street,
+            'city' => $helper->city,
+            'state' => $helper->state,
+            'country' => $helper->country,
+            'zip_code' => $helper->zip_code
+        ];
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Address fetched successfully',
+            'data' => $helperData
+        ], 200);
+    }
+
+
+    // addressUpdate
+    function addressUpdate(Request $request): JsonResponse
+    {
+
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'suite' => 'required|string',
+            'street' => 'required|string',
+            'city' => 'required|string',
+            'state' => 'required|string',
+            'country' => 'required|string',
+            'zip_code' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // If helper is found, update its attributes
+        $helper = Helper::where('user_id', $user->id)->first();
+        if (!$helper) {
+            // Create a new helper
+            $helper = new Helper();
+            $helper->user_id = $user->id;
+            $helper->save();
+        }
+
+
+        $updated_data = [
+            'suite' => $request->suite,
+            'street' => $request->street,
+            'city' => $request->city,
+            'state' => $request->state,
+            'country' => $request->country,
+            'zip_code' => $request->zip_code
+        ];
+
+
+        $helper->update($updated_data);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Address updated successfully',
             'data' => []
         ], 200);
     }

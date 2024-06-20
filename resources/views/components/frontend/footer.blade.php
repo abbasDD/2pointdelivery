@@ -78,13 +78,13 @@
                             <a href="{{ route('contact-us') }}" class="text-white">Contact Us</a>
                         </p>
                         <p>
-                            <a href="#!" class="text-white">Terms & Conditions</a>
+                            <a href="{{ route('terms_and_conditions') }}" class="text-white">Terms & Conditions</a>
                         </p>
                         <p>
-                            <a href="#!" class="text-white">Privacy Policy</a>
+                            <a href="{{ route('privacy_policy') }}" class="text-white">Privacy Policy</a>
                         </p>
                         <p>
-                            <a href="#!" class="text-white">Cancellation Policy</a>
+                            <a href="{{ route('cancellation_policy') }}" class="text-white">Cancellation Policy</a>
                         </p>
                     </div>
                     <!-- Grid column -->

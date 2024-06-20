@@ -63,6 +63,14 @@ Route::get('/topic-search', [FrontendController::class, 'topicSearch'])->name('t
 // Join Helper Page
 Route::get('/join-helper', [FrontendController::class, 'join_helper'])->name('join_helper');
 
+// Terms & Conditions Page
+Route::get('/terms-and-conditions', [FrontendController::class, 'terms_and_conditions'])->name('terms_and_conditions');
+
+// Privacy Policy Page
+Route::get('/privacy-policy', [FrontendController::class, 'privacy_policy'])->name('privacy_policy');
+
+// Cancellation & Refund Policy Page
+Route::get('/cancellation-policy', [FrontendController::class, 'cancellation_policy'])->name('cancellation_policy');
 //Booking Routes
 Route::get('/new-booking', [FrontendController::class, 'newBooking'])->name('newBooking');
 Route::post('/estimate/index', [GetEstimateController::class, 'index'])->name('estimate.index'); //Get order details

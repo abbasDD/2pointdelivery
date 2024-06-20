@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Client;
 use App\Models\ClientCompany;
 use App\Models\Faq;
+use App\Models\FrontendSetting;
 use App\Models\HelpQuestion;
 use App\Models\HelpTopic;
 use App\Models\MovingConfig;
@@ -105,6 +106,48 @@ class FrontendController extends Controller
         $faqs = Faq::where('is_active', 1)->get();
 
         return view('frontend.join_helper', compact('faqs'));
+    }
+
+    // Terms and Conditions Page
+    public function terms_and_conditions()
+    {
+        // Get Terms and Conditions from frontend settings
+        $frontendSettings = FrontendSetting::where('key', 'terms-and-conditions')->first();
+
+        if (!$frontendSettings) {
+            return redirect()->back()->with('error', 'Terms and Conditions not found');
+        }
+        $terms_and_conditions =  $frontendSettings->value;
+
+        return view('frontend.terms_and_conditions', compact('terms_and_conditions'));
+    }
+
+    // privacy_policy
+    public function privacy_policy()
+    {
+        // Get Privacy Policy from frontend settings
+        $frontendSettings = FrontendSetting::where('key', 'privacy-policy')->first();
+
+        if (!$frontendSettings) {
+            return redirect()->back()->with('error', 'Privacy Policy not found');
+        }
+        $privacy_policy =  $frontendSettings->value;
+
+        return view('frontend.privacy_policy', compact('privacy_policy'));
+    }
+
+    // cancellation_policy
+    public function cancellation_policy()
+    {
+        // Get Cancellation Policy from frontend settings
+        $frontendSettings = FrontendSetting::where('key', 'cancellation-policy')->first();
+
+        if (!$frontendSettings) {
+            return redirect()->back()->with('error', 'Cancellation Policy not found');
+        }
+        $cancellation_policy =  $frontendSettings->value;
+
+        return view('frontend.cancellation_policy', compact('cancellation_policy'));
     }
 
     // Get calculation for delivery system

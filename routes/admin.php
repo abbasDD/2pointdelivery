@@ -272,15 +272,3 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
 
     // End of Admin Routes
 });
-
-
-
-// Route::get('/admin/helpers', [App\Http\Controllers\AdminController::class, 'helpers'])->name('admin.helpers');
-
-Route::get('/admin/orders', [App\Http\Controllers\AdminController::class, 'orders'])->name('admin.orders');
-
-
-
-// Vehicle Types Route
-
-Route::get('/admin/vehicles', [App\Http\Controllers\AdminController::class, 'vehicles'])->name('admin.vehicles');

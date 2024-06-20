@@ -106,6 +106,21 @@
                                 </div>
                             </div>
 
+                            {{-- Accept Terms and Conditions --}}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="terms_and_conditions"required>
+
+                                        <label class="form-check-label fs-xxs" for="terms_and_conditions">
+                                            Please accept our <a class="fs-xxs text-primary"
+                                                href="{{ route('terms_and_conditions') }}" target="_blank">Terms and
+                                                Conditions</a>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <button type="submit" class="btn btn-primary w-100">

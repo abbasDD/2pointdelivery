@@ -9,6 +9,7 @@ use App\Models\SmtpSetting;
 use App\Models\SocialLoginSetting;
 use App\Models\SystemSetting;
 use App\Models\TaxSetting;
+use DateTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 
@@ -16,8 +17,11 @@ class SystemSettingController extends Controller
 {
     public function index()
     {
+        // Get timezone lists
+        $timezones = DateTimeZone::listIdentifiers();
+
+
         // Get System Settings
-        $systemSettings = [];
         $systemSettings = SystemSetting::all()->pluck('value', 'key')->toArray();
 
         // Tax Countries List
@@ -37,7 +41,7 @@ class SystemSettingController extends Controller
         // SMTP Settings
         $smtpSettings = SmtpSetting::all()->pluck('value', 'key')->toArray();
 
-        return view('admin.settings.index', compact('systemSettings', 'taxCountries', 'paymentSettings',  'socialLoginSettings', 'smtpSettings'));
+        return view('admin.settings.index', compact('systemSettings', 'taxCountries', 'timezones', 'paymentSettings',  'socialLoginSettings', 'smtpSettings'));
     }
 
     public function system()
@@ -82,10 +86,25 @@ class SystemSettingController extends Controller
             'weight' => 'required|string|max:255',
             'declare_package_value' => 'required|string|max:255',
             'insurance' => 'required|string|max:255',
+            'timezone' => 'required|string|max:255',
+            'time_format' => 'required|string|max:255',
+            'date_format' => 'required|string|max:255',
         ]);
 
         // Store values in updated data array
-        $systemSetting = $request->only('website_name', 'currency', 'auto_assign_driver', 'language', 'dimension', 'weight', 'declare_package_value', 'insurance');
+        $systemSetting = $request->only(
+            'website_name',
+            'currency',
+            'auto_assign_driver',
+            'language',
+            'dimension',
+            'weight',
+            'declare_package_value',
+            'insurance',
+            'timezone',
+            'time_format',
+            'date_format',
+        );
 
 
         // Upload the website logo

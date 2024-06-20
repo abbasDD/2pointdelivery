@@ -15,7 +15,7 @@
                 <td>{{ $loop->index + 1 }}</td>
                 <td>{{ $helpQuestion->help_topic_id }}</td>
                 <td>{{ $helpQuestion->question }}</td>
-                <td>{{ $helpQuestion->answer }}</td>
+                <td>{!! $helpQuestion->answer !!}</td>
                 <td>
                     <button type="button" id="statusButton_{{ $helpQuestion->id }}"
                         class="btn  {{ $helpQuestion->is_active ? 'btn-primary' : 'btn-danger' }} btn-sm"

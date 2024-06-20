@@ -22,7 +22,12 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
 
 
     // Update Client Personal Details
+    Route::get('personal', [ClientController::class, 'getPersonalInfo']);
     Route::post('personal/update', [ClientController::class, 'personalUpdate']);
+
+    // Update Client Address
+    Route::get('address', [ClientController::class, 'getAddressInfo']);
+    Route::post('address/update', [ClientController::class, 'addressUpdate']);
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);
@@ -41,7 +46,12 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     Route::get('index', [PassportAuthController::class, 'me']);
 
     // Update Helper Personal Details
-    Route::post('perosnal/update', [HelperController::class, 'personalUpdate']);
+    Route::get('personal', [HelperController::class, 'getPersonalInfo']);
+    Route::post('personal/update', [HelperController::class, 'personalUpdate']);
+
+    // Update Helper Address
+    Route::get('address', [HelperController::class, 'getAddressInfo']);
+    Route::post('address/update', [HelperController::class, 'addressUpdate']);
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);
