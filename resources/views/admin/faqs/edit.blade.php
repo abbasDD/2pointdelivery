@@ -12,6 +12,9 @@
                 </div>
             </div>
             <div class="section-body">
+
+                @trixassets
+
                 <form action="{{ route('admin.faq.update') }}" method="POST">
                     @csrf
                     <input type="hidden" name="id" value="{{ $faq->id }}">

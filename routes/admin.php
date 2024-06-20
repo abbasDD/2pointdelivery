@@ -244,6 +244,11 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
         Route::get('/', [EmailTemplateController::class, 'index'])->name('index');
         Route::post('/welcome/store', [EmailTemplateController::class, 'welcomeEmailStore'])->name('welcome.store');
         Route::post('/password-reset/store', [EmailTemplateController::class, 'passwordResetEmailStore'])->name('passwordReset.store');
+        Route::post('/booking/status', [EmailTemplateController::class, 'bookingStatusStore'])->name('bookingStatus.store');
+        Route::post('/delivery/notification', [EmailTemplateController::class, 'deliveryNotificationStore'])->name('deliveryNotification.store');
+        Route::post('/feedback', [EmailTemplateController::class, 'feedbackEmailStore'])->name('feedback.store');
+        Route::post('/request/feedback', [EmailTemplateController::class, 'requestFeedbackEmailStore'])->name('requestFeedback.store');
+        Route::post('/refund/notification', [EmailTemplateController::class, 'refundNotificationEmailStore'])->name('refundNotification.store');
     });
 
     // Frontend Settings

@@ -38,8 +38,9 @@
     <div class="col-md-12">
         <div class="form-group mb-3">
             <label for="answer">Answer</label>
-            <textarea class="form-control @error('answer') is-invalid @enderror" id="answer" name="answer" rows="6"
-                placeholder="Enter Answer" required>{{ old('answer', $helpQuestion['answer'] ?? '') }}</textarea>
+            <input id="answer" type="hidden" name="answer"
+                value="{{ old('answer', $helpQuestion['answer'] ?? '') }}" required>
+            <trix-editor input="answer" class="trix-content"></trix-editor>
             @error('answer')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>

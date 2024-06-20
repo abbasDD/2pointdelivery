@@ -3,7 +3,7 @@
     @csrf
     <div class="row">
         <div class="col-md-12">
-            <h5>Password Reset Email</h5>
+            <h5>Password Reset</h5>
         </div>
         <div class="col-md-12">
             <div class="card">

@@ -12,6 +12,9 @@
                 </div>
             </div>
             <div class="section-body">
+
+                @trixassets
+
                 <form action="{{ route('admin.faq.store') }}" method="POST">
                     @csrf
                     @include('admin.faqs.form')

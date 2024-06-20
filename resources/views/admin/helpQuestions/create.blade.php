@@ -17,6 +17,8 @@
             <div class="section-body">
 
                 @if (count($helpTopics) > 0)
+                    @trixassets
+
                     <form action="{{ route('admin.helpQuestion.store') }}" method="POST">
                         @csrf
                         @include('admin.helpQuestions.form')

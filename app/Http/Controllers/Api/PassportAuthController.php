@@ -185,6 +185,9 @@ class PassportAuthController extends Controller
                 'middle_name' => null,
                 'last_name' => null,
                 'profile_image' => asset('images/users/default.png'),
+                'personal_details' => false,
+                'address_details' => false,
+                'company_details' => false,
             ];
 
             // If user is client
@@ -196,6 +199,19 @@ class PassportAuthController extends Controller
                 $userData['middle_name'] = $client->middle_name;
                 $userData['last_name'] = $client->last_name;
                 $userData['profile_image'] = $client->profile_image == null ? asset('images/users/default.png') : asset('images/users/' . $client->profile_image);
+                $userData['personal_details'] = false;
+                $userData['address_details'] = false;
+                $userData['company_details'] = false;
+
+                // Check if client completed its personal details
+                if (isset($client) && $client->first_name != null) {
+                    $userData['personal_details'] = true;
+                }
+
+                // Check if client completed its address details
+                if (isset($client) && $client->zip_code != null) {
+                    $userData['address_details'] = true;
+                }
             }
 
             // If user is helper
@@ -208,6 +224,19 @@ class PassportAuthController extends Controller
                 $userData['middle_name'] = $helper->middle_name;
                 $userData['last_name'] = $helper->last_name;
                 $userData['profile_image'] = $helper->profile_image == null ? asset('images/users/default.png') : asset('images/users/' . $helper->profile_image);
+                $userData['personal_details'] = false;
+                $userData['address_details'] = false;
+                $userData['company_details'] = false;
+
+                // Check if helper completed its personal details
+                if (isset($helper) && $helper->first_name != null) {
+                    $userData['personal_details'] = true;
+                }
+
+                // Check if helper completed its address details
+                if (isset($helper) && $helper->zip_code != null) {
+                    $userData['address_details'] = true;
+                }
             }
 
             return response()->json([
