@@ -13,6 +13,6 @@ class StateController extends Controller
 
     public function states(Request $request)
     {
-        return response()->json(State::where('country_id', $request->country_id)->get());
+        return response()->json(State::where('country_id', $request->country_id)->has('cities')->get());
     }
 }

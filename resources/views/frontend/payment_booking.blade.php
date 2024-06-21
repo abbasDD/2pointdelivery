@@ -95,48 +95,55 @@
                         <hr>
 
                         @if ($booking->status == 'draft')
-                            {{-- Payment Method --}}
-                            <h5>Payment Now Using:</h5>
-                            <div class=" d-flex align-items-center justify-content-center">
-                                {{-- Paypal --}}
-                                @if ($paypalEnabled)
-                                    <div class="paypal">
-                                        <form id="paypal-form" class="p-0 m-0"
-                                            action="{{ route('client.booking.payment.paypal.create') }}" method="post">
-                                            @csrf
-                                            <input type="hidden" name="booking_id" value="{{ $booking->id }}">
-                                            <!-- Assuming $booking is available with the booking details -->
+                            <div id="paymentMethodDiv">
+                                {{-- Payment Method --}}
+                                <h5>Payment Now Using:</h5>
+                                <div class=" d-flex align-items-center justify-content-center">
+                                    {{-- Paypal --}}
+                                    @if ($paypalEnabled)
+                                        <div class="paypal">
+                                            <form id="paypal-form" class="p-0 m-0"
+                                                action="{{ route('client.booking.payment.paypal.create') }}"
+                                                method="post">
+                                                @csrf
+                                                <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+                                                <!-- Assuming $booking is available with the booking details -->
 
-                                            <input type="hidden" name="total_price"
-                                                value="{{ $bookingData->total_price }}">
-                                            <!-- Assuming the total_price is fixed -->
-                                            <button type="submit" class="btn btn-paypal d-flex align-items-center">
-                                                <i class="fab fa-paypal"></i>
-                                                <span class="d-none d-md-block ml-2">PayPal</span>
+                                                <input type="hidden" name="total_price"
+                                                    value="{{ $bookingData->total_price }}">
+                                                <!-- Assuming the total_price is fixed -->
+                                                <button type="submit" class="btn btn-paypal d-flex align-items-center">
+                                                    <i class="fab fa-paypal"></i>
+                                                    <span class="d-none d-md-block ml-2">PayPal</span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @endif
+                                    {{-- Stripe --}}
+                                    @if ($stripeEnabled)
+                                        <div class="stripe ml-2">
+                                            <button class="btn btn-stripe d-flex align-items-center"
+                                                onclick="paymentMethodSelection('stripe')">
+                                                <i class="fa-brands fa-stripe"></i>
+                                                <span class="d-none d-md-block ml-2">Stripe</span>
                                             </button>
-                                        </form>
-                                    </div>
-                                @endif
-                                {{-- Stripe --}}
-                                @if ($stripeEnabled)
-                                    <div class="stripe ml-2">
-                                        <button class="btn btn-stripe d-flex align-items-center"
-                                            onclick="paymentMethodSelection('stripe')">
-                                            <i class="fa-brands fa-stripe"></i>
-                                            <span class="d-none d-md-block ml-2">Stripe</span>
-                                        </button>
-                                    </div>
-                                @endif
-                                {{-- Cash On Delivery --}}
-                                @if ($codEnabled)
-                                    <div class="cod ml-2">
+                                        </div>
+                                    @endif
+                                    {{-- Cash On Delivery --}}
+                                    @if ($codEnabled)
+                                        <div class="cod ml-2">
+                                            <button class="btn btn-primary d-flex align-items-center"
+                                                onclick="paymentMethodSelection('cod')">
+                                                <i class="fa-solid fa-money-bill-1"></i>
+                                                <span class="d-none d-md-block ml-2">COD</span>
+                                            </button>
+                                        </div>
+                                    @endif
+                                    {{-- <div class="ml-2">
                                         <button class="btn btn-primary d-flex align-items-center"
-                                            onclick="paymentMethodSelection('cod')">
-                                            <i class="fa-solid fa-money-bill-1"></i>
-                                            <span class="d-none d-md-block ml-2">COD</span>
-                                        </button>
-                                    </div>
-                                @endif
+                                            onclick="openCODModal()">Open</button>
+                                    </div> --}}
+                                </div>
                             </div>
                         @else
                             <h6 class="text-center">Payment Successful</h6>
@@ -153,49 +160,89 @@
                 </div>
             </div>
         </div>
-    @endsection
+        {{-- Cash On Delivery Modal --}}
+        <div class="modal fade" id="codModal" tabindex="-1" role="dialog" aria-labelledby="codModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content card">
+                    <div class="modal-body">
+                        <div class="">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <div class="bg-primary rounded-1 text-white p-3 mb-3">
+                                        <i class="fas fa-check fa-3x"></i>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <h3 class="mb-1">Payment Successful</h3>
+                                    <p class="mb-3">Thank you for using our service. Please check your email for more
+                                        details.</p>
+                                    <a class="btn btn-primary" href="{{ route('client.bookings') }}">View Booking</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
 
-    <script>
-        // Call paymentMethodSelection
-        function paymentMethodSelection(method) {
-            switch (method) {
-                case 'paypal':
-                    alert('Not Implemented Yet');
-                    break;
-                case 'stripe':
-                    alert('Not Implemented Yet');
-                    break;
-                case 'cod':
-                    // Call a function to ajax call
-                    codPayementSelection();
-                    break;
-                default:
-                    break;
-            }
+<script>
+    // Open COD Modal
+    function openCODModal() {
+        $('#codModal').modal('show');
+    }
+
+    // Call paymentMethodSelection
+    function paymentMethodSelection(method) {
+        switch (method) {
+            case 'paypal':
+                alert('Not Implemented Yet');
+                break;
+            case 'stripe':
+                alert('Not Implemented Yet');
+                break;
+            case 'cod':
+                // Call a function to ajax call
+                codPayementSelection();
+                break;
+            default:
+                break;
         }
+    }
 
-        // Call codPayementSelection
-        function codPayementSelection() {
-            // base url
-            const base_url = "{{ url('/') }}";
-            // Call a function to ajax call
-            $.ajax({
-                type: 'GET',
-                url: '{{ route('client.booking.payment.cod', $booking->id) }}',
-                success: function(response) {
-                    // Handle the response
-                    console.log(response); // Log the response for debugging
-                    if (response.success == true) {
+    // Call codPayementSelection
+    function codPayementSelection() {
+        // base url
+        const base_url = "{{ url('/') }}";
+        // Call a function to ajax call
+        $.ajax({
+            type: 'GET',
+            url: '{{ route('client.booking.payment.cod', $booking->id) }}',
+            success: function(response) {
+                // Handle the response
+                console.log(response); // Log the response for debugging
+                if (response.success == true) {
+                    // Show a success modal
+                    $('#codModal').modal('show');
+                    // display none paymentMethodDiv 
+                    $('#paymentMethodDiv').css('display', 'none');
+                    // Wait for 5 seconds
+                    setTimeout(function() {
                         // Redirect to booking detail page
                         window.location.href = base_url + '/client/bookings/';
-                    } else {
-                        alert('Something went wrong. Please try again later.');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    // Handle the error
-                    console.error(error); // Log the error for debugging
+                    }, 3000);
+                    // Redirect to booking detail page
+                    // window.location.href = base_url + '/client/bookings/';
+                } else {
+                    alert('Something went wrong. Please try again later.');
                 }
-            })
-        }
-    </script>
+            },
+            error: function(xhr, status, error) {
+                // Handle the error
+                console.error(error); // Log the error for debugging
+            }
+        })
+    }
+</script>

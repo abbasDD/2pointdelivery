@@ -24,8 +24,8 @@ Route::middleware(['app_language'])->group(function () {
 
     Route::prefix('helper')->middleware(['auth', 'isHelper'])->name('helper.')->group(function () {
 
-        Route::get('/complete-profile', [HelperController::class, 'complete_profile'])->name('complete_profile');
-        Route::post('/update-profile', [HelperController::class, 'update_profile'])->name('update_profile');
+        // Route::get('/complete-profile', [HelperController::class, 'complete_profile'])->name('complete_profile');
+        // Route::post('/update-profile', [HelperController::class, 'update_profile'])->name('update_profile');
         Route::get('/', [HelperController::class, 'index'])->name('index');
         Route::get('/index', [HelperController::class, 'index'])->name('index');
 

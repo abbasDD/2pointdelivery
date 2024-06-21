@@ -766,6 +766,11 @@ class BookingController extends Controller
             return response()->json(['success' => false, 'data' => 'Unable to find booking']);
         }
 
+        // Check if current user is booked by this booking
+        if ($booking->client_user_id != auth()->user()->id) {
+            return response()->json(['success' => false, 'data' => 'Unable to find booking']);
+        }
+
         if ($booking->booking_type == 'delivery') {
             $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
 

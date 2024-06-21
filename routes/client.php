@@ -27,8 +27,8 @@ Route::middleware(['app_language'])->group(function () {
 
     Route::prefix('client')->middleware(['auth', 'isClient'])->name('client.')->group(function () {
 
-        Route::get('complete-profile', [ClientController::class, 'complete_profile'])->name('complete_profile');
-        Route::post('update-profile', [ClientController::class, 'update_profile'])->name('update_profile');
+        // Route::get('complete-profile', [ClientController::class, 'complete_profile'])->name('complete_profile');
+        // Route::post('update-profile', [ClientController::class, 'update_profile'])->name('update_profile');
         Route::get('/', [ClientController::class, 'index'])->name('index');
 
         // Search Users Route

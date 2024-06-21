@@ -13,6 +13,7 @@ class CountryController extends Controller
 
     public function countries()
     {
-        return response()->json(Country::all());
+        // return response()->json(Country::all());
+        return response()->json(Country::has('states')->get());
     }
 }
