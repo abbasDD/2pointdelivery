@@ -120,10 +120,10 @@
                                         </div>
                                     @endif
                                     {{-- Stripe --}}
-                                    @if ($stripeEnabled)
+                                    @if ($stripeEnabled && $stripe_publishable_key != null)
                                         <div class="stripe ml-2">
                                             <button class="btn btn-stripe d-flex align-items-center"
-                                                onclick="paymentMethodSelection('stripe')">
+                                                onclick="openStripePaymentModal()">
                                                 <i class="fa-brands fa-stripe"></i>
                                                 <span class="d-none d-md-block ml-2">Stripe</span>
                                             </button>
@@ -160,6 +160,7 @@
                 </div>
             </div>
         </div>
+
         {{-- Cash On Delivery Modal --}}
         <div class="modal fade" id="codModal" tabindex="-1" role="dialog" aria-labelledby="codModalLabel"
             aria-hidden="true">
@@ -186,12 +187,116 @@
             </div>
         </div>
     </div>
+
+    {{-- Stripe Payment Modal --}}
+    <div class="modal fade" id="stripePaymentModal" tabindex="-1" role="dialog" aria-labelledby="stripePaymentModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h3>Stripe Payment</h3>
+                    <form action="{{ route('client.booking.payment.stripe.charge') }}" method="POST" id="payment-form">
+                        {{ csrf_field() }}
+                        <div class="d-flex align-items-center justify-content-between">
+                            <p>Amount to Pay: </p>
+                            <p>{{ $bookingData->total_price }}</p>
+                        </div>
+
+                        <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+                        <input type="hidden" name="amount" value="{{ $bookingData->total_price * 100 }}">
+
+                        <div class="d-flex align-items-center justify-content-between">
+                            <p>Payment Method: </p>
+                            <p>Stripe</p>
+                        </div>
+
+                        <label for="card-element">
+                            Credit or debit card
+                        </label>
+                        <div id="card-element">
+                            <!-- A Stripe Element will be inserted here. -->
+                        </div>
+
+                        <!-- Used to display form errors. -->
+                        <div id="card-errors" role="alert"></div>
+
+                        <button class="btn btn-primary mt-3" type="submit">Submit Payment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 <script>
     // Open COD Modal
     function openCODModal() {
         $('#codModal').modal('show');
+    }
+
+    // openStripePaymentModal
+    function openStripePaymentModal() {
+        $('#stripePaymentModal').modal('show');
+        // Create a Stripe client
+        var stripe_publishable_key = '{{ $stripe_publishable_key }}';
+        console.log(stripe_publishable_key);
+        var stripe = Stripe(stripe_publishable_key);
+
+        // Create an instance of Elements
+        var elements = stripe.elements();
+
+        // Custom styling can be passed to options when creating an Element.
+        var style = {
+            base: {
+                color: '#32325d',
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '16px',
+                '::placeholder': {
+                    color: '#aab7c4'
+                }
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a'
+            }
+        };
+
+        // Create an instance of the card Element
+        var card = elements.create('card', {
+            style: style
+        });
+
+        // Add an instance of the card Element into the `card-element` <div>
+        card.mount('#card-element');
+
+        // Handle real-time validation errors from the card Element
+        card.on('change', function(event) {
+            var displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+
+        // Handle form submission
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            stripe.createToken(card).then(function(result) {
+                if (result.error) {
+                    // Inform the user if there was an error
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                } else {
+                    // Send the token to your server
+                    stripeTokenHandler(result.token);
+                }
+            });
+        });
     }
 
     // Call paymentMethodSelection
@@ -244,5 +349,22 @@
                 console.error(error); // Log the error for debugging
             }
         })
+    }
+</script>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    // Submit the form with the Stripe token
+    function stripeTokenHandler(token) {
+        // Insert the token ID into the form so it gets submitted to the server
+        var form = document.getElementById('payment-form');
+        var hiddenInput = document.createElement('input');
+        hiddenInput.setAttribute('type', 'hidden');
+        hiddenInput.setAttribute('name', 'stripeToken');
+        hiddenInput.setAttribute('value', token.id);
+        form.appendChild(hiddenInput);
+
+        // Submit the form
+        form.submit();
     }
 </script>

@@ -12,7 +12,7 @@
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.5",
         "mews/purifier": "^3.4",
-        "paypal/rest-api-sdk-php": "^1.6",
+        "stripe/stripe-php": "^14.10",
         "te7a-houdini/laravel-trix": "^3.0"
     },
     "require-dev": {

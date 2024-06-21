@@ -317,7 +317,7 @@ class ClientController extends Controller
         }
 
         // Get the user and update its password
-        $user = User::find($user->id);
+        $user = User::find(auth()->user()->id);
 
         $user->password = Hash::make($request->new_password);
         $user->save();

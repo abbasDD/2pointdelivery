@@ -52,9 +52,12 @@ Route::middleware(['app_language'])->group(function () {
         Route::get('/booking/payment/{id}', [BookingController::class, 'payment'])->name('booking.payment');
         Route::get('/booking/show/{id}', [BookingController::class, 'show'])->name('booking.show');
         Route::get('/booking/payment/cod/{id}', [BookingController::class, 'codPayment'])->name('booking.payment.cod');
+        // Paypal
         Route::post('/booking/payment/paypal/create', [BookingController::class, 'createPaypalPayment'])->name('booking.payment.paypal.create');
         Route::get('/booking/payment/paypal/execute', [BookingController::class, 'executePaypalPayment'])->name('booking.payment.paypal.execute');
         Route::get('/booking/payment/paypal/cancel', [BookingController::class, 'cancelPaypalPayment'])->name('booking.payment.paypal.cancel');
+        // Stripe
+        Route::post('/booking/payment/stripe/charge', [BookingController::class, 'chargeStripePayment'])->name('booking.payment.stripe.charge');
 
         // Chat Page Routes
         Route::get('/chats', [ChatController::class, 'index'])->name('chats');

@@ -23,7 +23,7 @@ class PaymentSettingController extends Controller
                 $paymentSettings[$setting->key] = $setting->value ? $setting->value : null;
             }
 
-            // dd($paymentSettings);
+            // dd ($paymentSettings);
         } catch (QueryException $e) {
             // Handle the case where the table does not exist
             // For now, we can just log the error
@@ -44,6 +44,7 @@ class PaymentSettingController extends Controller
         // Store values in updated data array
         $paymentSetting = $request->only('cod_enabled', 'paypal_enabled', 'paypal_client_id', 'paypal_secret_id', 'stripe_enabled', 'stripe_publishable_key', 'stripe_secret_key',);
 
+        // dd($paymentSetting);
 
         // dd($paymentSetting);
         // Update the system settings

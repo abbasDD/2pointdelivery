@@ -552,6 +552,16 @@ class BookingController extends Controller
         $paypal_enabled = PaymentSetting::where('key', 'paypal_enabled')->first();
         $stripe_enabled = PaymentSetting::where('key', 'stripe_enabled')->first();
 
+        // Stripe publishable key
+        $stripe_publishable_key_row = PaymentSetting::where('key', 'stripe_publishable_key')->first();
+        if ($stripe_publishable_key_row) {
+            $stripe_publishable_key = $stripe_publishable_key_row->value;
+        } else {
+            $stripe_publishable_key = null;
+        }
+
+        // $stripe_secret_key = PaymentSetting::where('key', 'stripe_secret_key')->first();
+
         // COD Enabled
         $codEnabled = false;
         if (isset($cod_enabled) && $cod_enabled->value == 'yes') {
@@ -586,7 +596,7 @@ class BookingController extends Controller
         }
         // dd($bookingDelivery);
 
-        return view('frontend.payment_booking', compact('booking', 'bookingData', 'paypalEnabled', 'stripeEnabled', 'codEnabled'));
+        return view('frontend.payment_booking', compact('booking', 'bookingData', 'paypalEnabled', 'stripeEnabled', 'codEnabled', 'stripe_publishable_key'));
     }
 
     // Make Online Payment using Paypal
@@ -753,6 +763,62 @@ class BookingController extends Controller
 
         // Handle payment cancellation
         return redirect()->back()->with('error', 'Payment cancelled');
+    }
+
+    // chargeStripePayment
+
+    public function chargeStripePayment(Request $request)
+    {
+
+
+        // Retrieve booking ID from the request
+        $bookingId = $request->input('booking_id');
+        if (!$bookingId) {
+            return redirect()->back()->with('error', 'Booking ID not found');
+        }
+        // Get uuid of booking from id
+        $booking = Booking::where('id', $bookingId)->where('client_user_id', auth()->user()->id)->first();
+        if (!$booking) {
+            return redirect()->back()->with('error', 'Booking not found');
+        }
+        $booking_uuid = $booking->uuid;
+        // dd($booking_uuid);
+
+        // Get Stripe Client ID from payment settings
+        $stripe_publishable_key = PaymentSetting::where('key', 'stripe_publishable_key')->first();
+        if (!$stripe_publishable_key) {
+            return redirect()->back()->with('error', 'Stripe publishable key not found');
+        }
+        // Get stripe_secret_key from payment settings
+        $stripe_secret_key = PaymentSetting::where('key', 'stripe_secret_key')->first();
+        if (!$stripe_secret_key) {
+            return redirect()->back()->with('error', 'Stripe secret key not found');
+        }
+
+        // Set your Stripe API key.
+        \Stripe\Stripe::setApiKey($stripe_secret_key);
+
+        // Get the payment amount and email address from the form.
+        $amount = $booking->total_price * 100;
+        $email = auth()->user()->email;
+
+        // Create a new Stripe customer.
+        $customer = \Stripe\Customer::create([
+            'email' => $email,
+            'source' => $request->input('stripeToken'),
+        ]);
+
+        // Create a new Stripe charge.
+        $charge = \Stripe\Charge::create([
+            'customer' => $customer->id,
+            'amount' => $amount,
+            'currency' => 'usd',
+        ]);
+
+        dd($charge);
+
+        // Display a success message to the user.
+        return 'Payment successful!';
     }
 
     // Make COD Payment

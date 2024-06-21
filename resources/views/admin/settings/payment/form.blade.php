@@ -8,12 +8,13 @@
         <div class="form-group mb-3">
             <label for="cod_enabled">COD Enabled</label>
             <select class="form-control @error('cod_enabled') is-invalid @enderror" id="cod_enabled" name="cod_enabled">
+
                 <option value="yes"
-                    {{ old('cod_enabled', isset($paymentSettings['cod_enabled']) && $paymentSettings['cod_enabled'] ?? '') == 'yes' ? 'selected' : '' }}>
+                    {{ old('cod_enabled', isset($paymentSettings['cod_enabled']) && $paymentSettings['cod_enabled'] == 'yes' ?? '') == 'yes' ? 'selected' : '' }}>
                     Yes
                 </option>
                 <option value="no"
-                    {{ old('cod_enabled', isset($paymentSettings['cod_enabled']) && $paymentSettings['cod_enabled'] ?? '') == 'no' ? 'selected' : '' }}>
+                    {{ old('cod_enabled', isset($paymentSettings['cod_enabled']) && $paymentSettings['cod_enabled'] == 'no' ?? '') == 'no' ? 'selected' : '' }}>
                     No
                 </option>
             </select>
@@ -104,11 +105,11 @@
             <select class="form-control @error('stripe_enabled') is-invalid @enderror" id="stripe_enabled"
                 name="stripe_enabled" onchange="stripeEnabled(this.value)">
                 <option value="yes"
-                    {{ old('stripe_enabled', isset($paymentSettings['stripe_enabled']) && $paymentSettings['stripe_enabled'] ?? '') == 'yes' ? 'selected' : '' }}>
+                    {{ old('stripe_enabled', isset($paymentSettings['stripe_enabled']) && $paymentSettings['stripe_enabled'] == 'yes' ?? '') == 'yes' ? 'selected' : '' }}>
                     Yes
                 </option>
                 <option value="no"
-                    {{ old('stripe_enabled', isset($paymentSettings['stripe_enabled']) && $paymentSettings['stripe_enabled'] ?? '') == 'no' ? 'selected' : '' }}>
+                    {{ old('stripe_enabled', isset($paymentSettings['stripe_enabled']) && $paymentSettings['stripe_enabled'] == 'no' ?? '') == 'no' ? 'selected' : '' }}>
                     No
                 </option>
             </select>
