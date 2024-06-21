@@ -80,7 +80,7 @@
                                     <div class="mx-auto" style="max-width: 150px;">
                                         <img id="start_booking_image_preview"
                                             src="{{ asset('images/bookings/default.png') }}" alt="start_booking_image"
-                                            class=" border w-100 p-3"
+                                            class="p-3 border w-100 p-3"
                                             onclick="document.getElementById('start_booking_image').click()">
                                         <input type="file" name="start_booking_image" id="start_booking_image"
                                             class="d-none" accept="image/*" required>
@@ -156,7 +156,7 @@
                                     <div class="mx-auto" style="max-width: 150px;">
                                         <img id="complete_booking_image_preview"
                                             src="{{ asset('images/bookings/default.png') }}"
-                                            alt="complete_booking_image" class=" border w-100 p-3"
+                                            alt="complete_booking_image" class="p-3 border w-100 p-3"
                                             onclick="document.getElementById('complete_booking_image').click()">
                                         <input type="file" name="complete_booking_image"
                                             id="complete_booking_image" class="d-none" accept="image/*" required>

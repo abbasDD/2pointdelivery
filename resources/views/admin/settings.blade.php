@@ -19,7 +19,7 @@
                                 <div class="col-md-3 image-selection">
                                     <div class="mx-auto" style="max-width: 150px;">
                                         <img id="avatar_img" src="{{ asset('images/default-user.jpg') }}" alt="avatar"
-                                            class=" border w-100" onclick="document.getElementById('avatar').click()">
+                                            class="p-3 border w-100" onclick="document.getElementById('avatar').click()">
                                         <input type="file" name="avatar" id="avatar" class="d-none" accept="image/*"
                                             required>
                                     </div>

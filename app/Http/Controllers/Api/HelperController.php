@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Helper;
+use App\Models\SocialLink;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class HelperController extends Controller
@@ -28,16 +31,6 @@ class HelperController extends Controller
 
 
         $user = auth()->user();
-
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'statusCode' => 401,
-                'message' => 'Unauthorized.',
-                'errors' => 'Unauthorized',
-            ], 401);
-        }
-
 
         $helper = Helper::where('user_id', $user->id)->first();
         if (!$helper) {
@@ -101,15 +94,6 @@ class HelperController extends Controller
 
 
         $user = auth()->user();
-
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'statusCode' => 401,
-                'message' => 'Unauthorized.',
-                'errors' => 'Unauthorized',
-            ], 401);
-        }
 
         // If helper is found, update its attributes
         $helper = Helper::where('user_id', $user->id)->first();
@@ -283,6 +267,170 @@ class HelperController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Address updated successfully',
+            'data' => []
+        ], 200);
+    }
+
+
+    // passwordUpdate
+    function passwordUpdate(Request $request): JsonResponse
+    {
+
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+
+        $validator = Validator::make($request->all(), [
+            'old_password' => 'required|string',
+            'new_password' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+
+        // Get the user and update its password
+        $user = User::find(auth()->user()->id);
+
+        // Check if old password is correct
+        if (!Hash::check($request->old_password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Old password is incorrect',
+                'errors' => []
+            ], 422);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password updated successfully',
+            'data' => []
+        ], 200);
+    }
+
+    // getSocialLinks
+    function getSocialLinks(): JsonResponse
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Get social links
+        $socialLinks = SocialLink::where('user_id', auth()->user()->id)->get()->pluck('link', 'key')->toArray();
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Social links fetched successfully',
+            'data' => [
+                'facebook' => $socialLinks->facebook ?? 'https://facebook.com/',
+                'linkedin' => $socialLinks->linkedin ?? 'https://linkedin.com/',
+                'instagram' => $socialLinks->instagram ?? 'https://instagram.com/',
+                'tiktok' => $socialLinks->tiktok ?? 'https://tiktok.com/',
+            ]
+        ], 200);
+    }
+
+    // socialLinksUpdate
+    function socialLinksUpdate(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Update social links
+
+        // Get facebook
+        $facebookLink = SocialLink::where('user_id', auth()->user()->id)->where('key', 'facebook')->first();
+        if ($facebookLink) {
+            $facebookLink->link = $request->facebook ?? $facebookLink->link;
+            $facebookLink->save();
+        } else {
+            $facebookLink = new SocialLink();
+            $facebookLink->user_id = auth()->user()->id;
+            $facebookLink->user_type = 'helper';
+            $facebookLink->key = 'facebook';
+            $facebookLink->link = $request->facebook ?? $facebookLink->link;
+            $facebookLink->save();
+        }
+
+        // Get linkedin
+        $linkedinLink = SocialLink::where('user_id', auth()->user()->id)->where('key', 'linkedin')->first();
+        if ($linkedinLink) {
+            $linkedinLink->link = $request->linkedin ?? $linkedinLink->link;
+            $linkedinLink->save();
+        } else {
+            $linkedinLink = new SocialLink();
+            $linkedinLink->user_id = auth()->user()->id;
+            $linkedinLink->user_type = 'helper';
+            $linkedinLink->key = 'linkedin';
+            $linkedinLink->link = $request->linkedin ?? $linkedinLink->link;
+            $linkedinLink->save();
+        }
+
+        // Get instagram
+        $instagramLink = SocialLink::where('user_id', auth()->user()->id)->where('key', 'instagram')->first();
+        if ($instagramLink) {
+            $instagramLink->link = $request->instagram ?? $instagramLink->link;
+            $instagramLink->save();
+        } else {
+            $instagramLink = new SocialLink();
+            $instagramLink->user_id = auth()->user()->id;
+            $instagramLink->user_type = 'helper';
+            $instagramLink->key = 'instagram';
+            $instagramLink->link = $request->instagram ?? $instagramLink->link;
+            $instagramLink->save();
+        }
+
+
+        // Get tiktok
+        $tiktokLink = SocialLink::where('user_id', auth()->user()->id)->where('key', 'tiktok')->first();
+        if ($tiktokLink) {
+            $tiktokLink->link = $request->tiktok ?? $tiktokLink->link;
+            $tiktokLink->save();
+        } else {
+            $tiktokLink = new SocialLink();
+            $tiktokLink->user_id = auth()->user()->id;
+            $tiktokLink->user_type = 'helper';
+            $tiktokLink->key = 'tiktok';
+            $tiktokLink->link = $request->tiktok ?? $tiktokLink->link;
+            $tiktokLink->save();
+        }
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Social links updated successfully',
             'data' => []
         ], 200);
     }

@@ -13,7 +13,7 @@
                             <div class="mx-auto" style="max-width: 150px;">
                                 <img id="company_logo_preview"
                                     src="{{ isset($clientCompanyData['company_logo']) && $clientCompanyData['company_logo'] !== null ? asset('images/company/' . $clientCompanyData['company_logo']) : asset('images/users/default.png') }}"
-                                    alt="company_logo" class=" border w-100 p-3"
+                                    alt="company_logo" class="p-3 border w-100 p-3"
                                     onclick="document.getElementById('company_logo').click()">
                                 <input type="file" name="company_logo" id="company_logo" class="d-none"
                                     accept="image/*">

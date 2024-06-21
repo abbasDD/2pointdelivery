@@ -14,7 +14,7 @@
                         <div class="col-md-4 image-selection">
                             <div class="mx-auto position-relative mb-5" style="max-width: 150px;">
                                 <img id="avatar_img" src="{{ asset('images/default-user.jpg') }}" alt="avatar"
-                                    class="rounded-circle border w-100">
+                                    class="rounded-circlep-3 border w-100">
                                 <input type="file" name="avatar" id="avatar" class="d-none" accept="image/*"
                                     required>
                                 <a href="javascript:void(0)" onclick="document.getElementById('avatar').click()"

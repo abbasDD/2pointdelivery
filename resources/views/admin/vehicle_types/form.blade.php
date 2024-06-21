@@ -7,7 +7,7 @@
                 <div class="mx-auto" style="max-width: 150px;">
                     <img id="image_img"
                         src="{{ isset($vehicle_type) && $vehicle_type->image !== null ? asset('images/vehicle_types/' . $vehicle_type->image) : asset('images/vehicle_types/default.png') }}"
-                        alt="image" class=" border w-100" onclick="document.getElementById('image').click()">
+                        alt="image" class="p-3 border w-100" onclick="document.getElementById('image').click()">
                     <input type="file" name="image" id="image" class="d-none" accept="image/*"
                         @if (!isset($vehicle_type)) required @endif>
                 </div>

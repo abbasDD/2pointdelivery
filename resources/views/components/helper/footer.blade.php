@@ -8,7 +8,7 @@
                 <div class="d-flex justify-content-between align-items-center p-3">
                     <div>
                         © 2024 Copyright:
-                        <a class="text-white" href="">2 Point Delivery Inc</a>
+                        <a class="text-white" href="{{ url('/') }}">2 Point Delivery Inc</a>
                     </div>
                     <div>
                         <a class="text-white mr-3" href="https://elabdtech.com/">Privacy Policy</a>

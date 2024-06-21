@@ -23,29 +23,21 @@
             <div class="col-12 col-lg-7">
                 <div class="about-text">
                     <div class="heading">
-                        <h6>About Us</h6>
-                        <h2>Reliable Logistic & Transport Solutions Saves Your Time!</h2>
+                        <h6>{{ __('frontend.about_section.heading') }}</h6>
+                        <h2>{{ __('frontend.about_section.title') }}</h2>
                     </div>
                     <div class="content mt-3">
                         <p>
-                            Let us shoulder the weight of delivering your cherished possessions with ease. Entrust us
-                            with
-                            the responsibility of ensuring your items reach their destination stress-free. Our mission?
-                            To
-                            transform your relocation journey into a seamless adventure by handling every aspect of the
-                            move, leaving you free to focus on what matters most: embracing your new beginnings.
+                            {{ __('frontend.about_section.content1') }}
                         </p>
                         <p>
-                            Whether you're moving down the street or across the country, our dedicated team is committed
-                            to
-                            providing top-notch service every step of the way. From carefully packing and loading your
-                            belongings to navigating the logistics of transportation and delivery, we've got you
-                            covered.
+                            {{ __('frontend.about_section.content2') }}
                         </p>
                         {{-- Redirect to About Us --}}
                         <div class="arrow-button">
                             <a href="{{ route('about-us') }}">
-                                <i class="fas fa-long-arrow-alt-right mr-2"></i> Read More
+                                <i class="fas fa-long-arrow-alt-right mr-2"></i>
+                                {{ __('frontend.about_section.button_text') }}
                             </a>
                         </div>
                     </div>

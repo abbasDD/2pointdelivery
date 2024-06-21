@@ -21,7 +21,7 @@
                             <div class="mx-auto" style="max-width: 150px;">
                                 <img id="profile_image_preview"
                                     src="{{ isset($helperData['profile_image']) && $helperData['profile_image'] !== null ? asset('images/users/' . $helperData['profile_image']) : asset('images/users/default.png') }}"
-                                    alt="profile_image" class=" border w-100 p-3"
+                                    alt="profile_image" class="p-3 border w-100 p-3"
                                     onclick="document.getElementById('profile_image').click()">
                                 <input type="file" name="profile_image" id="profile_image" class="d-none"
                                     accept="image/*">

@@ -3,18 +3,16 @@
         <div class="row mb-5">
             <div class="col-12 col-lg-6">
                 <div class="heading">
-                    <h6>How it works</h2>
-                        <h2>Anything can move or deliver with in 3 easy steps</h2>
+                    <h6>{{ __('frontend.howitworks.heading') }}</h2>
+                        <h2>{{ __('frontend.howitworks.title') }}</h2>
                 </div>
             </div>
             <div class="col-12 col-lg-6">
-                <p>Our global logistics expertise, advanced supply chain technology & customized logistics solutions
-                    will help you analyze, develop and implement successful supply chain management strategies from
-                    end-to-end.</p>
+                <p>{{ __('frontend.howitworks.content') }}</p>
                 {{-- Redirect to About Us --}}
                 <div class="arrow-button">
                     <a href="{{ route('about-us') }}">
-                        <i class="fas fa-long-arrow-alt-right mr-2"></i> Read More
+                        <i class="fas fa-long-arrow-alt-right mr-2"></i> {{ __('frontend.howitworks.button_text') }}
                     </a>
                 </div>
             </div>
@@ -31,15 +29,15 @@
                             {{-- Icon --}}
                             <i class="fa fa-dolly"></i>
                             {{-- Heading --}}
-                            <h4>Select service</h4>
+                            <h4 class="mb-2">{{ __('frontend.howitworks.step01.title') }}</h4>
                             {{-- Description --}}
-                            <p>First select the service which you want to avail, either you want our delivery or moving
-                                service.</p>
+                            <p>{{ __('frontend.howitworks.step01.subtitle') }}</p>
 
                             {{-- Redirect to New Booking --}}
                             <div class="arrow-button">
                                 <a href="{{ route('newBooking') }}">
-                                    <i class="fas fa-long-arrow-alt-right mr-2"></i> View Services
+                                    <i class="fas fa-long-arrow-alt-right mr-2"></i>
+                                    {{ __('frontend.howitworks.step01.button_text') }}
                                 </a>
                             </div>
                         </div>
@@ -57,15 +55,15 @@
                             {{-- Icon --}}
                             <i class="fa-solid fa-truck"></i>
                             {{-- Heading --}}
-                            <h4>Book Service</h4>
+                            <h4 class="mb-2">{{ __('frontend.howitworks.step02.title') }}</h4>
                             {{-- Description --}}
-                            <p>Set your pickup & drop-off location, select time and select the vehicle that is right for
-                                you.</p>
+                            <p>{{ __('frontend.howitworks.step02.subtitle') }}</p>
 
                             {{-- Redirect to New Booking --}}
                             <div class="arrow-button">
                                 <a href="{{ route('newBooking') }}">
-                                    <i class="fas fa-long-arrow-alt-right mr-2"></i> Book Now
+                                    <i class="fas fa-long-arrow-alt-right mr-2"></i>
+                                    {{ __('frontend.howitworks.step02.button_text') }}
                                 </a>
                             </div>
                         </div>
@@ -83,14 +81,15 @@
                             {{-- Icon --}}
                             <i class="fa-solid fa-map-pin"></i>
                             {{-- Heading --}}
-                            <h4>Track Booking</h4>
+                            <h4 class="mb-2">{{ __('frontend.howitworks.step03.title') }}</h4>
                             {{-- Description --}}
-                            <p>Track your booking, and get your goods delivered to your door.</p>
+                            <p>{{ __('frontend.howitworks.step03.subtitle') }}</p>
 
                             {{-- Redirect to Track Booking --}}
                             <div class="arrow-button">
                                 <a href="#">
-                                    <i class="fas fa-long-arrow-alt-right mr-2"></i> Track Now
+                                    <i class="fas fa-long-arrow-alt-right mr-2"></i>
+                                    {{ __('frontend.howitworks.step03.button_text') }}
                                 </a>
                             </div>
                         </div>

@@ -117,7 +117,8 @@
                 <div class="d-md-flex justify-content-between align-items-center p-3">
                     <div>
                         {{ __('frontend.copyright') }}
-                        <a class="text-white" href="#">{{ config('website_name') ?: '2 Point' }}</a>
+                        <a class="text-white"
+                            href="{{ route('index') }}">{{ config('website_name') ?: '2 Point' }}</a>
                     </div>
                     <div>
                         <span class="text-white ml-3">{{ __('frontend.designed_by') }} <a class="text-white"

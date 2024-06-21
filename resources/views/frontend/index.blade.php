@@ -52,7 +52,7 @@
                 <div class="col-md-4">
                     <div class="mb-3">
                         <input id="pickupLocation" class="form-control" type="text" name="pickup_address"
-                            placeholder="Enter pickup location" required>
+                            placeholder="{{ __('frontend.move_and_deliver.pickup_location') }}" required>
                         <input type="hidden" id="pickup_latitude" name="pickup_latitude" />
                         <input type="hidden" id="pickup_longitude" name="pickup_longitude" />
                     </div>
@@ -60,14 +60,14 @@
                 <div class="col-md-4">
                     <div class="mb-3">
                         <input id="deliveryLocation" class="form-control" type="text" name="dropoff_address"
-                            placeholder="Enter delivery location" required>
+                            placeholder="{{ __('frontend.move_and_deliver.delivery_location') }}" required>
                         <input type="hidden" id="dropoff_latitude" name="dropoff_latitude" />
                         <input type="hidden" id="dropoff_longitude" name="dropoff_longitude" />
                     </div>
                 </div>
                 <div class="col-md-2">
-                    <button type="submit" class="btn arrow-button w-100"><i class="fas fa-long-arrow-alt-right"></i> Get
-                        Estimate </button>
+                    <button type="submit" class="btn arrow-button w-100"><i class="fas fa-long-arrow-alt-right"></i>
+                        {{ __('frontend.move_and_deliver.btn_text') }} </button>
                 </div>
             </div>
         </form>

@@ -8,7 +8,7 @@
                 <div class="mx-auto" style="max-width: 150px;">
                     <img id="website_logo_preview"
                         src="{{ isset($systemSettings['website_logo']) && $systemSettings['website_logo'] !== null ? asset('images/logo/' . $systemSettings['website_logo']) : asset('images/logo/default.png') }}"
-                        alt="website_logo" class=" border w-100"
+                        alt="website_logo" class="p-3 border w-100"
                         onclick="document.getElementById('website_logo').click()">
                     <input type="file" name="website_logo" id="website_logo" class="d-none" accept="image/*">
                 </div>
@@ -28,7 +28,8 @@
                 <div class="mx-auto" style="max-width: 150px;">
                     <img id="white_logo_preview"
                         src="{{ isset($systemSettings['white_logo']) && $systemSettings['white_logo'] !== null ? asset('images/logo/' . $systemSettings['white_logo']) : asset('images/logo/default.png') }}"
-                        alt="white_logo" class=" border w-100" onclick="document.getElementById('white_logo').click()">
+                        alt="white_logo" class="p-3 border w-100"
+                        onclick="document.getElementById('white_logo').click()">
                     <input type="file" name="white_logo" id="white_logo" class="d-none" accept="image/*">
                 </div>
             </div>
@@ -48,7 +49,7 @@
                 <div class="mx-auto" style="max-width: 150px;">
                     <img id="website_favicon_preview"
                         src="{{ isset($systemSettings['website_favicon']) && $systemSettings['website_favicon'] !== null ? asset('images/logo/' . $systemSettings['website_favicon']) : asset('images/logo/default.png') }}"
-                        alt="website_favicon" class=" border w-100"
+                        alt="website_favicon" class="p-3 border w-100"
                         onclick="document.getElementById('website_favicon').click()">
                     <input type="file" name="website_favicon" id="website_favicon" class="d-none" accept="image/*">
                 </div>
@@ -132,13 +133,15 @@
             <select class="form-control @error('language') is-invalid @enderror" id="language" name="language"
                 required>
                 <option value="" disabled>Select Language</option>
+                {{-- English --}}
                 <option value="en"
                     {{ old('language', $systemSettings['language'] ?? '') == 'en' ? 'selected' : '' }}>
                     English
                 </option>
-                <option value="ar"
-                    {{ old('language', $systemSettings['language'] ?? '') == 'ar' ? 'selected' : '' }}>
-                    عربي
+                {{-- French --}}
+                <option value="fr"
+                    {{ old('language', $systemSettings['language'] ?? '') == 'fr' ? 'selected' : '' }}>
+                    French
                 </option>
             </select>
             @error('language')
