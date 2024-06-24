@@ -3,7 +3,7 @@
 
         <div class="d-flex align-items-center ">
             <button id="sidebarToggle" class="btn btn-sm btn-outline mx-3">
-                <i class="fas fa-bars"></i>
+                <i class="fas fa-bars  fa-2x"></i>
             </button>
 
             <h5 class="m-0 d-none d-md-block">Helper Dashboard</h5>
@@ -11,9 +11,31 @@
 
         <div class="d-flex">
             @auth
-                <div class="dropdown">
+                {{-- Notification Dropdown --}}
+                <div class="dropdown dropdown-notifications">
                     <p class="nav-link dropdown-toggle mb-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
                         aria-expanded="false">
+                        <span class="position-relative">
+
+                            <i class="fa-regular fa-bell fs-24"></i>
+                            @if (1)
+                                <span id="notification-count"
+                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    0
+                                </span>
+                            @endif
+                        </span>
+                    </p>
+                    <ul id="notification-list" class="dropdown-menu dropdown-notification"
+                        aria-labelledby="dropdownMenuButton">
+                        <!-- Notifications will be dynamically loaded here -->
+                    </ul>
+                </div>
+
+                {{-- User Dropdown --}}
+                <div class="dropdown d-none d-md-block">
+                    <p class="nav-link dropdown-toggle mb-0" type="button" id="dropdownMenuButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         <img class="user-image d-inline rounded-circle" src="{{ asset('images/default-user.jpg') }}"
                             width="35" height="35" alt="User">
                     </p>
@@ -98,5 +120,42 @@
         if (window.innerWidth < 700) {
             document.getElementById('sidebarToggle').click();
         }
+
+        // Load notifications initially
+        fetchNotifications();
+
+        // Poll for new notifications every 10 seconds
+        setInterval(fetchNotifications, 10000);
+
+    }
+
+    function fetchNotifications() {
+        $.ajax({
+            url: 'user/notifications',
+            method: 'GET',
+            success: function(data) {
+                const notificationList = $('#notification-list');
+                notificationList.empty();
+                data.forEach(notification => {
+                    addNotification(notification);
+                });
+                updateNotificationCount(data.length);
+            }
+        });
+    }
+
+    function addNotification(notification) {
+        const notificationList = $('#notification-list');
+        const notificationItem = $('<li class="item"></li>');
+        notificationItem.html(`
+            <h5>${notification.title}</h5>
+            <p>${notification.content}</p>
+        `);
+        notificationList.prepend(notificationItem); // Add new notifications to the top
+    }
+
+    function updateNotificationCount(count) {
+        const notificationCount = $('#notification-count');
+        notificationCount.text(count);
     }
 </script>

@@ -444,6 +444,10 @@ w-70 {
     margin-top: 0.125rem;
 }
 
+.dropdown-toggle::after {
+    display: none;
+}
+
 .card {
     min-width: 100px;
     border: none;
@@ -615,6 +619,30 @@ w-70 {
 
 
 /* About Us Section END */
+
+
+/* Notification Section START */
+
+#notification-list .item {
+    padding: 1rem;
+}
+
+#notification-list .item h5 {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+#notification-list .item p {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+.dropdown-notification[data-bs-popper] {
+    width: 300px;
+    left: -250px;
+}
+
+/* Notification Section END */
 
 /* How It Works Section */
 

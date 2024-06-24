@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Http\Controllers\GetEstimateController;
 use App\Models\BookingMoving;
+use App\Models\UserNotification;
 
 class BookingController extends Controller
 {
@@ -289,6 +290,17 @@ class BookingController extends Controller
         if (!$addressBook) {
             $addressBook = AddressBook::create($addressBookData);
         }
+
+        // User Notification
+        $userNofitication = UserNotification::create([
+            'sender_user_id' => null,
+            'receiver_user_id' => auth()->user()->id,
+            'type' => 'booking',
+            'reference_id' => $booking->id,
+            'title' => 'New Booking',
+            'content' => 'You have successfully created booking for ' . $serviceType->name . ' service',
+            'read' => 0
+        ]);
 
         // Response json with success
         return response()->json(['success' => true, 'data' => $booking, 'message' => 'Booking created successfully'], 201);
@@ -736,6 +748,17 @@ class BookingController extends Controller
                 BookingMoving::where('booking_id', $booking->id)->update(['transaction_id' =>  $paymentDetails['id'], 'payment_status' => 'paid', 'payment_method' => 'paypal', 'payment_at' => Carbon::now()]);
             }
 
+            // Send notification to user
+            $userNofitication = UserNotification::create([
+                'sender_user_id' => null,
+                'receiver_user_id' => auth()->user()->id,
+                'type' => 'booking',
+                'reference_id' => $booking->id,
+                'title' => 'Booking Payment',
+                'content' => 'You have successfully paid for your booking',
+                'read' => 0
+            ]);
+
             // Redirect to booking detail page
             // return redirect()->route('client.booking.show', $booking->id);
             return redirect()->route('client.bookings');
@@ -789,6 +812,9 @@ class BookingController extends Controller
         if (!$stripe_publishable_key) {
             return redirect()->back()->with('error', 'Stripe publishable key not found');
         }
+
+        $stripe_publishable_key = $stripe_publishable_key->value;
+
         // Get stripe_secret_key from payment settings
         $stripe_secret_key = PaymentSetting::where('key', 'stripe_secret_key')->first();
         if (!$stripe_secret_key) {
@@ -796,7 +822,7 @@ class BookingController extends Controller
         }
 
         // Set your Stripe API key.
-        \Stripe\Stripe::setApiKey($stripe_secret_key);
+        \Stripe\Stripe::setApiKey($stripe_publishable_key);
 
         // Get the payment amount and email address from the form.
         $amount = $booking->total_price * 100;
@@ -876,6 +902,18 @@ class BookingController extends Controller
                 'payment_at' => Carbon::now(),
             ]);
         }
+
+        // Send notification to user
+
+        $userNofitication = UserNotification::create([
+            'sender_user_id' => null,
+            'receiver_user_id' => auth()->user()->id,
+            'type' => 'booking',
+            'reference_id' => $booking->id,
+            'title' => 'Booking Payment',
+            'content' => 'You have successfully paid for your booking',
+            'read' => 0
+        ]);
 
 
         return response()->json(['success' => true, 'data' => 'Booking paid successfully']);

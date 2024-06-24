@@ -307,6 +307,8 @@ class ClientController extends Controller
             ], 422);
         }
 
+        $user = auth()->user();
+
         // Check if old password is correct
         if (!Hash::check($request->old_password, $user->password)) {
             return response()->json([
@@ -346,15 +348,16 @@ class ClientController extends Controller
         // Get social links
         $socialLinks = SocialLink::where('user_id', auth()->user()->id)->get()->pluck('link', 'key')->toArray();
 
+        // return response()->json($socialLinks['facebook']);
 
         return response()->json([
             'success' => true,
             'message' => 'Social links fetched successfully',
             'data' => [
-                'facebook' => $socialLinks->facebook ?? 'https://facebook.com/',
-                'linkedin' => $socialLinks->linkedin ?? 'https://linkedin.com/',
-                'instagram' => $socialLinks->instagram ?? 'https://instagram.com/',
-                'tiktok' => $socialLinks->tiktok ?? 'https://tiktok.com/',
+                'facebook' => $socialLinks['facebook'] ?? 'https://facebook.com/',
+                'linkedin' => $socialLinks['linkedin'] ?? 'https://linkedin.com/',
+                'instagram' => $socialLinks['instagram'] ?? 'https://instagram.com/',
+                'tiktok' => $socialLinks['tiktok'] ?? 'https://tiktok.com/',
             ]
         ], 200);
     }

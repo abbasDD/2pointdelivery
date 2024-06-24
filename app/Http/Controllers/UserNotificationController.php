@@ -9,11 +9,15 @@ use App\Http\Requests\UpdateUserNotificationRequest;
 class UserNotificationController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Get Authenticated User Notifications
      */
     public function index()
     {
-        //
+        if (!auth()->user()) {
+            return response()->json([]);
+        }
+        $notifications = UserNotification::where('receiver_user_id', auth()->user()->id)->orderBy('created_at', 'desc')->get();
+        return response()->json($notifications);
     }
 
     /**

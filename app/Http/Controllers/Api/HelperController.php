@@ -346,10 +346,10 @@ class HelperController extends Controller
             'success' => true,
             'message' => 'Social links fetched successfully',
             'data' => [
-                'facebook' => $socialLinks->facebook ?? 'https://facebook.com/',
-                'linkedin' => $socialLinks->linkedin ?? 'https://linkedin.com/',
-                'instagram' => $socialLinks->instagram ?? 'https://instagram.com/',
-                'tiktok' => $socialLinks->tiktok ?? 'https://tiktok.com/',
+                'facebook' => $socialLinks['facebook'] ?? 'https://facebook.com/',
+                'linkedin' => $socialLinks['linkedin'] ?? 'https://linkedin.com/',
+                'instagram' => $socialLinks['instagram'] ?? 'https://instagram.com/',
+                'tiktok' => $socialLinks['tiktok'] ?? 'https://tiktok.com/',
             ]
         ], 200);
     }

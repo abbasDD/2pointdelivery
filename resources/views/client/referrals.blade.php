@@ -8,7 +8,10 @@
         <div class="container">
             <div class="section-header mb-2">
                 <div class="d-flex justify-content-between">
-                    <h4>Referrals History</h4>
+                    <h4 class="mb-0">Referrals History</h4>
+                    <p class="mb-0">
+                        <span class="badge bg-primary">{{ auth()->user()->referral_code }}</span>
+                    </p>
                 </div>
             </div>
             <div class="section-body">

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('sender_user_id')->nullable();
             $table->unsignedBigInteger('receiver_user_id');
+            $table->string('reference_id')->nullable();
             $table->string('type');
             $table->string('title');
             $table->text('content');

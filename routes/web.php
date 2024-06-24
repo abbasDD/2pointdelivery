@@ -9,6 +9,7 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\GetEstimateController;
 use App\Http\Controllers\StateController;
+use App\Http\Controllers\UserNotificationController;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
@@ -92,6 +93,8 @@ Route::middleware(['app_language'])->group(function () {
 });
 
 
+// User Notifications
+Route::get('user/notifications', [UserNotificationController::class, 'index'])->name('notifications');
 
 
 
