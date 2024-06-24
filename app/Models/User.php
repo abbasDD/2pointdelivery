@@ -109,4 +109,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserNotification::class, 'receiver_user_id');
     }
+
+    public function sentTeamInvitations()
+    {
+        return $this->hasMany(TeamInvitation::class, 'inviter_id');
+    }
+
+    public function receivedTeamInvitations()
+    {
+        return $this->hasMany(TeamInvitation::class, 'invitee_id');
+    }
 }

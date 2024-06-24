@@ -11,6 +11,7 @@ use App\Models\Helper;
 use App\Models\HelperCompany;
 use App\Models\HelperVehicle;
 use App\Models\ServiceCategory;
+use App\Models\UserNotification;
 use App\Models\VehicleType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -360,6 +361,18 @@ class BookingController extends Controller
         $booking->status = 'started';
         $booking->save();
 
+        // Send Notification
+        $userNotification = UserNotification::create([
+            'sender_user_id' => auth()->user()->id,
+            'receiver_user_id' => $booking->user_id,
+            'receiver_user_type' => 'client',
+            'reference_id' => $booking->id,
+            'type' => 'booking',
+            'title' => 'Booking Started',
+            'content' => 'Your booking has been started.',
+            'read' => 0
+        ]);
+
         // dd($booking);
 
         return redirect()->back()->with('success', 'Booking started successfully!');
@@ -414,6 +427,18 @@ class BookingController extends Controller
         // Update Booking
         $booking->status = 'in_transit';
         $booking->save();
+
+        // Send Notification
+        $userNotification = UserNotification::create([
+            'sender_user_id' => auth()->user()->id,
+            'receiver_user_id' => $booking->user_id,
+            'receiver_user_type' => 'client',
+            'reference_id' => $booking->id,
+            'type' => 'booking',
+            'title' => 'Booking In Transit',
+            'content' => 'Your booking is in transit.',
+            'read' => 0
+        ]);
 
         return redirect()->back()->with('success', 'Booking in transit successfully!');
     }
@@ -512,7 +537,17 @@ class BookingController extends Controller
         $booking->status = 'completed';
         $booking->save();
 
-        // dd($booking);
+        // Send Notification
+        $userNotification = UserNotification::create([
+            'sender_user_id' => auth()->user()->id,
+            'receiver_user_id' => $booking->user_id,
+            'receiver_user_type' => 'client',
+            'reference_id' => $booking->id,
+            'type' => 'booking',
+            'title' => 'Booking Completed',
+            'content' => 'Your booking is completed.',
+            'read' => 0
+        ]);
 
         return redirect()->back()->with('success', 'Booking completed successfully!');
 
@@ -582,6 +617,18 @@ class BookingController extends Controller
             $bookingMoving->incomplete_booking_at = Carbon::now();
             $bookingMoving->save();
         }
+
+        // Send Notification
+        $userNotification = UserNotification::create([
+            'sender_user_id' => auth()->user()->id,
+            'receiver_user_id' => $booking->user_id,
+            'receiver_user_type' => 'client',
+            'reference_id' => $booking->id,
+            'type' => 'booking',
+            'title' => 'Booking Incomplete',
+            'content' => 'Your booking is incomplete.',
+            'read' => 0
+        ]);
 
 
         return redirect()->back()->with('success', 'Booking maked as incomplete!');

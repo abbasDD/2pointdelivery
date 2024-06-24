@@ -78,6 +78,7 @@ class LoginController extends Controller
         }
 
         if (Auth::attempt($credentials, $request->filled('remember'))) {
+
             // Retrieve the intended URL after successful login
             $intendedUrl = Session::pull('intended_url');
             // Redirect the user back to the intended URL

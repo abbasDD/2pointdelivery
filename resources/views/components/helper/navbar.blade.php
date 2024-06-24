@@ -73,23 +73,22 @@
             <li class="nav-item"><a class="nav-link" href="{{ route('helper.index') }}"><i class="fa fa-home"></i>
                     Dashboard</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('helper.kyc_details') }}"><i
-                        class="fa fa-bank"></i>
-                    KYC Detail</a>
+                        class="fa fa-bank"></i> KYC Detail</a>
             </li>
-            {{-- <li class="nav-item"><a class="nav-link" href="{{ route('helper.teams') }}"><i class="fa fa-users"></i>
-                    Teams</a></li> --}}
+            @if (app('userInfoHelper')->hasHelperCompany())
+                <li class="nav-item"><a class="nav-link" href="{{ route('helper.team.index') }}"><i
+                            class="fa fa-users"></i> Teams</a></li>
+            @endif
             <li class="nav-item"><a class="nav-link" href="{{ route('helper.bookings') }}"><i class="fa fa-dolly"></i>
                     Bookings</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('helper.invitations') }}"><i
+                        class="fa fa-dolly"></i> Invitations</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('helper.trackOrder') }}"><i
-                        class="fa fa-file-invoice"></i> Track
-                    Order</a></li>
+                        class="fa fa-file-invoice"></i> Track Order</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('helper.chats') }}"><i class="fa fa-comment"></i>
                     Chat</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('helper.profile') }}"><i class="fa fa-edit"></i>
-                    Edit
-                    Profile</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('helper.settings') }}"><i class="fa fa-cog"></i>
-                    Settings</a></li>
+                    Edit Profile</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
                         class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
@@ -130,12 +129,24 @@
     }
 
     function fetchNotifications() {
+        // url
+        var url = "{{ route('user.notifications') }}";
         $.ajax({
-            url: 'user/notifications',
+            url: url,
             method: 'GET',
             success: function(data) {
                 const notificationList = $('#notification-list');
                 notificationList.empty();
+
+                // if data is empty
+                if (data.length == 0) {
+                    const notificationItem = $('<li class="item"></li>');
+                    notificationItem.html(`
+                        <h5>No new notifications</h5>
+                    `);
+                    notificationList.append(notificationItem);
+                }
+
                 data.forEach(notification => {
                     addNotification(notification);
                 });

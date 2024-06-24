@@ -8,6 +8,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\KycDetailController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\TeamInvitationController;
 use App\Http\Controllers\UserNotificationController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,7 +25,6 @@ Route::middleware(['app_language'])->group(function () {
     Route::post('client/register', [RegisterController::class, 'register'])->name('client.register');
 
     Route::post('logout', 'App\Http\Controllers\Auth\LoginController@logout')->name('logout');
-
 
     Route::prefix('client')->middleware(['auth', 'isClient'])->name('client.')->group(function () {
 
@@ -45,6 +45,20 @@ Route::middleware(['app_language'])->group(function () {
         Route::get('/kyc/edit/{id}', [KycDetailController::class, 'edit'])->name('kyc.edit');
         Route::post('/kyc/update', [KycDetailController::class, 'update'])->name('kyc.update');
         Route::get('/kyc/show/{id}', [KycDetailController::class, 'show'])->name('kyc.show');
+
+        // Team 
+        Route::get('team/index', [TeamInvitationController::class, 'getInvitedUsers'])->name('team.index');
+        Route::post('team/invite', [TeamInvitationController::class, 'inviteTeamMember'])->name('team.invite');
+        Route::get('team/remove/{id}', [TeamInvitationController::class, 'removeTeamMemeber'])->name('team.remove');
+        Route::get('team/switch-user/{user}', [TeamInvitationController::class, 'switchUser'])->name('team.switchUser');
+        Route::get('team/switch-self', [TeamInvitationController::class, 'switchToSelf'])->name('team.switchToSelf');
+
+        // Invitations
+        Route::get('/invitations', [TeamInvitationController::class, 'invitations'])->name('invitations');
+        Route::get('/invitation/accept/{id}', [TeamInvitationController::class, 'acceptInvitation'])->name('invitation.accept');
+        Route::get('/invitation/decline/{id}', [TeamInvitationController::class, 'declineInvitation'])->name('invitation.decline');
+        Route::get('/invitation/get-accepted-list', [TeamInvitationController::class, 'getAcceptedInvites'])->name('invitation.getAcceptedList');
+
 
         //Bookings
         Route::get('/orders', [ClientController::class, 'orders'])->name('orders');

@@ -20,51 +20,14 @@ class UserNotificationController extends Controller
         return response()->json($notifications);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // Mark all as read
+    public function markAllAsRead()
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreUserNotificationRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(UserNotification $userNotification)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(UserNotification $userNotification)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateUserNotificationRequest $request, UserNotification $userNotification)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(UserNotification $userNotification)
-    {
-        //
+        if (!auth()->user()) {
+            return response()->json([]);
+        }
+        $notifications = UserNotification::where('receiver_user_id', auth()->user()->id)->update(['read' => 1]);
+        // return response()->json($notifications);
+        return redirect()->back()->with('success', 'All notifications marked as read');
     }
 }

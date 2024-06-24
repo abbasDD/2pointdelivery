@@ -94,8 +94,8 @@ Route::middleware(['app_language'])->group(function () {
 
 
 // User Notifications
-Route::get('user/notifications', [UserNotificationController::class, 'index'])->name('notifications');
-
+Route::get('user/notifications', [UserNotificationController::class, 'index'])->name('user.notifications');
+Route::get('user/notifications/read', [UserNotificationController::class, 'markAllAsRead'])->name('user.notifications.read');
 
 
 // Get Address Routes

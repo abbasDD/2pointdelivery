@@ -205,12 +205,24 @@
     }
 
     function fetchNotifications() {
+        // url
+        var url = "{{ route('user.notifications') }}";
         $.ajax({
-            url: 'user/notifications',
+            url: url,
             method: 'GET',
             success: function(data) {
                 const notificationList = $('#notification-list');
                 notificationList.empty();
+
+                // if data is empty
+                if (data.length == 0) {
+                    const notificationItem = $('<li class="item"></li>');
+                    notificationItem.html(`
+                        <h5>No new notifications</h5>
+                    `);
+                    notificationList.append(notificationItem);
+                }
+
                 data.forEach(notification => {
                     addNotification(notification);
                 });

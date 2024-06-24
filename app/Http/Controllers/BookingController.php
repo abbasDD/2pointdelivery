@@ -295,6 +295,7 @@ class BookingController extends Controller
         $userNofitication = UserNotification::create([
             'sender_user_id' => null,
             'receiver_user_id' => auth()->user()->id,
+            'receiver_user_type' => 'client',
             'type' => 'booking',
             'reference_id' => $booking->id,
             'title' => 'New Booking',
@@ -752,6 +753,7 @@ class BookingController extends Controller
             $userNofitication = UserNotification::create([
                 'sender_user_id' => null,
                 'receiver_user_id' => auth()->user()->id,
+                'receiver_user_type' => 'client',
                 'type' => 'booking',
                 'reference_id' => $booking->id,
                 'title' => 'Booking Payment',
@@ -908,6 +910,7 @@ class BookingController extends Controller
         $userNofitication = UserNotification::create([
             'sender_user_id' => null,
             'receiver_user_id' => auth()->user()->id,
+            'receiver_user_type' => 'client',
             'type' => 'booking',
             'reference_id' => $booking->id,
             'title' => 'Booking Payment',

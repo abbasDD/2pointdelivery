@@ -26,9 +26,11 @@
                             @endif
                         </span>
                     </p>
-                    <ul id="notification-list" class="dropdown-menu dropdown-notification"
-                        aria-labelledby="dropdownMenuButton">
+                    <ul class="dropdown-menu dropdown-notification" aria-labelledby="dropdownMenuButton">
+                        <a href="{{ route('user.notifications.read') }}" class="d-flex fs-xxs justify-content-end p-2">Mark
+                            all as read</a>
                         <!-- Notifications will be dynamically loaded here -->
+                        <div id="notification-list"></div>
                     </ul>
                 </div>
 
@@ -76,13 +78,16 @@
                         class="fa fa-bank"></i>
                     KYC </a>
             </li>
-            @if (Auth::user()->account_type == 'company')
-                <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-users"></i> Teams</a></li>
+            @if (app('userInfoHelper')->hasClientCompany())
+                <li class="nav-item"><a class="nav-link" href="{{ route('client.team.index') }}"><i
+                            class="fa fa-users"></i> Teams</a></li>
             @endif
             <li class="nav-item"><a class="nav-link" href="{{ route('client.bookings') }}"><i class="fa fa-dolly"></i>
                     Bookings</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.addressBooks') }}"><i
                         class="fa-solid fa-address-book"></i> Address Book</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('client.invitations') }}"><i
+                        class="fa fa-dolly"></i> Invitations</a></li>
             {{-- <li class="nav-item"><a class="nav-link" href="{{ route('client.invoices') }}"><i
                         class="fa fa-file-invoice"></i>
                     Invoices</a></li> --}}
@@ -94,8 +99,6 @@
                     Track Booking</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.profile') }}"><i class="fa fa-edit"></i>
                     Edit Profile</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('client.settings') }}"><i class="fa fa-cog"></i>
-                    Settings</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
                         class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
@@ -135,12 +138,22 @@
     }
 
     function fetchNotifications() {
+        // url
+        var url = "{{ route('user.notifications') }}";
         $.ajax({
-            url: 'user/notifications',
+            url: url,
             method: 'GET',
             success: function(data) {
                 const notificationList = $('#notification-list');
                 notificationList.empty();
+                // if data is empty
+                if (data.length == 0) {
+                    const notificationItem = $('<li class="item"></li>');
+                    notificationItem.html(`
+                        <h5>No new notifications</h5>
+                    `);
+                    notificationList.append(notificationItem);
+                }
                 data.forEach(notification => {
                     addNotification(notification);
                 });
@@ -151,7 +164,13 @@
 
     function addNotification(notification) {
         const notificationList = $('#notification-list');
-        const notificationItem = $('<li class="item"></li>');
+        var notificationItem = $('<li class="item"></li>');
+        console.log(notification.read);
+        if (notification.read == 0) {
+            var notificationItem = $('<li class="item bg-light"></li>');
+        } else {
+            var notificationItem = $('<li class="item"></li>');
+        }
         notificationItem.html(`
             <h5>${notification.title}</h5>
             <p>${notification.content}</p>

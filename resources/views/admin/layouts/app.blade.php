@@ -34,9 +34,19 @@
 
 <body>
 
+    {{-- Loading Screen --}}
+    <div id="loading-screen"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 10000; display: flex; justify-content: center; align-items: center;">
+        <div class="loading-content">
+            <img src="{{ asset('images/loading.gif') }}" alt="Loading..." style="width: 100px;">
+            <!-- Adjust the width as necessary -->
+        </div>
+    </div>
 
     <!-- Navbar component -->
-    <x-admin.navbar />
+    {{-- <x-admin.navbar /> --}}
+
+    @include('components.admin.navbar')
 
     <main class="main-left p-3">
 
@@ -48,7 +58,8 @@
 
 
     <!-- Footer button component -->
-    <x-admin.footer />
+    {{-- <x-admin.footer /> --}}
+    @include('components.admin.footer')
 
     <div class="toast-container position-fixed top-0 end-0 p-3 d-none">
         <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
@@ -107,6 +118,17 @@
             // Hide modal with id
             $('#' + modalId).modal('hide');
         }
+    </script>
+
+    {{-- Page Loading JS --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('loading-screen').style.display = 'flex';
+        });
+
+        window.addEventListener('load', function() {
+            document.getElementById('loading-screen').style.display = 'none';
+        });
     </script>
 
 </body>

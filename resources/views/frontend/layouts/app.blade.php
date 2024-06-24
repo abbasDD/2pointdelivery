@@ -41,15 +41,17 @@
 
 <body style="background-image: url({{ asset('frontend/images/pattern.png') }})">
 
+    {{-- Loading Screen --}}
     <div id="loading-screen"
-        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 9999; display: flex; justify-content: center; align-items: center;">
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 10000; display: flex; justify-content: center; align-items: center;">
         <div class="loading-content">
             <img src="{{ asset('images/loading.gif') }}" alt="Loading..." style="width: 100px;">
             <!-- Adjust the width as necessary -->
         </div>
     </div>
 
-    <x-frontend.navbar />
+    {{-- <x-frontend.navbar /> --}}
+    @include('components.frontend.navbar')
 
     <main class="mt-5">
 
@@ -61,7 +63,8 @@
     <x-chat-button />
 
     <!-- Footer button component -->
-    <x-frontend.footer />
+    {{-- <x-frontend.footer /> --}}
+    @include('components.frontend.footer')
 
 
     <div class="toast-container position-fixed top-5 end-0 p-3 d-none">
@@ -117,6 +120,25 @@
             // Hide modal with id
             $('#' + modalId).modal('hide');
         }
+    </script>
+
+    {{-- Page Loading JS --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('loading-screen').style.display = 'flex';
+        });
+
+        window.addEventListener('load', function() {
+            document.getElementById('loading-screen').style.display = 'none';
+        });
+
+        $(document).ready(function() {
+            $(document).ajaxStart(function() {
+                document.getElementById('loading-screen').style.display = 'flex';
+            }).ajaxStop(function() {
+                document.getElementById('loading-screen').style.display = 'none';
+            });
+        });
     </script>
 
     {{-- Page Loading JS --}}

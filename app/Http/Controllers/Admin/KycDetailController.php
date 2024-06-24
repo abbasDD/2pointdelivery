@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\Country;
 use App\Models\KycDetail;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
 
 class KycDetailController extends Controller
@@ -62,6 +63,18 @@ class KycDetailController extends Controller
         $kycDetail->is_verified = 1;
         $kycDetail->save();
 
+        // Send Notification
+        $userNotification = UserNotification::create([
+            'sender_user_id' => auth()->user()->id,
+            'receiver_user_id' => $kycDetail->user_id,
+            'receiver_user_type' => 'admin',
+            'reference_id' => $kycDetail->id,
+            'type' => 'kyc_detail',
+            'title' => 'KYC details approved',
+            'content' => 'Your KYC details has been approved',
+            'read' => 0
+        ]);
+
         return redirect()->back()->with('success', 'KYC details approved successfully');
     }
 
@@ -75,6 +88,17 @@ class KycDetailController extends Controller
         $kycDetail->is_verified = 2;
         $kycDetail->save();
 
-        return redirect()->back()->with('success', 'KYC details approved successfully');
+        // Send Notification
+        $userNotification = UserNotification::create([
+            'sender_user_id' => auth()->user()->id,
+            'receiver_user_id' => $kycDetail->user_id,
+            'reference_id' => $kycDetail->id,
+            'type' => 'kyc_detail',
+            'title' => 'KYC details rejected',
+            'content' => 'Your KYC details has been rejected',
+            'read' => 0
+        ]);
+
+        return redirect()->back()->with('success', 'KYC details rejected successfully');
     }
 }
