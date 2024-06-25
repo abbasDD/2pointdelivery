@@ -42,6 +42,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
 
     // Booking Form APIs
     Route::get('booking/new/page1', [BookingController::class, 'newBookingPage1']);
+    Route::get('booking/new/page2', [BookingController::class, 'newBookingPage2']);
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);
