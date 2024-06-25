@@ -620,6 +620,34 @@ w-70 {
 
 /* About Us Section END */
 
+/* Rating & Review Section START */
+
+.review-form .star-rating {
+    direction: rtl;
+    display: inline-flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.review-form .star-rating input[type="radio"] {
+    display: none;
+}
+
+.review-form .star-rating label {
+    font-size: 2rem;
+    color: lightgray;
+    cursor: pointer;
+}
+
+.review-form .star-rating input[type="radio"]:checked~label {
+    color: gold;
+}
+
+.review-form .star-rating label:hover,
+.star-rating label:hover~label {
+    color: gold;
+}
+
 
 /* Notification Section START */
 

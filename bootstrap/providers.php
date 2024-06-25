@@ -6,4 +6,5 @@ return [
     App\Providers\DateTimeProvider::class,
     App\Providers\AddressProvider::class,
     App\Providers\UserInfoProvider::class,
+    Barryvdh\DomPDF\ServiceProvider::class,
 ];

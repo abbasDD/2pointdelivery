@@ -4,6 +4,7 @@ use App\Http\Controllers\AddressBookController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\BookingReviewController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\KycDetailController;
@@ -73,6 +74,9 @@ Route::middleware(['app_language'])->group(function () {
         Route::get('/booking/payment/paypal/cancel', [BookingController::class, 'cancelPaypalPayment'])->name('booking.payment.paypal.cancel');
         // Stripe
         Route::post('/booking/payment/stripe/charge', [BookingController::class, 'chargeStripePayment'])->name('booking.payment.stripe.charge');
+
+        // Review to Booking
+        Route::post('/booking/review/', [BookingReviewController::class, 'reviewBooking'])->name('booking.review');
 
         // Chat Page Routes
         Route::get('/chats', [ChatController::class, 'index'])->name('chats');

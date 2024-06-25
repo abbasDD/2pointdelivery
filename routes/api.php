@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\HelperController;
 use Illuminate\Http\Request;
@@ -38,6 +39,9 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
 
     // Get Client Home
     Route::get('home', [ClientController::class, 'home']);
+
+    // Booking Form APIs
+    Route::get('booking/new/page1', [BookingController::class, 'newBookingPage1']);
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);

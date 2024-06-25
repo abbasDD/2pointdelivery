@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\ClientController;
@@ -208,6 +209,14 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     Route::get('/faq/edit/{id}', [FaqController::class, 'edit'])->name('faq.edit');
     Route::post('/faq/update', [FaqController::class, 'update'])->name('faq.update');
     Route::post('/faq/update-status', [FaqController::class, 'updateStatus'])->name('faq.updateStatus');
+
+    // Blogs Page Routes
+    Route::get('/blogs', [BlogController::class, 'index'])->name('blogs');
+    Route::get('/blog/create', [BlogController::class, 'create'])->name('blog.create');
+    Route::post('blog/store', [BlogController::class, 'store'])->name('blog.store');
+    Route::get('/blog/edit/{id}', [BlogController::class, 'edit'])->name('blog.edit');
+    Route::post('/blog/update', [BlogController::class, 'update'])->name('blog.update');
+    Route::post('/blog/update-status', [BlogController::class, 'updateStatus'])->name('blog.updateStatus');
 
     // Settings Page Routes
     Route::prefix('settings')->group(function () {

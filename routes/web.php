@@ -8,6 +8,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\GetEstimateController;
+use App\Http\Controllers\PDFController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\UserNotificationController;
 use Illuminate\Support\Facades\Mail;
@@ -103,3 +104,7 @@ Route::get('user/notifications/read', [UserNotificationController::class, 'markA
 Route::get('/address/countries', [CountryController::class, 'countries'])->name('address.countries');
 Route::get('/address/states/{country_id}', [StateController::class, 'states'])->name('address.states');
 Route::get('/address/cities/{state_id}', [CityController::class, 'cities'])->name('address.cities');
+
+// Test a PDF
+Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
+Route::get('booking-invoice-pdf/{id}', [PDFController::class, 'bookingInvoicePDF']);

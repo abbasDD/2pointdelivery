@@ -25,6 +25,19 @@
                             <p class="mb-0">Gender</p>
                             <h6 class="mb-0">{{ $helperData->gender }}</h6>
                         </div>
+
+                        @if (isset($booking->review))
+                            {{-- Rating --}}
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <p class="mb-0">Rating</p>
+                                <h6 class="mb-0">{{ $booking->review->rating }}</h6>
+                            </div>
+                            {{-- Review --}}
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <p class="mb-0">Review</p>
+                                <h6 class="mb-0">{{ $booking->review->review }}</h6>
+                            </div>
+                        @endif
                     </div>
                 </div>
             @endif

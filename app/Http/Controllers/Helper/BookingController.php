@@ -364,7 +364,7 @@ class BookingController extends Controller
         // Send Notification
         $userNotification = UserNotification::create([
             'sender_user_id' => auth()->user()->id,
-            'receiver_user_id' => $booking->user_id,
+            'receiver_user_id' => $booking->client_user_id,
             'receiver_user_type' => 'client',
             'reference_id' => $booking->id,
             'type' => 'booking',
@@ -431,7 +431,7 @@ class BookingController extends Controller
         // Send Notification
         $userNotification = UserNotification::create([
             'sender_user_id' => auth()->user()->id,
-            'receiver_user_id' => $booking->user_id,
+            'receiver_user_id' => $booking->client_user_id,
             'receiver_user_type' => 'client',
             'reference_id' => $booking->id,
             'type' => 'booking',
@@ -540,7 +540,7 @@ class BookingController extends Controller
         // Send Notification
         $userNotification = UserNotification::create([
             'sender_user_id' => auth()->user()->id,
-            'receiver_user_id' => $booking->user_id,
+            'receiver_user_id' => $booking->client_user_id,
             'receiver_user_type' => 'client',
             'reference_id' => $booking->id,
             'type' => 'booking',
@@ -621,7 +621,7 @@ class BookingController extends Controller
         // Send Notification
         $userNotification = UserNotification::create([
             'sender_user_id' => auth()->user()->id,
-            'receiver_user_id' => $booking->user_id,
+            'receiver_user_id' => $booking->client_user_id,
             'receiver_user_type' => 'client',
             'reference_id' => $booking->id,
             'type' => 'booking',

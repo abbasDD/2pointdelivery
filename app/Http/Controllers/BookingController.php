@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Http\Controllers\GetEstimateController;
 use App\Models\BookingMoving;
+use App\Models\BookingReview;
 use App\Models\UserNotification;
 
 class BookingController extends Controller
@@ -1031,6 +1032,13 @@ class BookingController extends Controller
             $helper2VehicleData = HelperVehicle::where('user_id', $booking->helper_user_id2)->first();
         }
 
+
+        // Check if review exist for booking
+        $review = BookingReview::where('booking_id', $booking->id)->first();
+
+        if ($review) {
+            $booking->review = $review;
+        }
 
 
         // dd($vehicleTypeData);
