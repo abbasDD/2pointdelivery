@@ -60,7 +60,8 @@ Route::middleware(['app_language'])->group(function () {
 
     // Help Page
     Route::get('/help', [FrontendController::class, 'help'])->name('help');
-    Route::get('/topic/{id}', [FrontendController::class, 'topicQuestion'])->name('topicQuestion');
+    Route::get('/topic/{id}', [FrontendController::class, 'topicQuestionList'])->name('topicQuestionList');
+    Route::get('/topic/question/{id}', [FrontendController::class, 'topicQuestion'])->name('topicQuestion');
     Route::get('/topic-search', [FrontendController::class, 'topicSearch'])->name('topic.search');
 
     // Join Helper Page

@@ -24,7 +24,7 @@
     <div class="statistics">
         <div class="row">
             <div class="col-lg-3 col-md-6">
-                <div class="card">
+                <div class="card mb-1">
                     <div class="card-body d-flex align-items-center justify-content-between p-4">
                         <div class="">
                             <i class="fas fa-dolly fa-3x text-primary"></i>
@@ -37,7 +37,7 @@
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
-                <div class="card">
+                <div class="card mb-1">
                     <div class="card-body d-flex align-items-center justify-content-between p-4">
                         <div class="">
                             <i class="fas fa-dolly fa-3x text-warning"></i>
@@ -50,7 +50,7 @@
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
-                <div class="card">
+                <div class="card mb-1">
                     <div class="card-body d-flex align-items-center justify-content-between p-4">
                         <div class="">
                             <i class="fas fa-dolly fa-3x text-success"></i>
@@ -63,7 +63,7 @@
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
-                <div class="card">
+                <div class="card mb-1">
                     <div class="card-body d-flex align-items-center justify-content-between p-4">
                         <div class="">
                             <i class="fas fa-dollar fa-3x text-success"></i>

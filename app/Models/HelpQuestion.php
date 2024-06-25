@@ -16,4 +16,12 @@ class HelpQuestion extends Model
         'answer',
         'is_active',
     ];
+
+    /**
+     * Get the Help Topic that owns the help Question.
+     */
+    public function helpTopic()
+    {
+        return $this->belongsTo(HelpTopic::class);
+    }
 }

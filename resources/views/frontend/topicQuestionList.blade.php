@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Help')
+@section('title', 'Topic Question')
 
 @section('content')
 
@@ -30,55 +30,67 @@
     </section>
 
 
-    {{-- All Topics --}}
+    {{-- All Questions --}}
 
     <section class="container my-5">
         <div class="row">
             <div class="col-lg-12">
                 <div class="heading text-center">
-                    <h2>All topics</h2>
+                    <h2>{{ $topic->name ?? '2 Point Delivery' }}</h2>
                     <p>
-                        Don't worry you can still apply as a helper!
+                        {{ $topic->content ?? 'Here are some of our FAQs related to this topic' }}
                     </p>
                 </div>
             </div>
         </div>
-        <div class="row topic-list">
-            @forelse ($helpTopics as $helpTopic)
-                <div class="col-md-6 p-2 item">
-                    <div class="card">
+
+        <div class="accordion" id="accordionFAQs">
+            {{-- If $helpQuestions are not empty and loop thorugh --}}
+            @forelse($helpQuestions as $helpQuestion)
+                <div class="card">
+                    <h2 class="card-heading" id="helpQuestion_{{ $helpQuestion->id }}">
+                        <a class="card-link py-0 collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse{{ $helpQuestion->id }}" aria-expanded="true"
+                            aria-controls="collapse{{ $helpQuestion->id }}">
+                            {{ $helpQuestion->question }}
+                        </a>
+                    </h2>
+                    <div id="collapse{{ $helpQuestion->id }}" class="collapse"
+                        aria-labelledby="helpQuestion_{{ $helpQuestion->id }}" data-bs-parent="#accordionFAQs">
                         <div class="card-body">
-                            <a href="{{ route('topicQuestionList', $helpTopic->id) }}">
-                                <div class=" p-4">
-                                    <h5 class="mb-0">{{ $helpTopic->name }}</h5>
-                                    {{ $helpTopic->content ?? 'Read more' }}
-                                </div>
-                            </a>
-                            {{-- Help Questions --}}
-                            @foreach ($helpTopic->helpQuestions as $helpQuestion)
-                                <div class="bg-light-gray p-4 mb-2">
-                                    <a href="{{ route('topicQuestion', $helpQuestion->id) }}">
-                                        <h6 class="mb-0"><i class="fa fa-file-alt"></i> {{ $helpQuestion->question }}</h6>
-                                    </a>
-                                </div>
-                            @endforeach
+                            {!! $helpQuestion->answer !!}
                         </div>
                     </div>
                 </div>
             @empty
-                <div class="col-md-6 p-2">
-                    <div class="bg-light-gray p-4">
-                        <h5 class="mb-0">No Topic Found</h5>
-                        <p>We are still working on it</p>
+                {{-- <p>No FAQs Found</p> --}}
+                <div class="accordion-item mb-3">
+                    <h2 class="accordion-header" id="heading3">
+                        <button class="accordion-button py-0 collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse3" aria-expanded="true" aria-controls="collapse3">
+                            How many items are include in the price of delivery?
+                        </button>
+                    </h2>
+                    <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="heading3"
+                        data-bs-parent="#accordionFAQs">
+                        <div class="accordion-body">
+                            2 items are included in the price of delivery with our 24/7 delivery service, with
+                            additional items costing £5 per item.
+                        </div>
                     </div>
                 </div>
             @endforelse
+
+
         </div>
     </section>
 
 
     {{-- Still looking for help ? --}}
     @include('frontend.includes.ctahelp')
+
+    {{-- JavaScript --}}
+
 
     <script>
         $('#search').keyup(function() {
@@ -121,5 +133,6 @@
             }
         });
     </script>
+
 
 @endsection

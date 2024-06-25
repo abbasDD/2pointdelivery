@@ -65,7 +65,7 @@ class FrontendController extends Controller
     public function help()
     {
         // Get all active Help Topics
-        $helpTopics = HelpTopic::where('is_active', 1)->get();
+        $helpTopics = HelpTopic::where('is_active', 1)->with('helpQuestions')->has('helpQuestions')->get();
 
         // Get all active Faqs
         $faqs = Faq::where('is_active', 1)->get();
@@ -73,20 +73,61 @@ class FrontendController extends Controller
         return view('frontend.help', compact('faqs', 'helpTopics'));
     }
 
-    // topicQuestion
-    public function topicQuestion(Request $request)
+    // // topicQuestionList
+    // public function topicQuestionList(Request $request)
+    // {
+    //     // dd($request->all());
+    //     // Topic Details
+    //     $topic = HelpTopic::where('id', $request->id)->where('is_active', 1)->first();
+
+    //     if (!$topic) {
+    //         return redirect()->back()->with('error', 'Help Topic not found');
+    //     }
+    //     // Get all questions for selected topic
+    //     $helpQuestions = HelpQuestion::where('help_topic_id', $request->id)->where('is_active', 1)->get();
+
+    //     return view('frontend.topicQuestionList', compact('helpQuestions', 'topic'));
+    // }
+
+    // topicQuestionList
+    public function topicQuestionList(Request $request)
     {
         // dd($request->all());
         // Topic Details
-        $topic = HelpTopic::where('id', $request->id)->where('is_active', 1)->first();
+        $helpTopic = HelpTopic::where('id', $request->id)->where('is_active', 1)->first();
 
-        if (!$topic) {
+        if (!$helpTopic) {
             return redirect()->back()->with('error', 'Help Topic not found');
         }
         // Get all questions for selected topic
-        $helpQuestions = HelpQuestion::where('help_topic_id', $request->id)->where('is_active', 1)->get();
+        $helpQuestionList = HelpQuestion::where('help_topic_id', $request->id)->where('is_active', 1)->get();
 
-        return view('frontend.topicQuestion', compact('helpQuestions', 'topic'));
+        // Get first question
+        $helpQuestion = HelpQuestion::where('help_topic_id', $request->id)->where('is_active', 1)->first();
+
+        return view('frontend.topicQuestion', compact('helpQuestionList', 'helpQuestion', 'helpTopic'));
+    }
+
+    // topicQuestionList
+    public function topicQuestion(Request $request)
+    {
+        // dd($request->id);
+        // Topic Details
+        $helpQuestion = HelpQuestion::where('id', $request->id)->where('is_active', 1)->first();
+
+        if (!$helpQuestion) {
+            return redirect()->back()->with('error', 'Help Topic not found');
+        }
+
+        // Get Topic Details
+        $helpTopic = HelpTopic::where('id', $helpQuestion->help_topic_id)->where('is_active', 1)->first();
+
+        // Get all questions for selected topic
+        $helpQuestionList = HelpQuestion::where('help_topic_id', $helpQuestion->help_topic_id)->where('is_active', 1)->get();
+
+        // dd($helpQuestion);
+
+        return view('frontend.topicQuestion', compact('helpQuestionList', 'helpQuestion', 'helpTopic'));
     }
 
     // topic search

@@ -120,8 +120,6 @@ class ClientController extends Controller
             $client_updated = true;
         }
 
-
-
         return view('client.index', compact('bookings', 'satistics', 'client_updated'));
     }
 

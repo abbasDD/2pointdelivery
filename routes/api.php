@@ -36,6 +36,9 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::get('social-links', [ClientController::class, 'getSocialLinks']);
     Route::post('social-links/update', [ClientController::class, 'socialLinksUpdate']);
 
+    // Get Client Home
+    Route::get('home', [ClientController::class, 'home']);
+
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);
 

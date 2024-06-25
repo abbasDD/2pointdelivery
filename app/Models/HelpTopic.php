@@ -15,4 +15,12 @@ class HelpTopic extends Model
         'content',
         'is_active',
     ];
+
+    /**
+     * Get the helpQuestions for the Help Topic.
+     */
+    public function helpQuestions()
+    {
+        return $this->hasMany(HelpQuestion::class);
+    }
 }

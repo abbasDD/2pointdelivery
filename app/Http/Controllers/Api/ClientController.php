@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
 use App\Models\Client;
+use App\Models\ClientCompany;
+use App\Models\ServiceType;
 use App\Models\SocialLink;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -14,6 +17,71 @@ use Illuminate\Support\Facades\Validator;
 
 class ClientController extends Controller
 {
+    // Home Page 
+    public function home(): JsonResponse
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        $responseData = [];
+
+        // Service Image Path
+        $responseData['service_image_path'] = asset('images/service_types/');
+
+        // Get list of active services
+        $responseData['serviceTypes'] = ServiceType::select('id', 'uuid', 'type', 'name', 'image')
+            ->where('is_active', 1)
+            ->whereHas('serviceCategories', function ($query) {
+                $query->where('is_active', 1);
+            })
+            // ->where('type', 'delivery')      // uncomment if you want to use only delivery
+            ->get();
+
+
+        // Get latest booking of this user
+        $responseData['bookings'] = Booking::select('uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
+            ->where('client_user_id', auth()->user()->id)
+            ->orderBy('bookings.created_at', 'desc')
+            ->take(10)->get();
+
+        $responseData['personal_details'] = false;
+        $responseData['address_details'] = false;
+        $responseData['company_details'] = false;
+
+        // Get client details
+        $client = Client::where('user_id', auth()->user()->id)->first();
+        // Check if client completed its personal details
+        if (isset($client) && $client->first_name != null) {
+            $responseData['personal_details'] = true;
+        }
+
+        // Check if client completed its address details
+        if (isset($client) && $client->zip_code != null) {
+            $responseData['address_details'] = true;
+        }
+
+        if ($client->company_enabled == 1) {
+            // Get client company details
+            $clientCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
+            if (isset($clientCompany) && $clientCompany->legal_name != null) {
+                $responseData['company_details'] = true;
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Home Data fetched successfully',
+            'data' => $responseData
+        ], 200);
+    }
 
     // getPersonalInfo
     function getPersonalInfo(): JsonResponse

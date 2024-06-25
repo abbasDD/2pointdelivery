@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Client;
+use App\Models\ClientCompany;
 use App\Models\Helper;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -105,6 +106,9 @@ class PassportAuthController extends Controller
             'middle_name' => null,
             'last_name' => null,
             'profile_image' => asset('images/users/default.png'),
+            'personal_details' => false,
+            'address_details' => false,
+            'company_details' => false,
         ];
 
 
@@ -211,6 +215,14 @@ class PassportAuthController extends Controller
                 // Check if client completed its address details
                 if (isset($client) && $client->zip_code != null) {
                     $userData['address_details'] = true;
+                }
+
+                if ($client->company_enabled == 1) {
+                    // Get client company details
+                    $clientCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
+                    if (isset($clientCompany) && $clientCompany->legal_name != null) {
+                        $responseData['company_details'] = true;
+                    }
                 }
             }
 
