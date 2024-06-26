@@ -13,7 +13,7 @@
             <tr>
                 <td>{{ $loop->index + 1 }}</td>
                 <td>{{ $faq->question }}</td>
-                <td>{!! $faq->answer !!}</td>
+                <td>{!! Str::limit($faq->answer ?? '-', 200) !!}</td>
                 <td>
                     <button type="button" id="statusButton_{{ $faq->id }}"
                         class="btn  {{ $faq->is_active ? 'btn-primary' : 'btn-danger' }} btn-sm"

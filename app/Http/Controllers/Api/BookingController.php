@@ -227,4 +227,39 @@ class BookingController extends Controller
             'data' => $data
         ], 200);
     }
+
+    // insuranceBooking
+    public function insuranceBooking(Request $request): JsonResponse
+    {
+
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        $data['insurance_value'] = 0;
+
+        if (!isset($request->value) && $request->value == '') {
+            // return a json object
+            return response()->json([
+                'success' => true,
+                'message' => 'Estimate price generated successfully',
+                'data' => $data
+            ], 200);
+        }
+
+        $data['insurance_value'] = $this->getEstimateController->getInsuranceValue('delivery', $request->value);
+
+        // return a json object
+        return response()->json([
+            'success' => true,
+            'message' => 'Estimate price generated successfully',
+            'data' => $data
+        ], 200);
+    }
 }

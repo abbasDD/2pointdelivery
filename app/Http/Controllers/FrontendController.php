@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AddressBook;
+use App\Models\Blog;
 use App\Models\Booking;
 use App\Models\Client;
 use App\Models\ClientCompany;
@@ -104,6 +105,9 @@ class FrontendController extends Controller
 
         // Get first question
         $helpQuestion = HelpQuestion::where('help_topic_id', $request->id)->where('is_active', 1)->first();
+        if (!$helpQuestion) {
+            return redirect()->back()->with('error', 'Help Topic not found');
+        }
 
         return view('frontend.topicQuestion', compact('helpQuestionList', 'helpQuestion', 'helpTopic'));
     }
@@ -148,6 +152,15 @@ class FrontendController extends Controller
         $faqs = Faq::where('is_active', 1)->get();
 
         return view('frontend.join_helper', compact('faqs'));
+    }
+
+    // blog page
+    public function blog()
+    {
+        // Get all active blogs
+        $blogs = Blog::where('is_active', 1)->get();
+
+        return view('frontend.blog', compact('blogs'));
     }
 
     // Terms and Conditions Page

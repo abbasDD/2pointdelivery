@@ -68,6 +68,9 @@ Route::middleware(['app_language'])->group(function () {
     // Join Helper Page
     Route::get('/join-helper', [FrontendController::class, 'join_helper'])->name('join_helper');
 
+    // Blog Page
+    Route::get('/blog', [FrontendController::class, 'blog'])->name('blog');
+
     // Terms & Conditions Page
     Route::get('/terms-and-conditions', [FrontendController::class, 'terms_and_conditions'])->name('terms_and_conditions');
 

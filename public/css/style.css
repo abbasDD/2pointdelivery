@@ -55,6 +55,10 @@ a {
     font-size: 1rem;
 }
 
+a:hover {
+    color: var(--primary-color);
+}
+
 label {
     margin-bottom: 15px;
 }
@@ -1538,6 +1542,10 @@ footer hr {
 .booking-form .parcels .active-parcel {
     padding: 15px;
     background-color: var(--primary-color);
+    color: var(--white);
+}
+
+.booking-form .parcels .active-parcel p {
     color: var(--white);
 }
 

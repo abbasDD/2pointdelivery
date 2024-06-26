@@ -782,10 +782,6 @@ class BookingController extends Controller
 
     public function cancelPaypalPayment()
     {
-        // Retrieve booking ID or UUID from the request
-        // $bookingId = $request->input('booking_id');
-
-        dd('Payment cancelled');
 
         // Handle payment cancellation
         return redirect()->back()->with('error', 'Payment cancelled');

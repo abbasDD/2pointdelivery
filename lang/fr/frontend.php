@@ -18,6 +18,7 @@ return [
     'services' => 'Services',
     'about_us' => 'À propos de nous',
     'help' => 'Aide',
+    'blog' => 'Blog',
     'contact_us' => 'Nous contacter',
     'login' => 'Connexion',
     'english' => 'Anglais',

@@ -13,7 +13,7 @@
             <tr>
                 <td>{{ $loop->index + 1 }}</td>
                 <td>{{ $blog->title }}</td>
-                <td>{!! $blog->body !!}</td>
+                <td>{!! Str::limit($blog->body ?? '-', 200) !!}</td>
                 <td>
                     <button type="button" id="statusButton_{{ $blog->id }}"
                         class="btn  {{ $blog->is_active ? 'btn-primary' : 'btn-danger' }} btn-sm"

@@ -68,6 +68,11 @@
                         <p>
                             <a href="{{ route('help') }}" class="text-white">{{ __('frontend.help') }}</a>
                         </p>
+                        {{-- Blog --}}
+                        <p>
+                            <a href="{{ route('blog') }}" class="text-white">{{ __('frontend.blog') }}</a>
+                        </p>
+
                     </div>
                     <!-- Grid column -->
 
