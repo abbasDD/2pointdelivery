@@ -45,7 +45,7 @@ class PDFController extends Controller
         $pdf->save($path . '/booking.pdf');
 
         // return back with success message
-        return redirect()->back()->with('success', 'PDF generated successfully');
+        return redirect()->back()->with('success', 'Test PDF generated successfully');
     }
 
 
@@ -136,7 +136,7 @@ class PDFController extends Controller
         $pdf->save($path . '/' . $booking->uuid . '.pdf');
 
         // return back with success message
-        return response()->json(['success' => 'PDF generated successfully']);
+        return response()->json(['success' => 'Booking Invoice generated successfully']);
     }
 
     // Create booking Invoice
@@ -201,5 +201,35 @@ class PDFController extends Controller
         // return back with success message
         // return redirect()->back()->with('success', 'PDF generated successfully');
         return $booking->uuid . '.pdf';
+    }
+
+
+    // shippingLabelPDF
+    public function shippingLabelPDF()
+    {
+        $users = User::get();
+
+        $data = [
+            'title' => 'SHipping Label - 123',
+            'date' => date('m/d/Y'),
+            'users' => $users
+        ];
+
+        $pdf = FacadePdf::loadView('pdfs/shipping-label', $data);
+
+        // Define the path to save the PDF
+        $path = public_path('pdfs/shipping-labels');
+
+        // Ensure the directory exists
+        if (!File::exists($path)) {
+            File::makeDirectory($path, 0755, true);
+        }
+
+        // Save the PDF to the specified path
+        $pdf->save($path . '/booking.pdf');
+
+        // return back with success message
+        // return redirect()->back()->with('success', 'PDF generated successfully');
+        return response()->json(['success' => 'Shipping Label generated successfully']);
     }
 }

@@ -247,7 +247,13 @@ class GetEstimateController extends Controller
 
         $total_weight = 0;
 
-        $selectedMovingDetailsID = explode(',', $selectedMovingDetailsID);
+        // Check if selectedMovingDetailsID is array
+        if (is_array($selectedMovingDetailsID)) {
+            $selectedMovingDetailsID = $selectedMovingDetailsID;
+        } else {
+            $selectedMovingDetailsID = explode(',', $selectedMovingDetailsID);
+        }
+
         if (count($selectedMovingDetailsID) == 0) {
             return 0;
         }
@@ -357,8 +363,15 @@ class GetEstimateController extends Controller
             return 0;
         }
 
-        // Split $selectedFloorAssessID into array
-        $selectedJobDetailsIDs = explode(',', $selectedJobDetailsID);
+        // Check if selectedJobDetailsID is array
+        if (is_array($selectedJobDetailsID)) {
+            $selectedJobDetailsIDs = $selectedJobDetailsID;
+        } else {
+            // Split $selectedFloorAssessID into array
+            $selectedJobDetailsIDs = explode(',', $selectedJobDetailsID);
+        }
+
+
         if (count($selectedJobDetailsIDs) == 0) {
             return 0;
         }

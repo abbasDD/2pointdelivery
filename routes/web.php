@@ -108,3 +108,4 @@ Route::get('/address/cities/{state_id}', [CityController::class, 'cities'])->nam
 // Test a PDF
 Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
 Route::get('booking-invoice-pdf/{id}', [PDFController::class, 'bookingInvoicePDF']);
+Route::get('shipping-label-pdf/{id}', [PDFController::class, 'shippingLabelPDF']);
