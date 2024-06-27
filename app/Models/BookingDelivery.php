@@ -23,6 +23,7 @@ class BookingDelivery extends Model
         'priority_price',
         'service_price',
         'vehicle_price',
+        'insurance_price',
         'sub_total',
         'tax_price',
         'helper_fee',

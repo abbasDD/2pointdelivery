@@ -46,6 +46,13 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::post('booking/estimate', [BookingController::class, 'estimateBooking']);
     Route::get('booking/insurance', [BookingController::class, 'insuranceBooking']);
     Route::post('booking/create', [BookingController::class, 'createBooking']);
+    Route::get('booking/payment/{id}', [BookingController::class, 'getPaymentBooking']);
+    Route::get('booking/details/{id}', [BookingController::class, 'getBookingDetails']);
+
+    // Active Bookings
+    Route::get('booking/active', [BookingController::class, 'activeBookings']);
+    // Booking History
+    Route::get('booking/history', [BookingController::class, 'getBookingHistory']);
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('priority_price')->nullable();
             $table->string('service_price')->nullable();
             $table->string('vehicle_price')->nullable();
+            $table->string('insurance_price')->nullable();
             $table->string('sub_total')->nullable();
             $table->string('tax_price')->nullable();
             $table->string('helper_fee')->nullable();

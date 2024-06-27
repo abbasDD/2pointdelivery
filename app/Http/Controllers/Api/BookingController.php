@@ -428,7 +428,6 @@ class BookingController extends Controller
             'receiver_phone' => $request->receiver_phone,
             'receiver_email' => $request->receiver_email,
             'delivery_note' => $request->delivery_note,
-            'status' => 'pending',
             'total_price' => $data['amountToPay'],
             'booking_at' => now(),
         ]);
@@ -446,6 +445,7 @@ class BookingController extends Controller
                 'service_price' => number_format((float)$data['base_price'], 2, '.', ''),
                 'sub_total' => number_format((float)$data['sub_total'], 2, '.', ''),
                 'vehicle_price' => number_format((float)$data['vehicle_price'], 2, '.', ''),
+                'insurance_price' => number_format((float)$data['insurance_value'], 2, '.', ''), // 'insurance_price'
                 'tax_price' => number_format((float)$data['tax_price'], 2, '.', ''),
                 'helper_fee' => number_format((float)$serviceCategory->helper_fee, 2, '.', ''),
                 'total_price' => number_format((float)$data['amountToPay'], 2, '.', ''),
@@ -496,7 +496,249 @@ class BookingController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Booking created successfully',
-            'data' => ['booking' => $new_booking, 'bookingPayment' => $bookingPayment]
+            'data' => ['booking_id' => $new_booking->id]
         ], 200);
+    }
+
+    // getPaymentBooking
+    public function getPaymentBooking(Request $request): JsonResponse
+    {
+
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        if (!isset($request->id)) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to get booking.',
+                'errors' => 'Unable to get booking.',
+            ], 422);
+        }
+
+        // return response()->json([
+        //     'booking_id' => auth()->user()->id
+        // ]);
+
+        $booking_id = $request->id;
+
+        // Get booking
+        $booking = Booking::where('id', $booking_id)->where('client_user_id', auth()->user()->id)->where('status', 'draft')->first();
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to get booking.',
+                'errors' => 'Unable to get booking.',
+            ], 422);
+        }
+
+        // Get $bookingPayment
+        $bookingPayment = $this->getBookingPayment($booking_id, $booking->booking_type);
+        if (!$bookingPayment) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to get booking.',
+                'errors' => 'Unable to get booking.',
+            ], 422);
+        }
+
+        // Return response with booking and booking payment
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Booking created successfully',
+            'data' => ['booking' => $booking, 'booking_payment' => $bookingPayment],
+        ], 200);
+    }
+
+
+    // showBooking
+    public function getBookingDetails(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        if (!isset($request->id)) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to get booking.',
+                'errors' => 'Unable to get booking.',
+            ], 422);
+        }
+
+        // return response()->json([
+        //     'booking_id' => auth()->user()->id
+        // ]);
+
+        $booking_id = $request->id;
+
+        $booking = Booking::where('id', $request->id)
+            ->where('client_user_id', auth()->user()->id)
+            ->with('prioritySetting')
+            ->with('serviceType')
+            ->with('serviceCategory')
+            ->first();
+
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to get booking.',
+                'errors' => 'Unable to get booking.',
+            ], 422);
+        }
+
+        // Get $bookingPayment
+        $bookingPayment = $this->getBookingPayment($booking_id, $booking->booking_type);
+
+        if (!$bookingPayment) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to get booking.',
+                'errors' => 'Unable to get booking.',
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Booking details fetched successfully',
+            'data' => ['booking' => $booking, 'bookingPayment' => $bookingPayment],
+        ], 200);
+    }
+
+    // getBookingHistory
+    public function getBookingHistory(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
+            ->where('client_user_id', auth()->user()->id)
+            ->whereIn('status', ['completed', 'cancelled'])
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Booking history fetched successfully',
+            'data' => ['bookings' => $bookings],
+        ], 200);
+    }
+
+    // activeBookings
+    public function activeBookings(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
+            ->where('client_user_id', auth()->user()->id)
+            ->whereIn('status', ['pending', 'started', 'in_transit'])
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Active bookings fetched successfully',
+            'data' => ['bookings' => $bookings],
+        ], 200);
+    }
+
+    // ------------------------------- PRIVATE FUNCTIONS ------------------------------- //
+
+    // Get booking Payment
+    private function getBookingPayment($booking_id, $booking_type)
+    {
+        // Get booking payment
+        $bookingPayment = [
+            'insurance_price' => 0,
+            'base_price' => 0,
+            'distance_price' => 0,
+            'priority_price' => 0,
+            'vehicle_price' => 0,
+            'weight_price' => 0,
+            'no_of_room_price' => 0,
+            'floor_plan_price' => 0,
+            'floor_assess_price' => 0,
+            'job_details_price' => 0,
+            'sub_total' => 0,
+            'tax_price' => 0,
+            'total_price' => 0,
+        ];
+
+        // Check if booking type is delivery
+        if ($booking_type == 'delivery') {
+            $bookingDelivery = BookingDelivery::where('booking_id', $booking_id)->where('payment_status', 'unpaid')->first();
+
+            if (!$bookingDelivery) {
+                return false;
+            }
+
+            $bookingPayment['insurance_price'] = $bookingDelivery->insurance_price;
+            $bookingPayment['base_price'] = $bookingDelivery->service_price;
+            $bookingPayment['distance_price'] = $bookingDelivery->distance_price;
+            $bookingPayment['priority_price'] = $bookingDelivery->priority_price;
+            $bookingPayment['vehicle_price'] = $bookingDelivery->vehicle_price;
+            $bookingPayment['weight_price'] = $bookingDelivery->weight_price;
+            $bookingPayment['sub_total'] = $bookingDelivery->sub_total;
+            $bookingPayment['tax_price'] = $bookingDelivery->tax_price;
+            $bookingPayment['total_price'] = $bookingDelivery->total_price;
+        }
+
+        // Check if booking type is moving
+        if ($booking_type == 'moving') {
+            $bookingMoving = BookingMoving::where('booking_id', $booking_id)->where('payment_status', 'unpaid')->first();
+
+            if (!$bookingMoving) {
+                return false;
+            }
+
+            $bookingPayment['base_price'] = $bookingMoving->service_price;
+            $bookingPayment['distance_price'] = $bookingMoving->distance_price;
+            $bookingPayment['priority_price'] = $bookingMoving->priority_price;
+            $bookingPayment['weight_price'] = $bookingMoving->weight_price;
+            $bookingPayment['no_of_room_price'] = $bookingMoving->no_of_room_price;
+            $bookingPayment['floor_plan_price'] = $bookingMoving->floor_plan_price;
+            $bookingPayment['floor_assess_price'] = $bookingMoving->floor_assess_price;
+            $bookingPayment['job_details_price'] = $bookingMoving->job_details_price;
+            $bookingPayment['sub_total'] = $bookingMoving->sub_total;
+            $bookingPayment['tax_price'] = $bookingMoving->tax_price;
+            $bookingPayment['total_price'] = $bookingMoving->total_price;
+        }
+
+        return $bookingPayment;
     }
 }

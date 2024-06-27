@@ -98,7 +98,7 @@
                         <div class="col-md-12">
                             <input id="referral_code" type="text"
                                 class="form-control @error('referral_code') is-invalid @enderror" name="referral_code"
-                                placeholder="{{ __('auth.refferal_code') }}" autocomplete="referral_code">
+                                placeholder="{{ __('auth.refferal_code') }}" value="{{ $referralCode ?? '' }}">
                             @error('referral_code')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>

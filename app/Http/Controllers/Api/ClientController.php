@@ -47,7 +47,7 @@ class ClientController extends Controller
 
 
         // Get latest booking of this user
-        $responseData['bookings'] = Booking::select('uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
+        $responseData['bookings'] = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
             ->where('client_user_id', auth()->user()->id)
             ->orderBy('bookings.created_at', 'desc')
             ->take(10)->get();

@@ -227,6 +227,7 @@ class BookingController extends Controller
                 'service_price' => number_format((float)$service_price, 2, '.', ''),
                 'sub_total' => number_format((float)$sub_total, 2, '.', ''),
                 'vehicle_price' => number_format((float)$vehicle_price, 2, '.', ''),
+                'insurance_price' => number_format((float)$insurance_value, 2, '.', ''), // 'insurance_price'
                 'tax_price' => number_format((float)$tax_price, 2, '.', ''),
                 'helper_fee' => number_format((float)$helper_fee, 2, '.', ''),
                 'total_price' => number_format((float)$amountToPay, 2, '.', ''),

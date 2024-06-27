@@ -100,9 +100,11 @@ class RegisterController extends Controller
     }
 
 
-    public function showRegistrationFormClient()
+    public function showRegistrationFormClient(Request $request)
     {
-        return view('client.auth.register');
+        $referralCode = $request->ref;
+
+        return view('client.auth.register', compact('referralCode'));
     }
 
     public function showRegistrationFormHelper()
