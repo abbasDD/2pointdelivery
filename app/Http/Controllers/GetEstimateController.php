@@ -96,7 +96,7 @@ class GetEstimateController extends Controller
         }
 
         // Sub Total
-        $data['sub_total'] = $data['base_price'] + $data['distance_price'] + $data['priority_price'] + $data['vehicle_price'] + $data['weight_price'] + $data['no_of_room_price'] + $data['floor_plan_price'] + $data['floor_assess_price'] + $data['job_details_price'];
+        $data['sub_total'] = $data['base_price'] + $data['distance_price'] + $data['priority_price'] + $data['vehicle_price'] + $data['weight_price'] + $data['no_of_room_price'] + $data['floor_plan_price'] + $data['floor_assess_price'] + $data['job_details_price'] + $data['insurance_value'];
 
 
         //  Tax Price
@@ -104,7 +104,7 @@ class GetEstimateController extends Controller
 
 
         // Total amountToPay
-        $data['amountToPay'] = $data['base_price'] + $data['distance_price'] + $data['priority_price'] + $data['vehicle_price'] + $data['weight_price'] + $data['no_of_room_price'] + $data['floor_plan_price'] + $data['floor_assess_price'] + $data['job_details_price'] + $data['tax_price'];
+        $data['amountToPay'] = $data['sub_total'] + $data['tax_price'];
 
 
         // return a json object

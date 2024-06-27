@@ -47,7 +47,11 @@ class BookingReviewController extends Controller
         }
 
         // Get helper user
-        $helperUser = Helper::find($booking->helper_user_id);
+        $helperUser = Helper::where('user_id', $booking->helper_user_id)->first();
+
+        if (!$helperUser) {
+            return redirect()->back()->with('error', 'Helper not found');
+        }
 
         // Save review
         $review = new BookingReview();

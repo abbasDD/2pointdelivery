@@ -20,6 +20,7 @@ class TeamInvitationController extends Controller
 
         $invitationData = [];
 
+
         // Check if invitee exists
         if ($invitee) {
             // Check is user invited himself
@@ -34,6 +35,8 @@ class TeamInvitationController extends Controller
 
             $invitationData['invitee_id'] = $invitee->id;
         }
+
+        $invitationData['inviter_id'] = 1;
 
         // Check if invitee email is not a user
         if (!$invitee) {

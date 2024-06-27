@@ -1412,6 +1412,11 @@ footer p {
 
 footer p a {
     text-decoration: none;
+    color: var(--white);
+}
+
+footer p a:hover {
+    color: var(--primary-color);
 }
 
 footer hr {

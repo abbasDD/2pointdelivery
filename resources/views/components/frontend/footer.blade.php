@@ -56,21 +56,20 @@
                         <h6 class="text-uppercase fw-bold">{{ __('frontend.quick_links') }}</h6>
                         <hr class="mb-4 bg-white mt-0 d-inline-block mx-auto" />
                         <p>
-                            <a href="{{ route('services') }}" class="text-white">{{ __('frontend.services') }}</a>
+                            <a href="{{ route('services') }}">{{ __('frontend.services') }}</a>
                         </p>
                         <p>
-                            <a href="{{ route('about-us') }}" class="text-white">{{ __('frontend.about_us') }}</a>
+                            <a href="{{ route('about-us') }}">{{ __('frontend.about_us') }}</a>
                         </p>
                         <p>
-                            <a href="{{ route('helper.register') }}"
-                                class="text-white">{{ __('frontend.join_as_helper') }}</a>
+                            <a href="{{ route('helper.register') }}">{{ __('frontend.join_as_helper') }}</a>
                         </p>
                         <p>
-                            <a href="{{ route('help') }}" class="text-white">{{ __('frontend.help') }}</a>
+                            <a href="{{ route('help') }}">{{ __('frontend.help') }}</a>
                         </p>
                         {{-- Blog --}}
                         <p>
-                            <a href="{{ route('blog') }}" class="text-white">{{ __('frontend.blog') }}</a>
+                            <a href="{{ route('blog') }}">{{ __('frontend.blog') }}</a>
                         </p>
 
                     </div>
@@ -82,19 +81,17 @@
                         <h6 class="text-uppercase fw-bold">{{ __('frontend.useful_links') }}</h6>
                         <hr class="mb-4 bg-white mt-0 d-inline-block mx-auto" />
                         <p>
-                            <a href="{{ route('contact-us') }}" class="text-white">{{ __('frontend.contact_us') }}</a>
+                            <a href="{{ route('contact-us') }}">{{ __('frontend.contact_us') }}</a>
                         </p>
                         <p>
-                            <a href="{{ route('terms_and_conditions') }}"
-                                class="text-white">{{ __('frontend.terms_and_conditions') }}</a>
+                            <a
+                                href="{{ route('terms_and_conditions') }}">{{ __('frontend.terms_and_conditions') }}</a>
                         </p>
                         <p>
-                            <a href="{{ route('privacy_policy') }}"
-                                class="text-white">{{ __('frontend.privacy_policy') }}</a>
+                            <a href="{{ route('privacy_policy') }}">{{ __('frontend.privacy_policy') }}</a>
                         </p>
                         <p>
-                            <a href="{{ route('cancellation_policy') }}"
-                                class="text-white">{{ __('frontend.cancellation_policy') }}</a>
+                            <a href="{{ route('cancellation_policy') }}">{{ __('frontend.cancellation_policy') }}</a>
                         </p>
                     </div>
                     <!-- Grid column -->

@@ -45,6 +45,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::get('booking/new/page2', [BookingController::class, 'newBookingPage2']);
     Route::post('booking/estimate', [BookingController::class, 'estimateBooking']);
     Route::get('booking/insurance', [BookingController::class, 'insuranceBooking']);
+    Route::post('booking/create', [BookingController::class, 'createBooking']);
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);

@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Models\Booking;
+use App\Models\BookingDelivery;
+use App\Models\BookingMoving;
 use App\Models\City;
 use App\Models\ClientCompany;
 use App\Models\Country;
@@ -414,16 +416,58 @@ class ClientController extends Controller
     {
         // dd($request->id);
         $booking = null;
+        $bookingPayment = null;
+
         if (isset($request->id)) {
-            $booking = Booking::where('uuid', $request->id)->first();
+            $booking = Booking::where('uuid', $request->id)
+                ->where('client_user_id', auth()->user()->id)
+                ->with('prioritySetting')
+                ->with('serviceType')
+                ->with('serviceCategory')
+                ->first();
 
             if (!$booking) {
-                redirect()->back()->with('error', 'Booking not found');
+                return redirect()->back()->with('error', 'Booking not found');
             }
+            if ($booking->booking_type == 'delivery') {
+                // Getting booking payment data
+                $bookingPayment = BookingDelivery::where('booking_id', $booking->id)->first();
+            }
+
+            if ($booking->booking_type == 'moving') {
+                $bookingPayment = BookingMoving::where('booking_id', $booking->id)->first();
+            }
+
+            $booking->currentStatus = 1;
+            // switch to manage booking status
+            switch ($booking->status) {
+                case 'pending':
+                    $booking->currentStatus = 0;
+                    break;
+                case 'accepted':
+                    $booking->currentStatus = 1;
+                    break;
+                case 'started':
+                    $booking->currentStatus = 2;
+                    break;
+                case 'in_transit':
+                    $booking->currentStatus = 3;
+                    break;
+                case 'completed':
+                    $booking->currentStatus = 4;
+                    break;
+                case 'incomplete':
+                    $booking->currentStatus = 5;
+                    break;
+                default:
+                    $booking->currentStatus = 1;
+                    break;
+            }
+
             // dd($booking);
-            return view('client.track_order', compact('booking'));
+            return view('client.track_order', compact('booking', 'bookingPayment'));
         }
-        return view('client.track_order', compact('booking'));
+        return view('client.track_order', compact('booking', 'bookingPayment'));
     }
 
 
