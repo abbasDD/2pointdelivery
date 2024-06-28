@@ -81,8 +81,16 @@ class LoginController extends Controller
 
             // Retrieve the intended URL after successful login
             $intendedUrl = Session::pull('intended_url');
-            // Redirect the user back to the intended URL
-            return redirect()->to($intendedUrl)->with('success', 'Login Successful');
+
+            // Store user_type to Session
+            session(['user_type' => 'client']);
+
+            if (!isset($intendedUrl) || $intendedUrl == route('index') || $intendedUrl == url('/')) {
+                // Redirect the user back to the intended URL
+                return redirect()->route('client.index')->with('success', 'Login Successful');
+            } else {
+                return redirect()->to($intendedUrl)->with('success', 'Login Successful');
+            }
         }
 
         return back()->withErrors([
@@ -126,8 +134,16 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             // Retrieve the intended URL after successful login
             $intendedUrl = Session::pull('intended_url');
-            // Redirect the user back to the intended URL
-            return redirect()->to($intendedUrl)->with('success', 'Login Successful');
+
+            // Store user_type to Session
+            session(['user_type' => 'helper']);
+
+            if (!isset($intendedUrl) || $intendedUrl == route('index') || $intendedUrl == url('/')) {
+                // Redirect the user back to the intended URL
+                return redirect()->route('helper.index')->with('success', 'Login Successful');
+            } else {
+                return redirect()->to($intendedUrl)->with('success', 'Login Successful');
+            }
         }
 
         return back()->withErrors([
@@ -163,6 +179,10 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             // dd($credentials);
+
+            // Store user_type to Session
+            session(['user_type' => 'admin']);
+
             return redirect()->intended('admin');
         }
 

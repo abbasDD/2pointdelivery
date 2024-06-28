@@ -581,14 +581,12 @@ class ClientBookingController extends Controller
             return response()->json([
                 'success' => false,
                 'statusCode' => 422,
-                'message' => 'Unable to get booking.',
-                'errors' => 'Unable to get booking.',
+                'message' => 'Booking ID is required.',
+                'errors' => 'Booking ID is required.',
             ], 422);
         }
 
-        // return response()->json([
-        //     'booking_id' => auth()->user()->id
-        // ]);
+
 
         $booking_id = $request->id;
 
@@ -621,7 +619,7 @@ class ClientBookingController extends Controller
 
         // Check if client data exist
         if ($booking->client_user_id) {
-            $bookingData['client_user'] = User::select('users.email', 'clients.first_name', 'clients.last_name', 'clients.profile_image')
+            $bookingData['client_user'] = User::select('users.email', 'clients.first_name', 'clients.last_name', 'clients.profile_image', 'clients.phone_no', 'clients.gender')
                 ->where('users.id', $booking->client_user_id)
                 ->join('clients', 'users.id', '=', 'clients.user_id')
                 ->first();
@@ -639,8 +637,8 @@ class ClientBookingController extends Controller
             return response()->json([
                 'success' => false,
                 'statusCode' => 422,
-                'message' => 'Unable to get booking.',
-                'errors' => 'Unable to get booking.',
+                'message' => 'Unable to get booking payment.',
+                'errors' => 'Unable to get booking payment.',
             ], 422);
         }
 
@@ -649,10 +647,12 @@ class ClientBookingController extends Controller
             'email' => '',
             'first_name' => '',
             'last_name' => '',
+            'phone_no' => '',
+            'gender' => '',
             'profile_image' => asset('images/users/default.png'),
         ];
         if ($booking->helper_user_id) {
-            $helper_user = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image')
+            $helper_user = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image', 'helpers.gender', 'helpers.phone_no')
                 ->where('users.id', $booking->helper_user_id)
                 ->join('helpers', 'users.id', '=', 'helpers.user_id')
                 ->first();
@@ -664,10 +664,12 @@ class ClientBookingController extends Controller
             'email' => '',
             'first_name' => '',
             'last_name' => '',
+            'phone_no' => '',
+            'gender' => '',
             'profile_image' => asset('images/users/default.png'),
         ];
         if ($booking->helper_user_id2) {
-            $helper_user2 = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image')
+            $helper_user2 = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image', 'helpers.gender', 'helpers.phone_no')
                 ->where('users.id', $booking->helper_user_id2)
                 ->join('helpers', 'users.id', '=', 'helpers.user_id')
                 ->first();
@@ -676,29 +678,49 @@ class ClientBookingController extends Controller
 
         // Get helper vehicle data
         $helperVehicleData = [
+            'vehicle_type' => '',
             'vehicle_number' => '',
             'vehicle_make' => '',
             'vehicle_model' => '',
             'vehicle_color' => '',
             'vehicle_year' => '',
+            'vehicle_image' => '',
+            'description' => '',
         ];
         if ($booking->helper_user_id) {
-            $helperVehicleData = HelperVehicle::select('vehicle_number', 'vehicle_make', 'vehicle_model', 'vehicle_color', 'vehicle_year')
+            $helperVehicleData = HelperVehicle::select('helper_vehicles.vehicle_number', 'helper_vehicles.vehicle_make', 'helper_vehicles.vehicle_model', 'helper_vehicles.vehicle_color', 'helper_vehicles.vehicle_year', 'vehicle_types.name as vehicle_type', 'vehicle_types.image as vehicle_image', 'vehicle_types.description')
+                ->join('vehicle_types', 'vehicle_types.id', '=', 'helper_vehicles.vehicle_type_id')
                 ->where('user_id', $booking->helper_user_id)->first();
+            // Update Image with link
+            if ($helperVehicleData->vehicle_image) {
+                $helperVehicleData->vehicle_image = asset('images/vehicle_types/' . $helperVehicleData->vehicle_image);
+            } else {
+                $helperVehicleData->vehicle_image = asset('images/vehicle_types/default.png');
+            }
         }
         $bookingData['helperVehicleData'] = $helperVehicleData;
 
         // Get helper2 vehicle data
         $helperVehicleData2 = [
+            'vehicle_type' => '',
             'vehicle_number' => '',
             'vehicle_make' => '',
             'vehicle_model' => '',
             'vehicle_color' => '',
             'vehicle_year' => '',
+            'vehicle_image' => '',
+            'description' => '',
         ];
         if ($booking->helper_user_id2) {
-            $helperVehicleData2 = HelperVehicle::select('vehicle_number', 'vehicle_make', 'vehicle_model', 'vehicle_color', 'vehicle_year')
+            $helperVehicleData2 = HelperVehicle::select('helper_vehicles.vehicle_number', 'helper_vehicles.vehicle_make', 'helper_vehicles.vehicle_model', 'helper_vehicles.vehicle_color', 'helper_vehicles.vehicle_year', 'vehicle_types.name as vehicle_type', 'vehicle_types.image as vehicle_image', 'vehicle_types.description')
+                ->join('vehicle_types', 'vehicle_types.id', '=', 'helper_vehicles.vehicle_type_id')
                 ->where('user_id', $booking->helper_user_id2)->first();
+            // Update Image with link
+            if ($helperVehicleData2->vehicle_image) {
+                $helperVehicleData2->vehicle_image = asset('images/vehicle_types/' . $helperVehicleData2->vehicle_image);
+            } else {
+                $helperVehicleData2->vehicle_image = asset('images/vehicle_types/default.png');
+            }
         }
         $bookingData['helperVehicleData2'] = $helperVehicleData2;
 
@@ -782,30 +804,32 @@ class ClientBookingController extends Controller
             'sub_total' => 0,
             'tax_price' => 0,
             'total_price' => 0,
+            'payment_method' => 'cod',
         ];
 
         // Check if booking type is delivery
         if ($booking_type == 'delivery') {
-            $bookingDelivery = BookingDelivery::where('booking_id', $booking_id)->where('payment_status', 'unpaid')->first();
+            $bookingDelivery = BookingDelivery::where('booking_id', $booking_id)->first();
 
             if (!$bookingDelivery) {
                 return false;
             }
 
-            $bookingPayment['insurance_price'] = $bookingDelivery->insurance_price;
-            $bookingPayment['base_price'] = $bookingDelivery->service_price;
-            $bookingPayment['distance_price'] = $bookingDelivery->distance_price;
-            $bookingPayment['priority_price'] = $bookingDelivery->priority_price;
-            $bookingPayment['vehicle_price'] = $bookingDelivery->vehicle_price;
-            $bookingPayment['weight_price'] = $bookingDelivery->weight_price;
+            $bookingPayment['insurance_price'] = $bookingDelivery->insurance_price ?? 0;
+            $bookingPayment['base_price'] = $bookingDelivery->service_price ?? 0;
+            $bookingPayment['distance_price'] = $bookingDelivery->distance_price ?? 0;
+            $bookingPayment['priority_price'] = $bookingDelivery->priority_price ?? 0;
+            $bookingPayment['vehicle_price'] = $bookingDelivery->vehicle_price ?? 0;
+            $bookingPayment['weight_price'] = $bookingDelivery->weight_price ?? 0;
             $bookingPayment['sub_total'] = $bookingDelivery->sub_total;
             $bookingPayment['tax_price'] = $bookingDelivery->tax_price;
             $bookingPayment['total_price'] = $bookingDelivery->total_price;
+            $bookingPayment['payment_method'] = $bookingDelivery->payment_method;
         }
 
         // Check if booking type is moving
         if ($booking_type == 'moving') {
-            $bookingMoving = BookingMoving::where('booking_id', $booking_id)->where('payment_status', 'unpaid')->first();
+            $bookingMoving = BookingMoving::where('booking_id', $booking_id)->first();
 
             if (!$bookingMoving) {
                 return false;
@@ -822,6 +846,7 @@ class ClientBookingController extends Controller
             $bookingPayment['sub_total'] = $bookingMoving->sub_total;
             $bookingPayment['tax_price'] = $bookingMoving->tax_price;
             $bookingPayment['total_price'] = $bookingMoving->total_price;
+            $bookingPayment['payment_method'] = $bookingMoving->payment_method;
         }
 
         return $bookingPayment;

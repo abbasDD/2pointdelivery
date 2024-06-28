@@ -96,6 +96,11 @@ class ClientController extends Controller
      */
     public function index()
     {
+        // Change session variable user_type to client
+        session(['user_type' => 'client']);
+
+        // dd(session('user_type'));
+
         // Statistics
         $satistics = [
             'total_bookings' => Booking::where('client_user_id', auth()->user()->id)->count(),

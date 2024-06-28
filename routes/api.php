@@ -97,8 +97,15 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     Route::post('switch', [HelperController::class, 'switchToClient']);
 
     // Bookings APIs
+    Route::get('booking/details/{id}', [HelperBookingController::class, 'getBookingDetails']);
     Route::post('booking/accept', [HelperBookingController::class, 'acceptBooking']);
     Route::post('booking/start', [HelperBookingController::class, 'startBooking']);
+    Route::post('booking/in-transit', [HelperBookingController::class, 'inTransitBooking']);
+
+    // Active Bookings
+    Route::get('booking/active', [HelperBookingController::class, 'activeBookings']);
+    // Booking History
+    Route::get('booking/history', [HelperBookingController::class, 'getBookingHistory']);
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);

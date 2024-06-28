@@ -54,7 +54,7 @@ class HelperBookingController extends Controller
 
         $booking_id = $request->id;
 
-        $booking = Booking::select('bookings.id', 'bookings.uuid', 'bookings.client_user_id', 'bookings.helper_user_id', 'bookings.helper_user_id2', 'service_types.name as service_type', 'service_categories.name as service_category', 'priority_settings.name as priority_setting', 'bookings.booking_type', 'bookings.pickup_address', 'bookings.dropoff_address', 'bookings.pickup_latitude', 'bookings.pickup_longitude', 'bookings.dropoff_latitude', 'bookings.dropoff_longitude', 'bookings.booking_date', 'bookings.booking_time', 'bookings.status', 'bookings.total_price', 'bookings.receiver_name', 'bookings.receiver_phone', 'bookings.receiver_email', 'bookings.delivery_note', 'bookings.booking_at')
+        $booking = Booking::select('bookings.id', 'bookings.uuid', 'bookings.client_user_id', 'bookings.helper_user_id', 'bookings.helper_user_id2', 'service_types.name as service_type', 'service_categories.name as service_category', 'priority_settings.name as priority_setting', 'bookings.booking_type', 'bookings.pickup_address', 'bookings.dropoff_address', 'bookings.pickup_latitude', 'bookings.pickup_longitude', 'bookings.dropoff_latitude', 'bookings.dropoff_longitude', 'bookings.booking_date', 'bookings.booking_time', 'bookings.status', 'bookings.receiver_name', 'bookings.receiver_phone', 'bookings.receiver_email', 'bookings.delivery_note', 'bookings.booking_at')
             ->where('bookings.id', $request->id)
             ->where('bookings.client_user_id', auth()->user()->id)
             ->join('service_types', 'bookings.service_type_id', '=', 'service_types.id')
@@ -72,13 +72,17 @@ class HelperBookingController extends Controller
             ], 422);
         }
 
+        $bookingPayment = $this->getHelperFee($booking_id, $booking->booking_type);
+
         $bookingData = [
             'booking' => $booking,
-            'bookingPayment' => $this->getBookingPayment($booking_id, $booking->booking_type),
+            'helper_fee' => $bookingPayment['helper_fee'] ?? 0,
             'bookingImages' => $this->getBookingImages($booking_id, $booking->booking_type),
             'helper_user' => [],
             'helper_user2' => [],
-            'client_user' => []
+            'client_user' => [],
+            'helperVehicleData' => [],
+            'helperVehicleData2' => []
         ];
 
         // Check if client data exist
@@ -94,16 +98,6 @@ class HelperBookingController extends Controller
             } else {
                 $bookingData['client_user']->profile_image = asset('images/users/default.png');
             }
-        }
-
-        // Check if booking payment exist
-        if (!$bookingData['bookingPayment']) {
-            return response()->json([
-                'success' => false,
-                'statusCode' => 422,
-                'message' => 'Unable to get booking.',
-                'errors' => 'Unable to get booking.',
-            ], 422);
         }
 
         // Check if helper accepted the booking
@@ -411,6 +405,108 @@ class HelperBookingController extends Controller
         ]);
     }
 
+
+    // Accept Booking
+    public function inTransitBooking(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'booking_id' => 'required|exists:bookings,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // Check if booking exist
+        $booking = Booking::where('id', $request->booking_id)->first();
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to accept booking.',
+                'errors' => 'Unable to accept booking.',
+            ], 422);
+        }
+
+
+
+        // Check if booking is still in pending status
+        if ($booking->status == 'started') {
+            // Check if booking->booking_type is delivery
+            if ($booking->booking_type == 'delivery') {
+                // Get booking delivery data
+                $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+                if (!$bookingDelivery) {
+                    return response()->json([
+                        'success' => false,
+                        'statusCode' => 422,
+                        'message' => 'Unable to find Booking Delivery.',
+                        'errors' => 'Unable to find Booking Delivery.',
+                    ], 422);
+                }
+
+                // Update booking delivery
+                $bookingDelivery->start_intransit_at = Carbon::now();
+                $bookingDelivery->save();
+            }
+
+
+            // Check if booking->booking_type is moving
+            if ($booking->booking_type == 'moving') {
+                // Get booking moving data
+                $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
+                if (!$bookingMoving) {
+                    return response()->json([
+                        'success' => false,
+                        'statusCode' => 422,
+                        'message' => 'Unable to find Booking Moving.',
+                        'errors' => 'Unable to find Booking Moving.',
+                    ], 422);
+                }
+
+                // Update booking moving
+                $bookingMoving->start_intransit_at = Carbon::now();
+                $bookingMoving->save();
+            }
+
+
+            // Update Booking
+            $booking->status = 'in_transit';
+            $booking->save();
+
+            // Return success
+            return response()->json([
+                'success' => true,
+                'statusCode' => 200,
+                'message' => 'Booking accepted successfully',
+                'data' => [],
+            ], 200);
+        }
+
+        // If all else fails return error
+        return response()->json([
+            'success' => false,
+            'statusCode' => 422,
+            'message' => 'Booking already accepted.',
+            'errors' => 'Booking already accepted.',
+        ], 422);
+    }
+
     // getBookingHistory
     public function getBookingHistory(Request $request): JsonResponse
     {
@@ -466,23 +562,11 @@ class HelperBookingController extends Controller
     // ------------------------------- PRIVATE FUNCTIONS ------------------------------- //
 
     // Get booking Payment
-    private function getBookingPayment($booking_id, $booking_type)
+    private function getHelperFee($booking_id, $booking_type)
     {
         // Get booking payment
         $bookingPayment = [
-            'insurance_price' => 0,
-            'base_price' => 0,
-            'distance_price' => 0,
-            'priority_price' => 0,
-            'vehicle_price' => 0,
-            'weight_price' => 0,
-            'no_of_room_price' => 0,
-            'floor_plan_price' => 0,
-            'floor_assess_price' => 0,
-            'job_details_price' => 0,
-            'sub_total' => 0,
-            'tax_price' => 0,
-            'total_price' => 0,
+            'helper_fee' => 0,
         ];
 
         // Check if booking type is delivery
@@ -493,15 +577,7 @@ class HelperBookingController extends Controller
                 return false;
             }
 
-            $bookingPayment['insurance_price'] = $bookingDelivery->insurance_price;
-            $bookingPayment['base_price'] = $bookingDelivery->service_price;
-            $bookingPayment['distance_price'] = $bookingDelivery->distance_price;
-            $bookingPayment['priority_price'] = $bookingDelivery->priority_price;
-            $bookingPayment['vehicle_price'] = $bookingDelivery->vehicle_price;
-            $bookingPayment['weight_price'] = $bookingDelivery->weight_price;
-            $bookingPayment['sub_total'] = $bookingDelivery->sub_total;
-            $bookingPayment['tax_price'] = $bookingDelivery->tax_price;
-            $bookingPayment['total_price'] = $bookingDelivery->total_price;
+            $bookingPayment['helper_fee'] = $bookingDelivery->helper_fee;
         }
 
         // Check if booking type is moving
@@ -512,17 +588,7 @@ class HelperBookingController extends Controller
                 return false;
             }
 
-            $bookingPayment['base_price'] = $bookingMoving->service_price;
-            $bookingPayment['distance_price'] = $bookingMoving->distance_price;
-            $bookingPayment['priority_price'] = $bookingMoving->priority_price;
-            $bookingPayment['weight_price'] = $bookingMoving->weight_price;
-            $bookingPayment['no_of_room_price'] = $bookingMoving->no_of_room_price;
-            $bookingPayment['floor_plan_price'] = $bookingMoving->floor_plan_price;
-            $bookingPayment['floor_assess_price'] = $bookingMoving->floor_assess_price;
-            $bookingPayment['job_details_price'] = $bookingMoving->job_details_price;
-            $bookingPayment['sub_total'] = $bookingMoving->sub_total;
-            $bookingPayment['tax_price'] = $bookingMoving->tax_price;
-            $bookingPayment['total_price'] = $bookingMoving->total_price;
+            $bookingPayment['helper_fee'] = $bookingMoving->helper_fee;
         }
 
         return $bookingPayment;
@@ -551,5 +617,32 @@ class HelperBookingController extends Controller
         ];
 
         return $bookingImages;
+    }
+
+    // Check If Helper has access to change booking status
+    private function checkHelperStatus($helper_user_id, $booking_type)
+    {
+        // Check if helper_user_id is not equal to auth id
+        if ($booking_type == 'moving') {
+            if ($helper_user_id != auth()->user()->id) {
+                return response()->json([
+                    'success' => false,
+                    'statusCode' => 422,
+                    'message' => 'You can not in transit this booking.',
+                    'errors' => 'You can not in transit this booking.',
+                ], 422);
+            }
+        }
+
+        if ($booking_type == 'moving') {
+            if ($helper_user_id != auth()->user()->id) {
+                return response()->json([
+                    'success' => false,
+                    'statusCode' => 422,
+                    'message' => 'You can not in transit this booking.',
+                    'errors' => 'You can not in transit this booking.',
+                ], 422);
+            }
+        }
     }
 }

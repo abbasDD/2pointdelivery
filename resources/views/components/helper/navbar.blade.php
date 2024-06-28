@@ -137,31 +137,42 @@
             success: function(data) {
                 const notificationList = $('#notification-list');
                 notificationList.empty();
-
+                notifications = data.notifications;
                 // if data is empty
-                if (data.length == 0) {
+                if (data.notifications.length == 0) {
                     const notificationItem = $('<li class="item"></li>');
                     notificationItem.html(`
                         <h5>No new notifications</h5>
                     `);
                     notificationList.append(notificationItem);
                 }
-
-                data.forEach(notification => {
+                notifications.forEach(notification => {
                     addNotification(notification);
                 });
-                updateNotificationCount(data.length);
+                updateNotificationCount(data.unread_notification);
             }
         });
     }
 
     function addNotification(notification) {
         const notificationList = $('#notification-list');
-        const notificationItem = $('<li class="item"></li>');
+        var notificationItem;
+
+        if (notification.read == 0) {
+            notificationItem = $('<li class="item bg-light"></li>');
+        } else {
+            notificationItem = $('<li class="item"></li>');
+        }
+
+        var notificationID = notification.id;
+
         notificationItem.html(`
+        <a href="{{ route('user.notificationRedirect', ['id' => '__notificationID__']) }}" class="nav-link">
             <h5>${notification.title}</h5>
             <p>${notification.content}</p>
-        `);
+        </a>
+    `.replace('__notificationID__', notificationID)); // Replace placeholder with actual ID
+
         notificationList.prepend(notificationItem); // Add new notifications to the top
     }
 

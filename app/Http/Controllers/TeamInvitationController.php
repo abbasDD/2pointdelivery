@@ -158,6 +158,8 @@ class TeamInvitationController extends Controller
         // Get from session
         $originalUserId = session('original_user_id');
         Auth::loginUsingId($originalUserId);
+        // Remove from session
+        session()->forget('original_user_id');
         // return response()->json(['message' => 'Switched user successfully']);
         return redirect()->back()->with('success', 'Switched user successfully');
     }

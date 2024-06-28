@@ -8,6 +8,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\GetEstimateController;
+use App\Http\Controllers\GoogleLoginController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\UserNotificationController;
@@ -39,14 +40,12 @@ Route::middleware(['app_language'])->group(function () {
     Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
     Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
-
-    // Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
-    // Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
-    // Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
-
     // Google URL
-    Route::get('/google/redirect', [App\Http\Controllers\GoogleLoginController::class, 'redirectToGoogle'])->name('google.redirect');
-    Route::get('/google/callback', [App\Http\Controllers\GoogleLoginController::class, 'handleGoogleCallback'])->name('google.callback');
+    Route::get('/google/redirect', [GoogleLoginController::class, 'redirectToGoogle'])->name('google.redirect');
+    Route::get('/google/callback', [GoogleLoginController::class, 'handleGoogleCallback'])->name('google.callback');
+
+    // Facebook URL
+
 
     // Home Page
     Route::get('/', [FrontendController::class, 'index'])->name('index');
@@ -100,6 +99,7 @@ Route::middleware(['app_language'])->group(function () {
 
 // User Notifications
 Route::get('user/notifications', [UserNotificationController::class, 'index'])->name('user.notifications');
+Route::get('user/notification/redirect/{id}', [UserNotificationController::class, 'notificationRedirect'])->name('user.notificationRedirect');
 Route::get('user/notifications/read', [UserNotificationController::class, 'markAllAsRead'])->name('user.notifications.read');
 
 
