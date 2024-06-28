@@ -1,25 +1,28 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Client;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\GetEstimateController;
 use App\Models\Booking;
 use App\Models\BookingDelivery;
 use App\Models\BookingMoving;
+use App\Models\Helper;
+use App\Models\HelperVehicle;
 use App\Models\MovingConfig;
 use App\Models\MovingDetail;
 use App\Models\MovingDetailCategory;
 use App\Models\PrioritySetting;
 use App\Models\ServiceCategory;
 use App\Models\ServiceType;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 
-class BookingController extends Controller
+class ClientBookingController extends Controller
 {
     protected $getEstimateController;
 
@@ -589,12 +592,14 @@ class BookingController extends Controller
 
         $booking_id = $request->id;
 
-        $booking = Booking::where('id', $request->id)
-            ->where('client_user_id', auth()->user()->id)
-            ->with('prioritySetting')
-            ->with('serviceType')
-            ->with('serviceCategory')
+        $booking = Booking::select('bookings.id', 'bookings.uuid', 'bookings.client_user_id', 'bookings.helper_user_id', 'bookings.helper_user_id2', 'service_types.name as service_type', 'service_categories.name as service_category', 'priority_settings.name as priority_setting', 'bookings.booking_type', 'bookings.pickup_address', 'bookings.dropoff_address', 'bookings.pickup_latitude', 'bookings.pickup_longitude', 'bookings.dropoff_latitude', 'bookings.dropoff_longitude', 'bookings.booking_date', 'bookings.booking_time', 'bookings.status', 'bookings.total_price', 'bookings.receiver_name', 'bookings.receiver_phone', 'bookings.receiver_email', 'bookings.delivery_note', 'bookings.booking_at')
+            ->where('bookings.id', $request->id)
+            ->where('bookings.client_user_id', auth()->user()->id)
+            ->join('service_types', 'bookings.service_type_id', '=', 'service_types.id')
+            ->join('service_categories', 'bookings.service_category_id', '=', 'service_categories.id')
+            ->join('priority_settings', 'bookings.priority_setting_id', '=', 'priority_settings.id')
             ->first();
+
 
         if (!$booking) {
             return response()->json([
@@ -605,10 +610,32 @@ class BookingController extends Controller
             ], 422);
         }
 
-        // Get $bookingPayment
-        $bookingPayment = $this->getBookingPayment($booking_id, $booking->booking_type);
+        $bookingData = [
+            'booking' => $booking,
+            'bookingPayment' => $this->getBookingPayment($booking_id, $booking->booking_type),
+            'bookingImages' => $this->getBookingImages($booking_id, $booking->booking_type),
+            'helper_user' => [],
+            'helper_user2' => [],
+            'client_user' => []
+        ];
 
-        if (!$bookingPayment) {
+        // Check if client data exist
+        if ($booking->client_user_id) {
+            $bookingData['client_user'] = User::select('users.email', 'clients.first_name', 'clients.last_name', 'clients.profile_image')
+                ->where('users.id', $booking->client_user_id)
+                ->join('clients', 'users.id', '=', 'clients.user_id')
+                ->first();
+
+            // Set image with path
+            if ($bookingData['client_user']->profile_image) {
+                $bookingData['client_user']->profile_image = asset('images/users/' . $bookingData['client_user']->profile_image);
+            } else {
+                $bookingData['client_user']->profile_image = asset('images/users/default.png');
+            }
+        }
+
+        // Check if booking payment exist
+        if (!$bookingData['bookingPayment']) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 422,
@@ -617,11 +644,69 @@ class BookingController extends Controller
             ], 422);
         }
 
+        // Check if helper accepted the booking
+        $helper_user = [
+            'email' => '',
+            'first_name' => '',
+            'last_name' => '',
+            'profile_image' => asset('images/users/default.png'),
+        ];
+        if ($booking->helper_user_id) {
+            $helper_user = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image')
+                ->where('users.id', $booking->helper_user_id)
+                ->join('helpers', 'users.id', '=', 'helpers.user_id')
+                ->first();
+        }
+        $bookingData['helper_user'] = $helper_user;
+
+        // Check if helper2 accepted the booking
+        $helper_user2 = [
+            'email' => '',
+            'first_name' => '',
+            'last_name' => '',
+            'profile_image' => asset('images/users/default.png'),
+        ];
+        if ($booking->helper_user_id2) {
+            $helper_user2 = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image')
+                ->where('users.id', $booking->helper_user_id2)
+                ->join('helpers', 'users.id', '=', 'helpers.user_id')
+                ->first();
+        }
+        $bookingData['helper_user2'] = $helper_user2;
+
+        // Get helper vehicle data
+        $helperVehicleData = [
+            'vehicle_number' => '',
+            'vehicle_make' => '',
+            'vehicle_model' => '',
+            'vehicle_color' => '',
+            'vehicle_year' => '',
+        ];
+        if ($booking->helper_user_id) {
+            $helperVehicleData = HelperVehicle::select('vehicle_number', 'vehicle_make', 'vehicle_model', 'vehicle_color', 'vehicle_year')
+                ->where('user_id', $booking->helper_user_id)->first();
+        }
+        $bookingData['helperVehicleData'] = $helperVehicleData;
+
+        // Get helper2 vehicle data
+        $helperVehicleData2 = [
+            'vehicle_number' => '',
+            'vehicle_make' => '',
+            'vehicle_model' => '',
+            'vehicle_color' => '',
+            'vehicle_year' => '',
+        ];
+        if ($booking->helper_user_id2) {
+            $helperVehicleData2 = HelperVehicle::select('vehicle_number', 'vehicle_make', 'vehicle_model', 'vehicle_color', 'vehicle_year')
+                ->where('user_id', $booking->helper_user_id2)->first();
+        }
+        $bookingData['helperVehicleData2'] = $helperVehicleData2;
+
         return response()->json([
             'success' => true,
             'statusCode' => 200,
             'message' => 'Booking details fetched successfully',
-            'data' => ['booking' => $booking, 'bookingPayment' => $bookingPayment],
+            'data' => $bookingData,
         ], 200);
     }
 
@@ -740,5 +825,30 @@ class BookingController extends Controller
         }
 
         return $bookingPayment;
+    }
+
+    // getBookingImages
+    private function getBookingImages($booking_id, $booking_type)
+    {
+        // Check if booking type is delivery
+        if ($booking_type == 'delivery') {
+            $bookingImages = BookingDelivery::select('start_booking_image', 'signatureStart', 'complete_booking_image', 'signatureCompleted')
+                ->where('booking_id', $booking_id)->first();
+        }
+
+        // Check if booking type is moving
+        if ($booking_type == 'moving') {
+            $bookingImages = BookingMoving::select('start_booking_image', 'signatureStart', 'complete_booking_image', 'signatureCompleted')
+                ->where('booking_id', $booking_id)->first();
+        }
+
+        $bookingImages = [
+            'start_booking_image' => $bookingImages['start_booking_image'] ?? asset('images/bookings/default.png'),
+            'signatureStart' => $bookingImages['signatureStart'] ?? asset('images/bookings/default.png'),
+            'complete_booking_image' => $bookingImages['complete_booking_image'] ?? asset('images/bookings/default.png'),
+            'signatureCompleted' => $bookingImages['signatureCompleted'] ?? asset('images/bookings/default.png'),
+        ];
+
+        return $bookingImages;
     }
 }

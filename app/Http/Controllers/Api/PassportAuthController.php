@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\ClientCompany;
 use App\Models\Helper;
+use App\Models\HelperCompany;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -248,6 +249,16 @@ class PassportAuthController extends Controller
                 // Check if helper completed its address details
                 if (isset($helper) && $helper->zip_code != null) {
                     $userData['address_details'] = true;
+                }
+
+
+
+                if ($helper->company_enabled == 1) {
+                    // Get client company details
+                    $helperCompany = HelperCompany::where('user_id', auth()->user()->id)->first();
+                    if (isset($helperCompany) && $helperCompany->legal_name != null) {
+                        $responseData['company_details'] = true;
+                    }
                 }
             }
 

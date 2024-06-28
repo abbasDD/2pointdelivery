@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Helper;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Client;
 use App\Models\ClientCompany;
-use App\Models\ServiceType;
+use App\Models\Helper;
 use App\Models\SocialLink;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -15,13 +15,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class ClientController extends Controller
+class HelperController extends Controller
 {
-    // Home Page 
+
+    // home
     public function home(): JsonResponse
     {
         // If token is not valid return error
-
         if (!auth()->user()) {
             return response()->json([
                 'success' => false,
@@ -31,41 +31,82 @@ class ClientController extends Controller
             ], 401);
         }
 
-        $responseData = [];
+        $user = auth()->user();
 
-        // Service Image Path
-        $responseData['service_image_path'] = asset('images/service_types/');
+        // Calculate helper earnings
+        $helper_earnings = Booking::where('bookings.helper_user_id', auth()->user()->id)
+            ->join('booking_deliveries', 'bookings.id', '=', 'booking_deliveries.booking_id')
+            ->where('bookings.status', 'completed')
+            ->sum('booking_deliveries.helper_fee');
 
-        // Get list of active services
-        $responseData['serviceTypes'] = ServiceType::select('id', 'uuid', 'type', 'name', 'image')
-            ->where('is_active', 1)
-            ->whereHas('serviceCategories', function ($query) {
-                $query->where('is_active', 1);
-            })
-            // ->where('type', 'delivery')      // uncomment if you want to use only delivery
+        // Statistics
+        $data = [
+            'total_bookings' => Booking::where('helper_user_id', auth()->user()->id)->count(),
+            'accepted_bookings' => Booking::where('helper_user_id', auth()->user()->id)->where('status', 'accepted')->count(),
+            'cancelled_bookings' => Booking::where('helper_user_id', auth()->user()->id)->where('status', 'cancelled')->count(),
+            'total_earnings' => $helper_earnings,
+        ];
+
+        $data['bookings'] = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
+            ->whereIn('status', ['pending'])
             ->get();
 
 
-        // Get latest booking of this user
-        $responseData['bookings'] = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
-            ->where('client_user_id', auth()->user()->id)
-            ->orderBy('bookings.created_at', 'desc')
-            ->take(10)->get();
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'data' => $data,
+        ], 200);
+    }
 
-        $responseData['personal_details'] = false;
-        $responseData['address_details'] = false;
-        $responseData['company_details'] = false;
+    // switchToClient
+    public function switchToClient(): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
 
-        // Get client details
-        $client = Client::where('user_id', auth()->user()->id)->first();
+        $user = auth()->user();
+
+        $userData = [
+            'email' => $user->email,
+            'referral_code' => $user->referral_code,
+            'language_code' => $user->language_code,
+            'is_active' => $user->is_active,
+            'company_enabled' => null,
+            'first_name' => null,
+            'middle_name' => null,
+            'last_name' => null,
+            'profile_image' => asset('images/users/default.png'),
+            'personal_details' => false,
+            'address_details' => false,
+            'company_details' => false,
+        ];
+
+        $client = Client::where('user_id', $user->id)->first();
+        $userData['company_enabled'] = $client->company_enabled;
+        $userData['first_name'] = $client->first_name;
+        $userData['middle_name'] = $client->middle_name;
+        $userData['last_name'] = $client->last_name;
+        $userData['profile_image'] = $client->profile_image == null ? asset('images/users/default.png') : asset('images/users/' . $client->profile_image);
+        $userData['personal_details'] = false;
+        $userData['address_details'] = false;
+        $userData['company_details'] = false;
+
         // Check if client completed its personal details
         if (isset($client) && $client->first_name != null) {
-            $responseData['personal_details'] = true;
+            $userData['personal_details'] = true;
         }
 
         // Check if client completed its address details
         if (isset($client) && $client->zip_code != null) {
-            $responseData['address_details'] = true;
+            $userData['address_details'] = true;
         }
 
         if ($client->company_enabled == 1) {
@@ -76,15 +117,17 @@ class ClientController extends Controller
             }
         }
 
+        // Success response
         return response()->json([
             'success' => true,
-            'message' => 'Home Data fetched successfully',
-            'data' => $responseData
+            'statusCode' => 200,
+            'message' => 'Switched to client account successfully',
+            'data' => $userData,
         ], 200);
     }
 
     // getPersonalInfo
-    function getPersonalInfo(): JsonResponse
+    public function getPersonalInfo(): JsonResponse
     {
         // If token is not valid return error
 
@@ -100,48 +143,37 @@ class ClientController extends Controller
 
         $user = auth()->user();
 
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'statusCode' => 401,
-                'message' => 'Unauthorized.',
-                'errors' => 'Unauthorized',
-            ], 401);
+        $helper = Helper::where('user_id', $user->id)->first();
+        if (!$helper) {
+            // Create a new helper
+            $helper = new Helper();
+            $helper->user_id = $user->id;
+            $helper->save();
         }
 
-
-        $client = Client::where('user_id', $user->id)->first();
-        if (!$client) {
-            // Create a new client
-            $client = new Client();
-            $client->user_id = $user->id;
-            $client->save();
-        }
-
-        $clientData = [
-            'account_type' => $client->company_enabled ? 'company' : 'individual',
-            'first_name' => $client->first_name,
-            'middle_name' => $client->middle_name,
-            'last_name' => $client->last_name,
-            'phone_no' => $client->phone_no,
-            'gender' => $client->gender,
-            'date_of_birth' => $client->date_of_birth,
+        $helperData = [
+            'account_type' => $helper->company_enabled ? 'company' : 'individual',
+            'first_name' => $helper->first_name,
+            'middle_name' => $helper->middle_name,
+            'last_name' => $helper->last_name,
+            'phone_no' => $helper->phone_no,
+            'gender' => $helper->gender,
+            'date_of_birth' => $helper->date_of_birth,
             'email' => $user->email,
-            'profile_image' => $client->profile_image ? asset('images/users/' . $client->profile_image) : asset('images/users/default.png'),
-            'tax_id' => $client->tax_id
+            'profile_image' => $helper->profile_image ? asset('images/users/' . $helper->profile_image) : asset('images/users/default.png'),
+            'tax_id' => $helper->tax_id
         ];
 
 
         return response()->json([
             'success' => true,
-            'message' => 'Client Profile fetched successfully',
-            'data' => $clientData
+            'message' => 'Helper Profile fetched successfully',
+            'data' => $helperData
         ], 200);
     }
 
-
     // personalUpdate
-    function personalUpdate(Request $request): JsonResponse
+    public function personalUpdate(Request $request): JsonResponse
     {
         // If token is not valid return error
 
@@ -174,22 +206,13 @@ class ClientController extends Controller
 
         $user = auth()->user();
 
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'statusCode' => 401,
-                'message' => 'Unauthorized.',
-                'errors' => 'Unauthorized',
-            ], 401);
-        }
-
-        // If client is found, update its attributes
-        $client = Client::where('user_id', $user->id)->first();
-        if (!$client) {
-            // Create a new client
-            $client = new Client();
-            $client->user_id = $user->id;
-            $client->save();
+        // If helper is found, update its attributes
+        $helper = Helper::where('user_id', $user->id)->first();
+        if (!$helper) {
+            // Create a new helper
+            $helper = new Helper();
+            $helper->user_id = $user->id;
+            $helper->save();
         }
 
 
@@ -202,6 +225,18 @@ class ClientController extends Controller
             'company_enabled' => 0
         ];
 
+        // If middle_name is not null
+
+        if ($request->has('middle_name')) {
+            $updated_data['middle_name'] = $request->middle_name;
+        }
+
+        // If tax_id is not null
+
+        if ($request->has('tax_id')) {
+            $updated_data['tax_id'] = $request->tax_id;
+        }
+
 
         // If account type is is company
 
@@ -209,19 +244,19 @@ class ClientController extends Controller
             $updated_data['company_enabled'] = 1;
         }
 
-        // Update client
-        $client->update($updated_data);
+        // Update helper
+        $helper->update($updated_data);
 
 
         return response()->json([
             'success' => true,
-            'message' => 'Client Profile updated successfully',
+            'message' => 'Helper Profile updated successfully',
             'data' => []
         ], 200);
     }
 
     // getAddressInfo
-    function getAddressInfo(): JsonResponse
+    public function getAddressInfo(): JsonResponse
     {
 
         // If token is not valid return error
@@ -248,33 +283,34 @@ class ClientController extends Controller
         }
 
 
-        $client = Client::where('user_id', $user->id)->first();
-        if (!$client) {
-            // Create a new client
-            $client = new Client();
-            $client->user_id = $user->id;
-            $client->save();
+        $helper = Helper::where('user_id', $user->id)->first();
+        if (!$helper) {
+            // Create a new helper
+            $helper = new Helper();
+            $helper->user_id = $user->id;
+            $helper->save();
         }
 
 
-        $clientData = [
-            'suite' => $client->suite,
-            'street' => $client->street,
-            'city' => $client->city,
-            'state' => $client->state,
-            'country' => $client->country,
-            'zip_code' => $client->zip_code
+        $helperData = [
+            'suite' => $helper->suite,
+            'street' => $helper->street,
+            'city' => $helper->city,
+            'state' => $helper->state,
+            'country' => $helper->country,
+            'zip_code' => $helper->zip_code
         ];
 
         return response()->json([
             'success' => true,
             'message' => 'Address fetched successfully',
-            'data' => $clientData
+            'data' => $helperData
         ], 200);
     }
 
+
     // addressUpdate
-    function addressUpdate(Request $request): JsonResponse
+    public function addressUpdate(Request $request): JsonResponse
     {
 
         // If token is not valid return error
@@ -317,13 +353,13 @@ class ClientController extends Controller
             ], 401);
         }
 
-        // If client is found, update its attributes
-        $client = Client::where('user_id', $user->id)->first();
-        if (!$client) {
-            // Create a new client
-            $client = new Client();
-            $client->user_id = $user->id;
-            $client->save();
+        // If helper is found, update its attributes
+        $helper = Helper::where('user_id', $user->id)->first();
+        if (!$helper) {
+            // Create a new helper
+            $helper = new Helper();
+            $helper->user_id = $user->id;
+            $helper->save();
         }
 
 
@@ -337,7 +373,7 @@ class ClientController extends Controller
         ];
 
 
-        $client->update($updated_data);
+        $helper->update($updated_data);
 
         return response()->json([
             'success' => true,
@@ -346,8 +382,9 @@ class ClientController extends Controller
         ], 200);
     }
 
+
     // passwordUpdate
-    function passwordUpdate(Request $request): JsonResponse
+    public function passwordUpdate(Request $request): JsonResponse
     {
 
         // If token is not valid return error
@@ -375,7 +412,9 @@ class ClientController extends Controller
             ], 422);
         }
 
-        $user = auth()->user();
+
+        // Get the user and update its password
+        $user = User::find(auth()->user()->id);
 
         // Check if old password is correct
         if (!Hash::check($request->old_password, $user->password)) {
@@ -385,9 +424,6 @@ class ClientController extends Controller
                 'errors' => []
             ], 422);
         }
-
-        // Get the user and update its password
-        $user = User::find(auth()->user()->id);
 
         $user->password = Hash::make($request->new_password);
         $user->save();
@@ -400,7 +436,7 @@ class ClientController extends Controller
     }
 
     // getSocialLinks
-    function getSocialLinks(): JsonResponse
+    public function getSocialLinks(): JsonResponse
     {
         // If token is not valid return error
 
@@ -416,7 +452,6 @@ class ClientController extends Controller
         // Get social links
         $socialLinks = SocialLink::where('user_id', auth()->user()->id)->get()->pluck('link', 'key')->toArray();
 
-        // return response()->json($socialLinks['facebook']);
 
         return response()->json([
             'success' => true,
@@ -431,7 +466,7 @@ class ClientController extends Controller
     }
 
     // socialLinksUpdate
-    function socialLinksUpdate(Request $request): JsonResponse
+    public function socialLinksUpdate(Request $request): JsonResponse
     {
         // If token is not valid return error
 
@@ -445,45 +480,46 @@ class ClientController extends Controller
         }
 
         // Update social links
+
         // Get facebook
         $facebookLink = SocialLink::where('user_id', auth()->user()->id)->where('key', 'facebook')->first();
         if ($facebookLink) {
-            $facebookLink->link = $request->facebook ?? 'https://facebook.com/';
+            $facebookLink->link = $request->facebook ?? $facebookLink->link;
             $facebookLink->save();
         } else {
             $facebookLink = new SocialLink();
             $facebookLink->user_id = auth()->user()->id;
-            $facebookLink->user_type = 'client';
+            $facebookLink->user_type = 'helper';
             $facebookLink->key = 'facebook';
-            $facebookLink->link = $request->facebook ?? 'https://facebook.com/';
+            $facebookLink->link = $request->facebook ?? $facebookLink->link;
             $facebookLink->save();
         }
 
         // Get linkedin
         $linkedinLink = SocialLink::where('user_id', auth()->user()->id)->where('key', 'linkedin')->first();
         if ($linkedinLink) {
-            $linkedinLink->link = $request->linkedin ?? 'https://linkedin.com/';
+            $linkedinLink->link = $request->linkedin ?? $linkedinLink->link;
             $linkedinLink->save();
         } else {
             $linkedinLink = new SocialLink();
             $linkedinLink->user_id = auth()->user()->id;
-            $linkedinLink->user_type = 'client';
+            $linkedinLink->user_type = 'helper';
             $linkedinLink->key = 'linkedin';
-            $linkedinLink->link = $request->linkedin ?? 'https://linkedin.com/';
+            $linkedinLink->link = $request->linkedin ?? $linkedinLink->link;
             $linkedinLink->save();
         }
 
         // Get instagram
         $instagramLink = SocialLink::where('user_id', auth()->user()->id)->where('key', 'instagram')->first();
         if ($instagramLink) {
-            $instagramLink->link = $request->instagram ?? 'https://instagram.com/';
+            $instagramLink->link = $request->instagram ?? $instagramLink->link;
             $instagramLink->save();
         } else {
             $instagramLink = new SocialLink();
             $instagramLink->user_id = auth()->user()->id;
-            $instagramLink->user_type = 'client';
+            $instagramLink->user_type = 'helper';
             $instagramLink->key = 'instagram';
-            $instagramLink->link = $request->instagram ?? 'https://instagram.com/';
+            $instagramLink->link = $request->instagram ?? $instagramLink->link;
             $instagramLink->save();
         }
 
@@ -491,14 +527,14 @@ class ClientController extends Controller
         // Get tiktok
         $tiktokLink = SocialLink::where('user_id', auth()->user()->id)->where('key', 'tiktok')->first();
         if ($tiktokLink) {
-            $tiktokLink->link = $request->tiktok ?? 'https://tiktok.com/';
+            $tiktokLink->link = $request->tiktok ?? $tiktokLink->link;
             $tiktokLink->save();
         } else {
             $tiktokLink = new SocialLink();
             $tiktokLink->user_id = auth()->user()->id;
-            $tiktokLink->user_type = 'client';
+            $tiktokLink->user_type = 'helper';
             $tiktokLink->key = 'tiktok';
-            $tiktokLink->link = $request->tiktok ?? 'https://tiktok.com/';
+            $tiktokLink->link = $request->tiktok ?? $tiktokLink->link;
             $tiktokLink->save();
         }
 

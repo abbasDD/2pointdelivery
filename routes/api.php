@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\Api\BookingController;
-use App\Http\Controllers\Api\ClientController;
-use App\Http\Controllers\Api\HelperController;
+use App\Http\Controllers\Api\Client\ClientBookingController;
+use App\Http\Controllers\Api\Client\ClientController;
+use App\Http\Controllers\Api\Helper\HelperBookingController;
+use App\Http\Controllers\Api\Helper\HelperController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PassportAuthController;
@@ -40,19 +41,22 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     // Get Client Home
     Route::get('home', [ClientController::class, 'home']);
 
+    // Switch to Helper
+    Route::post('switch', [ClientController::class, 'switchToHelper']);
+
     // Booking Form APIs
-    Route::get('booking/new/page1', [BookingController::class, 'newBookingPage1']);
-    Route::get('booking/new/page2', [BookingController::class, 'newBookingPage2']);
-    Route::post('booking/estimate', [BookingController::class, 'estimateBooking']);
-    Route::get('booking/insurance', [BookingController::class, 'insuranceBooking']);
-    Route::post('booking/create', [BookingController::class, 'createBooking']);
-    Route::get('booking/payment/{id}', [BookingController::class, 'getPaymentBooking']);
-    Route::get('booking/details/{id}', [BookingController::class, 'getBookingDetails']);
+    Route::get('booking/new/page1', [ClientBookingController::class, 'newBookingPage1']);
+    Route::get('booking/new/page2', [ClientBookingController::class, 'newBookingPage2']);
+    Route::post('booking/estimate', [ClientBookingController::class, 'estimateBooking']);
+    Route::get('booking/insurance', [ClientBookingController::class, 'insuranceBooking']);
+    Route::post('booking/create', [ClientBookingController::class, 'createBooking']);
+    Route::get('booking/payment/{id}', [ClientBookingController::class, 'getPaymentBooking']);
+    Route::get('booking/details/{id}', [ClientBookingController::class, 'getBookingDetails']);
 
     // Active Bookings
-    Route::get('booking/active', [BookingController::class, 'activeBookings']);
+    Route::get('booking/active', [ClientBookingController::class, 'activeBookings']);
     // Booking History
-    Route::get('booking/history', [BookingController::class, 'getBookingHistory']);
+    Route::get('booking/history', [ClientBookingController::class, 'getBookingHistory']);
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);
@@ -85,6 +89,16 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     // Update Social Links
     Route::get('social-links', [HelperController::class, 'getSocialLinks']);
     Route::post('social-links/update', [HelperController::class, 'socialLinksUpdate']);
+
+    // Helper Home
+    Route::get('home', [HelperController::class, 'home']);
+
+    // Switch to Client
+    Route::post('switch', [HelperController::class, 'switchToClient']);
+
+    // Bookings APIs
+    Route::post('booking/accept', [HelperBookingController::class, 'acceptBooking']);
+    Route::post('booking/start', [HelperBookingController::class, 'startBooking']);
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);
