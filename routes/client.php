@@ -10,7 +10,6 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\KycDetailController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\TeamInvitationController;
-use App\Http\Controllers\UserNotificationController;
 use Illuminate\Support\Facades\Route;
 
 

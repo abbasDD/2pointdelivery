@@ -69,6 +69,21 @@ class UserNotificationController extends Controller
                 }
                 return redirect()->route('helper.invitations.show', $notification->reference_id);
                 break;
+            case 'kyc_detail':
+                // kyc_detail
+                if (session('user_type') == 'client') {
+                    return redirect()->route('client.kyc_details', $notification->reference_id);
+                }
+                return redirect()->route('helper.kyc_details', $notification->reference_id);
+                break;
+            case 'user_registered':
+                // user_registered
+                if (session('user_type') == 'admin') {
+                    return redirect()->route('admin.newHelpers');
+                }
+                // Redirect back with error
+                return redirect()->back()->with('error', 'Unable to redirect notification');
+                break;
             default:
                 // default
                 return redirect()->back()->with('error', 'Unable to redirect notification');

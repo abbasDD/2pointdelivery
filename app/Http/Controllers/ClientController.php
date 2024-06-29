@@ -405,8 +405,8 @@ class ClientController extends Controller
     {
         // Get all referred list
         $referrals = Referral::select('referrals.*', 'users.email', 'users.user_type')
-            ->join('users', 'users.id', '=', 'referrals.referred_user_id')
-            ->where('referrer_id', auth()->user()->id)->get();
+            ->join('users', 'users.id', '=', 'referrals.referrer_id')
+            ->where('referred_user_id', auth()->user()->id)->get();
 
         return view('client.referrals', compact('referrals'));
     }

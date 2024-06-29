@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('referrals', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('referrer_id');
-            $table->unsignedBigInteger('referred_user_id');
+            $table->unsignedBigInteger('referrer_id');  //The one who referred
+            $table->unsignedBigInteger('referred_user_id'); //The one who was referred - This user code used
             $table->timestamps();
 
             $table->foreign('referrer_id')->references('id')->on('users')->onDelete('cascade');

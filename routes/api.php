@@ -4,7 +4,6 @@ use App\Http\Controllers\Api\Client\ClientBookingController;
 use App\Http\Controllers\Api\Client\ClientController;
 use App\Http\Controllers\Api\Helper\HelperBookingController;
 use App\Http\Controllers\Api\Helper\HelperController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PassportAuthController;
 
@@ -21,7 +20,6 @@ Route::post('login', [PassportAuthController::class, 'login']);
 Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     // Get the authenticated User Data
     Route::get('index', [PassportAuthController::class, 'me']);
-
 
     // Update Client Personal Details
     Route::get('personal', [ClientController::class, 'getPersonalInfo']);
@@ -102,6 +100,8 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     Route::post('booking/start', [HelperBookingController::class, 'startBooking']);
     Route::post('booking/in-transit', [HelperBookingController::class, 'inTransitBooking']);
 
+    // Pending Bookings
+    Route::get('booking/pending', [HelperBookingController::class, 'pendingBookings']);
     // Active Bookings
     Route::get('booking/active', [HelperBookingController::class, 'activeBookings']);
     // Booking History

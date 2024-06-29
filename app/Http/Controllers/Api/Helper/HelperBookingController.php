@@ -507,8 +507,8 @@ class HelperBookingController extends Controller
         ], 422);
     }
 
-    // getBookingHistory
-    public function getBookingHistory(Request $request): JsonResponse
+    // pendingBookings
+    public function pendingBookings(Request $request): JsonResponse
     {
         // If token is not valid return error
         if (!auth()->user()) {
@@ -521,14 +521,13 @@ class HelperBookingController extends Controller
         }
 
         $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
-            ->where('client_user_id', auth()->user()->id)
-            ->whereIn('status', ['completed', 'cancelled'])
+            ->whereIn('status', ['pending'])
             ->get();
 
         return response()->json([
             'success' => true,
             'statusCode' => 200,
-            'message' => 'Booking history fetched successfully',
+            'message' => 'Active bookings fetched successfully',
             'data' => ['bookings' => $bookings],
         ], 200);
     }
@@ -547,14 +546,42 @@ class HelperBookingController extends Controller
         }
 
         $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
-            ->where('client_user_id', auth()->user()->id)
-            ->whereIn('status', ['pending', 'started', 'in_transit'])
+            ->where('helper_user_id', auth()->user()->id)
+            ->orWhere('helper_user_id2', auth()->user()->id)
+            ->whereIn('status', ['started', 'in_transit'])
             ->get();
 
         return response()->json([
             'success' => true,
             'statusCode' => 200,
-            'message' => 'Active bookings fetched successfully',
+            'message' => 'Pending bookings fetched successfully',
+            'data' => ['bookings' => $bookings],
+        ], 200);
+    }
+
+    // getBookingHistory
+    public function getBookingHistory(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
+            ->where('helper_user_id', auth()->user()->id)
+            ->orWhere('helper_user_id2', auth()->user()->id)
+            ->whereIn('status', ['completed', 'cancelled'])
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Booking history fetched successfully',
             'data' => ['bookings' => $bookings],
         ], 200);
     }

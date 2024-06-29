@@ -89,11 +89,6 @@ Route::middleware(['app_language'])->group(function () {
 
     // Change Language Routes
     Route::get('/change-language/{lang}', [FrontendController::class, 'changeLanguage'])->name('change-language');
-    // Route::get('/change-language/{lang}', function ($lang) {
-    //     session()->put('applocale', $lang);
-    //     session()->save();
-    //     return back();
-    // })->name('change-language');
 });
 
 
