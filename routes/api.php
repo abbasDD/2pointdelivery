@@ -50,6 +50,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::post('booking/create', [ClientBookingController::class, 'createBooking']);
     Route::get('booking/payment/{id}', [ClientBookingController::class, 'getPaymentBooking']);
     Route::get('booking/details/{id}', [ClientBookingController::class, 'getBookingDetails']);
+    Route::post('booking/payment/cod', [ClientBookingController::class, 'codPaymentBooking']);
 
     // Active Bookings
     Route::get('booking/active', [ClientBookingController::class, 'activeBookings']);

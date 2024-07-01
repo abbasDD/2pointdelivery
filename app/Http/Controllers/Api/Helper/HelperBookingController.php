@@ -85,30 +85,17 @@ class HelperBookingController extends Controller
             'helperVehicleData2' => []
         ];
 
-        // Check if client data exist
-        if ($booking->client_user_id) {
-            $bookingData['client_user'] = User::select('users.email', 'clients.first_name', 'clients.last_name', 'clients.profile_image')
-                ->where('users.id', $booking->client_user_id)
-                ->join('clients', 'users.id', '=', 'clients.user_id')
-                ->first();
-
-            // Set image with path
-            if ($bookingData['client_user']->profile_image) {
-                $bookingData['client_user']->profile_image = asset('images/users/' . $bookingData['client_user']->profile_image);
-            } else {
-                $bookingData['client_user']->profile_image = asset('images/users/default.png');
-            }
-        }
-
-        // Check if helper accepted the booking
+        // Get helper
         $helper_user = [
             'email' => '',
             'first_name' => '',
             'last_name' => '',
+            'phone_no' => '',
+            'gender' => '',
             'profile_image' => asset('images/users/default.png'),
         ];
         if ($booking->helper_user_id) {
-            $helper_user = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image')
+            $helper_user = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image', 'helpers.gender', 'helpers.phone_no')
                 ->where('users.id', $booking->helper_user_id)
                 ->join('helpers', 'users.id', '=', 'helpers.user_id')
                 ->first();
@@ -120,10 +107,12 @@ class HelperBookingController extends Controller
             'email' => '',
             'first_name' => '',
             'last_name' => '',
+            'phone_no' => '',
+            'gender' => '',
             'profile_image' => asset('images/users/default.png'),
         ];
         if ($booking->helper_user_id2) {
-            $helper_user2 = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image')
+            $helper_user2 = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image', 'helpers.gender', 'helpers.phone_no')
                 ->where('users.id', $booking->helper_user_id2)
                 ->join('helpers', 'users.id', '=', 'helpers.user_id')
                 ->first();
@@ -132,29 +121,49 @@ class HelperBookingController extends Controller
 
         // Get helper vehicle data
         $helperVehicleData = [
+            'vehicle_type' => '',
             'vehicle_number' => '',
             'vehicle_make' => '',
             'vehicle_model' => '',
             'vehicle_color' => '',
             'vehicle_year' => '',
+            'vehicle_image' => '',
+            'description' => '',
         ];
         if ($booking->helper_user_id) {
-            $helperVehicleData = HelperVehicle::select('vehicle_number', 'vehicle_make', 'vehicle_model', 'vehicle_color', 'vehicle_year')
+            $helperVehicleData = HelperVehicle::select('helper_vehicles.vehicle_number', 'helper_vehicles.vehicle_make', 'helper_vehicles.vehicle_model', 'helper_vehicles.vehicle_color', 'helper_vehicles.vehicle_year', 'vehicle_types.name as vehicle_type', 'vehicle_types.image as vehicle_image', 'vehicle_types.description')
+                ->join('vehicle_types', 'vehicle_types.id', '=', 'helper_vehicles.vehicle_type_id')
                 ->where('user_id', $booking->helper_user_id)->first();
+            // Update Image with link
+            if ($helperVehicleData->vehicle_image) {
+                $helperVehicleData->vehicle_image = asset('images/vehicle_types/' . $helperVehicleData->vehicle_image);
+            } else {
+                $helperVehicleData->vehicle_image = asset('images/vehicle_types/default.png');
+            }
         }
         $bookingData['helperVehicleData'] = $helperVehicleData;
 
         // Get helper2 vehicle data
         $helperVehicleData2 = [
+            'vehicle_type' => '',
             'vehicle_number' => '',
             'vehicle_make' => '',
             'vehicle_model' => '',
             'vehicle_color' => '',
             'vehicle_year' => '',
+            'vehicle_image' => '',
+            'description' => '',
         ];
         if ($booking->helper_user_id2) {
-            $helperVehicleData2 = HelperVehicle::select('vehicle_number', 'vehicle_make', 'vehicle_model', 'vehicle_color', 'vehicle_year')
+            $helperVehicleData2 = HelperVehicle::select('helper_vehicles.vehicle_number', 'helper_vehicles.vehicle_make', 'helper_vehicles.vehicle_model', 'helper_vehicles.vehicle_color', 'helper_vehicles.vehicle_year', 'vehicle_types.name as vehicle_type', 'vehicle_types.image as vehicle_image', 'vehicle_types.description')
+                ->join('vehicle_types', 'vehicle_types.id', '=', 'helper_vehicles.vehicle_type_id')
                 ->where('user_id', $booking->helper_user_id2)->first();
+            // Update Image with link
+            if ($helperVehicleData2->vehicle_image) {
+                $helperVehicleData2->vehicle_image = asset('images/vehicle_types/' . $helperVehicleData2->vehicle_image);
+            } else {
+                $helperVehicleData2->vehicle_image = asset('images/vehicle_types/default.png');
+            }
         }
         $bookingData['helperVehicleData2'] = $helperVehicleData2;
 
@@ -493,7 +502,7 @@ class HelperBookingController extends Controller
             return response()->json([
                 'success' => true,
                 'statusCode' => 200,
-                'message' => 'Booking accepted successfully',
+                'message' => 'Booking in transit successfully',
                 'data' => [],
             ], 200);
         }
@@ -502,8 +511,8 @@ class HelperBookingController extends Controller
         return response()->json([
             'success' => false,
             'statusCode' => 422,
-            'message' => 'Booking already accepted.',
-            'errors' => 'Booking already accepted.',
+            'message' => 'Booking already in transit.',
+            'errors' => 'Booking already in transit.',
         ], 422);
     }
 
@@ -521,7 +530,7 @@ class HelperBookingController extends Controller
         }
 
         $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
-            ->whereIn('status', ['pending'])
+            ->where('status', 'pending')
             ->get();
 
         return response()->json([

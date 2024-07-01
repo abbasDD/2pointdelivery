@@ -16,6 +16,7 @@ use App\Models\PrioritySetting;
 use App\Models\ServiceCategory;
 use App\Models\ServiceType;
 use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
@@ -563,6 +564,110 @@ class ClientBookingController extends Controller
         ], 200);
     }
 
+    // codPaymentBooking
+    public function codPaymentBooking(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Check if booking exist on booking_id
+        $booking = Booking::where('id', $request->booking_id)->where('client_user_id', auth()->user()->id)->where('status', 'draft')->first();
+
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to get booking.',
+                'errors' => 'Unable to get booking.',
+            ], 422);
+        }
+
+        // Check if current user is booked by this booking
+        if ($booking->client_user_id != auth()->user()->id) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to get booking.',
+                'errors' => 'Unable to get booking.',
+            ], 422);
+        }
+
+        if ($booking->booking_type == 'delivery') {
+            $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+
+            if ($bookingDelivery->payment_status == 'paid') {
+                return response()->json([
+                    'success' => false,
+                    'statusCode' => 422,
+                    'message' => 'Booking already paid.',
+                    'errors' => 'Booking already paid.',
+                ], 422);
+            }
+        }
+
+        if ($booking->booking_type == 'moving') {
+            $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
+
+            if ($bookingMoving->payment_status == 'paid') {
+                return response()->json([
+                    'success' => false,
+                    'statusCode' => 422,
+                    'message' => 'Booking already paid.',
+                    'errors' => 'Booking already paid.',
+                ], 422);
+            }
+        }
+
+        // Update booking to paid status
+
+        $booking->update([
+            'status' => 'pending',
+        ]);
+
+        if ($booking->booking_type == 'delivery') {
+            $bookingDelivery->update([
+                'payment_method' => 'cod',
+                'payment_status' => 'paid',
+                'payment_at' => Carbon::now(),
+            ]);
+        }
+
+        if ($booking->booking_type == 'moving') {
+            $bookingMoving->update([
+                'payment_method' => 'cod',
+                'payment_status' => 'paid',
+                'payment_at' => Carbon::now(),
+            ]);
+        }
+
+        // Send notification to user
+
+        $userNofitication = UserNotification::create([
+            'sender_user_id' => null,
+            'receiver_user_id' => auth()->user()->id,
+            'receiver_user_type' => 'client',
+            'type' => 'booking',
+            'reference_id' => $booking->id,
+            'title' => 'Booking Payment',
+            'content' => 'You have successfully paid for your booking',
+            'read' => 0
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Booking paid successfully',
+            'data' => [],
+        ], 200);
+    }
+
 
     // showBooking
     public function getBookingDetails(Request $request): JsonResponse
@@ -642,7 +747,7 @@ class ClientBookingController extends Controller
             ], 422);
         }
 
-        // Check if helper accepted the booking
+        //  Get helper data
         $helper_user = [
             'email' => '',
             'first_name' => '',
