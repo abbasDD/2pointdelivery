@@ -1,7 +1,22 @@
 <div class="card mb-3">
     <div class="card-header d-flex align-items-center justify-content-between">
         <h5 class="mb-0">Tracking Order</h5>
-        <p class="mb-0 badge bg-primary">{{ $booking->status }}</p>
+        <div class="d-flex align-items-center gap-3">
+            {{-- Show Invoice Download button --}}
+            @if ($booking->invoice_file)
+                <a href="{{ asset('pdfs/invoices/' . $booking->invoice_file) }}" class="btn btn-primary btn-sm"
+                    target="_blank"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i>
+                    <span class="d-none d-md-inline">Download Invoice</span></a>
+            @endif
+            {{-- Show shipping label download button --}}
+            @if ($booking->label_file)
+                <a href="{{ asset('pdfs/shipping-labels/' . $booking->label_file) }}" class="btn btn-primary btn-sm"
+                    target="_blank"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i>
+                    <span class="d-none d-md-inline">Download Shipping Label</span></a>
+            @endif
+            {{-- Show booking status --}}
+            <p class="mb-0 badge bg-primary">{{ $booking->status }}</p>
+        </div>
     </div>
     <div class="card-body" style="height: 400px">
         <div id="map" style="height:100%; width:100%;"></div>

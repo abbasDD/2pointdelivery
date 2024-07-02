@@ -348,14 +348,15 @@ class HelperBookingController extends Controller
             ], 422);
         }
 
+
         // Check if auth user is helper
-        if ($booking->helper_id != auth()->user()->id && $booking->helper_user_id2 != auth()->user()->id) {
+        if ($booking->helper_user_id != auth()->user()->id && $booking->helper_user_id2 != auth()->user()->id) {
             return response()->json([
                 'success' => false,
-                'statusCode' => 401,
+                'statusCode' => 422,
                 'message' => 'You are not authorized.',
                 'errors' => 'You are not authorized.',
-            ], 401);
+            ], 422);
         }
 
         // Check if booking is still in accepted status
@@ -491,13 +492,13 @@ class HelperBookingController extends Controller
         }
 
         // Check if auth user is helper
-        if ($booking->helper_id != auth()->user()->id && $booking->helper_user_id2 != auth()->user()->id) {
+        if ($booking->helper_user_id != auth()->user()->id && $booking->helper_user_id2 != auth()->user()->id) {
             return response()->json([
                 'success' => false,
-                'statusCode' => 401,
+                'statusCode' => 422,
                 'message' => 'You are not authorized.',
                 'errors' => 'You are not authorized.',
-            ], 401);
+            ], 422);
         }
 
         // Check if booking is still in pending status
@@ -603,13 +604,13 @@ class HelperBookingController extends Controller
         }
 
         // Check if auth user is helper
-        if ($booking->helper_id != auth()->user()->id && $booking->helper_user_id2 != auth()->user()->id) {
+        if ($booking->helper_user_id != auth()->user()->id && $booking->helper_user_id2 != auth()->user()->id) {
             return response()->json([
                 'success' => false,
-                'statusCode' => 401,
+                'statusCode' => 422,
                 'message' => 'You are not authorized.',
                 'errors' => 'You are not authorized.',
-            ], 401);
+            ], 422);
         }
 
         // Check if booking is still in in_transit status
@@ -746,7 +747,7 @@ class HelperBookingController extends Controller
         }
 
         // Check if auth user is helper
-        if ($booking->helper_id != auth()->user()->id && $booking->helper_user_id2 != auth()->user()->id) {
+        if ($booking->helper_user_id != auth()->user()->id && $booking->helper_user_id2 != auth()->user()->id) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,

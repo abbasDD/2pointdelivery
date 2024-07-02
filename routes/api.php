@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Client\ClientBookingController;
 use App\Http\Controllers\Api\Client\ClientController;
 use App\Http\Controllers\Api\Helper\HelperBookingController;
 use App\Http\Controllers\Api\Helper\HelperController;
+use App\Http\Controllers\Api\KycController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PassportAuthController;
 
@@ -57,6 +58,12 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::get('booking/active', [ClientBookingController::class, 'activeBookings']);
     // Booking History
     Route::get('booking/history', [ClientBookingController::class, 'getBookingHistory']);
+
+    // KYC CRUD
+    Route::get('kyc', [KycController::class, 'index']);
+    Route::get('kyc-types', [KycController::class, 'kycTypes']);
+    Route::post('kyc/store', [KycController::class, 'store']);
+    Route::get('kyc/show/{id}', [KycController::class, 'show']);
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);

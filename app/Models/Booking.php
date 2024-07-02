@@ -39,6 +39,8 @@ class Booking extends Model
         'delivery_note',
         'status',
         'total_price',
+        'invoice_file',
+        'label_file',
         'booking_at',
         'pickup_at',
         'dropoff_at',

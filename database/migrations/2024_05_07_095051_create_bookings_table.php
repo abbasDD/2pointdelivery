@@ -37,6 +37,8 @@ return new class extends Migration
             $table->text('delivery_note')->nullable();
             $table->string('status')->default('draft');
             $table->string('total_price');
+            $table->string('invoice_file')->nullable();
+            $table->string('label_file')->nullable();
             $table->dateTime('booking_at')->nullable();
             $table->dateTime('pickup_at')->nullable();
             $table->dateTime('dropoff_at')->nullable();
