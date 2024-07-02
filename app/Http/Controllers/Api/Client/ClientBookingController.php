@@ -7,6 +7,7 @@ use App\Http\Controllers\GetEstimateController;
 use App\Models\Booking;
 use App\Models\BookingDelivery;
 use App\Models\BookingMoving;
+use App\Models\BookingReview;
 use App\Models\Helper;
 use App\Models\HelperVehicle;
 use App\Models\MovingConfig;
@@ -717,6 +718,7 @@ class ClientBookingController extends Controller
             'booking' => $booking,
             'bookingPayment' => $this->getBookingPayment($booking_id, $booking->booking_type),
             'bookingImages' => $this->getBookingImages($booking_id, $booking->booking_type),
+            'bookingReview' => [],
             'helper_user' => [],
             'helper_user2' => [],
             'client_user' => []
@@ -828,6 +830,20 @@ class ClientBookingController extends Controller
             }
         }
         $bookingData['helperVehicleData2'] = $helperVehicleData2;
+
+
+        // Get Boking Review
+        $bookingData['booking_review'] = [
+            'rating' => '',
+            'review' => '',
+        ];
+
+        // Get Boking Review
+        $booking_review = BookingReview::where('booking_id', $booking->id)->first();
+        if ($booking_review) {
+            $bookingData['booking_review']['rating'] = $booking_review->rating;
+            $bookingData['booking_review']['review'] = $booking_review->review;
+        }
 
         return response()->json([
             'success' => true,
@@ -973,10 +989,10 @@ class ClientBookingController extends Controller
         }
 
         $bookingImages = [
-            'start_booking_image' => $bookingImages['start_booking_image'] ?? asset('images/bookings/default.png'),
-            'signatureStart' => $bookingImages['signatureStart'] ?? asset('images/bookings/default.png'),
-            'complete_booking_image' => $bookingImages['complete_booking_image'] ?? asset('images/bookings/default.png'),
-            'signatureCompleted' => $bookingImages['signatureCompleted'] ?? asset('images/bookings/default.png'),
+            'start_booking_image' => $bookingImages['start_booking_image'] ? asset('images/bookings/' . $bookingImages['start_booking_image']) : asset('images/bookings/default.png'),
+            'signatureStart' => $bookingImages['signatureStart'] ? asset('images/bookings/' . $bookingImages['signatureStart']) : asset('images/bookings/default.png'),
+            'complete_booking_image' => $bookingImages['complete_booking_image'] ? asset('images/bookings/' . $bookingImages['complete_booking_image']) : asset('images/bookings/default.png'),
+            'signatureCompleted' => $bookingImages['signatureCompleted'] ? asset('images/bookings/' . $bookingImages['signatureCompleted']) : asset('images/bookings/default.png'),
         ];
 
         return $bookingImages;

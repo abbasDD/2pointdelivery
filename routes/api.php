@@ -20,6 +20,7 @@ Route::post('login', [PassportAuthController::class, 'login']);
 Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     // Get the authenticated User Data
     Route::get('index', [PassportAuthController::class, 'me']);
+    Route::get('address-book', [ClientController::class, 'getAddressBook']);
 
     // Update Client Personal Details
     Route::get('personal', [ClientController::class, 'getPersonalInfo']);
@@ -100,6 +101,8 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     Route::post('booking/accept', [HelperBookingController::class, 'acceptBooking']);
     Route::post('booking/start', [HelperBookingController::class, 'startBooking']);
     Route::post('booking/in-transit', [HelperBookingController::class, 'inTransitBooking']);
+    Route::post('booking/complete', [HelperBookingController::class, 'completeBooking']);
+    Route::post('booking/in-complete', [HelperBookingController::class, 'incompleteBooking']);
 
     // Pending Bookings
     Route::get('booking/pending', [HelperBookingController::class, 'pendingBookings']);

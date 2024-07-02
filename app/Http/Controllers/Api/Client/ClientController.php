@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\AddressBook;
 use App\Models\Booking;
 use App\Models\Client;
 use App\Models\ClientCompany;
@@ -81,6 +82,30 @@ class ClientController extends Controller
             'success' => true,
             'message' => 'Home Data fetched successfully',
             'data' => $responseData
+        ], 200);
+    }
+
+    // getAddressBook
+    public function getAddressBook(): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Get kyc details of logged in user
+        $addressBooks = AddressBook::where('user_id', auth()->user()->id)->get();
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Address Book fetched successfully',
+            'data' => $addressBooks
         ], 200);
     }
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\GetEstimateController;
 use App\Models\Booking;
 use App\Models\BookingDelivery;
 use App\Models\BookingMoving;
+use App\Models\BookingReview;
 use App\Models\Helper;
 use App\Models\HelperVehicle;
 use App\Models\MovingConfig;
@@ -56,7 +57,6 @@ class HelperBookingController extends Controller
 
         $booking = Booking::select('bookings.id', 'bookings.uuid', 'bookings.client_user_id', 'bookings.helper_user_id', 'bookings.helper_user_id2', 'service_types.name as service_type', 'service_categories.name as service_category', 'priority_settings.name as priority_setting', 'bookings.booking_type', 'bookings.pickup_address', 'bookings.dropoff_address', 'bookings.pickup_latitude', 'bookings.pickup_longitude', 'bookings.dropoff_latitude', 'bookings.dropoff_longitude', 'bookings.booking_date', 'bookings.booking_time', 'bookings.status', 'bookings.receiver_name', 'bookings.receiver_phone', 'bookings.receiver_email', 'bookings.delivery_note', 'bookings.booking_at')
             ->where('bookings.id', $request->id)
-            ->where('bookings.client_user_id', auth()->user()->id)
             ->join('service_types', 'bookings.service_type_id', '=', 'service_types.id')
             ->join('service_categories', 'bookings.service_category_id', '=', 'service_categories.id')
             ->join('priority_settings', 'bookings.priority_setting_id', '=', 'priority_settings.id')
@@ -84,6 +84,21 @@ class HelperBookingController extends Controller
             'helperVehicleData' => [],
             'helperVehicleData2' => []
         ];
+
+        // Check if client data exist
+        if ($booking->client_user_id) {
+            $bookingData['client_user'] = User::select('users.email', 'clients.first_name', 'clients.last_name', 'clients.profile_image', 'clients.phone_no', 'clients.gender')
+                ->where('users.id', $booking->client_user_id)
+                ->join('clients', 'users.id', '=', 'clients.user_id')
+                ->first();
+
+            // Set image with path
+            if ($bookingData['client_user']->profile_image) {
+                $bookingData['client_user']->profile_image = asset('images/users/' . $bookingData['client_user']->profile_image);
+            } else {
+                $bookingData['client_user']->profile_image = asset('images/users/default.png');
+            }
+        }
 
         // Get helper
         $helper_user = [
@@ -166,6 +181,19 @@ class HelperBookingController extends Controller
             }
         }
         $bookingData['helperVehicleData2'] = $helperVehicleData2;
+
+        // Get Boking Review
+        $bookingData['booking_review'] = [
+            'rating' => '',
+            'review' => '',
+        ];
+
+        // Get Boking Review
+        $booking_review = BookingReview::where('booking_id', $booking->id)->first();
+        if ($booking_review) {
+            $bookingData['booking_review']['rating'] = $booking_review->rating;
+            $bookingData['booking_review']['review'] = $booking_review->review;
+        }
 
         return response()->json([
             'success' => true,
@@ -320,6 +348,16 @@ class HelperBookingController extends Controller
             ], 422);
         }
 
+        // Check if auth user is helper
+        if ($booking->helper_id != auth()->user()->id && $booking->helper_user_id2 != auth()->user()->id) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'You are not authorized.',
+                'errors' => 'You are not authorized.',
+            ], 401);
+        }
+
         // Check if booking is still in accepted status
         if ($booking->status != 'accepted') {
             return response()->json([
@@ -415,7 +453,7 @@ class HelperBookingController extends Controller
     }
 
 
-    // Accept Booking
+    // In Transit Booking
     public function inTransitBooking(Request $request): JsonResponse
     {
         // If token is not valid return error
@@ -452,7 +490,15 @@ class HelperBookingController extends Controller
             ], 422);
         }
 
-
+        // Check if auth user is helper
+        if ($booking->helper_id != auth()->user()->id && $booking->helper_user_id2 != auth()->user()->id) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'You are not authorized.',
+                'errors' => 'You are not authorized.',
+            ], 401);
+        }
 
         // Check if booking is still in pending status
         if ($booking->status == 'started') {
@@ -513,6 +559,263 @@ class HelperBookingController extends Controller
             'statusCode' => 422,
             'message' => 'Booking already in transit.',
             'errors' => 'Booking already in transit.',
+        ], 422);
+    }
+
+
+    // Complete Booking
+    public function completeBooking(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'booking_id' => 'required|exists:bookings,id',
+            'complete_booking_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'signatureCompleted' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // Check if booking exist
+        $booking = Booking::where('id', $request->booking_id)->first();
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to accept booking.',
+                'errors' => 'Unable to accept booking.',
+            ], 422);
+        }
+
+        // Check if auth user is helper
+        if ($booking->helper_id != auth()->user()->id && $booking->helper_user_id2 != auth()->user()->id) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'You are not authorized.',
+                'errors' => 'You are not authorized.',
+            ], 401);
+        }
+
+        // Check if booking is still in in_transit status
+        if ($booking->status != 'in_transit') {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Booking already started.',
+                'errors' => 'Booking already started.',
+            ], 422);
+        }
+
+        $complete_booking_image = null;
+
+        $signatureCompleted = null;
+
+        // Upload booking image
+        if ($request->hasFile('complete_booking_image')) {
+            $file = $request->file('complete_booking_image');
+            $updatedBookingFilename = time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('images/bookings/');
+            $file->move($destinationPath, $updatedBookingFilename);
+
+            // Set the profile image attribute to the new file name
+            $complete_booking_image = $updatedBookingFilename;
+        }
+
+        // Upload signature start image
+        if ($request->hasFile('signatureCompleted')) {
+            $file = $request->file('signatureCompleted');
+            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('images/bookings/');
+            $file->move($destinationPath, $updatedFilename);
+
+            // Set the profile image attribute to the new file name
+            $signatureCompleted = $updatedFilename;
+        }
+
+        if (!$complete_booking_image || !$signatureCompleted) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Error in processing image.',
+                'errors' => 'Error in processing image.',
+            ], 422);
+        }
+
+        // Check if booking_type is delivery
+        if ($booking->booking_type == 'delivery') {
+            $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+            if (!$bookingDelivery) {
+                return response()->json([
+                    'success' => false,
+                    'statusCode' => 422,
+                    'message' => 'Unable to find Booking Delivery.',
+                    'errors' => 'Unable to find Booking Delivery.',
+                ], 422);
+            }
+
+            $bookingDelivery->complete_booking_image = $complete_booking_image;
+            $bookingDelivery->signatureCompleted = $signatureCompleted;
+            $bookingDelivery->start_booking_at = Carbon::now();
+            $bookingDelivery->save();
+        }
+
+
+        // Check if booking_type is moving
+        if ($booking->booking_type == 'moving') {
+            $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
+            if (!$bookingMoving) {
+                return response()->json([
+                    'success' => false,
+                    'statusCode' => 422,
+                    'message' => 'Unable to find Booking Moving.',
+                    'errors' => 'Unable to find Booking Moving.',
+                ], 422);
+            }
+            $bookingMoving->complete_booking_image = $complete_booking_image;
+            $bookingMoving->signatureCompleted = $signatureCompleted;
+            $bookingMoving->start_booking_at = Carbon::now();
+            $bookingMoving->save();
+        }
+
+        // Update booking status
+        $booking->status = 'completed';
+        $booking->save();
+
+        // Return success
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Booking completed successfully',
+            'data' => [],
+        ]);
+    }
+
+    // In complete Booking
+    // In Transit Booking
+    public function incompleteBooking(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'booking_id' => 'required|exists:bookings,id',
+            'incomplete_reason' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // Check if booking exist
+        $booking = Booking::where('id', $request->booking_id)->first();
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to accept booking.',
+                'errors' => 'Unable to accept booking.',
+            ], 422);
+        }
+
+        // Check if auth user is helper
+        if ($booking->helper_id != auth()->user()->id && $booking->helper_user_id2 != auth()->user()->id) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'You are not authorized.',
+                'errors' => 'You are not authorized.',
+            ], 401);
+        }
+
+        // Check booking status
+        if ($booking->status == 'started' || $booking->status == 'in_transit' || $booking->status == 'completed') {
+            // Check if booking->booking_type is delivery
+            if ($booking->booking_type == 'delivery') {
+                // Get booking delivery data
+                $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+                if (!$bookingDelivery) {
+                    return response()->json([
+                        'success' => false,
+                        'statusCode' => 422,
+                        'message' => 'Unable to find Booking Delivery.',
+                        'errors' => 'Unable to find Booking Delivery.',
+                    ], 422);
+                }
+
+                // Update booking delivery
+                $bookingDelivery->incomplete_reason = $request->incomplete_reason;
+                $bookingDelivery->incomplete_booking_at = Carbon::now();
+                $bookingDelivery->save();
+            }
+
+
+            // Check if booking->booking_type is moving
+            if ($booking->booking_type == 'moving') {
+                // Get booking moving data
+                $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
+                if (!$bookingMoving) {
+                    return response()->json([
+                        'success' => false,
+                        'statusCode' => 422,
+                        'message' => 'Unable to find Booking Moving.',
+                        'errors' => 'Unable to find Booking Moving.',
+                    ], 422);
+                }
+
+                // Update booking moving
+                $bookingMoving->incomplete_reason = $request->incomplete_reason;
+                $bookingMoving->incomplete_booking_at = Carbon::now();
+                $bookingMoving->save();
+            }
+
+
+            // Update Booking
+            $booking->status = 'accepted';
+            $booking->save();
+
+            // Return success
+            return response()->json([
+                'success' => true,
+                'statusCode' => 200,
+                'message' => 'Booking Marked as Incomplete successfully',
+                'data' => [],
+            ], 200);
+        }
+
+        // If all else fails return error
+        return response()->json([
+            'success' => false,
+            'statusCode' => 422,
+            'message' => 'Booking already marked as incomplete.',
+            'errors' => 'Booking already marked as incomplete.',
         ], 422);
     }
 
@@ -646,10 +949,10 @@ class HelperBookingController extends Controller
         }
 
         $bookingImages = [
-            'start_booking_image' => $bookingImages['start_booking_image'] ?? asset('images/bookings/default.png'),
-            'signatureStart' => $bookingImages['signatureStart'] ?? asset('images/bookings/default.png'),
-            'complete_booking_image' => $bookingImages['complete_booking_image'] ?? asset('images/bookings/default.png'),
-            'signatureCompleted' => $bookingImages['signatureCompleted'] ?? asset('images/bookings/default.png'),
+            'start_booking_image' => $bookingImages['start_booking_image'] ? asset('images/bookings/' . $bookingImages['start_booking_image']) : asset('images/bookings/default.png'),
+            'signatureStart' => $bookingImages['signatureStart'] ? asset('images/bookings/' . $bookingImages['signatureStart']) : asset('images/bookings/default.png'),
+            'complete_booking_image' => $bookingImages['complete_booking_image'] ? asset('images/bookings/' . $bookingImages['complete_booking_image']) : asset('images/bookings/default.png'),
+            'signatureCompleted' => $bookingImages['signatureCompleted'] ? asset('images/bookings/' . $bookingImages['signatureCompleted']) : asset('images/bookings/default.png'),
         ];
 
         return $bookingImages;
