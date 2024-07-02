@@ -30,7 +30,7 @@ class BookingReviewController extends Controller
         $request->validate([
             'id' => 'required|integer|exists:bookings,id',
             'rating' => 'required|integer|between:1,5',
-            'review' => 'required|string|max:255',
+            'review' => 'required',
         ]);
 
         // Check if booking exist on id

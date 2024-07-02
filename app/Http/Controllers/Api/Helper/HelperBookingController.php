@@ -203,7 +203,6 @@ class HelperBookingController extends Controller
         ], 200);
     }
 
-
     // Accept Booking
     public function acceptBooking(Request $request): JsonResponse
     {

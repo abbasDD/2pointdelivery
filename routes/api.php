@@ -54,6 +54,12 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::get('booking/details/{id}', [ClientBookingController::class, 'getBookingDetails']);
     Route::post('booking/payment/cod', [ClientBookingController::class, 'codPaymentBooking']);
 
+    // Track Booking
+    Route::post('booking/track', [ClientBookingController::class, 'trackBooking']);
+
+    // Review Booking
+    Route::post('booking/review', [ClientBookingController::class, 'reviewBooking']);
+
     // Active Bookings
     Route::get('booking/active', [ClientBookingController::class, 'activeBookings']);
     // Booking History
@@ -117,6 +123,13 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     Route::get('booking/active', [HelperBookingController::class, 'activeBookings']);
     // Booking History
     Route::get('booking/history', [HelperBookingController::class, 'getBookingHistory']);
+
+
+    // KYC CRUD
+    Route::get('kyc', [KycController::class, 'index']);
+    Route::get('kyc-types', [KycController::class, 'kycTypes']);
+    Route::post('kyc/store', [KycController::class, 'store']);
+    Route::get('kyc/show/{id}', [KycController::class, 'show']);
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);

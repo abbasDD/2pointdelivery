@@ -853,6 +853,272 @@ class ClientBookingController extends Controller
         ], 200);
     }
 
+
+
+    // Track Booking
+    public function trackBooking(Request $request): JsonResponse
+    { // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        if (!isset($request->id)) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Booking ID is required.',
+                'errors' => 'Booking ID is required.',
+            ], 422);
+        }
+
+
+
+        $booking_id = $request->id;
+
+        $booking = Booking::select('bookings.id', 'bookings.uuid', 'bookings.client_user_id', 'bookings.helper_user_id', 'bookings.helper_user_id2', 'service_types.name as service_type', 'service_categories.name as service_category', 'priority_settings.name as priority_setting', 'bookings.booking_type', 'bookings.pickup_address', 'bookings.dropoff_address', 'bookings.pickup_latitude', 'bookings.pickup_longitude', 'bookings.dropoff_latitude', 'bookings.dropoff_longitude', 'bookings.booking_date', 'bookings.booking_time', 'bookings.status', 'bookings.total_price', 'bookings.receiver_name', 'bookings.receiver_phone', 'bookings.receiver_email', 'bookings.delivery_note', 'bookings.booking_at')
+            ->where('bookings.id', $request->id)
+            ->where('bookings.client_user_id', auth()->user()->id)
+            ->join('service_types', 'bookings.service_type_id', '=', 'service_types.id')
+            ->join('service_categories', 'bookings.service_category_id', '=', 'service_categories.id')
+            ->join('priority_settings', 'bookings.priority_setting_id', '=', 'priority_settings.id')
+            ->first();
+
+
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to get booking.',
+                'errors' => 'Unable to get booking.',
+            ], 422);
+        }
+
+        $bookingData = [
+            'booking' => $booking,
+            'bookingPayment' => $this->getBookingPayment($booking_id, $booking->booking_type),
+            'bookingImages' => $this->getBookingImages($booking_id, $booking->booking_type),
+            'bookingReview' => [],
+            'helper_user' => [],
+            'helper_user2' => [],
+            'client_user' => []
+        ];
+
+        // Check if client data exist
+        if ($booking->client_user_id) {
+            $bookingData['client_user'] = User::select('users.email', 'clients.first_name', 'clients.last_name', 'clients.profile_image', 'clients.phone_no', 'clients.gender')
+                ->where('users.id', $booking->client_user_id)
+                ->join('clients', 'users.id', '=', 'clients.user_id')
+                ->first();
+
+            // Set image with path
+            if ($bookingData['client_user']->profile_image) {
+                $bookingData['client_user']->profile_image = asset('images/users/' . $bookingData['client_user']->profile_image);
+            } else {
+                $bookingData['client_user']->profile_image = asset('images/users/default.png');
+            }
+        }
+
+        // Check if booking payment exist
+        if (!$bookingData['bookingPayment']) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to get booking payment.',
+                'errors' => 'Unable to get booking payment.',
+            ], 422);
+        }
+
+        //  Get helper data
+        $helper_user = [
+            'email' => '',
+            'first_name' => '',
+            'last_name' => '',
+            'phone_no' => '',
+            'gender' => '',
+            'profile_image' => asset('images/users/default.png'),
+        ];
+        if ($booking->helper_user_id) {
+            $helper_user = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image', 'helpers.gender', 'helpers.phone_no')
+                ->where('users.id', $booking->helper_user_id)
+                ->join('helpers', 'users.id', '=', 'helpers.user_id')
+                ->first();
+        }
+        $bookingData['helper_user'] = $helper_user;
+
+        // Check if helper2 accepted the booking
+        $helper_user2 = [
+            'email' => '',
+            'first_name' => '',
+            'last_name' => '',
+            'phone_no' => '',
+            'gender' => '',
+            'profile_image' => asset('images/users/default.png'),
+        ];
+        if ($booking->helper_user_id2) {
+            $helper_user2 = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image', 'helpers.gender', 'helpers.phone_no')
+                ->where('users.id', $booking->helper_user_id2)
+                ->join('helpers', 'users.id', '=', 'helpers.user_id')
+                ->first();
+        }
+        $bookingData['helper_user2'] = $helper_user2;
+
+        // Get helper vehicle data
+        $helperVehicleData = [
+            'vehicle_type' => '',
+            'vehicle_number' => '',
+            'vehicle_make' => '',
+            'vehicle_model' => '',
+            'vehicle_color' => '',
+            'vehicle_year' => '',
+            'vehicle_image' => '',
+            'description' => '',
+        ];
+        if ($booking->helper_user_id) {
+            $helperVehicleData = HelperVehicle::select('helper_vehicles.vehicle_number', 'helper_vehicles.vehicle_make', 'helper_vehicles.vehicle_model', 'helper_vehicles.vehicle_color', 'helper_vehicles.vehicle_year', 'vehicle_types.name as vehicle_type', 'vehicle_types.image as vehicle_image', 'vehicle_types.description')
+                ->join('vehicle_types', 'vehicle_types.id', '=', 'helper_vehicles.vehicle_type_id')
+                ->where('user_id', $booking->helper_user_id)->first();
+            // Update Image with link
+            if ($helperVehicleData->vehicle_image) {
+                $helperVehicleData->vehicle_image = asset('images/vehicle_types/' . $helperVehicleData->vehicle_image);
+            } else {
+                $helperVehicleData->vehicle_image = asset('images/vehicle_types/default.png');
+            }
+        }
+        $bookingData['helperVehicleData'] = $helperVehicleData;
+
+        // Get helper2 vehicle data
+        $helperVehicleData2 = [
+            'vehicle_type' => '',
+            'vehicle_number' => '',
+            'vehicle_make' => '',
+            'vehicle_model' => '',
+            'vehicle_color' => '',
+            'vehicle_year' => '',
+            'vehicle_image' => '',
+            'description' => '',
+        ];
+        if ($booking->helper_user_id2) {
+            $helperVehicleData2 = HelperVehicle::select('helper_vehicles.vehicle_number', 'helper_vehicles.vehicle_make', 'helper_vehicles.vehicle_model', 'helper_vehicles.vehicle_color', 'helper_vehicles.vehicle_year', 'vehicle_types.name as vehicle_type', 'vehicle_types.image as vehicle_image', 'vehicle_types.description')
+                ->join('vehicle_types', 'vehicle_types.id', '=', 'helper_vehicles.vehicle_type_id')
+                ->where('user_id', $booking->helper_user_id2)->first();
+            // Update Image with link
+            if ($helperVehicleData2->vehicle_image) {
+                $helperVehicleData2->vehicle_image = asset('images/vehicle_types/' . $helperVehicleData2->vehicle_image);
+            } else {
+                $helperVehicleData2->vehicle_image = asset('images/vehicle_types/default.png');
+            }
+        }
+        $bookingData['helperVehicleData2'] = $helperVehicleData2;
+
+
+        // Get Boking Review
+        $bookingData['booking_review'] = [
+            'rating' => '',
+            'review' => '',
+        ];
+
+        // Get Boking Review
+        $booking_review = BookingReview::where('booking_id', $booking->id)->first();
+        if ($booking_review) {
+            $bookingData['booking_review']['rating'] = $booking_review->rating;
+            $bookingData['booking_review']['review'] = $booking_review->review;
+        }
+
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Booking details fetched successfully',
+            'data' => $bookingData,
+        ], 200);
+    }
+
+    // reviewBooking
+    public function reviewBooking(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:bookings,id',
+            'rating' => 'required|integer|between:1,5',
+            'review' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // Check if booking exist on id
+        $booking = Booking::where('id', $request->id)->where('client_user_id', auth()->user()->id)->where('status', 'completed')->first();
+
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to get booking.',
+                'errors' => 'Unable to get booking.',
+            ], 422);
+        }
+
+        // Check if rating already exist for booking
+        $reviewExist = BookingReview::where('booking_id', $booking->id)->where('helper_user_id', $booking->helper_user_id)->first();
+        if ($reviewExist) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Review already exist.',
+                'errors' => 'Review already exist.',
+            ], 422);
+        }
+
+        // Get helper user
+        $helperUser = Helper::where('user_id', $booking->helper_user_id)->first();
+
+        if (!$helperUser) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to get helper.',
+                'errors' => 'Unable to get helper.',
+            ], 422);
+        }
+
+        // Save review
+        $review = new BookingReview();
+        $review->booking_id = $booking->id;
+        $review->helper_user_id = $booking->helper_user_id;
+        $review->helper_id = $helperUser->id;
+        $review->rating = $request->rating;
+        $review->review = $request->review;
+        $review->save();
+
+        // Response
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Booking review saved successfully',
+            'data' => [],
+        ], 200);
+    }
+
     // getBookingHistory
     public function getBookingHistory(Request $request): JsonResponse
     {
