@@ -72,6 +72,10 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::get('kyc/show/{id}', [KycController::class, 'show']);
     Route::post('kyc/update', [KycController::class, 'update']);
 
+    // Notifications
+    Route::get('notifications', [ClientController::class, 'getNotifications']);
+    Route::post('notifications/read-all', [ClientController::class, 'markAllNotificationsRead']);
+
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);
 
@@ -132,6 +136,10 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     Route::post('kyc/store', [KycController::class, 'store']);
     Route::get('kyc/show/{id}', [KycController::class, 'show']);
     Route::post('kyc/update', [KycController::class, 'update']);
+
+    // Notifications
+    Route::get('notifications', [HelperController::class, 'getNotifications']);
+    Route::post('notifications/read-all', [HelperController::class, 'markAllNotificationsRead']);
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);

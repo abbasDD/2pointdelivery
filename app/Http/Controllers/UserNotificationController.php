@@ -36,7 +36,9 @@ class UserNotificationController extends Controller
         if (!auth()->user()) {
             return response()->json([]);
         }
-        $notifications = UserNotification::where('receiver_user_id', auth()->user()->id)->update(['read' => 1]);
+
+        // Mark all as read
+        UserNotification::where('receiver_user_id', auth()->user()->id)->where('receiver_user_type', session('user_type') ?? 'client')->update(['read' => 1]);
         // return response()->json($notifications);
         return redirect()->back()->with('success', 'All notifications marked as read');
     }
@@ -45,6 +47,10 @@ class UserNotificationController extends Controller
     public function notificationRedirect($id)
     {
         $notification = UserNotification::where('id', $id)->first();
+        if (!$notification) {
+            return redirect()->back()->with('error', 'Unable to redirect notification');
+        }
+
         $notification->read = 1;
         $notification->save();
 

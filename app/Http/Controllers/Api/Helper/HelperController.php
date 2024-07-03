@@ -9,6 +9,7 @@ use App\Models\ClientCompany;
 use App\Models\Helper;
 use App\Models\SocialLink;
 use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -126,7 +127,7 @@ class HelperController extends Controller
         ], 200);
     }
 
-    
+
 
     // getPersonalInfo
     public function getPersonalInfo(): JsonResponse
@@ -544,6 +545,67 @@ class HelperController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Social links updated successfully',
+            'data' => []
+        ], 200);
+    }
+
+
+    // getNotifications
+    public function getNotifications(): JsonResponse
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Get only 10
+        $notifications = UserNotification::where('receiver_user_id', auth()->user()->id)
+            ->where('receiver_user_type', 'helper')
+            ->orderBy('created_at', 'asc')->take(10)->get();
+        $unread_notification = UserNotification::where('receiver_user_id', auth()->user()->id)
+            ->where('receiver_user_type', 'helper')
+            ->where('read', 0)->count();
+
+        $data = [
+            'notifications' => $notifications,
+            'unread_notification' => $unread_notification
+        ];
+
+        // Response
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Notifications fetched successfully',
+            'data' => $data
+        ], 200);
+    }
+
+    // markAllNotificationsRead
+    public function markAllNotificationsRead(): JsonResponse
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Mark all notifications as read
+        UserNotification::where('receiver_user_id', auth()->user()->id)->where('receiver_user_type', 'helper')->update(['read' => 1]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Notifications marked as read successfully',
             'data' => []
         ], 200);
     }

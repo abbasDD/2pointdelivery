@@ -300,14 +300,23 @@ class KycController extends Controller
         }
 
         // Check if kyc is already submitted to admin
-        $kycDetail = KycDetail::where('user_id', auth()->user()->id)->where('kyc_type_id', $request->kyc_type_id)->where('is_verified', '!=', 2)->first();
+        $kycDetail = KycDetail::where('id', $request->id)->where('user_id', auth()->user()->id)->first();
 
-        if ($kycDetail) {
+        if (!$kycDetail) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 422,
-                'message' => 'KYC is already submitted to the admin.',
-                'errors' => 'KYC is already submitted to the admin.',
+                'message' => 'Unable to find KYC',
+                'errors' => 'Unable to find KYC',
+            ]);
+        }
+
+        if ($kycDetail->is_verified == 1) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'KYC is already approved',
+                'errors' => 'KYC is already approved',
             ]);
         }
 
@@ -350,6 +359,7 @@ class KycController extends Controller
         $kycDetail->city = $request->city;
         $kycDetail->issue_date = $request->issue_date;
         $kycDetail->expiry_date = $request->expiry_date;
+        $kycDetail->is_verified = 0;
 
         $kycDetail->save();
 
