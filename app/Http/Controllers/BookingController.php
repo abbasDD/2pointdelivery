@@ -116,8 +116,6 @@ class BookingController extends Controller
             return response()->json(['success' => false, 'errors' => $validator->errors()]);
         }
 
-
-
         // Generate uuid
         $uuid = Str::random(8);
 

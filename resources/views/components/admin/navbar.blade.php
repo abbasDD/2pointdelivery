@@ -76,7 +76,7 @@
             <li class="nav-item has-submenu">
                 <a class="nav-link" href="#"> <i class="fa fa-users"></i> Users </a>
                 <ul class="submenu collapse">
-                    <li><a class="nav-link" href="{{ route('admin.admins') }}">Sub Admins </a></li>
+                    <li><a class="nav-link" href="{{ route('admin.admins') }}">Admins </a></li>
                     <li><a class="nav-link" href="{{ route('admin.clients') }}">Clients </a></li>
                     <li><a class="nav-link" href="{{ route('admin.helpers') }}">Helpers </a></li>
                     <li><a class="nav-link" href="{{ route('admin.newHelpers') }}">New Helpers </a></li>
@@ -87,7 +87,7 @@
                 <a class="nav-link" href="#"> <i class="fa fa-dolly"></i> Services </a>
                 <ul class="submenu collapse">
                     <li><a class="nav-link" href="{{ route('admin.serviceTypes') }}">Services </a></li>
-                    <li><a class="nav-link" href="{{ route('admin.vehicleTypes') }}">Vehicle Types </a></li>
+                    <li><a class="nav-link" href="{{ route('admin.vehicleTypes') }}">Vehicles </a></li>
                     <li><a class="nav-link" href="{{ route('admin.serviceCategories') }}">Categories </a></li>
                 </ul>
             </li>
@@ -131,8 +131,8 @@
                     <li><a class="nav-link" href="{{ route('admin.faqs') }}">FAQs </a></li>
                     <li><a class="nav-link" href="{{ route('admin.blogs') }}">Blogs </a></li>
                     <li><a class="nav-link" href="{{ route('admin.helpQuestions') }}">Help </a></li>
-                    <li><a class="nav-link" href="{{ route('admin.emailTemplates.index') }}">Email Templates </a>
-                    <li><a class="nav-link" href="{{ route('admin.frontendSettings.index') }}">Frontend Settings </a>
+                    <li><a class="nav-link" href="{{ route('admin.emailTemplates.index') }}">Mailing </a>
+                    <li><a class="nav-link" href="{{ route('admin.frontendSettings.index') }}">Policies </a>
                     </li>
                 </ul>
             </li>

@@ -22,7 +22,7 @@ class Helper extends Model
         'gender',
         'date_of_birth',
         'company_enabled',
-        'tax_id',
+        'service_badge_id',
         'phone_no',
         'phone_verified_at',
         'profile_image',

@@ -96,7 +96,7 @@
             <li class="nav-item"><a class="nav-link" href="{{ route('client.referrals') }}"><i
                         class="fa-solid fa-repeat"></i> Referrals</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.trackOrder') }}"><i class="fa fa-map"></i>
-                    Track Booking</a></li>
+                    Tracking</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.profile') }}"><i class="fa fa-edit"></i>
                     Edit Profile</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('logout') }}"

@@ -70,6 +70,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::get('kyc-types', [KycController::class, 'kycTypes']);
     Route::post('kyc/store', [KycController::class, 'store']);
     Route::get('kyc/show/{id}', [KycController::class, 'show']);
+    Route::post('kyc/update', [KycController::class, 'update']);
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);
@@ -130,6 +131,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     Route::get('kyc-types', [KycController::class, 'kycTypes']);
     Route::post('kyc/store', [KycController::class, 'store']);
     Route::get('kyc/show/{id}', [KycController::class, 'show']);
+    Route::post('kyc/update', [KycController::class, 'update']);
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);

@@ -364,7 +364,7 @@ class HelperController extends Controller
             'gender' => $request->gender,
             'phone_no' => $request->phone_no,
             'date_of_birth' => $request->date_of_birth,
-            'tax_id' => $request->tax_id,
+            'service_badge_id' => $request->service_badge_id,
             'profile_image' => $profile_image,
             'company_enabled' => $request->company_enabled
         ]);

@@ -218,16 +218,16 @@ class KycController extends Controller
             ], 401);
         }
 
-        // Get kyc details of logged in user
-        $kycDetail = KycDetail::with('kycType')->where('user_id', auth()->user()->id)->where('id', $request->id)->first();
+        // Get kyc details from id only if it is not yet accepted
+        $kycDetail = KycDetail::with('kycType')->where('user_id', auth()->user()->id)->where('is_verified', '!=', 1)->where('id', $request->id)->first();
 
         if (!$kycDetail) {
             return response()->json([
                 'success' => false,
-                'statusCode' => 401,
-                'message' => 'Unauthorized.',
-                'errors' => 'Unauthorized',
-            ], 401);
+                'statusCode' => 422,
+                'message' => 'Unable to edit this KYC.',
+                'errors' => 'Unable to edit this KYC',
+            ], 422);
         }
 
         $kycDetailID = [
@@ -251,6 +251,114 @@ class KycController extends Controller
             'statusCode' => 200,
             'message' => 'KYC details',
             'data' => $kycDetailID,
+        ]);
+    }
+
+    // Add Kyc
+    public function update(Request $request): JsonResponse
+    {
+
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Validate the request
+
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|string|max:255',
+            'id_number' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'issue_date' => 'required|string|max:255',
+            'expiry_date' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // Check if user exist
+        $user = User::where('id', auth()->user()->id)->first();
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Check if kyc is already submitted to admin
+        $kycDetail = KycDetail::where('user_id', auth()->user()->id)->where('kyc_type_id', $request->kyc_type_id)->where('is_verified', '!=', 2)->first();
+
+        if ($kycDetail) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'KYC is already submitted to the admin.',
+                'errors' => 'KYC is already submitted to the admin.',
+            ]);
+        }
+
+        // Check if front_image exist or not
+        if ($request->hasFile('front_image')) {
+            $request->validate([
+                'front_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
+            // upload image
+            $file = $request->file('front_image');
+            $updatedFilename = time() . '_front' . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('images/kyc/');
+            $file->move($destinationPath, $updatedFilename);
+
+            // Set the profile image attribute to the new file name
+            $front_image = $updatedFilename;
+            $kycDetail->front_image = $updatedFilename;
+        }
+
+        // Check if back_image exist or not
+        if ($request->hasFile('back_image')) {
+            $request->validate([
+                'back_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
+            // upload image
+            $back_image = $request->file('back_image');
+            $updatedFilename = time() . '_back' . '.' . $back_image->getClientOriginalExtension();
+            $destinationPath = public_path('images/kyc/');
+            $back_image->move($destinationPath, $updatedFilename);
+
+            // Set the profile image attribute to the new file name
+            $back_image = $updatedFilename;
+            $kycDetail->back_image = $updatedFilename;
+        }
+
+        // Update kyc details
+        $kycDetail->id_number = $request->id_number;
+        $kycDetail->country = $request->country;
+        $kycDetail->state = $request->state;
+        $kycDetail->city = $request->city;
+        $kycDetail->issue_date = $request->issue_date;
+        $kycDetail->expiry_date = $request->expiry_date;
+
+        $kycDetail->save();
+
+        // Response
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'KYC data updated successfully',
+            'data' => [],
         ]);
     }
 }

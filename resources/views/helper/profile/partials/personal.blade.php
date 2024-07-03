@@ -149,13 +149,14 @@
                         @enderror
                     </div>
                 </div>
-                {{-- Tax ID --}}
+                {{-- Service Badge ID --}}
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="tax_id" class="form-label">Tax ID</label>
-                        <input type="text" class="form-control" id="tax_id" name="tax_id"
-                            value="{{ old('tax_id', $helperData['tax_id'] ?? '') }}" placeholder="Tax ID (optional)">
-                        @error('tax_id')
+                        <label for="service_badge_id" class="form-label">Service Badge ID</label>
+                        <input type="text" class="form-control" id="service_badge_id" name="service_badge_id"
+                            value="{{ old('service_badge_id', $helperData['service_badge_id'] ?? '') }}"
+                            placeholder="Service Badge ID (optional)">
+                        @error('service_badge_id')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
