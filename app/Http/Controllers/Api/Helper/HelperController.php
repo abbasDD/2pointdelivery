@@ -164,7 +164,7 @@ class HelperController extends Controller
             'date_of_birth' => $helper->date_of_birth,
             'email' => $user->email,
             'profile_image' => $helper->profile_image ? asset('images/users/' . $helper->profile_image) : asset('images/users/default.png'),
-            'tax_id' => $helper->tax_id
+            'service_badge_id' => $helper->service_badge_id
         ];
 
 
@@ -399,6 +399,7 @@ class HelperController extends Controller
             // Create a new helper vehicle
             $helperVehicle = new HelperVehicle();
             $helperVehicle->user_id = $user->id;
+            $helperVehicle->helper_id = Helper::where('user_id', $user->id)->first()->id;
             $helperVehicle->save();
         }
 
@@ -440,7 +441,7 @@ class HelperController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'vehicle_type_id ' => 'required|integer|exists:vehicle_types,id',
+            'vehicle_type_id ' => 'required|integer',
             'vehicle_number' => 'required|string',
             'vehicle_make' => 'required|string',
             'vehicle_model' => 'required|string',
@@ -464,6 +465,7 @@ class HelperController extends Controller
             // Create a new helperVehicle
             $helperVehicle = new HelperVehicle();
             $helperVehicle->user_id = $user->id;
+            $helperVehicle->helper_id = Helper::where('user_id', $user->id)->first()->id;
             $helperVehicle->save();
         }
 
@@ -472,6 +474,7 @@ class HelperController extends Controller
             'vehicle_type_id' => $request->vehicle_type_id,
             'vehicle_number' => $request->vehicle_number,
             'vehicle_make' => $request->vehicle_make,
+            'vehicle_model' => $request->vehicle_model,
             'vehicle_color' => $request->vehicle_color,
             'vehicle_year' => $request->vehicle_year
         ];

@@ -8,6 +8,7 @@ use App\Models\Booking;
 use App\Models\Client;
 use App\Models\ClientCompany;
 use App\Models\Helper;
+use App\Models\HelperVehicle;
 use App\Models\ServiceType;
 use App\Models\SocialLink;
 use App\Models\User;
@@ -138,6 +139,7 @@ class ClientController extends Controller
             'personal_details' => false,
             'address_details' => false,
             'company_details' => false,
+            'vehicle_details' => false
         ];
 
         $helper = Helper::where('user_id', $user->id)->first();
@@ -149,6 +151,7 @@ class ClientController extends Controller
         $userData['personal_details'] = false;
         $userData['address_details'] = false;
         $userData['company_details'] = false;
+        $userData['vehicle_details'] = false;
 
         // Check if helper completed its personal details
         if (isset($helper) && $helper->first_name != null) {
@@ -166,6 +169,12 @@ class ClientController extends Controller
             if (isset($helperCompany) && $helperCompany->legal_name != null) {
                 $responseData['company_details'] = true;
             }
+        }
+
+        // Check if helpervehicle details exist
+        $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
+        if (isset($helperVehicle) && $helperVehicle->vehicle_type_id != null) {
+            $responseData['vehicle_details'] = true;
         }
 
         // Success response
@@ -222,7 +231,7 @@ class ClientController extends Controller
             'date_of_birth' => $client->date_of_birth,
             'email' => $user->email,
             'profile_image' => $client->profile_image ? asset('images/users/' . $client->profile_image) : asset('images/users/default.png'),
-            'tax_id' => $client->tax_id
+            'state_id' => $client->tax_id
         ];
 
 
