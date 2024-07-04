@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\ClientCompany;
 use App\Models\Helper;
 use App\Models\HelperCompany;
+use App\Models\HelperVehicle;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -193,6 +194,7 @@ class PassportAuthController extends Controller
                 'personal_details' => false,
                 'address_details' => false,
                 'company_details' => false,
+                'vehicle_details' => false,
             ];
 
             // If user is client
@@ -251,14 +253,18 @@ class PassportAuthController extends Controller
                     $userData['address_details'] = true;
                 }
 
-
-
                 if ($helper->company_enabled == 1) {
                     // Get client company details
                     $helperCompany = HelperCompany::where('user_id', auth()->user()->id)->first();
                     if (isset($helperCompany) && $helperCompany->legal_name != null) {
                         $responseData['company_details'] = true;
                     }
+                }
+
+                // Check if helpervehicle details exist
+                $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
+                if (isset($helperVehicle) && $helperVehicle->vehicle_type_id != null) {
+                    $responseData['vehicle_details'] = true;
                 }
             }
 

@@ -857,11 +857,22 @@ class HelperBookingController extends Controller
             ], 401);
         }
 
+        // $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
+        //     ->where('helper_user_id', auth()->user()->id)
+        //     ->orWhere('helper_user_id2', auth()->user()->id)
+        //     ->whereIn('status', ['started', 'in_transit'])
+        //     ->get();
+
+        $userId = auth()->user()->id;
+
         $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
-            ->where('helper_user_id', auth()->user()->id)
-            ->orWhere('helper_user_id2', auth()->user()->id)
+            ->where(function ($query) use ($userId) {
+                $query->where('helper_user_id', $userId)
+                    ->orWhere('helper_user_id2', $userId);
+            })
             ->whereIn('status', ['started', 'in_transit'])
             ->get();
+
 
         return response()->json([
             'success' => true,
@@ -884,11 +895,22 @@ class HelperBookingController extends Controller
             ], 401);
         }
 
+        // $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
+        //     ->where('helper_user_id', auth()->user()->id)
+        //     ->orWhere('helper_user_id2', auth()->user()->id)
+        //     ->whereIn('status', ['completed', 'cancelled'])
+        //     ->get();
+
+        $userId = auth()->user()->id;
+
         $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
-            ->where('helper_user_id', auth()->user()->id)
-            ->orWhere('helper_user_id2', auth()->user()->id)
+            ->where(function ($query) use ($userId) {
+                $query->where('helper_user_id', $userId)
+                    ->orWhere('helper_user_id2', $userId);
+            })
             ->whereIn('status', ['completed', 'cancelled'])
             ->get();
+
 
         return response()->json([
             'success' => true,

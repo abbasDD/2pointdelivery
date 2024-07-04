@@ -867,7 +867,7 @@ class ClientBookingController extends Controller
             ], 401);
         }
 
-        if (!isset($request->id)) {
+        if (!isset($request->uuid)) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 422,
@@ -878,10 +878,10 @@ class ClientBookingController extends Controller
 
 
 
-        $booking_id = $request->id;
+        $booking_id = $request->uuid;
 
         $booking = Booking::select('bookings.id', 'bookings.uuid', 'bookings.client_user_id', 'bookings.helper_user_id', 'bookings.helper_user_id2', 'service_types.name as service_type', 'service_categories.name as service_category', 'priority_settings.name as priority_setting', 'bookings.booking_type', 'bookings.pickup_address', 'bookings.dropoff_address', 'bookings.pickup_latitude', 'bookings.pickup_longitude', 'bookings.dropoff_latitude', 'bookings.dropoff_longitude', 'bookings.booking_date', 'bookings.booking_time', 'bookings.status', 'bookings.total_price', 'bookings.receiver_name', 'bookings.receiver_phone', 'bookings.receiver_email', 'bookings.delivery_note', 'bookings.booking_at')
-            ->where('bookings.id', $request->id)
+            ->where('bookings.uuid', $request->uuid)
             ->where('bookings.client_user_id', auth()->user()->id)
             ->join('service_types', 'bookings.service_type_id', '=', 'service_types.id')
             ->join('service_categories', 'bookings.service_category_id', '=', 'service_categories.id')
@@ -900,9 +900,9 @@ class ClientBookingController extends Controller
 
         $bookingData = [
             'booking' => $booking,
-            'bookingPayment' => $this->getBookingPayment($booking_id, $booking->booking_type),
+            'bookingPayment' => $this->getBookingPayment($booking->id, $booking->booking_type),
             'bookingImages' => $this->getBookingImages($booking_id, $booking->booking_type),
-            'bookingReview' => [],
+            'booking_review' => [],
             'helper_user' => [],
             'helper_user2' => [],
             'client_user' => []
@@ -1032,7 +1032,7 @@ class ClientBookingController extends Controller
         return response()->json([
             'success' => true,
             'statusCode' => 200,
-            'message' => 'Booking details fetched successfully',
+            'message' => 'Booking track data fetched successfully',
             'data' => $bookingData,
         ], 200);
     }

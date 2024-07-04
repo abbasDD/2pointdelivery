@@ -84,6 +84,8 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
 
 // ---------------- CLIENT ROUTES ENDS ---------------- //
 
+// ----------------------------------------------------------------------------------------------------- //
+
 // ---------------- HELPER ROUTES START ---------------- //
 
 
@@ -100,6 +102,9 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     Route::get('address', [HelperController::class, 'getAddressInfo']);
     Route::post('address/update', [HelperController::class, 'addressUpdate']);
 
+    // Update Helper Vehicle
+    Route::get('vehicle', [HelperController::class, 'getVehicleInfo']);
+    Route::post('vehicle/update', [HelperController::class, 'vehicleInfoUpdate']);
 
     // Update Helper Password
     Route::post('password/update', [HelperController::class, 'passwordUpdate']);

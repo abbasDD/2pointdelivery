@@ -255,6 +255,7 @@ class ClientController extends Controller
             'phone_no' => 'required|string',
             'gender' => 'required|in:male,female',
             'date_of_birth' => 'required|string',
+            'state_id' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -293,7 +294,8 @@ class ClientController extends Controller
             'phone_no' => $request->phone_no,
             'gender' => $request->gender,
             'date_of_birth' => $request->date_of_birth,
-            'company_enabled' => 0
+            'company_enabled' => 0,
+            'tax_id' => $request->state_id
         ];
 
 

@@ -7,9 +7,11 @@ use App\Models\Booking;
 use App\Models\Client;
 use App\Models\ClientCompany;
 use App\Models\Helper;
+use App\Models\HelperVehicle;
 use App\Models\SocialLink;
 use App\Models\User;
 use App\Models\UserNotification;
+use App\Models\VehicleType;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -127,8 +129,6 @@ class HelperController extends Controller
         ], 200);
     }
 
-
-
     // getPersonalInfo
     public function getPersonalInfo(): JsonResponse
     {
@@ -234,10 +234,10 @@ class HelperController extends Controller
             $updated_data['middle_name'] = $request->middle_name;
         }
 
-        // If tax_id is not null
+        // If service_badge_id is not null
 
-        if ($request->has('tax_id')) {
-            $updated_data['tax_id'] = $request->tax_id;
+        if ($request->has('service_badge_id')) {
+            $updated_data['service_badge_id'] = $request->service_badge_id;
         }
 
 
@@ -347,15 +347,6 @@ class HelperController extends Controller
 
         $user = auth()->user();
 
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'statusCode' => 401,
-                'message' => 'Unauthorized.',
-                'errors' => 'Unauthorized',
-            ], 401);
-        }
-
         // If helper is found, update its attributes
         $helper = Helper::where('user_id', $user->id)->first();
         if (!$helper) {
@@ -385,7 +376,115 @@ class HelperController extends Controller
         ], 200);
     }
 
+    // getVehicleInfo
+    public function getVehicleInfo(): JsonResponse
+    {
 
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+
+        $user = auth()->user();
+
+        $helperVehicle = HelperVehicle::where('user_id', $user->id)->first();
+        if (!$helperVehicle) {
+            // Create a new helper vehicle
+            $helperVehicle = new HelperVehicle();
+            $helperVehicle->user_id = $user->id;
+            $helperVehicle->save();
+        }
+
+
+        $helperVehicleData = [
+            'vehicle_type_id' => $helperVehicle->vehicle_type_id,
+            'vehicle_number' => $helperVehicle->vehicle_number,
+            'vehicle_make' => $helperVehicle->vehicle_make,
+            'vehicle_model' => $helperVehicle->vehicle_model,
+            'vehicle_color' => $helperVehicle->vehicle_color,
+            'vehicle_year' => $helperVehicle->vehicle_year
+        ];
+
+        // Vehicle Types
+
+        $vehicleTypes = VehicleType::all();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Helper Vehicle data fetched successfully',
+            'data' => ['helperVehicleData' => $helperVehicleData, 'vehicleTypes' => $vehicleTypes]
+        ], 200);
+    }
+
+
+    // vehicleInfoUpdate
+    public function vehicleInfoUpdate(Request $request): JsonResponse
+    {
+
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'vehicle_type_id ' => 'required|integer|exists:vehicle_types,id',
+            'vehicle_number' => 'required|string',
+            'vehicle_make' => 'required|string',
+            'vehicle_model' => 'required|string',
+            'vehicle_color' => 'required|string',
+            'vehicle_year' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $user = auth()->user();
+
+        // If helperVehicle is found, update its attributes
+        $helperVehicle = HelperVehicle::where('user_id', $user->id)->first();
+        if (!$helperVehicle) {
+            // Create a new helperVehicle
+            $helperVehicle = new HelperVehicle();
+            $helperVehicle->user_id = $user->id;
+            $helperVehicle->save();
+        }
+
+
+        $updated_data = [
+            'vehicle_type_id' => $request->vehicle_type_id,
+            'vehicle_number' => $request->vehicle_number,
+            'vehicle_make' => $request->vehicle_make,
+            'vehicle_color' => $request->vehicle_color,
+            'vehicle_year' => $request->vehicle_year
+        ];
+
+
+        $helperVehicle->update($updated_data);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Vehicle info updated successfully',
+            'data' => []
+        ], 200);
+    }
     // passwordUpdate
     public function passwordUpdate(Request $request): JsonResponse
     {
