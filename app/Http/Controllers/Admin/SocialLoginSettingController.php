@@ -23,7 +23,7 @@ class SocialLoginSettingController extends Controller
         // dd($request->all());
 
         // Store values in updated data array
-        $socialLoginSetting = $request->only('google_enabled', 'google_client_id', 'google_secret_id', 'google_redirect_uri', 'facebook_enabled',);
+        $socialLoginSetting = $request->only('google_enabled', 'google_client_id', 'google_secret_id', 'google_redirect_uri', 'facebook_enabled', 'facebook_client_id', 'facebook_client_secret', 'facebook_redirect_uri');
 
         // dd($socialLoginSetting);
         // Update the system settings

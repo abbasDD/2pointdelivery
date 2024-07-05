@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\PassportAuthController;
 
 Route::post('register', [PassportAuthController::class, 'register']);
 Route::post('login', [PassportAuthController::class, 'login']);
+Route::post('forget-password', [PassportAuthController::class, 'forgetPassword']);
 
 // ---------------- CLIENT ROUTES START ---------------- //
 

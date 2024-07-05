@@ -8,12 +8,14 @@ use App\Models\ClientCompany;
 use App\Models\Helper;
 use App\Models\HelperCompany;
 use App\Models\HelperVehicle;
+use App\Models\Referral;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Password;
 
 class PassportAuthController extends Controller
 {
@@ -112,6 +114,18 @@ class PassportAuthController extends Controller
             'address_details' => false,
             'company_details' => false,
         ];
+
+        // Check if user added refferal code
+        if ($request->has('referral_code')) {
+            $refferr_user = User::where('referral_code', $request->referral_code)->first();
+            // dd($refferr_user);
+            if ($refferr_user) {
+                Referral::create([
+                    'referrer_id' => $user->id,
+                    'referred_user_id' => $refferr_user->id
+                ]);
+            }
+        }
 
 
         return response()->json([
@@ -341,5 +355,93 @@ class PassportAuthController extends Controller
             'statusCode' => 200,
             'message' => 'Logged out successfully.',
         ], 200);
+    }
+
+    // Forget Password
+    public function forgetPassword(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $response = $this->broker()->sendResetLink(
+            $this->credentials($request)
+        );
+
+        return $response == Password::RESET_LINK_SENT
+            ? $this->sendResetLinkResponse($request, $response)
+            : $this->sendResetLinkFailedResponse($request, $response);
+
+        // Response
+
+        // return response()->json([
+        //     'success' => true,
+        //     'statusCode' => 200,
+        //     'message' => 'Password reset link sent on your email id.',
+        // ], 200);
+    }
+
+    /**
+     * Get the needed authentication credentials from the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    protected function credentials(Request $request)
+    {
+        return $request->only('email');
+    }
+
+
+    /**
+     * Get the broker to be used during password reset.
+     *
+     * @return \Illuminate\Contracts\Auth\PasswordBroker
+     */
+    public function broker()
+    {
+        return Password::broker();
+    }
+
+    /**
+     * Get the response for a successful password reset link.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $response
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
+    protected function sendResetLinkResponse(Request $request, $response)
+    {
+        return $request->wantsJson()
+            ? new JsonResponse(['success' => true, 'statusCode' => 200, 'message' => trans($response)], 200)
+            : new JsonResponse(['success' => false, 'statusCode' => 422, 'message' => trans($response)], 422);
+    }
+
+    /**
+     * Get the response for a failed password reset link.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $response
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    protected function sendResetLinkFailedResponse(Request $request, $response)
+    {
+        // if ($request->wantsJson()) {
+        //     throw ValidationException::withMessages([
+        //         'email' => [trans($response)],
+        //     ]);
+        // }
+
+        return new JsonResponse(['success' => false, 'statusCode' => 422, 'message' => trans($response)], 422);
     }
 }

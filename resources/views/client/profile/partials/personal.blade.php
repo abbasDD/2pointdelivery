@@ -10,7 +10,10 @@
             </div>
         @endif
     </div>
-    <form action="{{ route('client.update.personal') }}" method="POST" enctype="multipart/form-data">
+    {{-- Show only if original_user_id is null which means user is the team owner --}}
+    <form @if (session('original_user_id') == null) action="{{ route('client.update.personal') }}" @endif method="POST"
+        enctype="multipart/form-data">
+
         @csrf
         <div class="card-body">
             {{-- Profile Image --}}
@@ -116,8 +119,8 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="gender" class="form-label">Gender</label>
-                        <select class="form-control @error('gender') is-invalid @enderror" id="gender"
-                            name="gender" required>
+                        <select class="form-control @error('gender') is-invalid @enderror" id="gender" name="gender"
+                            required>
                             <option value="" selected disabled>Choose Gender</option>
                             <option value="male"
                                 {{ old('gender', $clientData['gender'] ?? '') == 'male' ? 'selected' : '' }}>
@@ -162,12 +165,17 @@
                 </div>
                 {{-- Row End Here --}}
             </div>
-            {{-- Button to Submit --}}
-            <div class="row">
-                <div class="col-md-12 text-right">
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
+
+            {{-- Show only if original_user_id is null which means user is the team owner --}}
+            @if (session('original_user_id') == null)
+                {{-- Button to Submit --}}
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
                 </div>
-            </div>
+            @endif
+
         </div>
     </form>
 </div>

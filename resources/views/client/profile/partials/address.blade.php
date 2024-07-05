@@ -119,12 +119,15 @@
 
                 {{-- Row End Here --}}
             </div>
-            {{-- Button to Submit --}}
-            <div class="row">
-                <div class="col-md-12 text-right">
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
+            {{-- Show only if original_user_id is null which means user is the team owner --}}
+            @if (session('original_user_id') == null)
+                {{-- Button to Submit --}}
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
     </form>
 </div>

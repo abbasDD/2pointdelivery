@@ -117,8 +117,14 @@ class TeamInvitationController extends Controller
             ->first();
 
         if ($invitation) {
-            Auth::loginUsingId($userId);
-            return response()->json(['message' => 'Switched user successfully']);
+
+            // Get from session
+            $originalUserId = session('original_user_id');
+            Auth::loginUsingId($originalUserId);
+            // Remove from session
+            session()->forget('original_user_id');
+            // return response()->json(['message' => 'Switched user successfully']);
+            return redirect()->back()->with('success', 'Switched user successfully');
         }
 
         return response()->json(['message' => 'Unauthorized'], 403);

@@ -107,6 +107,54 @@
         </div>
     </div>
 
+    {{-- FACEBOOK_CLIENT_ID --}}
+    <div class="col-md-12">
+        <div class="form-group mb-3">
+            <label for="facebook_client_id">Facebook Client ID</label>
+            <input type="text" class="form-control @error('facebook_client_id') is-invalid @enderror"
+                id="facebook_client_id" name="facebook_client_id"
+                value="{{ old('facebook_client_id', isset($socialLoginSettings['facebook_client_id']) && $socialLoginSettings['facebook_client_id'] ? $socialLoginSettings['facebook_client_id'] : '') }}"
+                placeholder="Enter Facebook Client ID">
+            @error('facebook_client_id')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
+    {{-- FACEBOOK_CLIENT_SECRET --}}
+    <div class="col-md-12">
+        <div class="form-group mb-3">
+            <label for="facebook_client_secret">Facebook Client Secret</label>
+            <input type="text" class="form-control @error('facebook_client_secret') is-invalid @enderror"
+                id="facebook_client_secret" name="facebook_client_secret"
+                value="{{ old('facebook_client_secret', isset($socialLoginSettings['facebook_client_secret']) && $socialLoginSettings['facebook_client_secret'] ? $socialLoginSettings['facebook_client_secret'] : '') }}"
+                placeholder="Enter Facebook Client Secret">
+            @error('facebook_client_secret')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
+    {{-- FACEBOOK_CLIENT_REDIERECT --}}
+    <div class="col-md-12">
+        <div class="form-group mb-3">
+            <label for="facebook_redirect_uri">Facebook Redirect URI</label>
+            <input type="text" class="form-control @error('facebook_redirect_uri') is-invalid @enderror"
+                id="facebook_redirect_uri" name="facebook_redirect_uri"
+                value="{{ old('facebook_redirect_uri', isset($socialLoginSettings['facebook_redirect_uri']) && $socialLoginSettings['facebook_redirect_uri'] ? $socialLoginSettings['facebook_redirect_uri'] : '') }}"
+                placeholder="Enter Facebook Redirect URI">
+            @error('facebook_redirect_uri')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
     {{-- Submit Button --}}
     <div class="col-md-12 text-right">
         <button type="submit" class="btn btn-primary btn-block">
@@ -124,9 +172,25 @@
         if (value == 'yes') {
             document.getElementById('google_client_id').required = true;
             document.getElementById('google_secret_id').required = true;
+            document.getElementById('google_redirect_uri').required = true;
         } else {
             document.getElementById('google_client_id').required = false;
             document.getElementById('google_secret_id').required = false;
+            document.getElementById('google_redirect_uri').required = false;
+        }
+    }
+
+    // facebookEnabled
+    function facebookEnabled(value) {
+        // if value is yes then add required attributes else remove
+        if (value == 'yes') {
+            document.getElementById('facebook_client_id').required = true;
+            document.getElementById('facebook_client_secret').required = true;
+            document.getElementById('facebook_redirect_uri').required = true;
+        } else {
+            document.getElementById('facebook_client_id').required = false;
+            document.getElementById('facebook_client_secret').required = false;
+            document.getElementById('facebook_redirect_uri').required = false;
         }
     }
 </script>

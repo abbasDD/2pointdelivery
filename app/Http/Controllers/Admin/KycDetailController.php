@@ -21,6 +21,7 @@ class KycDetailController extends Controller
             ->join('users', 'users.id', '=', 'kyc_details.user_id')
             // ->where('is_verified', 0)
             ->with('kycType')
+            ->orderBy('kyc_details.user_id')
             ->get();
 
         // dd($kycDetails->front_image);

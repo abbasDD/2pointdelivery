@@ -6,7 +6,10 @@
             <th>Permissions</th>
             <th>Invite Date</th>
             <th>Status</th>
-            <th>Action</th>
+            {{-- Show only if original_user_id is null which means user is the team owner --}}
+            @if (session('original_user_id') == null)
+                <th>Action</th>
+            @endif
         </tr>
     </thead>
     <tbody>
@@ -27,10 +30,13 @@
                         <span class="badge bg-danger">Rejected</span>
                     @endif
                 </td>
-                <td>
-                    <a class="btn btn-sm btn-danger" href="{{ route('helper.team.remove', $acceptedInvite->id) }}"><i
-                            class="fas fa-trash"></i></a>
-                </td>
+                {{-- Show only if original_user_id is null which means user is the team owner --}}
+                @if (session('original_user_id') == null)
+                    <td>
+                        <a class="btn btn-sm btn-danger" href="{{ route('helper.team.remove', $acceptedInvite->id) }}"><i
+                                class="fas fa-trash"></i></a>
+                    </td>
+                @endif
             </tr>
         @empty
             <tr>

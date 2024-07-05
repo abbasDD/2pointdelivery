@@ -86,11 +86,10 @@
                     Bookings</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.addressBooks') }}"><i
                         class="fa-solid fa-address-book"></i> Address Book</a></li>
+
             <li class="nav-item"><a class="nav-link" href="{{ route('client.invitations') }}"><i
                         class="fa fa-dolly"></i> Invitations</a></li>
-            {{-- <li class="nav-item"><a class="nav-link" href="{{ route('client.invoices') }}"><i
-                        class="fa fa-file-invoice"></i>
-                    Invoices</a></li> --}}
+
             <li class="nav-item"><a class="nav-link" href="{{ route('client.chats') }}"><i class="fa fa-comment"></i>
                     Chat</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.referrals') }}"><i

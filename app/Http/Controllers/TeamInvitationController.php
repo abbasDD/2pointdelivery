@@ -16,10 +16,13 @@ class TeamInvitationController extends Controller
     {
         // dd($request->invitee_email);
 
-        $invitee = User::where('email', $request->invitee_email)->first();
+        $invitee = User::where('email', $request->invitee_email)->where('user_type', 'user')->first();
+
+        if (!$invitee) {
+            return redirect()->back()->with('error', 'User does not exist');
+        }
 
         $invitationData = [];
-
 
         // Check if invitee exists
         if ($invitee) {
@@ -36,29 +39,27 @@ class TeamInvitationController extends Controller
             $invitationData['invitee_id'] = $invitee->id;
         }
 
-        $invitationData['inviter_id'] = 1;
-
         // Check if invitee email is not a user
-        if (!$invitee) {
-            $invitationData['inviter_id'] = Auth::id();
-            $invitationData['invitee_email'] = $request->invitee_email;
-        }
 
-        TeamInvitation::create($invitationData);
+        $invitationData['inviter_id'] = Auth::id();
+        $invitationData['invitee_email'] = $invitee->email;
 
-        if ($invitee) {
-            // Send Notification
-            $userNotification = UserNotification::create([
-                'sender_user_id' => auth()->user()->id,
-                'receiver_user_id' => $invitee->id,
-                'receiver_user_type' => 'client',
-                'reference_id' => $invitee->id,
-                'type' => 'team_invitation',
-                'title' => 'Team Invitation',
-                'content' => 'You have been invited to join the team',
-                'read' => 0
-            ]);
-        }
+        // dd($invitationData);
+
+        $teamInvitation = TeamInvitation::create($invitationData);
+
+        // Send Notification
+        UserNotification::create([
+            'sender_user_id' => auth()->user()->id,
+            'receiver_user_id' => $invitee->id,
+            'receiver_user_type' => 'client',
+            'reference_id' => $teamInvitation->id,
+            'type' => 'team_invitation',
+            'title' => 'Team Invitation',
+            'content' => 'You have been invited to join the team',
+            'read' => 0
+        ]);
+
 
 
         // Send Email
@@ -101,7 +102,10 @@ class TeamInvitationController extends Controller
     public function invitations()
     {
         $user = Auth::user();
-        $invitations = TeamInvitation::where('invitee_id', $user->id)->get();
+        $invitations = TeamInvitation::select('invitee_id', 'inviter_id', 'users.email as inviter_email', 'team_invitations.*')
+            ->join('users', 'team_invitations.inviter_id', '=', 'users.id')
+            ->where('invitee_id', $user->id)
+            ->get();
         // dd($invitations);
         return view('client.teams.invitations', compact('invitations'));
     }

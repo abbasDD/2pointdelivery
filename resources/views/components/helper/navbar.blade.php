@@ -81,8 +81,10 @@
             @endif
             <li class="nav-item"><a class="nav-link" href="{{ route('helper.bookings') }}"><i class="fa fa-dolly"></i>
                     Bookings</a></li>
+
             <li class="nav-item"><a class="nav-link" href="{{ route('helper.invitations') }}"><i
                         class="fa fa-dolly"></i> Invitations</a></li>
+
             <li class="nav-item"><a class="nav-link" href="{{ route('helper.trackOrder') }}"><i
                         class="fa fa-file-invoice"></i> Track Order</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('helper.chats') }}"><i class="fa fa-comment"></i>

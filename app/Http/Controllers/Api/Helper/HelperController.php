@@ -394,28 +394,32 @@ class HelperController extends Controller
 
         $user = auth()->user();
 
+        $helperVehicleData = [
+            'vehicle_type_id' => 0,
+            'vehicle_number' => '',
+            'vehicle_make' => '',
+            'vehicle_model' => '',
+            'vehicle_color' => '',
+            'vehicle_year' => ''
+        ];
+
         $helperVehicle = HelperVehicle::where('user_id', $user->id)->first();
-        if (!$helperVehicle) {
+        if ($helperVehicle) {
             // Create a new helper vehicle
-            $helperVehicle = new HelperVehicle();
-            $helperVehicle->user_id = $user->id;
-            $helperVehicle->helper_id = Helper::where('user_id', $user->id)->first()->id;
-            $helperVehicle->save();
+            $helperVehicleData = [
+                'vehicle_type_id' => $helperVehicle->vehicle_type_id,
+                'vehicle_number' => $helperVehicle->vehicle_number,
+                'vehicle_make' => $helperVehicle->vehicle_make,
+                'vehicle_model' => $helperVehicle->vehicle_model,
+                'vehicle_color' => $helperVehicle->vehicle_color,
+                'vehicle_year' => $helperVehicle->vehicle_year
+            ];
         }
 
 
-        $helperVehicleData = [
-            'vehicle_type_id' => $helperVehicle->vehicle_type_id,
-            'vehicle_number' => $helperVehicle->vehicle_number,
-            'vehicle_make' => $helperVehicle->vehicle_make,
-            'vehicle_model' => $helperVehicle->vehicle_model,
-            'vehicle_color' => $helperVehicle->vehicle_color,
-            'vehicle_year' => $helperVehicle->vehicle_year
-        ];
-
         // Vehicle Types
 
-        $vehicleTypes = VehicleType::all();
+        $vehicleTypes = VehicleType::select('id', 'uuid', 'name')->where('is_active', 1)->get();
 
         return response()->json([
             'success' => true,
@@ -441,7 +445,7 @@ class HelperController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'vehicle_type_id ' => 'required|integer',
+            // 'vehicle_type_id ' => 'required',
             'vehicle_number' => 'required|string',
             'vehicle_make' => 'required|string',
             'vehicle_model' => 'required|string',
@@ -466,6 +470,7 @@ class HelperController extends Controller
             $helperVehicle = new HelperVehicle();
             $helperVehicle->user_id = $user->id;
             $helperVehicle->helper_id = Helper::where('user_id', $user->id)->first()->id;
+            $helperVehicle->vehicle_type_id = $request->vehicle_type_id;
             $helperVehicle->save();
         }
 

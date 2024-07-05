@@ -106,10 +106,11 @@
                     <input type="text" class="form-control input-field @error('base_price') is-invalid @enderror"
                         id="base_price" name="base_price"
                         value="{{ old('base_price', $serviceCategory['base_price'] ?? '') }}"
-                        placeholder="Enter Base Price" required pattern="\d+(\.\d{2})?" inputmode="decimal"
-                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/^(\d*\.?\d{0,2}).*$/g, '$1');">
+                        placeholder="Enter Base Price" required pattern="\d+(\.\d{1,2})?" inputmode="decimal"
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1').replace(/^(\d*\.?\d{0,2}).*$/g, '$1');">
                     <span class="input-group-text text-uppercase" id="base_price">$</span>
                 </div>
+
                 @error('base_price')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -147,8 +148,9 @@
                         class="form-control input-field @error('extra_distance_price') is-invalid @enderror"
                         id="extra_distance_price" name="extra_distance_price"
                         value="{{ old('extra_distance_price', $serviceCategory['extra_distance_price'] ?? '') }}"
-                        placeholder="Enter Extra Distance Price" required pattern="\d+(\.\d{2})?" inputmode="decimal"
-                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/^(\d*\.?\d{0,2}).*$/g, '$1');">
+                        placeholder="Enter Extra Distance Price" required pattern="\d+(\.\d{1,2})?"
+                        inputmode="decimal"
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1').replace(/^(\d*\.?\d{0,2}).*$/g, '$1');">
                     <span class="input-group-text text-uppercase" id="extra_distance_price">$</span>
                 </div>
                 @error('extra_distance_price')
@@ -188,8 +190,8 @@
                         class="form-control input-field @error('extra_weight_price') is-invalid @enderror"
                         id="extra_weight_price" name="extra_weight_price"
                         value="{{ old('extra_weight_price', $serviceCategory['extra_weight_price'] ?? '') }}"
-                        placeholder="Enter Base Weight Price" required pattern="\d+(\.\d{2})?" inputmode="decimal"
-                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/^(\d*\.?\d{0,2}).*$/g, '$1');">
+                        placeholder="Enter Base Weight Price" required pattern="\d+(\.\d{1,2})?" inputmode="decimal"
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1').replace(/^(\d*\.?\d{0,2}).*$/g, '$1');">
                     <span class="input-group-text text-uppercase" id="extra_weight_price">$</span>
                 </div>
                 @error('extra_weight_price')
@@ -208,8 +210,8 @@
                     <input type="text" class="form-control input-field @error('helper_fee') is-invalid @enderror"
                         id="helper_fee" name="helper_fee"
                         value="{{ old('helper_fee', $serviceCategory['helper_fee'] ?? '') }}"
-                        placeholder="Enter Helper Fee" required pattern="\d+(\.\d{2})?" inputmode="decimal"
-                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/^(\d*\.?\d{0,2}).*$/g, '$1');">
+                        placeholder="Enter Helper Fee" required pattern="\d+(\.\d{1,2})?" inputmode="decimal"
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1').replace(/^(\d*\.?\d{0,2}).*$/g, '$1');">
                     <span class="input-group-text text-uppercase" id="helper_fee">$</span>
                 </div>
                 @error('helper_fee')
