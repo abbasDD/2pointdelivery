@@ -11,6 +11,7 @@ use App\Models\Helper;
 use App\Models\HelperVehicle;
 use App\Models\ServiceType;
 use App\Models\SocialLink;
+use App\Models\TeamInvitation;
 use App\Models\User;
 use App\Models\UserNotification;
 use Illuminate\Http\Request;
@@ -672,6 +673,160 @@ class ClientController extends Controller
             'success' => true,
             'message' => 'Notifications marked as read successfully',
             'data' => []
+        ], 200);
+    }
+
+
+    // Teams
+
+    // getTeams
+    public function getInvitedUsers(): JsonResponse
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        $user = auth()->user();
+
+        $acceptedInvites = TeamInvitation::where('inviter_id', $user->id)->get();
+        return response()->json([
+            'success' => true,
+            'message' => 'Teams fetched successfully',
+            'data' => $acceptedInvites
+        ], 200);
+    }
+
+    public function inviteTeamMember(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+
+        $validator = Validator::make($request->all(), [
+            'invitee_email' => 'required|email',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $invitee = User::where('email', $request->invitee_email)->where('user_type', 'user')->first();
+
+        if (!$invitee) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 404,
+                'message' => 'User not found',
+                'data' => []
+            ], 404);
+        }
+
+        $invitationData = [];
+
+        // Check if invitee exists
+        if ($invitee) {
+            // Check is user invited himself
+            if ($invitee->id == Auth::id()) {
+                return response()->json([
+                    'success' => false,
+                    'statusCode' => 422,
+                    'message' => 'You cannot invite yourself',
+                    'data' => []
+                ], 422);
+            }
+
+            // Check is user already invited
+            if (TeamInvitation::where('invitee_id', $invitee->id)->where('inviter_id', Auth::id())->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'statusCode' => 422,
+                    'message' => 'You have already invited this user',
+                    'data' => []
+                ], 422);
+            }
+
+            $invitationData['invitee_id'] = $invitee->id;
+        }
+
+        // Check if invitee email is not a user
+
+        $invitationData['inviter_id'] = Auth::id();
+        $invitationData['invitee_email'] = $invitee->email;
+
+        // dd($invitationData);
+
+        $teamInvitation = TeamInvitation::create($invitationData);
+
+        // Send Notification
+        UserNotification::create([
+            'sender_user_id' => auth()->user()->id,
+            'receiver_user_id' => $invitee->id,
+            'receiver_user_type' => 'client',
+            'reference_id' => $teamInvitation->id,
+            'type' => 'team_invitation',
+            'title' => 'Team Invitation',
+            'content' => 'You have been invited to join the team',
+            'read' => 0
+        ]);
+
+
+        // Response
+
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Team invitation sent successfully',
+            'data' => []
+        ], 200);
+    }
+
+    // Invitaions
+
+    // getInvitations
+    public function getInvitations(): JsonResponse
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        $user = Auth::user();
+        $invitations = TeamInvitation::select('invitee_id', 'inviter_id', 'users.email as inviter_email', 'team_invitations.*')
+            ->join('users', 'team_invitations.inviter_id', '=', 'users.id')
+            ->where('invitee_id', $user->id)
+            ->get();
+
+
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Invitations fetched successfully',
+            'data' => $invitations
         ], 200);
     }
 }

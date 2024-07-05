@@ -73,6 +73,14 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::get('kyc/show/{id}', [KycController::class, 'show']);
     Route::post('kyc/update', [KycController::class, 'update']);
 
+    // Teams 
+    Route::get('teams', [ClientController::class, 'getInvitedUsers']);
+    Route::post('team/invite', [ClientController::class, 'inviteTeamMember']);
+
+    // invitations
+    Route::get('invitations', [ClientController::class, 'getInvitations']);
+    Route::post('accept/invitation', [ClientController::class, 'acceptInvitation']);
+
     // Notifications
     Route::get('notifications', [ClientController::class, 'getNotifications']);
     Route::post('notifications/read-all', [ClientController::class, 'markAllNotificationsRead']);
@@ -142,6 +150,14 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     Route::post('kyc/store', [KycController::class, 'store']);
     Route::get('kyc/show/{id}', [KycController::class, 'show']);
     Route::post('kyc/update', [KycController::class, 'update']);
+
+    // Teams 
+    Route::get('teams', [ClientController::class, 'getInvitedUsers']);
+    Route::post('team/invite', [ClientController::class, 'inviteTeamMember']);
+
+    // invitations
+    Route::get('invitations', [ClientController::class, 'getInvitations']);
+    Route::post('accept/invitation', [ClientController::class, 'acceptInvitation']);
 
     // Notifications
     Route::get('notifications', [HelperController::class, 'getNotifications']);

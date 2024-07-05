@@ -35,14 +35,15 @@
                 <td>${{ $booking->payment->helper_fee }}</td>
                 <td>
                     <p class="badge {{ $booking->status == 'completed' ? 'bg-primary' : 'bg-danger' }}">
-                        {{ $booking->status }}
+                        {{ ucfirst($booking->status) }}
                     </p>
                 </td>
                 @if ($booking->status == 'pending')
                     {{-- CHeck if user already accepted this booking --}}
                     @if ($booking->helper_user_id == auth()->user()->id)
-                        <td><a href="{{ route('helper.booking.show', $booking->id) }}" class="btn btn-sm btn-primary"><i
-                                    class="fas fa-eye"></i></a></td>
+                        <td><a href="{{ route('helper.booking.show', $booking->id) }}" class="btn btn-sm btn-primary">
+                                View
+                        </td>
                     @else
                         <td>
                             <a class="btn btn-sm btn-primary"
@@ -50,8 +51,9 @@
                         </td>
                     @endif
                 @else
-                    <td><a href="{{ route('helper.booking.show', $booking->id) }}" class="btn btn-sm btn-primary"><i
-                                class="fas fa-eye"></i></a></td>
+                    <td><a href="{{ route('helper.booking.show', $booking->id) }}" class="btn btn-sm btn-primary">
+                            View
+                    </td>
                 @endif
             </tr>
         @empty

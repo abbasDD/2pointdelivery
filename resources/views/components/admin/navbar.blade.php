@@ -112,7 +112,7 @@
                     Bookings</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.chats') }}"><i class="fa fa-comment"></i>
+                <a class="nav-link" href="{{ route('admin.chats') }}"><i class="fa-solid fa-inbox"></i>
                     Chat</a>
             </li>
 

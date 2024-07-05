@@ -88,9 +88,10 @@
                         class="fa-solid fa-address-book"></i> Address Book</a></li>
 
             <li class="nav-item"><a class="nav-link" href="{{ route('client.invitations') }}"><i
-                        class="fa fa-dolly"></i> Invitations</a></li>
+                        class="fa-solid fa-handshake"></i> Invitations</a></li>
 
-            <li class="nav-item"><a class="nav-link" href="{{ route('client.chats') }}"><i class="fa fa-comment"></i>
+            <li class="nav-item"><a class="nav-link" href="{{ route('client.chats') }}"><i
+                        class="fa-solid fa-inbox"></i>
                     Chat</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.referrals') }}"><i
                         class="fa-solid fa-repeat"></i> Referrals</a></li>

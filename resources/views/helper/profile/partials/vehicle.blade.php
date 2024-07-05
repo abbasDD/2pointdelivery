@@ -112,7 +112,7 @@
                     {{-- Row End Here --}}
                 </div>
 
-                {{-- Show only if original_user_id is null which means user is the team owner --}}b
+                {{-- Show only if original_user_id is null which means user is the team owner --}}
                 @if (session('original_user_id') == null)
                     {{-- Button to Submit --}}
                     <div class="row">

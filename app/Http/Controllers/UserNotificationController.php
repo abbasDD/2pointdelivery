@@ -71,9 +71,9 @@ class UserNotificationController extends Controller
             case 'team_invitation':
                 // team_inviation
                 if (session('user_type') == 'client') {
-                    return redirect()->route('client.teams.show', $notification->reference_id);
+                    return redirect()->route('client.invitations');
                 }
-                return redirect()->route('helper.invitations.show', $notification->reference_id);
+                return redirect()->route('helper.invitations');
                 break;
             case 'kyc_detail':
                 // kyc_detail
