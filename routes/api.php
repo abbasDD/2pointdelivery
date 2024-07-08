@@ -76,10 +76,12 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     // Teams 
     Route::get('teams', [ClientController::class, 'getInvitedUsers']);
     Route::post('team/invite', [ClientController::class, 'inviteTeamMember']);
+    Route::post('team/remove', [ClientController::class, 'removeTeamMember']);
 
     // invitations
     Route::get('invitations', [ClientController::class, 'getInvitations']);
-    Route::post('accept/invitation', [ClientController::class, 'acceptInvitation']);
+    Route::post('invitation/accept', [ClientController::class, 'acceptInvitation']);
+    Route::post('invitation/decline', [ClientController::class, 'declineInvitation']);
 
     // Notifications
     Route::get('notifications', [ClientController::class, 'getNotifications']);
@@ -152,12 +154,14 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     Route::post('kyc/update', [KycController::class, 'update']);
 
     // Teams 
-    Route::get('teams', [ClientController::class, 'getInvitedUsers']);
-    Route::post('team/invite', [ClientController::class, 'inviteTeamMember']);
+    Route::get('teams', [HelperController::class, 'getInvitedUsers']);
+    Route::post('team/invite', [HelperController::class, 'inviteTeamMember']);
+    Route::post('team/remove', [HelperController::class, 'removeTeamMember']);
 
     // invitations
-    Route::get('invitations', [ClientController::class, 'getInvitations']);
-    Route::post('accept/invitation', [ClientController::class, 'acceptInvitation']);
+    Route::get('invitations', [HelperController::class, 'getInvitations']);
+    Route::post('invitation/accept', [HelperController::class, 'acceptInvitation']);
+    Route::post('invitation/decline', [HelperController::class, 'declineInvitation']);
 
     // Notifications
     Route::get('notifications', [HelperController::class, 'getNotifications']);

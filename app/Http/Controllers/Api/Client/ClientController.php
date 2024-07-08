@@ -799,6 +799,55 @@ class ClientController extends Controller
         ], 200);
     }
 
+    // removeTeamMember
+
+    public function removeTeamMember(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        // Check is user already invited
+        if (TeamInvitation::where('id', $request->id)->where('inviter_id', Auth::id())->exists()) {
+
+            TeamInvitation::where('id', $request->id)->delete();
+
+            return response()->json([
+                'success' => true,
+                'statusCode' => 200,
+                'message' => 'You have successfully removed this user',
+                'data' => []
+            ], 200);
+        }
+
+
+        // 
+        return response()->json([
+            'success' => false,
+            'statusCode' => 422,
+            'message' => 'Unable to find this invitation',
+            'data' => []
+        ], 422);
+    }
+
     // Invitaions
 
     // getInvitations
@@ -827,6 +876,111 @@ class ClientController extends Controller
             'statusCode' => 200,
             'message' => 'Invitations fetched successfully',
             'data' => $invitations
+        ], 200);
+    }
+
+    // acceptInviation
+    public function acceptInviation(Request $request): JsonResponse
+    {
+
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // get team invitation
+
+        $teamInvitation = TeamInvitation::where('id', $request->id)->where('invitee_id', Auth::id())->first();
+        if (!$teamInvitation) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 404,
+                'message' => 'Invitation not found',
+                'data' => []
+            ], 404);
+        }
+
+        TeamInvitation::where('id', $request->id)->update(['status' => 'accepted']);
+
+        // Response
+
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Invitation accepted successfully',
+            'data' => []
+        ], 200);
+    }
+
+    // declineInvitation
+    public function declineInvitation(Request $request): JsonResponse
+    {
+
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // get team invitation
+
+        $teamInvitation = TeamInvitation::where('id', $request->id)
+            ->where('invitee_id', Auth::id())
+            ->where('status', 'pending')
+            ->first();
+
+        if (!$teamInvitation) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 404,
+                'message' => 'Invitation not found',
+                'data' => []
+            ], 404);
+        }
+
+        TeamInvitation::where('id', $request->id)->update(['status' => 'declined']);
+
+        // Response
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Invitation declined successfully',
+            'data' => []
         ], 200);
     }
 }
