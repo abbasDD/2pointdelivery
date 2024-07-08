@@ -970,14 +970,23 @@ class HelperBookingController extends Controller
                 ->where('booking_id', $booking_id)->first();
         }
 
-        $bookingImages = [
-            'start_booking_image' => $bookingImages['start_booking_image'] ? asset('images/bookings/' . $bookingImages['start_booking_image']) : asset('images/bookings/default.png'),
-            'signatureStart' => $bookingImages['signatureStart'] ? asset('images/bookings/' . $bookingImages['signatureStart']) : asset('images/bookings/default.png'),
-            'complete_booking_image' => $bookingImages['complete_booking_image'] ? asset('images/bookings/' . $bookingImages['complete_booking_image']) : asset('images/bookings/default.png'),
-            'signatureCompleted' => $bookingImages['signatureCompleted'] ? asset('images/bookings/' . $bookingImages['signatureCompleted']) : asset('images/bookings/default.png'),
+        if (!$bookingImages) {
+            $bookingImageList = [
+                'start_booking_image' => asset('images/bookings/default.png'),
+                'signatureStart' => asset('images/bookings/default.png'),
+                'complete_booking_image' => asset('images/bookings/default.png'),
+                'signatureCompleted' => asset('images/bookings/default.png'),
+            ];
+        }
+
+        $bookingImageList = [
+            'start_booking_image' => isset($bookingImages['start_booking_image']) && $bookingImages['start_booking_image'] ? asset('images/bookings/' . $bookingImages['start_booking_image']) : asset('images/bookings/default.png'),
+            'signatureStart' => isset($bookingImages['signatureStart']) && $bookingImages['signatureStart'] ? asset('images/bookings/' . $bookingImages['signatureStart']) : asset('images/bookings/default.png'),
+            'complete_booking_image' => isset($bookingImages['complete_booking_image']) && $bookingImages['complete_booking_image'] ? asset('images/bookings/' . $bookingImages['complete_booking_image']) : asset('images/bookings/default.png'),
+            'signatureCompleted' => isset($bookingImages['signatureCompleted']) && $bookingImages['signatureCompleted'] ? asset('images/bookings/' . $bookingImages['signatureCompleted']) : asset('images/bookings/default.png'),
         ];
 
-        return $bookingImages;
+        return $bookingImageList;
     }
 
     // Check If Helper has access to change booking status

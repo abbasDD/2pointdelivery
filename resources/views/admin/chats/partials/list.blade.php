@@ -15,7 +15,7 @@
                 <li class="clearfix">
                     <div id="user_chat_{{ $chat->id }}" class="d-flex align-items-center p-2 item"
                         onclick="loadChat({{ $chat->id }})">
-                        <img src="{{ $chat->otherUserInfo->profile_image ?? asset('images/users/default.png') }}"
+                        <img src="{{ $chat->otherUserInfo->profile_image ? asset('images/users/' . $chat->otherUserInfo->profile_image) : asset('images/users/default.png') }}"
                             alt="avatar" />
                         <div class="about">
                             <div class="name">
@@ -105,8 +105,9 @@
                         .user_id);
 
                     // Update Image
-                    $('#chat-avatar').attr('src', response.otherUserInfo.profile_image ??
-                        "{{ asset('images/users/default.png') }}");
+                    $('#chat-avatar').attr('src', response.otherUserInfo.profile_image ? base_url +
+                        '/images/users/' + response.otherUserInfo
+                        .profile_image "{{ asset('images/users/default.png') }}");
 
                     // Clear items in chat history
                     $('#chat-history').html('');

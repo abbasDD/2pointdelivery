@@ -880,12 +880,8 @@ class ClientBookingController extends Controller
 
         $booking_id = $request->uuid;
 
-        $booking = Booking::select('bookings.id', 'bookings.uuid', 'bookings.client_user_id', 'bookings.helper_user_id', 'bookings.helper_user_id2', 'service_types.name as service_type', 'service_categories.name as service_category', 'priority_settings.name as priority_setting', 'bookings.booking_type', 'bookings.pickup_address', 'bookings.dropoff_address', 'bookings.pickup_latitude', 'bookings.pickup_longitude', 'bookings.dropoff_latitude', 'bookings.dropoff_longitude', 'bookings.booking_date', 'bookings.booking_time', 'bookings.status', 'bookings.total_price', 'bookings.receiver_name', 'bookings.receiver_phone', 'bookings.receiver_email', 'bookings.delivery_note', 'bookings.booking_at')
+        $booking = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'pickup_latitude', 'pickup_longitude', 'dropoff_latitude', 'dropoff_longitude', 'booking_date', 'booking_time', 'status', 'booking_at', 'completed_at')
             ->where('bookings.uuid', $request->uuid)
-            ->where('bookings.client_user_id', auth()->user()->id)
-            ->join('service_types', 'bookings.service_type_id', '=', 'service_types.id')
-            ->join('service_categories', 'bookings.service_category_id', '=', 'service_categories.id')
-            ->join('priority_settings', 'bookings.priority_setting_id', '=', 'priority_settings.id')
             ->first();
 
 
@@ -898,142 +894,23 @@ class ClientBookingController extends Controller
             ], 422);
         }
 
-        $bookingData = [
-            'booking' => $booking,
-            'bookingPayment' => $this->getBookingPayment($booking->id, $booking->booking_type),
-            'bookingImages' => $this->getBookingImages($booking_id, $booking->booking_type),
-            'booking_review' => [],
-            'helper_user' => [],
-            'helper_user2' => [],
-            'client_user' => []
-        ];
-
-        // Check if client data exist
-        if ($booking->client_user_id) {
-            $bookingData['client_user'] = User::select('users.email', 'clients.first_name', 'clients.last_name', 'clients.profile_image', 'clients.phone_no', 'clients.gender')
-                ->where('users.id', $booking->client_user_id)
-                ->join('clients', 'users.id', '=', 'clients.user_id')
-                ->first();
-
-            // Set image with path
-            if ($bookingData['client_user']->profile_image) {
-                $bookingData['client_user']->profile_image = asset('images/users/' . $bookingData['client_user']->profile_image);
-            } else {
-                $bookingData['client_user']->profile_image = asset('images/users/default.png');
-            }
-        }
-
-        // Check if booking payment exist
-        if (!$bookingData['bookingPayment']) {
+        // If booking is draft then show error
+        if ($booking->status == 'draft') {
             return response()->json([
                 'success' => false,
                 'statusCode' => 422,
-                'message' => 'Unable to get booking payment.',
-                'errors' => 'Unable to get booking payment.',
+                'message' => 'Unable to get booking details.',
+                'errors' => 'Unable to get booking details.',
             ], 422);
         }
 
-        //  Get helper data
-        $helper_user = [
-            'email' => '',
-            'first_name' => '',
-            'last_name' => '',
-            'phone_no' => '',
-            'gender' => '',
-            'profile_image' => asset('images/users/default.png'),
-        ];
-        if ($booking->helper_user_id) {
-            $helper_user = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image', 'helpers.gender', 'helpers.phone_no')
-                ->where('users.id', $booking->helper_user_id)
-                ->join('helpers', 'users.id', '=', 'helpers.user_id')
-                ->first();
-        }
-        $bookingData['helper_user'] = $helper_user;
 
-        // Check if helper2 accepted the booking
-        $helper_user2 = [
-            'email' => '',
-            'first_name' => '',
-            'last_name' => '',
-            'phone_no' => '',
-            'gender' => '',
-            'profile_image' => asset('images/users/default.png'),
-        ];
-        if ($booking->helper_user_id2) {
-            $helper_user2 = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image', 'helpers.gender', 'helpers.phone_no')
-                ->where('users.id', $booking->helper_user_id2)
-                ->join('helpers', 'users.id', '=', 'helpers.user_id')
-                ->first();
-        }
-        $bookingData['helper_user2'] = $helper_user2;
-
-        // Get helper vehicle data
-        $helperVehicleData = [
-            'vehicle_type' => '',
-            'vehicle_number' => '',
-            'vehicle_make' => '',
-            'vehicle_model' => '',
-            'vehicle_color' => '',
-            'vehicle_year' => '',
-            'vehicle_image' => '',
-            'description' => '',
-        ];
-        if ($booking->helper_user_id) {
-            $helperVehicleData = HelperVehicle::select('helper_vehicles.vehicle_number', 'helper_vehicles.vehicle_make', 'helper_vehicles.vehicle_model', 'helper_vehicles.vehicle_color', 'helper_vehicles.vehicle_year', 'vehicle_types.name as vehicle_type', 'vehicle_types.image as vehicle_image', 'vehicle_types.description')
-                ->join('vehicle_types', 'vehicle_types.id', '=', 'helper_vehicles.vehicle_type_id')
-                ->where('user_id', $booking->helper_user_id)->first();
-            // Update Image with link
-            if ($helperVehicleData->vehicle_image) {
-                $helperVehicleData->vehicle_image = asset('images/vehicle_types/' . $helperVehicleData->vehicle_image);
-            } else {
-                $helperVehicleData->vehicle_image = asset('images/vehicle_types/default.png');
-            }
-        }
-        $bookingData['helperVehicleData'] = $helperVehicleData;
-
-        // Get helper2 vehicle data
-        $helperVehicleData2 = [
-            'vehicle_type' => '',
-            'vehicle_number' => '',
-            'vehicle_make' => '',
-            'vehicle_model' => '',
-            'vehicle_color' => '',
-            'vehicle_year' => '',
-            'vehicle_image' => '',
-            'description' => '',
-        ];
-        if ($booking->helper_user_id2) {
-            $helperVehicleData2 = HelperVehicle::select('helper_vehicles.vehicle_number', 'helper_vehicles.vehicle_make', 'helper_vehicles.vehicle_model', 'helper_vehicles.vehicle_color', 'helper_vehicles.vehicle_year', 'vehicle_types.name as vehicle_type', 'vehicle_types.image as vehicle_image', 'vehicle_types.description')
-                ->join('vehicle_types', 'vehicle_types.id', '=', 'helper_vehicles.vehicle_type_id')
-                ->where('user_id', $booking->helper_user_id2)->first();
-            // Update Image with link
-            if ($helperVehicleData2->vehicle_image) {
-                $helperVehicleData2->vehicle_image = asset('images/vehicle_types/' . $helperVehicleData2->vehicle_image);
-            } else {
-                $helperVehicleData2->vehicle_image = asset('images/vehicle_types/default.png');
-            }
-        }
-        $bookingData['helperVehicleData2'] = $helperVehicleData2;
-
-
-        // Get Boking Review
-        $bookingData['booking_review'] = [
-            'rating' => '',
-            'review' => '',
-        ];
-
-        // Get Boking Review
-        $booking_review = BookingReview::where('booking_id', $booking->id)->first();
-        if ($booking_review) {
-            $bookingData['booking_review']['rating'] = $booking_review->rating;
-            $bookingData['booking_review']['review'] = $booking_review->review;
-        }
 
         return response()->json([
             'success' => true,
             'statusCode' => 200,
             'message' => 'Booking track data fetched successfully',
-            'data' => $bookingData,
+            'data' => $booking,
         ], 200);
     }
 
@@ -1254,13 +1131,22 @@ class ClientBookingController extends Controller
                 ->where('booking_id', $booking_id)->first();
         }
 
-        $bookingImages = [
-            'start_booking_image' => $bookingImages['start_booking_image'] ? asset('images/bookings/' . $bookingImages['start_booking_image']) : asset('images/bookings/default.png'),
-            'signatureStart' => $bookingImages['signatureStart'] ? asset('images/bookings/' . $bookingImages['signatureStart']) : asset('images/bookings/default.png'),
-            'complete_booking_image' => $bookingImages['complete_booking_image'] ? asset('images/bookings/' . $bookingImages['complete_booking_image']) : asset('images/bookings/default.png'),
-            'signatureCompleted' => $bookingImages['signatureCompleted'] ? asset('images/bookings/' . $bookingImages['signatureCompleted']) : asset('images/bookings/default.png'),
+        if (!$bookingImages) {
+            $bookingImageList = [
+                'start_booking_image' => asset('images/bookings/default.png'),
+                'signatureStart' => asset('images/bookings/default.png'),
+                'complete_booking_image' => asset('images/bookings/default.png'),
+                'signatureCompleted' => asset('images/bookings/default.png'),
+            ];
+        }
+
+        $bookingImageList = [
+            'start_booking_image' => isset($bookingImages['start_booking_image']) && $bookingImages['start_booking_image'] ? asset('images/bookings/' . $bookingImages['start_booking_image']) : asset('images/bookings/default.png'),
+            'signatureStart' => isset($bookingImages['signatureStart']) && $bookingImages['signatureStart'] ? asset('images/bookings/' . $bookingImages['signatureStart']) : asset('images/bookings/default.png'),
+            'complete_booking_image' => isset($bookingImages['complete_booking_image']) && $bookingImages['complete_booking_image'] ? asset('images/bookings/' . $bookingImages['complete_booking_image']) : asset('images/bookings/default.png'),
+            'signatureCompleted' => isset($bookingImages['signatureCompleted']) && $bookingImages['signatureCompleted'] ? asset('images/bookings/' . $bookingImages['signatureCompleted']) : asset('images/bookings/default.png'),
         ];
 
-        return $bookingImages;
+        return $bookingImageList;
     }
 }

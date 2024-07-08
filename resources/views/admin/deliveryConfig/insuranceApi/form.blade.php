@@ -1,16 +1,15 @@
 <div class="row">
-    {{-- Insurance API Enable --}}
     <div class="col-md-12">
         <div class="form-group mb-3">
             <label for="insurance_api_enable">Insurance API Enable</label>
             <select class="form-control @error('insurance_api_enable') is-invalid @enderror" id="insurance_api_enable"
                 name="insurance_api_enable" required>
-                <option value="1"
-                    {{ old('insurance_api_enable', $insuranceApi['insurance_api_enable'] ?? '') == 1 ? 'selected' : '' }}>
+                <option value="yes"
+                    {{ old('insurance_api_enable') == 'yes' || (isset($insuranceApi['insurance_api_enable']) && $insuranceApi['insurance_api_enable'] == 'yes') ? 'selected' : '' }}>
                     Yes
                 </option>
-                <option value="0"
-                    {{ old('insurance_api_enable', $insuranceApi['insurance_api_enable'] ?? '') == 0 ? 'selected' : '' }}>
+                <option value="no"
+                    {{ old('insurance_api_enable') == 'no' || (isset($insuranceApi['insurance_api_enable']) && $insuranceApi['insurance_api_enable'] == 'no') ? 'selected' : '' }}>
                     No
                 </option>
             </select>
@@ -21,6 +20,7 @@
             @enderror
         </div>
     </div>
+
 
     {{-- API Identifier --}}
     <div class="col-md-12">

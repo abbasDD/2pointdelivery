@@ -143,14 +143,15 @@
             @enderror
         </div>
     </div>
-    {{-- Tax ID --}}
+    {{-- Service Badge ID --}}
     <div class="col-md-6">
         <div class="form-group mb-3">
-            <label for="tax_id">Tax ID</label>
-            <input type="text" class="form-control @error('tax_id') is-invalid @enderror" id="tax_id"
-                name="tax_id" value="{{ old('tax_id', $helper['tax_id'] ?? '') }}"
-                placeholder="Enter Tax ID (optional)">
-            @error('tax_id')
+            <label for="service_badge_id">Service Badge ID</label>
+            <input type="text" class="form-control @error('service_badge_id') is-invalid @enderror"
+                id="service_badge_id" name="service_badge_id"
+                value="{{ old('service_badge_id', $helper['service_badge_id'] ?? '') }}"
+                placeholder="Enter Service Badge ID (optional)">
+            @error('service_badge_id')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>

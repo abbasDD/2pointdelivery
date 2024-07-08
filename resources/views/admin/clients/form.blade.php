@@ -143,13 +143,13 @@
             @enderror
         </div>
     </div>
-    {{-- Tax ID --}}
+    {{-- State ID --}}
     <div class="col-md-6">
         <div class="form-group mb-3">
-            <label for="tax_id">Tax ID</label>
+            <label for="tax_id">State ID</label>
             <input type="text" class="form-control @error('tax_id') is-invalid @enderror" id="tax_id"
-                name="tax_id" value="{{ old('tax_id', $client['tax_id'] ?? '') }}"
-                placeholder="Enter Tax ID (optional)">
+                name="tax_id" value="{{ old('tax_id', $client['tax_id'] ?? '') }}" placeholder="Enter State ID"
+                required>
             @error('tax_id')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>

@@ -37,7 +37,7 @@
                             <div class="card">
                                 <div class="card-body text-center">
                                     <img class="mb-3"
-                                        src="{{ $helper->profile_image ? asset($helper->profile_image) : asset('images/users/default.png') }}"
+                                        src="{{ $helper->profile_image ? asset('images/users/' . $helper->profile_image) : asset('images/users/default.png') }}"
                                         alt="Profile Image" width="50">
                                     <h4 class="mb-0">{{ $helper->first_name . ' ' . $helper->last_name }}</h4>
                                     <p>{{ $helper->email }}</p>
