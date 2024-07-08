@@ -7,10 +7,15 @@
             <p class="mb-0">Priority:</p>
             <h6 class="mb-0">{{ $booking->prioritySetting->name }}</h6>
         </div>
-        {{-- Package Value: --}}
+        {{-- Service Type: --}}
         <div class="d-flex align-items-center justify-content-between mb-3">
             <p class="mb-0">Service Type:</p>
             <h6 class="mb-0">{{ $booking->serviceType->name }}</h6>
+        </div>
+        {{-- Service Category: --}}
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <p class="mb-0">Service Category:</p>
+            <h6 class="mb-0">{{ $booking->serviceCategory->name }}</h6>
         </div>
         {{-- Delivery Time: --}}
         <div class="d-flex align-items-center justify-content-between mb-3">

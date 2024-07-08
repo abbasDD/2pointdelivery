@@ -80,7 +80,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
 
     // invitations
     Route::get('invitations', [ClientController::class, 'getInvitations']);
-    Route::post('invitation/accept', [ClientController::class, 'acceptInvitation']);
+    Route::post('invitation/accept', [ClientController::class, 'acceptInviation']);
     Route::post('invitation/decline', [ClientController::class, 'declineInvitation']);
 
     // Notifications
@@ -160,7 +160,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
 
     // invitations
     Route::get('invitations', [HelperController::class, 'getInvitations']);
-    Route::post('invitation/accept', [HelperController::class, 'acceptInvitation']);
+    Route::post('invitation/accept', [HelperController::class, 'acceptInviation']);
     Route::post('invitation/decline', [HelperController::class, 'declineInvitation']);
 
     // Notifications

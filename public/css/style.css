@@ -1124,14 +1124,14 @@ w-70 {
 }
 
 .chat .chat-history .message-text {
-    font-size: 1rem;
     margin-bottom: 0;
 }
 
 .chat .chat-history .message-data-time {
-    color: var(--light-gray-color);
+    color: var(--gray-color);
     padding-left: 6px;
     margin-bottom: 0;
+    font-size: 0.8rem;
 }
 
 .chat .chat-history .message {
@@ -1164,11 +1164,11 @@ w-70 {
 }
 
 .chat .chat-history .other-message {
-    background: var(--gray-color);
+    background: var(--light-gray-color);
 }
 
 .chat .chat-history .other-message:after {
-    border-bottom-color: var(--gray-color);
+    border-bottom-color: var(--light-gray-color);
     left: 93%;
 }
 

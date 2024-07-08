@@ -25,7 +25,7 @@
                             <div id="collapse{{ $faq->id }}" class="collapse"
                                 aria-labelledby="faq_{{ $faq->id }}" data-bs-parent="#accordionFAQs">
                                 <div class="card-body">
-                                    {{ $faq->answer }}
+                                    {!! $faq->answer !!}
                                 </div>
                             </div>
                         </div>
