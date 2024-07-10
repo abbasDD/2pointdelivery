@@ -100,7 +100,7 @@ class HelperController extends Controller
             ->with('serviceType')
             ->with('serviceCategory')
             ->where('status', 'pending')
-            ->orderBy('bookings.created_at', 'desc')->get();
+            ->orderBy('bookings.updated_at', 'desc')->get();
 
         // dd($bookings);
 
@@ -179,7 +179,7 @@ class HelperController extends Controller
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
-            ->orderBy('bookings.created_at', 'desc')->get();
+            ->orderBy('bookings.updated_at', 'desc')->get();
 
         return view('helper.bookings.index', compact('bookings'));
     }

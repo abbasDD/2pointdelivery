@@ -77,10 +77,10 @@ class ServiceCategoryController extends Controller
 
         // Convvert prices to 2 decimal places
         $request->request->add([
-            'base_price' => number_format($request->base_price, 2),
-            'extra_distance_price' => number_format($request->extra_distance_price, 2),
-            'extra_weight_price' => number_format($request->extra_weight_price, 2),
-            'helper_fee' => number_format($request->helper_fee, 2),
+            'base_price' => $request->base_price,
+            'extra_distance_price' => $request->extra_distance_price,
+            'extra_weight_price' => $request->extra_weight_price,
+            'helper_fee' => $request->helper_fee,
         ]);
 
         // Create the serviceCategory
@@ -129,10 +129,10 @@ class ServiceCategoryController extends Controller
 
         // Convvert prices to 2 decimal places
         $request->request->add([
-            'base_price' => number_format($request->base_price, 2),
-            'extra_distance_price' => number_format($request->extra_distance_price, 2),
-            'extra_weight_price' => number_format($request->extra_weight_price, 2),
-            'helper_fee' => number_format($request->helper_fee, 2),
+            'base_price' => $request->base_price,
+            'extra_distance_price' => $request->extra_distance_price,
+            'extra_weight_price' => $request->extra_weight_price,
+            'helper_fee' => $request->helper_fee,
         ]);
 
         // Update the serviceCategory

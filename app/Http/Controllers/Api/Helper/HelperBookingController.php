@@ -60,6 +60,7 @@ class HelperBookingController extends Controller
             ->join('service_types', 'bookings.service_type_id', '=', 'service_types.id')
             ->join('service_categories', 'bookings.service_category_id', '=', 'service_categories.id')
             ->join('priority_settings', 'bookings.priority_setting_id', '=', 'priority_settings.id')
+            ->orderBy('bookings.updated_at', 'desc')
             ->first();
 
 
@@ -834,6 +835,7 @@ class HelperBookingController extends Controller
 
         $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
             ->where('status', 'pending')
+            ->orderBy('bookings.updated_at', 'desc')
             ->get();
 
         return response()->json([
@@ -871,6 +873,7 @@ class HelperBookingController extends Controller
                     ->orWhere('helper_user_id2', $userId);
             })
             ->whereIn('status', ['started', 'in_transit'])
+            ->orderBy('bookings.updated_at', 'desc')
             ->get();
 
 
@@ -909,6 +912,7 @@ class HelperBookingController extends Controller
                     ->orWhere('helper_user_id2', $userId);
             })
             ->whereIn('status', ['completed', 'cancelled'])
+            ->orderBy('bookings.updated_at', 'desc')
             ->get();
 
 

@@ -86,6 +86,7 @@ class HomeController extends Controller
             ->with('serviceType')
             ->with('serviceCategory')
             // ->where('status', '!=', 'draft') //Where booking status is not draft
+            ->orderBy('bookings.updated_at', 'desc')
             ->latest()->take(5)->get();
         // dd($latestBookings);
 

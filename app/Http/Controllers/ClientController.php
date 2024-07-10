@@ -114,7 +114,7 @@ class ClientController extends Controller
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
-            ->orderBy('bookings.created_at', 'desc')
+            ->orderBy('bookings.updated_at', 'desc')
             ->take(10)->get();
 
         // Get booking client details

@@ -4,12 +4,12 @@
             <label for="insurance_api_enable">Insurance API Enable</label>
             <select class="form-control @error('insurance_api_enable') is-invalid @enderror" id="insurance_api_enable"
                 name="insurance_api_enable" required>
-                <option value="yes"
-                    {{ old('insurance_api_enable') == 'yes' || (isset($insuranceApi['insurance_api_enable']) && $insuranceApi['insurance_api_enable'] == 'yes') ? 'selected' : '' }}>
+                <option value="1"
+                    {{ old('insurance_api_enable', $insuranceApi['insurance_api_enable'] ?? '') == 1 ? 'selected' : '' }}>
                     Yes
                 </option>
-                <option value="no"
-                    {{ old('insurance_api_enable') == 'no' || (isset($insuranceApi['insurance_api_enable']) && $insuranceApi['insurance_api_enable'] == 'no') ? 'selected' : '' }}>
+                <option value="0"
+                    {{ old('insurance_api_enable', $insuranceApi['insurance_api_enable'] ?? '') == 0 ? 'selected' : '' }}>
                     No
                 </option>
             </select>

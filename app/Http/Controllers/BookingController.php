@@ -50,7 +50,7 @@ class BookingController extends Controller
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
-            ->orderBy('bookings.created_at', 'desc')->get();
+            ->orderBy('bookings.updated_at', 'desc')->get();
 
         foreach ($bookings as $booking) {
             if ($booking->helper_user_id != NULL) {

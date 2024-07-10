@@ -56,6 +56,7 @@ class DeliveryConfigController extends Controller
 
     public function updateInsurance(Request $request)
     {
+        // dd($request->insurance_api_enable);
         $request->validate([
             'insurance_api_enable' => 'required',
         ]);
@@ -66,6 +67,18 @@ class DeliveryConfigController extends Controller
                 'insurance_api_identifier' => 'required',
                 'insurance_api_secret_key' => 'required',
             ]);
+        }
+
+        // Update Insurance API Enable
+        $insurance_api_enable = DeliveryConfig::where('key', 'insurance_api_enable')->first();
+        if (!$insurance_api_enable) {
+            $deliveryConfig = new DeliveryConfig();
+            $deliveryConfig->key = 'insurance_api_enable';
+            $deliveryConfig->value = $request->insurance_api_enable;
+            $deliveryConfig->save();
+        } else {
+            $insurance_api_enable->value = $request->insurance_api_enable;
+            $insurance_api_enable->save();
         }
 
         // Update Insurance API Identifier
@@ -90,18 +103,6 @@ class DeliveryConfigController extends Controller
         } else {
             $insurance_api_secret_key->value = $request->insurance_api_secret_key ?? '';
             $insurance_api_secret_key->save();
-        }
-
-        // Update Insurance API Enable
-        $insurance_api_enable = DeliveryConfig::where('key', 'insurance_api_enable')->first();
-        if (!$insurance_api_enable) {
-            $deliveryConfig = new DeliveryConfig();
-            $deliveryConfig->key = 'insurance_api_enable';
-            $deliveryConfig->value = $request->insurance_api_enable;
-            $deliveryConfig->save();
-        } else {
-            $insurance_api_enable->value = $request->insurance_api_enable;
-            $insurance_api_enable->save();
         }
 
         return redirect()->back()->with('success', 'Insurance API Updated Successfully');

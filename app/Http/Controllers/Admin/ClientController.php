@@ -146,7 +146,7 @@ class ClientController extends Controller
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
-            ->orderBy('bookings.created_at', 'desc')
+            ->orderBy('bookings.updated_at', 'desc')
             ->paginate(10);
 
         return view('admin.clients.show', compact('client', 'bookings'));

@@ -37,7 +37,7 @@ class BookingController extends Controller
             ->with('serviceCategory')
             ->where('helper_user_id', auth()->user()->id)
             ->orWhere('helper_user_id2', auth()->user()->id)
-            ->orderBy('bookings.created_at', 'desc')->get();
+            ->orderBy('bookings.updated_at', 'desc')->get();
 
         // dd($bookings);
 

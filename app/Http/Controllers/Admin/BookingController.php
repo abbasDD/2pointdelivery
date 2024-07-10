@@ -22,6 +22,7 @@ class BookingController extends Controller
             ->with('serviceType')
             ->with('serviceCategory')
             // ->where('status', '!=', 'draft') //Where booking status is not draft
+            ->orderBy('updated_at', 'desc')
             ->paginate(10);
 
         foreach ($bookings as $booking) {
