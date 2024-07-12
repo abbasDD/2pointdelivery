@@ -45,10 +45,17 @@
                         @if (auth()->user()->user_type == 'admin')
                             <li><a class="dropdown-item" href="{{ route('admin.index') }}">Admin</a></li>
                         @else
-                            <li><a class="dropdown-item" href="{{ route('client.index') }}">Client</a></li>
-                            <li><a class="dropdown-item" href="{{ route('helper.index') }}">Helper</a></li>
+                            @if (auth()->user()->user_type == 'helper')
+                                <li><a class="dropdown-item" href="{{ route('helper.index') }}">Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{{ route('helper.profile') }}">Profile</a></li>
+                                <li><a class="dropdown-item" href="#">Settings</a></li>
+                            @else
+                                <li><a class="dropdown-item" href="{{ route('client.index') }}">Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{{ route('client.profile') }}">Profile</a></li>
+                                <li><a class="dropdown-item" href="#">Settings</a></li>
+                            @endif
                         @endif
-                        <li><a class="dropdown-item" href="{{ route('chat') }}">Chat</a></li>
+                        <li><a class="dropdown-item" href="{{ route('help') }}">Help</a></li>
                         <li><a class="dropdown-item" href="{{ route('logout') }}"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
                         </li>
@@ -95,16 +102,18 @@
                     Chat</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.referrals') }}"><i
                         class="fa-solid fa-repeat"></i> Referrals</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('client.trackOrder') }}"><i class="fa fa-map"></i>
+            <li class="nav-item"><a class="nav-link" href="{{ route('client.trackOrder') }}"><i
+                        class="fa fa-map"></i>
                     Tracking</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('client.profile') }}"><i class="fa fa-edit"></i>
+            <li class="nav-item"><a class="nav-link" href="{{ route('client.profile') }}"><i
+                        class="fa fa-edit"></i>
                     Edit Profile</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
                         class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
             </li>
         </ul>
-        <a href="{{ route('helper.index') }}" class="btn btn-primary">Login as Helper</a>
+        <a href="{{ route('helper.index') }}" class="btn btn-primary">Switch to Helper</a>
     </nav>
 </div>
 

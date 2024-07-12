@@ -43,10 +43,17 @@
                         @if (auth()->user()->user_type == 'admin')
                             <li><a class="dropdown-item" href="{{ route('admin.index') }}">Admin</a></li>
                         @else
-                            <li><a class="dropdown-item" href="{{ route('client.index') }}">Client</a></li>
-                            <li><a class="dropdown-item" href="{{ route('helper.index') }}">Helper</a></li>
+                            @if (auth()->user()->user_type == 'helper')
+                                <li><a class="dropdown-item" href="{{ route('helper.index') }}">Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{{ route('helper.profile') }}">Profile</a></li>
+                                <li><a class="dropdown-item" href="#">Settings</a></li>
+                            @else
+                                <li><a class="dropdown-item" href="{{ route('client.index') }}">Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{{ route('client.profile') }}">Profile</a></li>
+                                <li><a class="dropdown-item" href="#">Settings</a></li>
+                            @endif
                         @endif
-                        <li><a class="dropdown-item" href="{{ route('chat') }}">Chat</a></li>
+                        <li><a class="dropdown-item" href="{{ route('help') }}">Help</a></li>
                         <li><a class="dropdown-item" href="{{ route('logout') }}"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
                         </li>
@@ -101,7 +108,7 @@
                         class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
             </li>
         </ul>
-        <a href="{{ route('client.index') }}" class="btn btn-primary">Login as Client</a>
+        <a href="{{ route('client.index') }}" class="btn btn-primary">Switch to Client</a>
     </nav>
 </div>
 

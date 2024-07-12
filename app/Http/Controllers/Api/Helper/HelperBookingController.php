@@ -872,7 +872,7 @@ class HelperBookingController extends Controller
                 $query->where('helper_user_id', $userId)
                     ->orWhere('helper_user_id2', $userId);
             })
-            ->whereIn('status', ['started', 'in_transit'])
+            ->whereIn('status', ['accepted', 'started', 'in_transit'])
             ->orderBy('bookings.updated_at', 'desc')
             ->get();
 
