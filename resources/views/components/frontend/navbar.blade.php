@@ -62,17 +62,21 @@
                         </p>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             @if (auth()->user()->user_type == 'admin')
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.index') }}">{{ __('frontend.admin') }}</a></li>
+                                <li><a class="dropdown-item" href="{{ route('admin.index') }}">Admin</a></li>
                             @else
-                                <li><a class="dropdown-item"
-                                        href="{{ route('client.index') }}">{{ __('frontend.client') }}</a></li>
-                                <li><a class="dropdown-item"
-                                        href="{{ route('helper.index') }}">{{ __('frontend.helper') }}</a></li>
+                                @if (auth()->user()->user_type == 'helper')
+                                    <li><a class="dropdown-item" href="{{ route('helper.index') }}">Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('helper.profile') }}">Profile</a></li>
+                                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                                @else
+                                    <li><a class="dropdown-item" href="{{ route('client.index') }}">Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('client.profile') }}">Profile</a></li>
+                                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                                @endif
                             @endif
-                            <li><a class="dropdown-item" href="{{ route('chat') }}">{{ __('frontend.chats') }}</a></li>
+                            <li><a class="dropdown-item" href="{{ route('help') }}">Help</a></li>
                             <li><a class="dropdown-item" href="{{ route('logout') }}"
-                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">{{ __('frontend.logout') }}</a>
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
                             </li>
                         </ul>
                     </div>

@@ -1066,6 +1066,31 @@ class BookingController extends Controller
         return view('frontend.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'helper2Data', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'helper2VehicleData', 'clientView', 'helperView'));
     }
 
+    // Cancel Booking
+    public function cancel(Request $request)
+    {
+        $booking = Booking::where('id', $request->id)
+            ->where('client_user_id', Auth::user()->id)
+            ->first();
+
+        if (!$booking) {
+            return redirect()->back()->with('error', 'Booking not found');
+        }
+
+        if ($booking->status == 'cancelled') {
+            return redirect()->back()->with('error', 'Booking already cancelled');
+        }
+
+        if ($booking->status != 'pending') {
+            return redirect()->back()->with('error', 'Booking already in progress');
+        }
+
+        $booking->status = 'cancelled';
+        $booking->save();
+
+        return redirect()->back()->with('success', 'Booking cancelled successfully');
+    }
+
     // Get client individual tax calculation
     private function getClientTax()
     {

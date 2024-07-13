@@ -53,6 +53,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::post('booking/create', [ClientBookingController::class, 'createBooking']);
     Route::get('booking/payment/{id}', [ClientBookingController::class, 'getPaymentBooking']);
     Route::get('booking/details/{id}', [ClientBookingController::class, 'getBookingDetails']);
+    Route::get('booking/cancel/{id}', [ClientBookingController::class, 'cancelBooking']);
     Route::post('booking/payment/cod', [ClientBookingController::class, 'codPaymentBooking']);
 
     // Track Booking

@@ -164,4 +164,31 @@ class BookingController extends Controller
 
         return view('admin.bookings.show', compact('booking', 'bookingData', 'helperData', 'helperData2', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'helper2VehicleData'));
     }
+
+    public function cancel(Request $request)
+    {
+        $booking = Booking::where('id', $request->id)
+            ->with('client')
+            ->with('prioritySetting')
+            ->with('serviceType')
+            ->with('serviceCategory')
+            ->first();
+
+        if (!$booking) {
+            return redirect()->back()->with('error', 'Booking not found');
+        }
+
+        if ($booking->status == 'cancelled') {
+            return redirect()->back()->with('error', 'Booking already cancelled');
+        }
+
+        if ($booking->status != 'pending') {
+            return redirect()->back()->with('error', 'Booking already in progress');
+        }
+
+        $booking->status = 'cancelled';
+        $booking->save();
+
+        return redirect()->back()->with('success', 'Booking cancelled successfully');
+    }
 }

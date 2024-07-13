@@ -21,6 +21,10 @@
                 <h6>Vehicle Price</h6>
                 <p>$<span id="vehicle-price-value">0</span></p>
             </div>
+            <div class="item delivery d-none">
+                <h6>Insurance Price</h6>
+                <p>$<span id="insurance-price-value">0</span></p>
+            </div>
             <div class="item moving d-none">
                 <h6>No of Room Price</h6>
                 <p>$<span id="no-of-room-price-value">0</span></p>

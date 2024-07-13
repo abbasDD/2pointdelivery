@@ -195,6 +195,7 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     // Bookings Page Routes
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings');
     Route::get('/bookings/view/{id}', [BookingController::class, 'show'])->name('booking.show');
+    Route::get('/bookings/cancel/{id}', [BookingController::class, 'cancel'])->name('booking.cancel');
 
     // Chat Page Routes
     Route::get('/chats', [ChatController::class, 'index'])->name('chats');

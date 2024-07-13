@@ -108,14 +108,22 @@ class HelperBookingController extends Controller
             'last_name' => '',
             'phone_no' => '',
             'gender' => '',
-            'profile_image' => asset('images/users/default.png'),
+            'profile_image' => null,
         ];
         if ($booking->helper_user_id) {
             $helper_user = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image', 'helpers.gender', 'helpers.phone_no')
                 ->where('users.id', $booking->helper_user_id)
                 ->join('helpers', 'users.id', '=', 'helpers.user_id')
                 ->first();
+
+            // update image with path
+            if ($helper_user['profile_image']) {
+                $helper_user['profile_image'] = asset('images/users/' . $helper_user['profile_image']);
+            } else {
+                $helper_user['profile_image'] = asset('images/users/default.png');
+            }
         }
+
         $bookingData['helper_user'] = $helper_user;
 
         // Check if helper2 accepted the booking
@@ -125,14 +133,22 @@ class HelperBookingController extends Controller
             'last_name' => '',
             'phone_no' => '',
             'gender' => '',
-            'profile_image' => asset('images/users/default.png'),
+            'profile_image' => null,
         ];
         if ($booking->helper_user_id2) {
             $helper_user2 = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image', 'helpers.gender', 'helpers.phone_no')
                 ->where('users.id', $booking->helper_user_id2)
                 ->join('helpers', 'users.id', '=', 'helpers.user_id')
                 ->first();
+
+            // update image with path
+            if ($helper_user2['profile_image']) {
+                $helper_user2['profile_image'] = asset('images/users/' . $helper_user2['profile_image']);
+            } else {
+                $helper_user2['profile_image'] = asset('images/users/default.png');
+            }
         }
+
         $bookingData['helper_user2'] = $helper_user2;
 
         // Get helper vehicle data
@@ -833,6 +849,8 @@ class HelperBookingController extends Controller
             ], 401);
         }
 
+        $userId = auth()->user()->id;
+
         $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
             ->where('status', 'pending')
             ->orderBy('bookings.updated_at', 'desc')
@@ -859,12 +877,6 @@ class HelperBookingController extends Controller
             ], 401);
         }
 
-        // $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
-        //     ->where('helper_user_id', auth()->user()->id)
-        //     ->orWhere('helper_user_id2', auth()->user()->id)
-        //     ->whereIn('status', ['started', 'in_transit'])
-        //     ->get();
-
         $userId = auth()->user()->id;
 
         $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
@@ -872,7 +884,7 @@ class HelperBookingController extends Controller
                 $query->where('helper_user_id', $userId)
                     ->orWhere('helper_user_id2', $userId);
             })
-            ->whereIn('status', ['accepted', 'started', 'in_transit'])
+            ->whereIn('status', ['pending', 'accepted', 'started', 'in_transit'])
             ->orderBy('bookings.updated_at', 'desc')
             ->get();
 

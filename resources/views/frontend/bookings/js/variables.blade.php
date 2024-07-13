@@ -35,10 +35,11 @@
     var movingDetailsTotalWeight = 0;
     var movingDetailsTotalVolume = 0;
 
+    // Store $prioritySettings to JS array
     var prioritySettings = {!! json_encode($prioritySettings) !!};
-    if (prioritySettings.length > 0) {
-        priorityID = prioritySettings[0].id;
-    }
+    var selectedPriorityID = prioritySettings[0].id;
+    console.log('Selected Priority ID: ' + selectedPriorityID);
+    var newUpdatedPriority = [];
 
     // Store addresses to JS array
     var addresses = {!! json_encode($addresses) !!};
@@ -85,10 +86,7 @@
         updateMovingFormFields();
         // console.log('Selected category vehicle price is ' + serviceCategories[0]);
     }
-    // Store $prioritySettings to JS array
-    var prioritySettings = {!! json_encode($prioritySettings) !!};
-    var selectedPriorityID = prioritySettings[0].id;
-    console.log('Selected Priority ID: ' + selectedPriorityID);
+
 
 
     // Map Variables
@@ -385,6 +383,8 @@
         document.getElementById('priority-price-value').innerHTML = Math.round(priority_price *
             100) / 100;
         document.getElementById('vehicle-price-value').innerHTML = Math.round(vehicle_price *
+            100) / 100;
+        document.getElementById('insurance-price-value').innerHTML = Math.round(insurance_value *
             100) / 100;
         document.getElementById('weight-price-value').innerHTML = Math.round(weight_price *
             100) / 100;

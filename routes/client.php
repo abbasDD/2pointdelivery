@@ -66,6 +66,7 @@ Route::middleware(['app_language'])->group(function () {
         Route::post('/booking/store', [BookingController::class, 'store'])->name('booking.store');
         Route::get('/booking/payment/{id}', [BookingController::class, 'payment'])->name('booking.payment');
         Route::get('/booking/show/{id}', [BookingController::class, 'show'])->name('booking.show');
+        Route::get('/bookings/cancel/{id}', [BookingController::class, 'cancel'])->name('booking.cancel');
         Route::get('/booking/payment/cod/{id}', [BookingController::class, 'codPayment'])->name('booking.payment.cod');
         // Paypal
         Route::post('/booking/payment/paypal/create', [BookingController::class, 'createPaypalPayment'])->name('booking.payment.paypal.create');

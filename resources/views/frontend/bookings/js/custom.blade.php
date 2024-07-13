@@ -36,12 +36,15 @@
         }
         // Update form data as per the service type
         updateServiceFormData();
-        // console.log(serviceType);
+
+        // Update priority as per the service type selected
+        updatePriority(selectedServiceType);
+
+        // console.log('Selected Service Type: ' + selectedServiceType);
+
         var url =
             '{{ route('fetch.service.categories') }}' +
-            '?serviceType=' + serviceType; // Replace 'fetch.service.categories' with your actual route name
-        // var formData = new FormData();
-        // formData.append('serviceType', serviceType);
+            '?serviceType=' + serviceType;
 
         fetch(url, {
                 method: 'GET'
@@ -93,9 +96,37 @@
     }
 
 
+    // Update priority as per the service type selected
+    function updatePriority(selectedServiceType) {
+        // Get selected service type
+        // console.log(prioritySettings);
+        newUpdatedPriority = [];
+        // Get priority settings from list only which has type is equal to selected service type
+        for (let i = 0; i < prioritySettings.length; i++) {
+            if (prioritySettings[i].type == selectedServiceType) {
+                newUpdatedPriority.push(prioritySettings[i]);
+            }
+        }
+        // console.log(newUpdatedPriority);
+        if (newUpdatedPriority.length > 0) {
+            selectedPriorityID = newUpdatedPriority[0].id;
+        }
 
-    // Get estimate from https://secureship.ca/ship/api/docs#tag/Carriers/operation/Carriers_CalculateRates
-    var apiKey = '0226b62a-f112-4d22-a8fc-d05b67a38e26'; // Replace 'YOUR_API_KEY' with your actual API key
+        // Populate the priority dropdown
+        if (newUpdatedPriority.length > 0) {
+            var priorityDropdown = document.getElementById('priorityDropdown');
+            // Empty the dropdown
+            priorityDropdown.innerHTML = '';
+            newUpdatedPriority.forEach(priority => {
+                var option = document.createElement('option');
+                option.value = priority.id;
+                option.text = priority.name;
+                priorityDropdown.appendChild(option);
+            });
+        }
+
+    }
+
 
     // Function to call the API
     function getEstimatedFees() {
@@ -177,26 +208,7 @@
         formData.append('selectedMovingDetailsID', selectedMovingDetailsID); // selectedMovingDetailsID
 
 
-
-        // Calculate total price
-
-        // formData.append('total_price', payment_total_price);
-
-        // Remove some data
-        // formData.delete('serviceType');
-        // formData.delete('priority');
-
-        // Stringify the form data
-        // formData = JSON.stringify(Object.fromEntries(formData));
-
         console.log(formData);
-
-        // return false;
-
-        // Append csrf token
-        // formData.append('_token', '{{ csrf_token() }}');
-
-        // console.log(formData);
 
         let base_url = '{{ url('/') }}';
 
@@ -231,6 +243,9 @@
 
     // Update the form data as per the service type
     function updateServiceFormData() {
+
+        updatePriority(selectedServiceType);
+
         // console.log(selectedServiceType);
         if (selectedServiceType == 'moving') {
             // Hide and Show Div

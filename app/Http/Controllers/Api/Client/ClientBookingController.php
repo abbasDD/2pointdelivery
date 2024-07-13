@@ -178,7 +178,10 @@ class ClientBookingController extends Controller
 
 
         // Get package value and calculate insurance
-        $data['insurance_value'] = $this->getEstimateController->getInsuranceValue($request->selectedServiceType, $request->package_value);
+        $data['insurance_value'] = 0;
+        if ($request->inurance_enabled == 1) {
+            $data['insurance_value'] = $this->getEstimateController->getInsuranceValue($request->selectedServiceType, $request->package_value);
+        }
 
         // Get Base Price Value
         $data['base_price'] = $this->getEstimateController->getBasePrice($serviceType->type, $serviceCategory->base_price, $serviceCategory->moving_price_type, $request->floor_size, $request->no_of_hours);
@@ -757,13 +760,19 @@ class ClientBookingController extends Controller
             'last_name' => '',
             'phone_no' => '',
             'gender' => '',
-            'profile_image' => asset('images/users/default.png'),
+            'profile_image' => null,
         ];
         if ($booking->helper_user_id) {
             $helper_user = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image', 'helpers.gender', 'helpers.phone_no')
                 ->where('users.id', $booking->helper_user_id)
                 ->join('helpers', 'users.id', '=', 'helpers.user_id')
                 ->first();
+            // update image with path
+            if ($helper_user['profile_image']) {
+                $helper_user['profile_image'] = asset('images/users/' . $helper_user['profile_image']);
+            } else {
+                $helper_user['profile_image'] = asset('images/users/default.png');
+            }
         }
         $bookingData['helper_user'] = $helper_user;
 
@@ -774,13 +783,20 @@ class ClientBookingController extends Controller
             'last_name' => '',
             'phone_no' => '',
             'gender' => '',
-            'profile_image' => asset('images/users/default.png'),
+            'profile_image' => null,
         ];
         if ($booking->helper_user_id2) {
             $helper_user2 = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image', 'helpers.gender', 'helpers.phone_no')
                 ->where('users.id', $booking->helper_user_id2)
                 ->join('helpers', 'users.id', '=', 'helpers.user_id')
                 ->first();
+
+            // update image with path
+            if ($helper_user2['profile_image']) {
+                $helper_user2['profile_image'] = asset('images/users/' . $helper_user2['profile_image']);
+            } else {
+                $helper_user2['profile_image'] = asset('images/users/default.png');
+            }
         }
         $bookingData['helper_user2'] = $helper_user2;
 
@@ -854,6 +870,73 @@ class ClientBookingController extends Controller
         ], 200);
     }
 
+    // cancelBooking
+    public function cancelBooking(Request $request)
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        if (!isset($request->id)) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Booking ID is required.',
+                'errors' => 'Booking ID is required.',
+            ], 422);
+        }
+
+        $booking = Booking::where('id', $request->id)
+            ->with('client')
+            ->with('prioritySetting')
+            ->with('serviceType')
+            ->with('serviceCategory')
+            ->first();
+
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to get booking.',
+                'errors' => 'Unable to get booking.',
+            ], 422);
+        }
+
+        if ($booking->status == 'cancelled') {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Booking already cancelled.',
+                'errors' => 'Booking already cancelled.',
+            ]);
+        }
+
+        if ($booking->status != 'pending') {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to cancel booking.',
+                'errors' => 'Unable to cancel booking.',
+            ]);
+        }
+
+        $booking->status = 'cancelled';
+        $booking->save();
+
+        // Return response
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Booking cancelled successfully.',
+            'data' => $booking,
+        ], 200);
+    }
 
 
     // Track Booking
