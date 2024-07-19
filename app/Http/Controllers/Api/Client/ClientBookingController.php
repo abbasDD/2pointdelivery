@@ -13,6 +13,7 @@ use App\Models\HelperVehicle;
 use App\Models\MovingConfig;
 use App\Models\MovingDetail;
 use App\Models\MovingDetailCategory;
+use App\Models\PaymentSetting;
 use App\Models\PrioritySetting;
 use App\Models\ServiceCategory;
 use App\Models\ServiceType;
@@ -559,12 +560,65 @@ class ClientBookingController extends Controller
             ], 422);
         }
 
+        // Get payment settings
+        $paymentSettings = [
+            'cod_enabled' => 0,
+            'paypal_enabled' => 0,
+            'stripe_enabled' => 0,
+            'stripe_publishable_key' => null,
+            'stripe_secret_key' => null,
+            'paypal_client_id' => null,
+            'paypal_secret_id' => null
+        ];
+
+        // COD Enabled
+        $paymentSettings['cod_enabled'] = PaymentSetting::where('key', 'cod_enabled')->first();
+        if ($paymentSettings['cod_enabled']->value == 'yes') {
+            $paymentSettings['cod_enabled'] = 1;
+        }
+        // Paypal Enabled
+        $paymentSettings['paypal_enabled'] = PaymentSetting::where('key', 'paypal_enabled')->first();
+        if ($paymentSettings['paypal_enabled']->value == 'yes') {
+            $paymentSettings['paypal_enabled'] = 1;
+        }
+        // Check if paypal enabled
+        if ($paymentSettings['paypal_enabled'] == 1) {
+            // Get paypal client id
+            $paymentSettings['paypal_client_id'] = PaymentSetting::where('key', 'paypal_client_id')->first();
+            if ($paymentSettings['paypal_client_id']->value) {
+                $paymentSettings['paypal_client_id'] = $paymentSettings['paypal_client_id']->value;
+            }
+            // Get paypal secret key
+            $paymentSettings['paypal_secret_id'] = PaymentSetting::where('key', 'paypal_secret_id')->first();
+            if ($paymentSettings['paypal_secret_id']->value) {
+                $paymentSettings['paypal_secret_id'] = $paymentSettings['paypal_secret_id']->value;
+            }
+        }
+        // Stripe Enabled
+        $paymentSettings['stripe_enabled'] = PaymentSetting::where('key', 'stripe_enabled')->first();
+        if ($paymentSettings['stripe_enabled']->value == 'yes') {
+            $paymentSettings['stripe_enabled'] = 1;
+        }
+        // Check if stripe enabled
+        if ($paymentSettings['stripe_enabled'] == 1) {
+            // Get stripe publishable key
+            $paymentSettings['stripe_publishable_key'] = PaymentSetting::where('key', 'stripe_publishable_key')->first();
+            if ($paymentSettings['stripe_publishable_key']->value) {
+                $paymentSettings['stripe_publishable_key'] = $paymentSettings['stripe_publishable_key']->value;
+            }
+            // Get stripe secret key
+            $paymentSettings['stripe_secret_key'] = PaymentSetting::where('key', 'stripe_secret_key')->first();
+            if ($paymentSettings['stripe_secret_key']->value) {
+                $paymentSettings['stripe_secret_key'] = $paymentSettings['stripe_secret_key']->value;
+            }
+        }
+
         // Return response with booking and booking payment
         return response()->json([
             'success' => true,
             'statusCode' => 200,
             'message' => 'Booking created successfully',
-            'data' => ['booking' => $booking, 'booking_payment' => $bookingPayment],
+            'data' => ['booking' => $booking, 'booking_payment' => $bookingPayment, 'payment_settings' => $paymentSettings],
         ], 200);
     }
 
@@ -672,6 +726,227 @@ class ClientBookingController extends Controller
         ], 200);
     }
 
+    // paypalPaymentBooking
+    public function paypalPaymentBooking(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'booking_id' => 'required|integer|exists:bookings,id',
+            'transaction_id' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // Check if booking exist on booking_id
+        $booking = Booking::where('id', $request->booking_id)->where('client_user_id', auth()->user()->id)->where('status', 'draft')->first();
+
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to get booking.',
+                'errors' => 'Unable to get booking.',
+            ], 422);
+        }
+
+        // Check if current user is booked by this booking
+        if ($booking->client_user_id != auth()->user()->id) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to get booking.',
+                'errors' => 'Unable to get booking.',
+            ], 422);
+        }
+
+        if ($booking->booking_type == 'delivery') {
+            $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+
+            if ($bookingDelivery->payment_status == 'paid') {
+                return response()->json([
+                    'success' => false,
+                    'statusCode' => 422,
+                    'message' => 'Booking already paid.',
+                    'errors' => 'Booking already paid.',
+                ], 422);
+            }
+        }
+
+        if ($booking->booking_type == 'moving') {
+            $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
+
+            if ($bookingMoving->payment_status == 'paid') {
+                return response()->json([
+                    'success' => false,
+                    'statusCode' => 422,
+                    'message' => 'Booking already paid.',
+                    'errors' => 'Booking already paid.',
+                ], 422);
+            }
+        }
+
+        // Update booking to paid status
+
+        // Update booking payment status
+        $booking->update(['status' => 'pending', 'payment_status' => 'paid', 'payment_method' => 'paypal']);
+
+        // Update booking payment details
+        if ($booking->booking_type == 'delivery') {
+            BookingDelivery::where('booking_id', $booking->id)->update(['transaction_id' =>  $request->transaction_id, 'payment_status' => 'paid', 'payment_method' => 'paypal', 'payment_at' => Carbon::now()]);
+        }
+
+        if ($booking->booking_type == 'moving') {
+            BookingMoving::where('booking_id', $booking->id)->update(['transaction_id' =>  $request->transaction_id, 'payment_status' => 'paid', 'payment_method' => 'paypal', 'payment_at' => Carbon::now()]);
+        }
+
+
+        // Send notification to user
+
+        $userNofitication = UserNotification::create([
+            'sender_user_id' => null,
+            'receiver_user_id' => auth()->user()->id,
+            'receiver_user_type' => 'client',
+            'type' => 'booking',
+            'reference_id' => $booking->id,
+            'title' => 'Booking Payment',
+            'content' => 'You have successfully paid for your booking',
+            'read' => 0
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Booking paid successfully',
+            'data' => [],
+        ], 200);
+    }
+
+    // stripePaymentBooking
+    public function stripePaymentBooking(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'booking_id' => 'required|integer|exists:bookings,id',
+            'transaction_id' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // Check if booking exist on booking_id
+        $booking = Booking::where('id', $request->booking_id)->where('client_user_id', auth()->user()->id)->where('status', 'draft')->first();
+
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to get booking.',
+                'errors' => 'Unable to get booking.',
+            ], 422);
+        }
+
+        // Check if current user is booked by this booking
+        if ($booking->client_user_id != auth()->user()->id) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to get booking.',
+                'errors' => 'Unable to get booking.',
+            ], 422);
+        }
+
+        if ($booking->booking_type == 'delivery') {
+            $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+
+            if ($bookingDelivery->payment_status == 'paid') {
+                return response()->json([
+                    'success' => false,
+                    'statusCode' => 422,
+                    'message' => 'Booking already paid.',
+                    'errors' => 'Booking already paid.',
+                ], 422);
+            }
+        }
+
+        if ($booking->booking_type == 'moving') {
+            $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
+
+            if ($bookingMoving->payment_status == 'paid') {
+                return response()->json([
+                    'success' => false,
+                    'statusCode' => 422,
+                    'message' => 'Booking already paid.',
+                    'errors' => 'Booking already paid.',
+                ], 422);
+            }
+        }
+
+        // Update booking to paid status
+
+        // Update booking payment status
+        $booking->update(['status' => 'pending', 'payment_status' => 'paid', 'payment_method' => 'stripe']);
+
+        // Update booking payment details
+        if ($booking->booking_type == 'delivery') {
+            BookingDelivery::where('booking_id', $booking->id)->update(['transaction_id' =>  $request->transaction_id, 'payment_status' => 'paid', 'payment_method' => 'stripe', 'payment_at' => Carbon::now()]);
+        }
+
+        if ($booking->booking_type == 'moving') {
+            BookingMoving::where('booking_id', $booking->id)->update(['transaction_id' =>  $request->transaction_id, 'payment_status' => 'paid', 'payment_method' => 'stripe', 'payment_at' => Carbon::now()]);
+        }
+
+
+        // Send notification to user
+
+        UserNotification::create([
+            'sender_user_id' => null,
+            'receiver_user_id' => auth()->user()->id,
+            'receiver_user_type' => 'client',
+            'type' => 'booking',
+            'reference_id' => $booking->id,
+            'title' => 'Booking Payment',
+            'content' => 'You have successfully paid for your booking',
+            'read' => 0
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Booking paid successfully',
+            'data' => [],
+        ], 200);
+    }
 
     // showBooking
     public function getBookingDetails(Request $request): JsonResponse

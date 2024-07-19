@@ -268,7 +268,7 @@ class PassportAuthController extends Controller
                 }
 
                 if ($helper->company_enabled == 1) {
-                    // Get client company details
+                    // Get helper company details
                     $helperCompany = HelperCompany::where('user_id', auth()->user()->id)->first();
                     if (isset($helperCompany) && $helperCompany->legal_name != null) {
                         $userData['company_details'] = true;
@@ -277,7 +277,7 @@ class PassportAuthController extends Controller
 
                 // Check if helpervehicle details exist
                 $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
-                if (isset($helperVehicle) && $helperVehicle->vehicle_type_id != null) {
+                if (isset($helperVehicle) && $helperVehicle->vehicle_number != null) {
                     $userData['vehicle_details'] = true;
                 }
             }

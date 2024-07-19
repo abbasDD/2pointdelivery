@@ -35,6 +35,10 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     // Update Client Password
     Route::post('password/update', [ClientController::class, 'passwordUpdate']);
 
+    // Get Company Details
+    Route::get('company', [ClientController::class, 'getCompanyInfo']);
+    Route::post('company/update', [ClientController::class, 'companyUpdate']);
+
     // Update Social Links
     Route::get('social-links', [ClientController::class, 'getSocialLinks']);
     Route::post('social-links/update', [ClientController::class, 'socialLinksUpdate']);
@@ -55,6 +59,8 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::get('booking/details/{id}', [ClientBookingController::class, 'getBookingDetails']);
     Route::get('booking/cancel/{id}', [ClientBookingController::class, 'cancelBooking']);
     Route::post('booking/payment/cod', [ClientBookingController::class, 'codPaymentBooking']);
+    Route::post('booking/payment/paypal', [ClientBookingController::class, 'paypalPaymentBooking']);
+    Route::post('booking/payment/stripe', [ClientBookingController::class, 'stripePaymentBooking']);
 
     // Track Booking
     Route::post('booking/track', [ClientBookingController::class, 'trackBooking']);
@@ -113,6 +119,10 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     // Update Helper Address
     Route::get('address', [HelperController::class, 'getAddressInfo']);
     Route::post('address/update', [HelperController::class, 'addressUpdate']);
+
+    // Get Company Details
+    Route::get('company', [HelperController::class, 'getCompanyInfo']);
+    Route::post('company/update', [HelperController::class, 'companyUpdate']);
 
     // Update Helper Vehicle
     Route::get('vehicle', [HelperController::class, 'getVehicleInfo']);

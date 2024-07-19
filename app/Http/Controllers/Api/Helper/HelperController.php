@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Client;
 use App\Models\ClientCompany;
 use App\Models\Helper;
+use App\Models\HelperCompany;
 use App\Models\HelperVehicle;
 use App\Models\SocialLink;
 use App\Models\TeamInvitation;
@@ -255,6 +256,180 @@ class HelperController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Helper Profile updated successfully',
+            'data' => []
+        ], 200);
+    }
+
+    // getCompanyInfo
+    public function getCompanyInfo(): JsonResponse
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+
+        $helper = Helper::where('user_id', $user->id)->first();
+        if (!$helper) {
+            // Create a new helper
+            $helper = new Helper();
+            $helper->user_id = $user->id;
+            $helper->save();
+        }
+
+        // Get helper company
+        $helperCompany = HelperCompany::where('user_id', $user->id)->first();
+
+        if (!$helperCompany) {
+            // Create
+            $helperCompany = new ClientCompany();
+            $helperCompany->user_id = $user->id;
+            $helperCompany->helper_id = $helper->id;
+            $helperCompany->save();
+        }
+
+        $helperCompanyData = [
+            'company_logo' => $helperCompany->company_logo ? asset('images/users/' . $helperCompany->company_logo) : asset('images/users/default.png'),
+            'company_alias' => $helperCompany->company_alias,
+            'legal_name' => $helperCompany->legal_name,
+            'industry' => $helperCompany->industry,
+            'company_number' => $helperCompany->company_number,
+            'gst_number' => $helperCompany->gst_number,
+            'website_url' => $helperCompany->website_url,
+            'email' => $helperCompany->email,
+            'business_phone' => $helperCompany->business_phone,
+            'suite' => $helperCompany->suite,
+            'street' => $helperCompany->street,
+            'city' => $helperCompany->city,
+            'state' => $helperCompany->state,
+            'country' => $helperCompany->country,
+            'zip_code' => $helperCompany->zip_code
+        ];
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Client Company Profile fetched successfully',
+            'data' => $helperCompanyData
+        ], 200);
+    }
+
+    // companyUpdate
+    public function companyUpdate(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'company_alias' => 'required|string',
+            'legal_name' => 'required|string',
+            'industry' => 'required|string',
+            'company_number' => 'required|string',
+            'gst_number' => 'required|string',
+            'website_url' => 'required|string',
+            'email' => 'required|string',
+            'business_phone' => 'required|string',
+            'suite' => 'required|string',
+            'street' => 'required|string',
+            'city' => 'required|string',
+            'state' => 'required|string',
+            'country' => 'required|string',
+            'zip_code' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // If helper is found, update its attributes
+        $helper = Helper::where('user_id', $user->id)->first();
+        if (!$helper) {
+            // Create a new helper
+            $helper = new Helper();
+            $helper->user_id = $user->id;
+            $helper->save();
+        }
+
+        // Get helper company
+        $helperCompany = ClientCompany::where('user_id', $user->id)->first();
+
+        if (!$helperCompany) {
+            // Create
+            $helperCompany = new ClientCompany();
+            $helperCompany->user_id = $user->id;
+            $helperCompany->helper_id = $helper->id;
+            $helperCompany->save();
+        }
+
+
+        $updated_data = [
+            'company_alias' => $request->company_alias,
+            'legal_name' => $request->legal_name,
+            'industry' => $request->industry,
+            'company_number' => $request->company_number,
+            'gst_number' => $request->gst_number,
+            'website_url' => $request->website_url,
+            'email' => $request->email,
+            'business_phone' => $request->business_phone,
+            'suite' => $request->suite,
+            'street' => $request->street,
+            'city' => $request->city,
+            'state' => $request->state,
+            'country' => $request->country,
+            'zip_code' => $request->zip_code
+        ];
+
+
+
+        // Update helperCompany
+        $helperCompany->update($updated_data);
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Client Company Profile updated successfully',
             'data' => []
         ], 200);
     }
