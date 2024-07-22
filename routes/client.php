@@ -35,6 +35,9 @@ Route::middleware(['app_language'])->group(function () {
         // Search Users Route
         Route::post('/users/search', [ClientController::class, 'searchUsers'])->name('users.search');
 
+        // Switch to Helper
+        Route::get('switch-to-helper', [ClientController::class, 'switchToHelper'])->name('switchToHelper');
+
         // Reuqest Client Companpy
         Route::post('/company/request', [ClientController::class, 'requestCompany'])->name('company.request');
 

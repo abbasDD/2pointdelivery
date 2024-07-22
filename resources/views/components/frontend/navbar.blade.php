@@ -54,32 +54,10 @@
 
             <div class="d-flex">
                 @auth
-                    <div class="dropdown">
-                        <p class="nav-link dropdown-toggle mb-0" type="button" id="dropdownMenuButton"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <img class="user-image d-inline rounded-circle" src="{{ asset('images/default-user.jpg') }}"
-                                width="35" height="35" alt="User">
-                        </p>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            @if (auth()->user()->user_type == 'admin')
-                                <li><a class="dropdown-item" href="{{ route('admin.index') }}">Admin</a></li>
-                            @else
-                                @if (auth()->user()->user_type == 'helper')
-                                    <li><a class="dropdown-item" href="{{ route('helper.index') }}">Dashboard</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('helper.profile') }}">Profile</a></li>
-                                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                                @else
-                                    <li><a class="dropdown-item" href="{{ route('client.index') }}">Dashboard</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('client.profile') }}">Profile</a></li>
-                                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                                @endif
-                            @endif
-                            <li><a class="dropdown-item" href="{{ route('help') }}">Help</a></li>
-                            <li><a class="dropdown-item" href="{{ route('logout') }}"
-                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
-                            </li>
-                        </ul>
-                    </div>
+                    {{-- Load user-dropdown.blade.php --}}
+                    @include('components.user-dropdown')
+
+                    {{-- End user-dropdown.blade.php --}}
                 @else
                     <!-- If user is not logged in, show sign in button -->
                     {{-- <a href="{{ route('client.login') }}" class="nav-link"><i class="fa-regular fa-user mx-2"></i>Sign

@@ -144,6 +144,10 @@ section {
     text-align: right;
 }
 
+.fs-12 {
+    font-size: 12px;
+}
+
 .fs-14 {
     font-size: 14px;
 }
@@ -448,12 +452,23 @@ w-70 {
 
 .dropdown-menu[data-bs-popper] {
     top: 100%;
-    left: -90px;
+    left: -175px;
     margin-top: 0.125rem;
+    padding: 1rem;
 }
 
 .dropdown-toggle::after {
     display: none;
+}
+
+.dropdown-item {
+    padding: 0.25rem 0rem;
+    color: var(--gray-color);
+}
+
+.dropdown-item:focus, .dropdown-item:hover {
+    background-color: transparent;
+    color: var(--primary-color);
 }
 
 .card {

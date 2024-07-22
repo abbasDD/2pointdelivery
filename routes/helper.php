@@ -31,6 +31,9 @@ Route::middleware(['app_language'])->group(function () {
         Route::get('/', [HelperController::class, 'index'])->name('index');
         Route::get('/index', [HelperController::class, 'index'])->name('index');
 
+        // Switch to Client
+        Route::get('switch-to-client', [HelperController::class, 'switchToClient'])->name('switchToClient');
+
         // Search Users Route
         Route::post('/users/search', [HelperController::class, 'searchUsers'])->name('users.search');
 

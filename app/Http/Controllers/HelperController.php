@@ -51,9 +51,21 @@ class HelperController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function update_profile()
+    public function switchToClient()
     {
-        dd('update profile');
+        // Store login_type to Session
+        session(['login_type' => 'client']);
+
+        // Get client first name and last name
+        $clientInfo = Client::where('user_id', auth()->user()->id)->first();
+        if ($clientInfo) {
+            session(['full_name' => $clientInfo->first_name . ' ' . $clientInfo->last_name]);
+            // set profile_image
+            session(['profile_image' => asset('images/users/' . $clientInfo->profile_image)]);
+        }
+
+        // Redirect to dashboard
+        return redirect()->route('client.index')->with('success', 'Switched to Client Dashboard');
     }
 
     /**

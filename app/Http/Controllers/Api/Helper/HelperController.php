@@ -95,6 +95,12 @@ class HelperController extends Controller
         ];
 
         $client = Client::where('user_id', $user->id)->first();
+        if (!$client) {
+            // Create a new client
+            $client = new Client();
+            $client->user_id = $user->id;
+            $client->save();
+        }
         $userData['company_enabled'] = $client->company_enabled;
         $userData['first_name'] = $client->first_name;
         $userData['middle_name'] = $client->middle_name;

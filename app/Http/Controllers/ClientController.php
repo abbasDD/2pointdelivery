@@ -12,6 +12,7 @@ use App\Models\BookingMoving;
 use App\Models\City;
 use App\Models\ClientCompany;
 use App\Models\Country;
+use App\Models\Helper;
 use App\Models\Industry;
 use App\Models\Referral;
 use App\Models\SocialLink;
@@ -49,14 +50,22 @@ class ClientController extends Controller
         return view('client.auth.complete_profile');
     }
 
-    /**
-     * Show the application complete profile.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function update_profile()
+    // Switch to Helper
+    public function switchToHelper()
     {
-        dd('update profile');
+        // Store login_type to Session
+        session(['login_type' => 'helper']);
+
+        // Get helper first name and last name
+        $helperInfo = Helper::where('user_id', auth()->user()->id)->first();
+        if ($helperInfo) {
+            session(['full_name' => $helperInfo->first_name . ' ' . $helperInfo->last_name]);
+            // set profile_image
+            session(['profile_image' => asset('images/users/' . $helperInfo->profile_image)]);
+        }
+
+        // Redirect to dashboard
+        return redirect()->route('helper.index')->with('success', 'Switched to Helper Dashboard');
     }
 
     // Request Copmany Profile

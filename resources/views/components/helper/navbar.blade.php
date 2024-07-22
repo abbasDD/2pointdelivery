@@ -33,32 +33,12 @@
                 </div>
 
                 {{-- User Dropdown --}}
-                <div class="dropdown d-none d-md-block">
-                    <p class="nav-link dropdown-toggle mb-0" type="button" id="dropdownMenuButton"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <img class="user-image d-inline rounded-circle" src="{{ asset('images/default-user.jpg') }}"
-                            width="35" height="35" alt="User">
-                    </p>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        @if (auth()->user()->user_type == 'admin')
-                            <li><a class="dropdown-item" href="{{ route('admin.index') }}">Admin</a></li>
-                        @else
-                            @if (auth()->user()->user_type == 'helper')
-                                <li><a class="dropdown-item" href="{{ route('helper.index') }}">Dashboard</a></li>
-                                <li><a class="dropdown-item" href="{{ route('helper.profile') }}">Profile</a></li>
-                                <li><a class="dropdown-item" href="#">Settings</a></li>
-                            @else
-                                <li><a class="dropdown-item" href="{{ route('client.index') }}">Dashboard</a></li>
-                                <li><a class="dropdown-item" href="{{ route('client.profile') }}">Profile</a></li>
-                                <li><a class="dropdown-item" href="#">Settings</a></li>
-                            @endif
-                        @endif
-                        <li><a class="dropdown-item" href="{{ route('help') }}">Help</a></li>
-                        <li><a class="dropdown-item" href="{{ route('logout') }}"
-                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
-                        </li>
-                    </ul>
-                </div>
+
+
+                {{-- Load user-dropdown.blade.php --}}
+                @include('components.user-dropdown')
+
+                {{-- End user-dropdown.blade.php --}}
             @else
                 <!-- If user is not logged in, show sign in button -->
                 <a href="{{ route('client.login') }}" class="nav-link"><i class="fa-regular fa-user mx-2"></i>Sign
@@ -69,53 +49,7 @@
 </nav>
 
 {{-- Sidebar Code --}}
-<div class="sidebar">
-    <a class="navbar-brand" href="{{ route('index') }}">
-        <img src="{{ config('website_logo') ? asset('images/logo/' . config('website_logo')) : asset('images/logo/icon.png') }}"
-            alt="2 Point" width="50">
-        2 Point Helper
-    </a>
-    <nav class="mt-3">
-        <ul class="p-0">
-            {{-- Dashboard --}}
-            <li class="nav-item"><a class="nav-link" href="{{ route('helper.index') }}"><i class="fa fa-home"></i>
-                    Dashboard</a></li>
-            {{-- KYC --}}
-            <li class="nav-item"><a class="nav-link" href="{{ route('helper.kyc_details') }}"><i
-                        class="fa fa-bank"></i> KYC Detail</a>
-            </li>
-            {{-- Show Tams only if Helper is Company --}}
-            @if (app('userInfoHelper')->hasHelperCompany())
-                <li class="nav-item"><a class="nav-link" href="{{ route('helper.team.index') }}"><i
-                            class="fa fa-users"></i> Teams</a></li>
-            @endif
-            {{-- Bookings --}}
-            <li class="nav-item"><a class="nav-link" href="{{ route('helper.bookings') }}"><i class="fa fa-dolly"></i>
-                    Bookings</a></li>
-            {{-- Invitations --}}
-            <li class="nav-item"><a class="nav-link" href="{{ route('helper.invitations') }}"><i
-                        class="fa-solid fa-handshake"></i> Invitations</a></li>
-            {{-- Chats --}}
-            <li class="nav-item"><a class="nav-link" href="{{ route('helper.chats') }}"><i
-                        class="fa-solid fa-inbox"></i>
-                    Chat</a></li>
-            {{-- Edit Profile --}}
-            <li class="nav-item"><a class="nav-link" href="{{ route('helper.profile') }}"><i class="fa fa-edit"></i>
-                    Edit Profile</a></li>
-            {{-- Logout --}}
-            <li class="nav-item"><a class="nav-link" href="{{ route('logout') }}"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
-                        class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
-            </li>
-        </ul>
-        <a href="{{ route('client.index') }}" class="btn btn-primary">Switch to Client</a>
-    </nav>
-</div>
-
-
-<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-    @csrf
-</form>
+@include('components.helper.sidebar')
 
 
 

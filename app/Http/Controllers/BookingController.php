@@ -292,7 +292,7 @@ class BookingController extends Controller
         }
 
         // User Notification
-        $userNofitication = UserNotification::create([
+        UserNotification::create([
             'sender_user_id' => null,
             'receiver_user_id' => auth()->user()->id,
             'receiver_user_type' => 'client',

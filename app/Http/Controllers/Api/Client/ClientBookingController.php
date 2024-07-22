@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Api\Client;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\GetEstimateController;
+use App\Models\AddressBook;
 use App\Models\Booking;
 use App\Models\BookingDelivery;
 use App\Models\BookingMoving;
 use App\Models\BookingReview;
+use App\Models\Client;
 use App\Models\Helper;
 use App\Models\HelperVehicle;
 use App\Models\MovingConfig;
@@ -106,16 +108,16 @@ class ClientBookingController extends Controller
             ->where('is_active', 1)->get();
 
         // Get No of Rooms 
-        $responseData['noOfRooms'] = MovingConfig::select('id', 'type', 'name', 'price')->where('type', 'no_of_rooms')->where('is_active', 1)->get();
+        $responseData['noOfRooms'] = MovingConfig::select('id', 'uuid', 'type', 'name', 'price')->where('type', 'no_of_rooms')->where('is_active', 1)->get();
 
         // Floor Plan
-        $responseData['floorPlans'] = MovingConfig::select('id', 'type', 'name', 'price')->where('type', 'floor_plan')->where('is_active', 1)->get();
+        $responseData['floorPlans'] = MovingConfig::select('id', 'uuid', 'type', 'name', 'price')->where('type', 'floor_plan')->where('is_active', 1)->get();
 
         // Floor Assess
-        $responseData['floorAssess'] = MovingConfig::select('id', 'type', 'name', 'price')->where('type', 'floor_assess')->where('is_active', 1)->get();
+        $responseData['floorAssess'] = MovingConfig::select('id', 'uuid', 'type', 'name', 'price')->where('type', 'floor_assess')->where('is_active', 1)->get();
 
         // Job Details
-        $responseData['jobDetails'] = MovingConfig::select('id', 'type', 'name', 'price')->where('type', 'job_details')->where('is_active', 1)->get();
+        $responseData['jobDetails'] = MovingConfig::select('id', 'uuid', 'type', 'name', 'price')->where('type', 'job_details')->where('is_active', 1)->get();
 
         // Moving Details
         $responseData['movingDetailCategories'] = MovingDetailCategory::with('movingDetails')->get();
@@ -288,6 +290,35 @@ class ClientBookingController extends Controller
                 'message' => 'Unauthorized.',
                 'errors' => 'Unauthorized',
             ], 401);
+        }
+
+        // Check if client have completed its profile
+        $client = Client::where('user_id', auth()->user()->id)->first();
+        if (!$client) {
+            // Create a new client
+            $client = new Client();
+            $client->user_id = auth()->user()->id;
+            $client->save();
+        }
+
+        // Check if client completed its personal details
+        if (isset($client) && $client->first_name != null) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Please complete your personal details',
+                'errors' => 'Please complete your personal details',
+            ], 422);
+        }
+
+        // Check if client completed its address details
+        if (isset($client) && $client->zip_code != null) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Please complete your address details',
+                'errors' => 'Please complete your address details',
+            ], 422);
         }
 
         // Validate request
@@ -500,7 +531,42 @@ class ClientBookingController extends Controller
             $bookingPayment = $movingBooking;
         }
 
-        // Send notification
+
+        // After successful booking. Store address book for later use
+        // Data to store
+        $addressBookData = [
+            'user_id' => auth()->user()->id,
+            'client_id' => $client->id,
+            'pickup_address' => $booking->pickup_address ?? null,
+            'dropoff_address' => $booking->dropoff_address ?? null,
+            'pickup_latitude' => $booking->pickup_latitude ?? null,
+            'pickup_longitude' => $booking->pickup_longitude ?? null,
+            'dropoff_latitude' => $booking->dropoff_latitude ?? null,
+            'dropoff_longitude' => $booking->dropoff_longitude ?? null,
+            'receiver_name' => $booking->receiver_name ?? null,
+            'receiver_phone' => $booking->receiver_phone ?? null,
+            'receiver_email' => $booking->receiver_email ?? null,
+        ];
+
+        // Check if addressBook already exist with same data
+        $addressBook = AddressBook::where($addressBookData)->first();
+        if (!$addressBook) {
+            $addressBook = AddressBook::create($addressBookData);
+        }
+
+        // User Notification
+        UserNotification::create([
+            'sender_user_id' => null,
+            'receiver_user_id' => auth()->user()->id,
+            'receiver_user_type' => 'client',
+            'type' => 'booking',
+            'reference_id' => $booking->id,
+            'title' => 'New Booking',
+            'content' => 'You have successfully created booking for ' . $serviceType->name . ' service',
+            'read' => 0
+        ]);
+
+
         // return a json object
         return response()->json([
             'success' => true,

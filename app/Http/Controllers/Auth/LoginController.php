@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Client;
+use App\Models\Helper;
 use App\Models\SocialLoginSetting;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -82,8 +84,18 @@ class LoginController extends Controller
             // Retrieve the intended URL after successful login
             $intendedUrl = Session::pull('intended_url');
 
-            // Store user_type to Session
-            session(['user_type' => 'client']);
+            // Store login_type to Session
+            session(['login_type' => 'client']);
+
+            // Get client first name and last name
+            $clientInfo = Client::where('user_id', $user->id)->first();
+            if ($clientInfo) {
+                session(['full_name' => $clientInfo->first_name . ' ' . $clientInfo->last_name]);
+                // set profile_image
+                if ($clientInfo->profile_image) {
+                    session(['profile_image' => asset('images/users/' . $clientInfo->profile_image)]);
+                }
+            }
 
             if (!isset($intendedUrl) || $intendedUrl == route('index') || $intendedUrl == url('/')) {
                 // Redirect the user back to the intended URL
@@ -135,8 +147,18 @@ class LoginController extends Controller
             // Retrieve the intended URL after successful login
             $intendedUrl = Session::pull('intended_url');
 
-            // Store user_type to Session
-            session(['user_type' => 'helper']);
+            // Store login_type to Session
+            session(['login_type' => 'helper']);
+
+            // Get helper first name and last name
+            $helperInfo = Helper::where('user_id', $user->id)->first();
+            if ($helperInfo) {
+                session(['full_name' => $helperInfo->first_name . ' ' . $helperInfo->last_name]);
+                // set profile_image
+                if ($helperInfo->profile_image) {
+                    session(['profile_image' => asset('images/users/' . $helperInfo->profile_image)]);
+                }
+            }
 
             if (!isset($intendedUrl) || $intendedUrl == route('index') || $intendedUrl == url('/')) {
                 // Redirect the user back to the intended URL
@@ -180,8 +202,18 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             // dd($credentials);
 
-            // Store user_type to Session
-            session(['user_type' => 'admin']);
+            // Store login_type to Session
+            session(['login_type' => 'admin']);
+
+            // Get admin first name and last name
+            $adminInfo = Client::where('user_id', $user->id)->first();
+            if ($adminInfo) {
+                session(['full_name' => $adminInfo->first_name . ' ' . $adminInfo->last_name]);
+                // set profile_image
+                if ($adminInfo->profile_image) {
+                    session(['profile_image' => asset('images/users/' . $adminInfo->profile_image)]);
+                }
+            }
 
             return redirect()->intended('admin');
         }
