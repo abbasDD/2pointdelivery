@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\Client;
 use App\Models\Helper;
 use App\Models\SocialLoginSetting;
@@ -206,7 +207,7 @@ class LoginController extends Controller
             session(['login_type' => 'admin']);
 
             // Get admin first name and last name
-            $adminInfo = Client::where('user_id', $user->id)->first();
+            $adminInfo = Admin::where('user_id', $user->id)->first();
             if ($adminInfo) {
                 session(['full_name' => $adminInfo->first_name . ' ' . $adminInfo->last_name]);
                 // set profile_image

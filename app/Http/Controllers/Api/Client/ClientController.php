@@ -303,6 +303,19 @@ class ClientController extends Controller
             $client->save();
         }
 
+        // Set default profile image to null
+        $profile_image = $client->profile_image ?? null;
+
+        // Upload the profile image if provided
+        if ($request->hasFile('profile_image')) {
+            $file = $request->file('profile_image');
+            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('images/users/');
+            $file->move($destinationPath, $updatedFilename);
+
+            // Set the profile image attribute to the new file name
+            $profile_image = $updatedFilename;
+        }
 
         $updated_data = [
             'first_name' => $request->first_name,
@@ -311,7 +324,8 @@ class ClientController extends Controller
             'gender' => $request->gender,
             'date_of_birth' => $request->date_of_birth,
             'company_enabled' => 0,
-            'tax_id' => $request->state_id
+            'tax_id' => $request->state_id,
+            'profile_image' => $profile_image
         ];
 
 
@@ -475,6 +489,19 @@ class ClientController extends Controller
             $clientCompany->save();
         }
 
+        $company_logo = $clientCompany->company_logo ?? null;
+
+        // Upload the profile image if provided
+        if ($request->hasFile('company_logo')) {
+            $file = $request->file('company_logo');
+            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('images/company/');
+            $file->move($destinationPath, $updatedFilename);
+
+            // Set the company_logo attribute to the new file name
+            $company_logo = $updatedFilename;
+        }
+
 
         $updated_data = [
             'company_alias' => $request->company_alias,
@@ -490,7 +517,8 @@ class ClientController extends Controller
             'city' => $request->city,
             'state' => $request->state,
             'country' => $request->country,
-            'zip_code' => $request->zip_code
+            'zip_code' => $request->zip_code,
+            'company_logo' => $company_logo
         ];
 
 

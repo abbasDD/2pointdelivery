@@ -9,8 +9,10 @@
         <li>
             <div class="mb-3 text-center">
                 <h6 class="mb-0 fs-16">{{ session('full_name') ?? 'Your Name' }}</h6>
-                <p class="mb-0 fs-12 text-muted">Membership number {{ auth()->user()->referral_code ?? 'Your Email' }}
-                </p>
+                @if (session('login_type') != 'admin')
+                    <p class="mb-0 fs-12 text-muted">Membership number {{ auth()->user()->referral_code ?? 'Code' }}
+                    </p>
+                @endif
             </div>
         </li>
         @if (session('login_type') == 'admin')
@@ -35,17 +37,19 @@
                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
                     class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
         </li>
-        <hr>
-        <li>
-            @if (session('login_type') == 'helper')
-                <a href="{{ route('helper.switchToClient') }}" class="dropdown-item"><i class="fa fa-bicycle"></i>
-                    Switch to Client
-                </a>
-            @else
-                <a href="{{ route('client.switchToHelper') }}" class="dropdown-item"><i class="fa fa-bicycle"></i>
-                    Switch to Helper
-                </a>
-            @endif
-        </li>
+        @if (session('login_type') != 'admin')
+            <hr>
+            <li>
+                @if (session('login_type') == 'helper')
+                    <a href="{{ route('helper.switchToClient') }}" class="dropdown-item"><i class="fa fa-bicycle"></i>
+                        Switch to Client
+                    </a>
+                @else
+                    <a href="{{ route('client.switchToHelper') }}" class="dropdown-item"><i class="fa fa-bicycle"></i>
+                        Switch to Helper
+                    </a>
+                @endif
+            </li>
+        @endif
     </ul>
 </div>

@@ -94,11 +94,11 @@ class HelperController extends Controller
             'company_details' => false,
         ];
 
-        $client = Client::where('user_id', $user->id)->first();
+        $client = Client::where('user_id', auth()->user()->id)->first();
         if (!$client) {
             // Create a new client
             $client = new Client();
-            $client->user_id = $user->id;
+            $client->user_id = auth()->user()->id;
             $client->save();
         }
         $userData['company_enabled'] = $client->company_enabled;
@@ -154,11 +154,11 @@ class HelperController extends Controller
 
         $user = auth()->user();
 
-        $helper = Helper::where('user_id', $user->id)->first();
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
         if (!$helper) {
             // Create a new helper
             $helper = new Helper();
-            $helper->user_id = $user->id;
+            $helper->user_id = auth()->user()->id;
             $helper->save();
         }
 
@@ -218,12 +218,26 @@ class HelperController extends Controller
         $user = auth()->user();
 
         // If helper is found, update its attributes
-        $helper = Helper::where('user_id', $user->id)->first();
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
         if (!$helper) {
             // Create a new helper
             $helper = new Helper();
-            $helper->user_id = $user->id;
+            $helper->user_id = auth()->user()->id;
             $helper->save();
+        }
+
+        // Set default profile image to null
+        $profile_image = $helper->profile_image ?? null;
+
+        // Upload the profile image if provided
+        if ($request->hasFile('profile_image')) {
+            $file = $request->file('profile_image');
+            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('images/users/');
+            $file->move($destinationPath, $updatedFilename);
+
+            // Set the profile image attribute to the new file name
+            $profile_image = $updatedFilename;
         }
 
 
@@ -233,7 +247,8 @@ class HelperController extends Controller
             'phone_no' => $request->phone_no,
             'gender' => $request->gender,
             'date_of_birth' => $request->date_of_birth,
-            'company_enabled' => 0
+            'company_enabled' => 0,
+            'profile_image' => $profile_image
         ];
 
         // If middle_name is not null
@@ -280,34 +295,21 @@ class HelperController extends Controller
             ], 401);
         }
 
-
-        $user = auth()->user();
-
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'statusCode' => 401,
-                'message' => 'Unauthorized.',
-                'errors' => 'Unauthorized',
-            ], 401);
-        }
-
-
-        $helper = Helper::where('user_id', $user->id)->first();
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
         if (!$helper) {
             // Create a new helper
             $helper = new Helper();
-            $helper->user_id = $user->id;
+            $helper->user_id = auth()->user()->id;
             $helper->save();
         }
 
         // Get helper company
-        $helperCompany = HelperCompany::where('user_id', $user->id)->first();
+        $helperCompany = HelperCompany::where('user_id', auth()->user()->id)->first();
 
         if (!$helperCompany) {
             // Create
-            $helperCompany = new ClientCompany();
-            $helperCompany->user_id = $user->id;
+            $helperCompany = new HelperCompany();
+            $helperCompany->user_id = auth()->user()->id;
             $helperCompany->helper_id = $helper->id;
             $helperCompany->save();
         }
@@ -378,35 +380,37 @@ class HelperController extends Controller
         }
 
 
-        $user = auth()->user();
-
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'statusCode' => 401,
-                'message' => 'Unauthorized.',
-                'errors' => 'Unauthorized',
-            ], 401);
-        }
-
         // If helper is found, update its attributes
-        $helper = Helper::where('user_id', $user->id)->first();
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
         if (!$helper) {
             // Create a new helper
             $helper = new Helper();
-            $helper->user_id = $user->id;
+            $helper->user_id = auth()->user()->id;
             $helper->save();
         }
 
         // Get helper company
-        $helperCompany = ClientCompany::where('user_id', $user->id)->first();
+        $helperCompany = HelperCompany::where('user_id', auth()->user()->id)->first();
 
         if (!$helperCompany) {
             // Create
-            $helperCompany = new ClientCompany();
-            $helperCompany->user_id = $user->id;
+            $helperCompany = new HelperCompany();
+            $helperCompany->user_id = auth()->user()->id;
             $helperCompany->helper_id = $helper->id;
             $helperCompany->save();
+        }
+
+        $company_logo = $helperCompany->company_logo ?? null;
+
+        // Upload the profile image if provided
+        if ($request->hasFile('company_logo')) {
+            $file = $request->file('company_logo');
+            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('images/company/');
+            $file->move($destinationPath, $updatedFilename);
+
+            // Set the company_logo attribute to the new file name
+            $company_logo = $updatedFilename;
         }
 
 
@@ -424,7 +428,8 @@ class HelperController extends Controller
             'city' => $request->city,
             'state' => $request->state,
             'country' => $request->country,
-            'zip_code' => $request->zip_code
+            'zip_code' => $request->zip_code,
+            'company_logo' => $company_logo
         ];
 
 
@@ -455,24 +460,11 @@ class HelperController extends Controller
             ], 401);
         }
 
-
-        $user = auth()->user();
-
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'statusCode' => 401,
-                'message' => 'Unauthorized.',
-                'errors' => 'Unauthorized',
-            ], 401);
-        }
-
-
-        $helper = Helper::where('user_id', $user->id)->first();
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
         if (!$helper) {
             // Create a new helper
             $helper = new Helper();
-            $helper->user_id = $user->id;
+            $helper->user_id = auth()->user()->id;
             $helper->save();
         }
 
@@ -530,11 +522,11 @@ class HelperController extends Controller
         $user = auth()->user();
 
         // If helper is found, update its attributes
-        $helper = Helper::where('user_id', $user->id)->first();
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
         if (!$helper) {
             // Create a new helper
             $helper = new Helper();
-            $helper->user_id = $user->id;
+            $helper->user_id = auth()->user()->id;
             $helper->save();
         }
 
@@ -573,9 +565,6 @@ class HelperController extends Controller
             ], 401);
         }
 
-
-        $user = auth()->user();
-
         $helperVehicleData = [
             'vehicle_type_id' => 0,
             'vehicle_number' => '',
@@ -585,7 +574,7 @@ class HelperController extends Controller
             'vehicle_year' => ''
         ];
 
-        $helperVehicle = HelperVehicle::where('user_id', $user->id)->first();
+        $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
         if ($helperVehicle) {
             // Create a new helper vehicle
             $helperVehicleData = [
@@ -643,15 +632,13 @@ class HelperController extends Controller
             ], 422);
         }
 
-        $user = auth()->user();
-
         // If helperVehicle is found, update its attributes
-        $helperVehicle = HelperVehicle::where('user_id', $user->id)->first();
+        $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
         if (!$helperVehicle) {
             // Create a new helperVehicle
             $helperVehicle = new HelperVehicle();
-            $helperVehicle->user_id = $user->id;
-            $helperVehicle->helper_id = Helper::where('user_id', $user->id)->first()->id;
+            $helperVehicle->user_id = auth()->user()->id;
+            $helperVehicle->helper_id = Helper::where('user_id', auth()->user()->id)->first()->id;
             $helperVehicle->vehicle_type_id = $request->vehicle_type_id;
             $helperVehicle->save();
         }
@@ -678,7 +665,6 @@ class HelperController extends Controller
     // passwordUpdate
     public function passwordUpdate(Request $request): JsonResponse
     {
-
         // If token is not valid return error
 
         if (!auth()->user()) {
@@ -918,7 +904,7 @@ class HelperController extends Controller
 
         $user = auth()->user();
 
-        $acceptedInvites = TeamInvitation::where('inviter_id', $user->id)->get();
+        $acceptedInvites = TeamInvitation::where('inviter_id', auth()->user()->id)->get();
         return response()->json([
             'success' => true,
             'message' => 'Teams fetched successfully',
@@ -1091,7 +1077,7 @@ class HelperController extends Controller
         $user = Auth::user();
         $invitations = TeamInvitation::select('invitee_id', 'inviter_id', 'users.email as inviter_email', 'team_invitations.*')
             ->join('users', 'team_invitations.inviter_id', '=', 'users.id')
-            ->where('invitee_id', $user->id)
+            ->where('invitee_id', auth()->user()->id)
             ->get();
 
 

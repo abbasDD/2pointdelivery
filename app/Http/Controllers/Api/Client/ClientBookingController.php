@@ -302,7 +302,7 @@ class ClientBookingController extends Controller
         }
 
         // Check if client completed its personal details
-        if (isset($client) && $client->first_name != null) {
+        if ($client->first_name == null) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 422,
@@ -312,7 +312,7 @@ class ClientBookingController extends Controller
         }
 
         // Check if client completed its address details
-        if (isset($client) && $client->zip_code != null) {
+        if ($client->zip_code == null) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 422,
@@ -472,6 +472,9 @@ class ClientBookingController extends Controller
             'booking_at' => now(),
         ]);
 
+        // Get new_booking 
+        $bookingDetails = Booking::where('id', $new_booking->id)->first();
+
         // Return bookingPayment
         $bookingPayment = [];
 
@@ -537,15 +540,15 @@ class ClientBookingController extends Controller
         $addressBookData = [
             'user_id' => auth()->user()->id,
             'client_id' => $client->id,
-            'pickup_address' => $booking->pickup_address ?? null,
-            'dropoff_address' => $booking->dropoff_address ?? null,
-            'pickup_latitude' => $booking->pickup_latitude ?? null,
-            'pickup_longitude' => $booking->pickup_longitude ?? null,
-            'dropoff_latitude' => $booking->dropoff_latitude ?? null,
-            'dropoff_longitude' => $booking->dropoff_longitude ?? null,
-            'receiver_name' => $booking->receiver_name ?? null,
-            'receiver_phone' => $booking->receiver_phone ?? null,
-            'receiver_email' => $booking->receiver_email ?? null,
+            'pickup_address' => $bookingDetails->pickup_address ?? null,
+            'dropoff_address' => $bookingDetails->dropoff_address ?? null,
+            'pickup_latitude' => $bookingDetails->pickup_latitude ?? null,
+            'pickup_longitude' => $bookingDetails->pickup_longitude ?? null,
+            'dropoff_latitude' => $bookingDetails->dropoff_latitude ?? null,
+            'dropoff_longitude' => $bookingDetails->dropoff_longitude ?? null,
+            'receiver_name' => $bookingDetails->receiver_name ?? null,
+            'receiver_phone' => $bookingDetails->receiver_phone ?? null,
+            'receiver_email' => $bookingDetails->receiver_email ?? null,
         ];
 
         // Check if addressBook already exist with same data
@@ -560,7 +563,7 @@ class ClientBookingController extends Controller
             'receiver_user_id' => auth()->user()->id,
             'receiver_user_type' => 'client',
             'type' => 'booking',
-            'reference_id' => $booking->id,
+            'reference_id' => $bookingDetails->id,
             'title' => 'New Booking',
             'content' => 'You have successfully created booking for ' . $serviceType->name . ' service',
             'read' => 0
