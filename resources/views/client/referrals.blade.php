@@ -13,7 +13,10 @@
                     @if (isset(auth()->user()->referral_code))
                         <div class="d-flex align-items-center">
                             <p class="mb-0 fs-18" onclick="copyToClipboard('{{ auth()->user()->referral_code }}')">
-                                <span class="badge bg-primary">{{ auth()->user()->referral_code }}</span>
+                                <span class="badge bg-primary cursor-pointer">
+                                    <i class="fas fa-copy"></i>
+                                    Click to copy
+                                </span>
                             </p>
                         </div>
                     @endif

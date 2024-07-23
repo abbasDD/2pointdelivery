@@ -60,6 +60,19 @@ class GetEstimateController extends Controller
             ]);
         }
 
+        // Check if service category has secureship api enabled
+        if ($serviceCategory->is_secureship_enabled) {
+
+            // Call Secureship API function
+            $data = $this->getSecureshipEstimate($request, $serviceType, $serviceCategory, $prioritySetting);
+
+            // Return data
+            return response()->json([
+                'status' => 'success',
+                'data' => $data,
+            ]);
+        }
+
 
         // Get package value and calculate insurance
         $data['insurance_value'] = $this->getInsuranceValue($request->selectedServiceType, $request->package_value);
@@ -661,5 +674,14 @@ class GetEstimateController extends Controller
         $pdf->save($path . '/' . $booking->uuid . '.pdf');
 
         return $booking->uuid . '.pdf';
+    }
+
+
+    // getSecureshipEstimate
+    public function getSecureshipEstimate($request, $serviceType, $serviceCategory, $prioritySetting)
+    {
+        $data = [];
+
+        return $data;
     }
 }

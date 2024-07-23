@@ -470,8 +470,8 @@ class PassportAuthController extends Controller
         ];
 
         // Stripe Enabled
-        $stripeSettings['stripe_enabled'] = PaymentSetting::where('key', 'stripe_enabled')->first();
-        if ($stripeSettings['stripe_enabled']->value == 'yes') {
+        $stripe_enabled = PaymentSetting::where('key', 'stripe_enabled')->first();
+        if (!$stripe_enabled && $stripe_enabled->value == 'yes') {
             $stripeSettings['stripe_enabled'] = 1;
         }
         // Check if stripe enabled

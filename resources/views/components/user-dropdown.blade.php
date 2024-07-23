@@ -10,13 +10,13 @@
             <div class="mb-3 text-center">
                 <h6 class="mb-0 fs-16">{{ session('full_name') ?? 'Your Name' }}</h6>
                 @if (session('login_type') != 'admin')
-                    <p class="mb-0 fs-12 text-muted">Membership number {{ auth()->user()->referral_code ?? 'Code' }}
+                    <p class="mb-0 fs-12 text-muted">Member ID {{ auth()->user()->referral_code ?? 'Code' }}
                     </p>
                 @endif
             </div>
         </li>
         @if (session('login_type') == 'admin')
-            <li><a class="dropdown-item" href="{{ route('admin.index') }}"><i class="fa fa-home"></i> Admin</a></li>
+            <li><a class="dropdown-item" href="{{ route('admin.index') }}"><i class="fa fa-home"></i> Dashboard</a></li>
         @else
             @if (session('login_type') == 'helper')
                 <li><a class="dropdown-item" href="{{ route('helper.index') }}"><i class="fa fa-home"></i> Dashboard</a>
