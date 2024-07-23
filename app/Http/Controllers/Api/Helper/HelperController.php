@@ -277,7 +277,9 @@ class HelperController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Helper Profile updated successfully',
-            'data' => []
+            'data' => [
+                'profile_image' => $profile_image ? asset('images/users/' . $profile_image) : asset('images/users/default.png')
+            ]
         ], 200);
     }
 
@@ -315,7 +317,7 @@ class HelperController extends Controller
         }
 
         $helperCompanyData = [
-            'company_logo' => $helperCompany->company_logo ? asset('images/users/' . $helperCompany->company_logo) : asset('images/users/default.png'),
+            'company_logo' => $helperCompany->company_logo ? asset('images/company/' . $helperCompany->company_logo) : asset('images/users/default.png'),
             'company_alias' => $helperCompany->company_alias,
             'legal_name' => $helperCompany->legal_name,
             'industry' => $helperCompany->industry,

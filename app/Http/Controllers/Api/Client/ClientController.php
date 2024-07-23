@@ -342,7 +342,9 @@ class ClientController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Client Profile updated successfully',
-            'data' => []
+            'data' => [
+                'profile_image' => $profile_image ? asset('images/users/' . $profile_image) : asset('images/users/default.png')
+            ]
         ], 200);
     }
 
@@ -393,7 +395,7 @@ class ClientController extends Controller
         }
 
         $clientCompanyData = [
-            'company_logo' => $clientCompany->company_logo ? asset('images/users/' . $clientCompany->company_logo) : asset('images/users/default.png'),
+            'company_logo' => $clientCompany->company_logo ? asset('images/company/' . $clientCompany->company_logo) : asset('images/users/default.png'),
             'company_alias' => $clientCompany->company_alias,
             'legal_name' => $clientCompany->legal_name,
             'industry' => $clientCompany->industry,

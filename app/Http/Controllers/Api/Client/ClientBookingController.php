@@ -909,6 +909,7 @@ class ClientBookingController extends Controller
     // stripePaymentBooking
     public function stripePaymentBooking(Request $request): JsonResponse
     {
+
         // If token is not valid return error
         if (!auth()->user()) {
             return response()->json([
@@ -1014,6 +1015,54 @@ class ClientBookingController extends Controller
             'statusCode' => 200,
             'message' => 'Booking paid successfully',
             'data' => [],
+        ], 200);
+    }
+
+    // stripeKeys
+    public function stripeKeys(): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Get payment settings
+        $stripeSettings = [
+            'stripe_enabled' => 0,
+            'stripe_publishable_key' => null,
+            'stripe_secret_key' => null,
+        ];
+
+        // Stripe Enabled
+        $stripeSettings['stripe_enabled'] = PaymentSetting::where('key', 'stripe_enabled')->first();
+        if ($stripeSettings['stripe_enabled']->value == 'yes') {
+            $stripeSettings['stripe_enabled'] = 1;
+        }
+        // Check if stripe enabled
+        if ($stripeSettings['stripe_enabled'] == 1) {
+            // Get stripe publishable key
+            $stripeSettings['stripe_publishable_key'] = PaymentSetting::where('key', 'stripe_publishable_key')->first();
+            if ($stripeSettings['stripe_publishable_key']->value) {
+                $stripeSettings['stripe_publishable_key'] = $stripeSettings['stripe_publishable_key']->value;
+            }
+            // Get stripe secret key
+            $stripeSettings['stripe_secret_key'] = PaymentSetting::where('key', 'stripe_secret_key')->first();
+            if ($stripeSettings['stripe_secret_key']->value) {
+                $stripeSettings['stripe_secret_key'] = $stripeSettings['stripe_secret_key']->value;
+            }
+        }
+
+        // Return response with booking and booking payment
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Stripe keys fetched successfully',
+            'data' => ['stripe_settings' => $stripeSettings],
         ], 200);
     }
 

@@ -61,6 +61,14 @@
                             data-toggle="tooltip" data-placement="top" title="View Booking"><i
                                 class="fas fa-eye"></i></a>
                     @endif
+
+                    {{-- Cancel Booking --}}
+                    @if ($booking->status == 'pending')
+                        <a href="{{ route('client.booking.cancel', $booking->id) }}" class="btn btn-sm btn-danger"
+                            data-toggle="tooltip" data-placement="top" title="Cancel Booking">
+                            <i class="fas fa-close"></i>
+                        </a>
+                    @endif
                 </td>
             </tr>
         @empty

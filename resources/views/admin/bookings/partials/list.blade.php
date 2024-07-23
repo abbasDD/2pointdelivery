@@ -45,12 +45,22 @@
                 </td>
 
                 <td>
-                    <p class="badge {{ $booking->status == 'completed' ? 'bg-primary' : 'bg-danger' }}">
+                    <p class="badge {{ $booking->status == 'completed' ? 'bg-primary' : 'bg-warning' }}">
                         {{ $booking->status }}
                     </p>
                 </td>
-                <td><a href="{{ route('admin.booking.show', $booking->id) }}" class="btn btn-sm btn-primary"><i
-                            class="fas fa-eye"></i></a></td>
+                <td>
+                    <a href="{{ route('admin.booking.show', $booking->id) }}" class="btn btn-sm btn-primary"
+                        data-toggle="tooltip" data-placement="top" title="View Booking">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    @if ($booking->status == 'pending')
+                        <a href="{{ route('admin.booking.cancel', $booking->id) }}" class="btn btn-sm btn-danger"
+                            data-toggle="tooltip" data-placement="top" title="Cancel Booking">
+                            <i class="fas fa-close"></i>
+                        </a>
+                    @endif
+                </td>
             </tr>
         @empty
             <tr>
@@ -61,3 +71,7 @@
 </table>
 
 {{ $bookings->links() }}
+
+
+
+{{-- Cancel Booking Modal --}}

@@ -820,7 +820,7 @@ class BookingController extends Controller
         }
 
         // Set your Stripe API key.
-        \Stripe\Stripe::setApiKey($stripe_publishable_key);
+        \Stripe\Stripe::setApiKey($stripe_secret_key);
 
         // Get the payment amount and email address from the form.
         $amount = $booking->total_price * 100;

@@ -34,7 +34,7 @@
                 </td>
                 <td>${{ $booking->payment->helper_fee }}</td>
                 <td>
-                    <p class="badge {{ $booking->status == 'completed' ? 'bg-primary' : 'bg-danger' }}">
+                    <p class="badge {{ $booking->status == 'completed' ? 'bg-primary' : 'bg-warning' }}">
                         {{ ucfirst($booking->status) }}
                     </p>
                 </td>

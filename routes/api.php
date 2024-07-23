@@ -62,6 +62,9 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::post('booking/payment/paypal', [ClientBookingController::class, 'paypalPaymentBooking']);
     Route::post('booking/payment/stripe', [ClientBookingController::class, 'stripePaymentBooking']);
 
+    // Get Stripe Keys
+    Route::get('booking/stripe-keys', [ClientBookingController::class, 'stripeKeys']);
+
     // Track Booking
     Route::post('booking/track', [ClientBookingController::class, 'trackBooking']);
 
