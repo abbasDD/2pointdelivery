@@ -106,7 +106,7 @@ class ClientController extends Controller
     public function index()
     {
         // Change session variable user_type to client
-        session(['user_type' => 'client']);
+        session(['login_type' => 'client']);
 
         // dd(session('user_type'));
 

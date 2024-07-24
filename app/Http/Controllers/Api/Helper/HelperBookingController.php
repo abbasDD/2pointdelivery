@@ -267,6 +267,17 @@ class HelperBookingController extends Controller
             ], 422);
         }
 
+        // Check if helper is_approved is 1
+        $helper = Helper::where('user_id', auth()->user()->id)->where('is_approved', 1)->first();
+        if (!$helper) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Admin have not approved your profile.',
+                'errors' => 'Admin have not approved your profile.',
+            ]);
+        }
+
         // Check if booking is still in pending status
         if ($booking->status == 'pending') {
 
@@ -849,17 +860,24 @@ class HelperBookingController extends Controller
             ], 401);
         }
 
-        $userId = auth()->user()->id;
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
+
+        // Get helperServices list
+        $helperServices = $helper->service_types();
+
+        // pluck the service type ids
+        $helperServiceIds = $helperServices->pluck('id')->toArray();
+        // dd($helperServiceIds);
 
         $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
             ->where('status', 'pending')
-            ->orderBy('bookings.updated_at', 'desc')
-            ->get();
+            ->whereIn('service_type_id', $helperServiceIds)
+            ->orderBy('bookings.updated_at', 'desc')->get();
 
         return response()->json([
             'success' => true,
             'statusCode' => 200,
-            'message' => 'Active bookings fetched successfully',
+            'message' => 'Pending bookings fetched successfully',
             'data' => ['bookings' => $bookings],
         ], 200);
     }

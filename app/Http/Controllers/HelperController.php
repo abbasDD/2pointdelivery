@@ -76,7 +76,7 @@ class HelperController extends Controller
     public function index()
     {
         // Change session variable user_type to client
-        session(['user_type' => 'helper']);
+        session(['login_type' => 'helper']);
 
         // dd(session('user_type'));
 
@@ -108,32 +108,45 @@ class HelperController extends Controller
             'total_earnings' => $helper_earnings,
         ];
 
-        $bookings = Booking::with('prioritySetting')
-            ->with('serviceType')
-            ->with('serviceCategory')
-            ->where('status', 'pending')
-            ->orderBy('bookings.updated_at', 'desc')->get();
+        $bookings = [];
 
-        // dd($bookings);
+        // Check if helper is_approved is 1
+        if ($helper->is_approved == 1) {
 
-        foreach ($bookings as $booking) {
-            if ($booking->helper_user_id != NULL) {
-                $booking->helper = Helper::where('user_id', $booking->helper_user_id)->first();
-            }
+            // Get helperServices list
+            $helperServices = $helper->service_types();
 
-            $booking->client = Client::where('user_id', $booking->client_user_id)->first();
+            // pluck the service type ids
+            $helperServiceIds = $helperServices->pluck('id')->toArray();
+            // dd($helperServiceIds);
 
-            $booking->payment = null;
+            $bookings = Booking::with('prioritySetting')
+                ->with('serviceType')
+                ->with('serviceCategory')
+                ->where('status', 'pending')
+                ->whereIn('service_type_id', $helperServiceIds)
+                ->orderBy('bookings.updated_at', 'desc')->get();
 
-            if ($booking->booking_type == 'delivery') {
-                $booking->payment = BookingDelivery::where('booking_id', $booking->id)->first();
-            }
+            // dd($bookings);
 
-            if ($booking->booking_type == 'moving') {
-                $booking->payment = BookingMoving::where('booking_id', $booking->id)->first();
+            foreach ($bookings as $booking) {
+                if ($booking->helper_user_id != NULL) {
+                    $booking->helper = Helper::where('user_id', $booking->helper_user_id)->first();
+                }
+
+                $booking->client = Client::where('user_id', $booking->client_user_id)->first();
+
+                $booking->payment = null;
+
+                if ($booking->booking_type == 'delivery') {
+                    $booking->payment = BookingDelivery::where('booking_id', $booking->id)->first();
+                }
+
+                if ($booking->booking_type == 'moving') {
+                    $booking->payment = BookingMoving::where('booking_id', $booking->id)->first();
+                }
             }
         }
-
 
         // Booking Client Detail
         // $bookingClient = Client::where('user_id', auth()->user()->id)->first();
@@ -266,6 +279,13 @@ class HelperController extends Controller
             $helperData = Helper::where('user_id', auth()->user()->id)->first();
         }
 
+        // Get helperServices list
+        $helperServices = $helperData->service_types();
+
+        // pluck the service type ids
+        $helperServiceIds = $helperServices->pluck('id')->toArray();
+        // dd($helperServiceIds);
+
         // Get all social links
         $socialLinks = SocialLink::where('user_id', auth()->user()->id)->where('user_type', 'helper')->get();
 
@@ -329,7 +349,7 @@ class HelperController extends Controller
         // Get list of industries
         $industries = Industry::all();
 
-        return view('helper.profile.edit', compact('helperData', 'social_links', 'helperCompanyData', 'addressData', 'vehicleTypes', 'vehicleData', 'services', 'industries'));
+        return view('helper.profile.edit', compact('helperData', 'social_links', 'helperCompanyData', 'addressData', 'vehicleTypes', 'vehicleData', 'services', 'industries', 'helperServiceIds'));
     }
 
 

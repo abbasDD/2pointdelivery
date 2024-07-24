@@ -148,10 +148,15 @@ class KycController extends Controller
             ]);
         }
 
+        // Create new kyc
         $kycDetail = KycDetail::create([
-            'user_id' => auth()->user()->id,
-            'type' => 'client',
+            'user_id' => auth()->user()->id
         ]);
+
+        // Check if api route has helper in url
+        if (strpos($request->url(), 'helper') !== false) {
+            $kycDetail->type = 'helper';
+        }
 
         // Check if front_image exist or not
         if ($request->hasFile('front_image')) {

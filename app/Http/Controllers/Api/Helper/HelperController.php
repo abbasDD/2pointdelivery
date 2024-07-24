@@ -52,8 +52,19 @@ class HelperController extends Controller
             'total_earnings' => $helper_earnings,
         ];
 
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
+
+        // Get helperServices list
+        $helperServices = $helper->service_types();
+
+        // pluck the service type ids
+        $helperServiceIds = $helperServices->pluck('id')->toArray();
+        // dd($helperServiceIds);
+
         $data['bookings'] = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
-            ->whereIn('status', ['pending'])
+            ->where('status', 'pending')
+            ->whereIn('service_type_id', $helperServiceIds)
+            ->orderBy('bookings.updated_at', 'desc')
             ->get();
 
 
@@ -93,6 +104,47 @@ class HelperController extends Controller
             'address_details' => false,
             'company_details' => false,
         ];
+
+        // Get Client data from DB
+        $client = Client::where('user_id', auth()->user()->id)->first();
+
+        // If client not found
+        if (!$client) {
+            // Check if Helper is created with same id
+            $helper = Helper::where('user_id', auth()->user()->id)->first();
+
+            // If helper is found then duplicate data to client
+            if ($helper) {
+                // Check if helper first name and last name is not null
+                if ($helper->first_name == null || $helper->last_name == null) {
+                    return redirect()->route('helper.profile')->with('error', 'Please fill your helper detail first');
+                }
+
+                $client = Client::create([
+                    'user_id' => auth()->user()->id,
+                    'company_enabled' => $helper->company_enabled ?? 0,
+                    'first_name' => $helper->first_name ?? '',
+                    'middle_name' => $helper->middle_name ?? '',
+                    'last_name' => $helper->last_name ?? '',
+                    'gender' => $helper->gender ?? '',
+                    'date_of_birth' => $helper->date_of_birth ?? '',
+                    'tax_id' => $helper->tax_id ?? '',
+                    'phone_no' => $helper->phone_no ?? '',
+                    'suite' => $helper->suite ?? '',
+                    'street' => $helper->street ?? '',
+                    'city' => $helper->city     ?? '',
+                    'state' => $helper->state ?? '',
+                    'country' => $helper->country ?? '',
+                    'zip_code' => $helper->zip_code ?? '',
+                ]);
+            }
+            // If not then create a simple client
+            else {
+                $client = Client::create([
+                    'user_id' => auth()->user()->id,
+                ]);
+            }
+        }
 
         $client = Client::where('user_id', auth()->user()->id)->first();
         if (!$client) {

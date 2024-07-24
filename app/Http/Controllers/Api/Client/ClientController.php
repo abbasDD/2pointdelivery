@@ -143,6 +143,48 @@ class ClientController extends Controller
             'vehicle_details' => false
         ];
 
+        // Get Helper data from DB
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
+
+        // If helper not found
+        if (!$helper) {
+            // Check if Client is created with same id
+            $client = Client::where('user_id', auth()->user()->id)->first();
+
+            // If client is found then duplicate data to helper
+            if ($client) {
+
+                // Check if client first name and last name is not null
+                if ($client->first_name == null || $client->last_name == null || $client->city == null) {
+                    return redirect()->route('client.profile')->with('error', 'Please fill your client detail first');
+                }
+
+                $helper = Helper::create([
+                    'user_id' => auth()->user()->id,
+                    'company_enabled' => $client->company_enabled ?? 0,
+                    'first_name' => $client->first_name ?? '',
+                    'middle_name' => $client->middle_name ?? '',
+                    'last_name' => $client->last_name ?? '',
+                    'gender' => $client->gender ?? '',
+                    'date_of_birth' => $client->date_of_birth ?? '',
+                    'tax_id' => $client->tax_id ?? '',
+                    'phone_no' => $client->phone_no ?? '',
+                    'suite' => $client->suite ?? '',
+                    'street' => $client->street ?? '',
+                    'city' => $client->city     ?? '',
+                    'state' => $client->state ?? '',
+                    'country' => $client->country ?? '',
+                    'zip_code' => $client->zip_code ?? '',
+                ]);
+            }
+            // If not then create a simple helper
+            else {
+                $helper = Helper::create([
+                    'user_id' => auth()->user()->id,
+                ]);
+            }
+        }
+
         $helper = Helper::where('user_id', $user->id)->first();
         if (!$helper) {
             // Create a new helper

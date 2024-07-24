@@ -56,8 +56,8 @@
             <select class="form-control @error('price_type') is-invalid @enderror" id="price_type" name="price_type">
                 <option value="" selected disabled>Choose Price Type</option>
                 <option value="km" @if (old('price_type', $vehicle_type['price_type'] ?? '') == 'km') selected @endif>KM</option>
-                <option value="hour" @if (old('price_type', $vehicle_type['price_type'] ?? '') == 'hour') selected @endif>Hour</option>
-                <option value="day" @if (old('price_type', $vehicle_type['price_type'] ?? '') == 'day') selected @endif>Day</option>
+                {{-- <option value="hour" @if (old('price_type', $vehicle_type['price_type'] ?? '') == 'hour') selected @endif>Hour</option>
+                <option value="day" @if (old('price_type', $vehicle_type['price_type'] ?? '') == 'day') selected @endif>Day</option> --}}
             </select>
             @error('price_type')
                 <span class="invalid-feedback" role="alert">
@@ -88,7 +88,7 @@
     </div>
 
     {{-- Service Available for --}}
-    <div class="col-md-12">
+    {{-- <div class="col-md-12">
         <div class="form-group mb-3">
             <label>Service Available for <span class="text-danger">*</span></label>
             <div class="d-block">
@@ -117,7 +117,7 @@
                 @endif
             </div>
         </div>
-    </div>
+    </div> --}}
 
     {{-- Submit Button --}}
     <div class="col-md-12 text-right">

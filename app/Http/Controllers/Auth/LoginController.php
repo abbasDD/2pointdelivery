@@ -80,6 +80,13 @@ class LoginController extends Controller
             ]);
         }
 
+        // If user is inactive
+        if (!$user->is_active) {
+            return back()->withErrors([
+                'email' => 'Your account is inactive. Please contact the administrator.',
+            ]);
+        }
+
         if (Auth::attempt($credentials, $request->filled('remember'))) {
 
             // Retrieve the intended URL after successful login
@@ -141,6 +148,13 @@ class LoginController extends Controller
         if (!$user || $user->user_type != 'user' || !$user->helper_enabled) {
             return back()->withErrors([
                 'email' => 'The provided credentials do not match our records.',
+            ]);
+        }
+
+        // If user is inactive
+        if (!$user->is_active) {
+            return back()->withErrors([
+                'email' => 'Your account is inactive. Please contact the administrator.',
             ]);
         }
 

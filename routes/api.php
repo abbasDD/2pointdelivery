@@ -15,8 +15,6 @@ Route::post('register', [PassportAuthController::class, 'register']);
 Route::post('login', [PassportAuthController::class, 'login']);
 Route::post('forget-password', [PassportAuthController::class, 'forgetPassword']);
 
-// Get Stripe Keys
-Route::get('stripe-keys', [PassportAuthController::class, 'stripeKeys']);
 
 // ---------------- CLIENT ROUTES START ---------------- //
 

@@ -176,7 +176,7 @@
                                             <input class="custom-control-input" type="checkbox"
                                                 id="service-{{ $service->id }}" name="services[]"
                                                 value="{{ $service->id }}"
-                                                @if (isset($vehicle_type) && in_array($service->id, $vehicle_type->service_types->pluck('id')->toArray())) checked @endif>
+                                                @if (in_array($service->id, $helperServiceIds)) checked @endif>
                                             <label class="custom-control-label"
                                                 for="service-{{ $service->id }}">{{ $service->name }}</label>
                                         </div>

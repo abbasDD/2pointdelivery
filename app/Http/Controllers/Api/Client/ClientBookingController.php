@@ -641,13 +641,13 @@ class ClientBookingController extends Controller
         ];
 
         // COD Enabled
-        $cod_enabled = PaymentSetting::where('key', 'cod_enabled')->first();
-        if (isset($cod_enabled) && $cod_enabled->value == 'yes') {
+        $codEnabled = PaymentSetting::where('key', 'cod_enabled')->first();
+        if (isset($codEnabled) && $codEnabled->value == 'yes') {
             $paymentSettings['cod_enabled'] = 1;
         }
         // Paypal Enabled
-        $paypal_enabled = PaymentSetting::where('key', 'paypal_enabled')->first();
-        if (isset($paypal_enabled) && $paypal_enabled->value == 'yes') {
+        $paypalEnabled = PaymentSetting::where('key', 'paypal_enabled')->first();
+        if (isset($paypalEnabled) && $paypalEnabled->value == 'yes') {
             $paymentSettings['paypal_enabled'] = 1;
         }
         // Check if paypal enabled
@@ -664,9 +664,9 @@ class ClientBookingController extends Controller
             }
         }
         // Stripe Enabled
-        $stripe_enabled = PaymentSetting::where('key', 'stripe_enabled')->first();
-        if (isset($stripe_enabled) && $stripe_enabled->value == 'yes') {
-            $stripeSettings['stripe_enabled'] = 1;
+        $stripeEnabled = PaymentSetting::where('key', 'stripe_enabled')->first();
+        if ($stripeEnabled && $stripeEnabled->value == 'yes') {
+            $paymentSettings['stripe_enabled'] = 1;
         }
         // Check if stripe enabled
         if ($paymentSettings['stripe_enabled'] == 1) {

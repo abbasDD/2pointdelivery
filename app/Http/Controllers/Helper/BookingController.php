@@ -92,6 +92,11 @@ class BookingController extends Controller
             return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
         }
 
+        // Check if helper is_approved is 0
+        if ($helper->is_approved == 0) {
+            return redirect()->back()->with('error', 'In order to accept booking, waiting for admin approval');
+        }
+
         // Check if profile is company profile
         if ($helper->company_enabled == 1) {
             // Check if company detail completed

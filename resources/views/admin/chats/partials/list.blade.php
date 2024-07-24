@@ -106,8 +106,8 @@
 
                     // Update Image
                     $('#chat-avatar').attr('src', response.otherUserInfo.profile_image ? base_url +
-                        '/images/users/' + response.otherUserInfo
-                        .profile_image "{{ asset('images/users/default.png') }}");
+                        '/public/images/users/' + response.otherUserInfo
+                        .profile_image : "{{ asset('images/users/default.png') }}");
 
                     // Clear items in chat history
                     $('#chat-history').html('');

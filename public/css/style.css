@@ -456,7 +456,7 @@ w-70 {
 
 .dropdown-menu[data-bs-popper] {
     top: 100%;
-    left: -175px;
+    left: -135px;
     margin-top: 0.125rem;
     padding: 1rem;
 }
