@@ -140,7 +140,8 @@ class ClientController extends Controller
             'personal_details' => false,
             'address_details' => false,
             'company_details' => false,
-            'vehicle_details' => false
+            'vehicle_details' => false,
+            'is_approved' => 0
         ];
 
         // Get Helper data from DB
@@ -201,6 +202,7 @@ class ClientController extends Controller
         $userData['address_details'] = false;
         $userData['company_details'] = false;
         $userData['vehicle_details'] = false;
+        $userData['is_approved'] = $helper->is_approved;
 
         // Check if helper completed its personal details
         if (isset($helper) && $helper->first_name != null) {

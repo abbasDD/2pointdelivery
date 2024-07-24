@@ -826,7 +826,7 @@ class HelperBookingController extends Controller
 
 
             // Update Booking
-            $booking->status = 'accepted';
+            $booking->status = 'incomplete';
             $booking->save();
 
             // Return success

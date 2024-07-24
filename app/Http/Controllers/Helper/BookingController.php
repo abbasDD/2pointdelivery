@@ -638,7 +638,7 @@ class BookingController extends Controller
 
 
         // Update Booking
-        $booking->status = 'accepted';
+        $booking->status = 'incomplete';
         $booking->save();
 
 

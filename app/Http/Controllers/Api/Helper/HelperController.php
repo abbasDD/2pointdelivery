@@ -67,6 +67,43 @@ class HelperController extends Controller
             ->orderBy('bookings.updated_at', 'desc')
             ->get();
 
+        $data['personal_details'] = false;
+        $data['address_details'] = false;
+        $data['company_details'] = false;
+        $data['vehicle_details'] = false;
+        $data['is_approved'] = false;
+
+        // Get helper details
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        // Check if helper completed its personal details
+        if (isset($helper) && $helper->first_name != null) {
+            $data['personal_details'] = true;
+        }
+
+        // Check if helper completed its address details
+        if (isset($helper) && $helper->zip_code != null) {
+            $data['address_details'] = true;
+        }
+
+        if ($helper->company_enabled == 1) {
+            // Get helper company details
+            $helperCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
+            if (isset($helperCompany) && $helperCompany->legal_name != null) {
+                $data['company_details'] = true;
+            }
+        }
+
+        // Check if helpervehicle details exist
+        $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
+        if (isset($helperVehicle) && $helperVehicle->vehicle_number != null) {
+            $data['vehicle_details'] = true;
+        }
+
+        // if helper is approved
+        if ($helper->is_approved == 1) {
+            $data['is_approved'] = true;
+        }
+
 
         return response()->json([
             'success' => true,
@@ -103,6 +140,7 @@ class HelperController extends Controller
             'personal_details' => false,
             'address_details' => false,
             'company_details' => false,
+            'is_approved' => 0
         ];
 
         // Get Client data from DB
