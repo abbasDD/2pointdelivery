@@ -69,7 +69,7 @@
 
     {{-- Check if insurance is enabled --}}
     {{-- Insurance --}}
-    @if (config('insurance') == 'enabled')
+    @if ($inusranceEnabled)
         <div class="col-md-6">
             <label for="insurance_enabled">Insurance Enable</label>
             <select class="form-control mb-3" id="insurance_enabled" name="insurance_enabled"

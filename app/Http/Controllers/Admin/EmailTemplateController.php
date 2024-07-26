@@ -51,6 +51,8 @@ class EmailTemplateController extends Controller
             $welcomeEmail->update($request->all());
         } else {
             $request['body'] = Purifier::clean($request->input('body'));
+            $request['name'] = 'Welcome Email';
+            $request['slug'] = 'welcome-email';
             $welcomeEmail = EmailTemplate::create($request->all());
         }
 
@@ -72,6 +74,8 @@ class EmailTemplateController extends Controller
             $passwordResetEmail->update($request->all());
         } else {
             $request['body'] = Purifier::clean($request->input('body'));
+            $request['name'] = 'Password Reset Email';
+            $request['slug'] = 'password-reset-email';
             $passwordResetEmail = EmailTemplate::create($request->all());
         }
 
@@ -94,6 +98,8 @@ class EmailTemplateController extends Controller
             $bookingStatusEmail->update($request->all());
         } else {
             $request['body'] = Purifier::clean($request->input('body'));
+            $request['name'] = 'Booking Status Email';
+            $request['slug'] = 'booking-status-email';
             $bookingStatusEmail = EmailTemplate::create($request->all());
         }
 
@@ -114,6 +120,8 @@ class EmailTemplateController extends Controller
             $deliveryNotificationEmail->update($request->all());
         } else {
             $request['body'] = Purifier::clean($request->input('body'));
+            $request['name'] = 'Delivery Notification Email';
+            $request['slug'] = 'delivery-notification-email';
             $deliveryNotificationEmail = EmailTemplate::create($request->all());
         }
 
@@ -135,6 +143,8 @@ class EmailTemplateController extends Controller
             $feedbackEmail->update($request->all());
         } else {
             $request['body'] = Purifier::clean($request->input('body'));
+            $request['name'] = 'Feedback Email';
+            $request['slug'] = 'feedback-email';
             $feedbackEmail = EmailTemplate::create($request->all());
         }
 
@@ -156,6 +166,8 @@ class EmailTemplateController extends Controller
             $requestFeedbackEmail->update($request->all());
         } else {
             $request['body'] = Purifier::clean($request->input('body'));
+            $request['name'] = 'Request Feedback Email';
+            $request['slug'] = 'request-feedback-email';
             $requestFeedbackEmail = EmailTemplate::create($request->all());
         }
 
@@ -177,6 +189,8 @@ class EmailTemplateController extends Controller
             $refundNotificationEmail->update($request->all());
         } else {
             $request['body'] = Purifier::clean($request->input('body'));
+            $request['name'] = 'Refund Notification Email';
+            $request['slug'] = 'refund-notification-email';
             $refundNotificationEmail = EmailTemplate::create($request->all());
         }
 

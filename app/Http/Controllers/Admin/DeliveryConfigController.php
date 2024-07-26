@@ -18,8 +18,9 @@ class DeliveryConfigController extends Controller
         ];
 
         $insurance_api_enable = DeliveryConfig::where('key', 'insurance_api_enable')->first();
+
         if ($insurance_api_enable) {
-            $insuranceApi['enable'] = $insurance_api_enable->value;
+            $insuranceApi['insurance_api_enable'] = $insurance_api_enable->value;
         }
 
         $insurance_api_identifier = DeliveryConfig::where('key', 'insurance_api_identifier')->first();
@@ -50,6 +51,7 @@ class DeliveryConfigController extends Controller
         // Priority Settings
         $prioritySettings = PrioritySetting::where('type', 'delivery')->where('is_deleted', 0)->paginate(10); // 10 items per page
 
+        // dd($insuranceApi);
 
         return view('admin.deliveryConfig.index', compact('insuranceApi', 'secureshipApi', 'prioritySettings'));
     }

@@ -19,6 +19,10 @@
                         <input id="refundNotificationEmailBody" type="hidden" name="body"
                             value="{{ old('body', $refundNotificationEmail->body ?? '') }}">
                         <trix-editor input="refundNotificationEmailBody" class="trix-content"></trix-editor>
+
+
+                        {{-- Mentioned Variables --}}
+                        <p class="mt-3"> [Customer], [Your name] </p>
                     </div>
 
                     <div class="text-right">

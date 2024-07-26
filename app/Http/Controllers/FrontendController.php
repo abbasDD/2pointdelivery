@@ -7,6 +7,7 @@ use App\Models\Blog;
 use App\Models\Booking;
 use App\Models\Client;
 use App\Models\ClientCompany;
+use App\Models\DeliveryConfig;
 use App\Models\Faq;
 use App\Models\FrontendSetting;
 use App\Models\HelpQuestion;
@@ -393,7 +394,7 @@ class FrontendController extends Controller
             $prioritySetting->id = 1;
             $prioritySetting->name = 'Standard';
             $prioritySetting->description = 'Standard description';
-            $prioritySetting->price = 10;
+            $prioritySetting->price = 0;
             $prioritySetting->is_active = 1;
         }
 
@@ -423,8 +424,16 @@ class FrontendController extends Controller
 
         // dd($movingDetails[0]->movingDetails);
 
+        // Get insurance enabled or not
+        $inusranceEnabled = DeliveryConfig::where('key', 'insurance_api_enable')->where('value', '1')->first();
+        if ($inusranceEnabled) {
+            $inusranceEnabled = true;
+        } else {
+            $inusranceEnabled = false;
+        }
+
         // return view 
-        return view('frontend.bookings.new', compact('serviceTypes', 'serviceCategories', 'prioritySettings', 'draftBooking', 'addresses', 'no_of_rooms', 'floor_plans', 'floor_assess', 'job_details', 'movingDetails'));
+        return view('frontend.bookings.new', compact('serviceTypes', 'serviceCategories', 'prioritySettings', 'draftBooking', 'addresses', 'no_of_rooms', 'floor_plans', 'floor_assess', 'job_details', 'movingDetails', 'inusranceEnabled'));
     }
 
     public function fetch_services_categories(Request $request)

@@ -439,11 +439,11 @@ class ClientBookingController extends Controller
         $data['amountToPay'] = $data['sub_total'] + $data['tax_price'];
 
         // Unique uuid for booking
-        $uuid = Str::random(8);
+        $uuid = random_int(10000000, 99999999);
 
         // Generate uuid and ensure it is unique
         do {
-            $uuid = Str::random(8);
+            $uuid = random_int(10000000, 99999999);
             $booking = Booking::where('uuid', $uuid)->first();
         } while ($booking);
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Helper;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\EmailTemplateController;
 use App\Http\Controllers\GetEstimateController;
 use App\Models\Booking;
 use App\Models\BookingDelivery;
@@ -161,6 +162,22 @@ class BookingController extends Controller
 
         $bookingPayment->accepted_at = Carbon::now();
         $bookingPayment->save();
+
+        // Send email
+        $emailTemplateController = app(EmailTemplateController::class);
+        $emailTemplateController->bookingStatusEmail($booking);
+
+        // Send Notification
+        UserNotification::create([
+            'sender_user_id' => auth()->user()->id,
+            'receiver_user_id' => $booking->client_user_id,
+            'receiver_user_type' => 'client',
+            'reference_id' => $booking->id,
+            'type' => 'booking',
+            'title' => 'Booking Accepted',
+            'content' => 'Your booking has been accepted.',
+            'read' => 0
+        ]);
 
         return redirect()->back()->with('success', 'Booking accepted successfully!');
     }
@@ -414,6 +431,10 @@ class BookingController extends Controller
             'read' => 0
         ]);
 
+        // Send email
+        $emailTemplateController = app(EmailTemplateController::class);
+        $emailTemplateController->bookingStatusEmail($booking);
+
         // dd($booking);
 
         return redirect()->back()->with('success', 'Booking started successfully!');
@@ -480,6 +501,10 @@ class BookingController extends Controller
             'content' => 'Your booking is in transit.',
             'read' => 0
         ]);
+
+        // Send email
+        $emailTemplateController = app(EmailTemplateController::class);
+        $emailTemplateController->bookingStatusEmail($booking);
 
         return redirect()->back()->with('success', 'Booking in transit successfully!');
     }
@@ -590,6 +615,10 @@ class BookingController extends Controller
             'read' => 0
         ]);
 
+        // Send email
+        $emailTemplateController = app(EmailTemplateController::class);
+        $emailTemplateController->bookingStatusEmail($booking);
+
         return redirect()->back()->with('success', 'Booking completed successfully!');
 
         // return view('frontend.bookings.show', compact('booking', 'bookingDelivery', 'helperData', 'clientData'));
@@ -670,6 +699,10 @@ class BookingController extends Controller
             'content' => 'Your booking is incomplete.',
             'read' => 0
         ]);
+
+        // Send email
+        $emailTemplateController = app(EmailTemplateController::class);
+        $emailTemplateController->bookingStatusEmail($booking);
 
 
         return redirect()->back()->with('success', 'Booking maked as incomplete!');

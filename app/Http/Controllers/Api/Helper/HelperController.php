@@ -63,6 +63,7 @@ class HelperController extends Controller
 
         $data['bookings'] = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
             ->where('status', 'pending')
+            ->where('client_user_id', '!=', auth()->user()->id)
             ->whereIn('service_type_id', $helperServiceIds)
             ->orderBy('bookings.updated_at', 'desc')
             ->get();

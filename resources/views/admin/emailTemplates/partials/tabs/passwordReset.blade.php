@@ -18,6 +18,9 @@
                         <input id="passwordResetBody" type="hidden" name="body"
                             value="{{ old('body', $passwordResetEmail->body ?? '') }}">
                         <trix-editor input="passwordResetBody" class="trix-content"></trix-editor>
+
+                        {{-- Mentioned Variables --}}
+                        <p class="mt-3"> [Customer], [Company name], [services], [Your name] </p>
                     </div>
 
                     <div class="text-right">

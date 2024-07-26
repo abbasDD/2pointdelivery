@@ -124,6 +124,7 @@ class HelperController extends Controller
                 ->with('serviceType')
                 ->with('serviceCategory')
                 ->where('status', 'pending')
+                ->where('client_user_id', '!=', auth()->user()->id)
                 ->whereIn('service_type_id', $helperServiceIds)
                 ->orderBy('bookings.updated_at', 'desc')->get();
 

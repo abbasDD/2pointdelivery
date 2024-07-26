@@ -24,10 +24,10 @@ class FloorAssessController extends Controller
         ]);
 
         // Get a unique UUID
-        $uuid = Str::random(8);
+        $uuid = random_int(10000000, 99999999);
 
         do {
-            $uuid = Str::random(8);
+            $uuid = random_int(10000000, 99999999);
             $uuidExist = MovingConfig::where('uuid', $uuid)->first();
         } while ($uuidExist);
 

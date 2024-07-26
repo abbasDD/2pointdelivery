@@ -23,6 +23,9 @@
                         <input id="welcomeEmailBody" type="hidden" name="body"
                             value="{{ old('body', $welcomeEmail->body ?? '') }}">
                         <trix-editor input="welcomeEmailBody" class="trix-content"></trix-editor>
+
+                        {{-- Mentioned Variables --}}
+                        <p class="mt-3"> [Customer], [Company name], [Your name] </p>
                     </div>
 
                     <div class="text-right">

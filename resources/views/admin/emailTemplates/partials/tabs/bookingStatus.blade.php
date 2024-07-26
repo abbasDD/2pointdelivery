@@ -18,6 +18,9 @@
                         <input id="bookingStatusBody" type="hidden" name="body"
                             value="{{ old('body', $bookingStatusEmail->body ?? '') }}">
                         <trix-editor input="bookingStatusBody" class="trix-content"></trix-editor>
+
+                        {{-- Mentioned Variables --}}
+                        <p class="mt-3"> [Customer name], [Service category], [Tracking number], [Your name] </p>
                     </div>
 
                     <div class="text-right">

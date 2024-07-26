@@ -19,6 +19,10 @@
                         <input id="deliveryNotificationBody" type="hidden" name="body"
                             value="{{ old('body', $deliveryNotificationEmail->body ?? '') }}">
                         <trix-editor input="deliveryNotificationBody" class="trix-content"></trix-editor>
+
+                        {{-- Mentioned Variables --}}
+                        <p class="mt-3"> [Customer name], [Tracking number], [Order number], [time and date], [payment
+                            method], [Delivery data provided by the customer], [company name] </p>
                     </div>
 
                     <div class="text-right">

@@ -19,6 +19,9 @@
                         <input id="feedbackEmailBody" type="hidden" name="body"
                             value="{{ old('body', $feedbackEmail->body ?? '') }}">
                         <trix-editor input="feedbackEmailBody" class="trix-content"></trix-editor>
+
+                        {{-- Mentioned Variables --}}
+                        <p class="mt-3"> [Customer], [Your name] </p>
                     </div>
 
                     <div class="text-right">

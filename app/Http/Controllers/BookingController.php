@@ -116,12 +116,12 @@ class BookingController extends Controller
             return response()->json(['success' => false, 'errors' => $validator->errors()]);
         }
 
-        // Generate uuid
-        $uuid = Str::random(8);
+        // Generate numeric uuid
+        $uuid = random_int(10000000, 99999999);
 
         // Generate uuid and ensure it is unique
         do {
-            $uuid = Str::random(8);
+            $uuid = random_int(10000000, 99999999);
             $booking = Booking::where('uuid', $uuid)->first();
         } while ($booking);
 
