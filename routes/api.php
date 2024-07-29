@@ -100,6 +100,14 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);
 
+    // Chats
+    Route::get('chats', [ClientController::class, 'getChatList']);
+    Route::post('chat/create', [ClientController::class, 'createChat']);
+    Route::get('chat/user/{chat_id}', [ClientController::class, 'getUserChat']);
+    Route::post('chat/message/send', [ClientController::class, 'sendMessage']);
+
+
+
     // Client Routes End
 });
 
@@ -183,6 +191,12 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);
+
+    // Chats
+    Route::get('chats', [ClientController::class, 'getChatList']);
+    Route::post('chat/create', [ClientController::class, 'createChat']);
+    Route::get('chat/user/{chat_id}', [ClientController::class, 'getUserChat']);
+    Route::post('chat/message/send', [ClientController::class, 'sendMessage']);
 
     // Helper Routes End
 });

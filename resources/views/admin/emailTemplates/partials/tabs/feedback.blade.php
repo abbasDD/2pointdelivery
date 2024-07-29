@@ -16,6 +16,12 @@
 
                     <div class="form-group mb-3">
                         <label for="feedbackEmailBody">Body</label>
+                        {{-- Style to hide file upload --}}
+                        <style>
+                            .trix-button--icon-attach {
+                                display: none !important;
+                            }
+                        </style>
                         <input id="feedbackEmailBody" type="hidden" name="body"
                             value="{{ old('body', $feedbackEmail->body ?? '') }}">
                         <trix-editor input="feedbackEmailBody" class="trix-content"></trix-editor>

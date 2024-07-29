@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BookingController;
@@ -69,6 +70,7 @@ Route::middleware(['app_language'])->group(function () {
 
     // Blog Page
     Route::get('/blog', [FrontendController::class, 'blog'])->name('blog');
+    Route::get('/blog/{id}', [FrontendController::class, 'blogDetails'])->name('blog.view');
 
     // Terms & Conditions Page
     Route::get('/terms-and-conditions', [FrontendController::class, 'terms_and_conditions'])->name('terms_and_conditions');
@@ -107,3 +109,7 @@ Route::get('/address/cities/{state_id}', [CityController::class, 'cities'])->nam
 Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
 Route::get('booking-invoice-pdf/{id}', [PDFController::class, 'bookingInvoicePDF']);
 Route::get('shipping-label-pdf/{id}', [PDFController::class, 'shippingLabelPDF']);
+
+
+// Upload Trix attachment
+Route::post('/attachments', [AttachmentController::class, 'store'])->name('attachments.store');

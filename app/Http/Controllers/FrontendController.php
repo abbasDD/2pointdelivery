@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AddressBook;
+use App\Models\Admin;
 use App\Models\Blog;
 use App\Models\Booking;
 use App\Models\Client;
@@ -162,6 +163,31 @@ class FrontendController extends Controller
         $blogs = Blog::where('is_active', 1)->get();
 
         return view('frontend.blog', compact('blogs'));
+    }
+
+    // blogDetails
+    public function blogDetails($id)
+    {
+        $blog = Blog::where('id', $id)->where('is_active', 1)->first();
+
+        if (!$blog) {
+            return redirect()->back()->with('error', 'Blog not found');
+        }
+
+        $author_name = '2 Point Delivery';
+
+        $author = User::find($blog->author);
+        if ($author) {
+            // Find admin
+            $admin = Admin::where('id', $author->id)->first();
+            if ($admin) {
+                $author_name = $admin->first_name . ' ' . $admin->last_name;
+            }
+        }
+
+        $blog->author = $author_name;
+
+        return view('frontend.blog_details', compact('blog'));
     }
 
     // Terms and Conditions Page

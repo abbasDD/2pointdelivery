@@ -4,6 +4,7 @@
 
 @section('content')
 
+    {{-- Content --}}
     <section class="section p-0">
         <div class="container">
             <div class="section-header mb-2">

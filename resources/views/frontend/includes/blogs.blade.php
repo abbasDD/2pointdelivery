@@ -19,14 +19,10 @@
                                 <img src="{{ $blog->image ? asset('images/service_types/' . $blog->image) : asset('images/service_types/default.png') }}"
                                     alt="Image" height="200" class="w-100 mb-3">
                                 <h5>{{ $blog->title }}</h5>
-                                <h6 class="text-muted text-align-end">{{ $blog->author }}</h6>
-                                <p>
-                                    {{-- Show only first 150 character --}}
-                                    {!! Str::limit($blog->body ?? '-', 150) !!}
-                                </p>
+
                                 {{-- Redirect to Booking --}}
                                 <div class="arrow-button">
-                                    <a href="#">
+                                    <a href="{{ route('blog.view', $blog->id) }}">
                                         <i class="fas fa-long-arrow-alt-right mr-2"></i> Read More
                                     </a>
                                 </div>

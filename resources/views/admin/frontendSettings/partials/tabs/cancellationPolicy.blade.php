@@ -23,3 +23,50 @@
         </div>
     </div>
 </form>
+
+
+<script>
+    document.addEventListener("trix-attachment-add", function(event) {
+        if (event.attachment.file) {
+            uploadFileAttachment(event.attachment);
+        }
+    });
+
+    function uploadFileAttachment(attachment) {
+        // url
+        var url = "{{ route('attachments.store') }}";
+        // base_url
+        var base_url = "{{ url('/') }}";
+
+        var file = attachment.file;
+        var form = new FormData();
+        form.append("file", file);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("X-CSRF-TOKEN", '{{ csrf_token() }}');
+
+        xhr.upload.onprogress = function(event) {
+            var progress = event.loaded / event.total * 100;
+            attachment.setUploadProgress(progress);
+        };
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                attachment.setAttributes({
+                    url: base_url + '/' + response.url,
+                    href: base_url + '/' + response.url
+                });
+            } else {
+                console.error('Error uploading file:', xhr.status, xhr.statusText);
+            }
+        };
+
+        xhr.onerror = function() {
+            console.error('Error uploading file:', xhr.status, xhr.statusText);
+        };
+
+        xhr.send(form);
+    }
+</script>

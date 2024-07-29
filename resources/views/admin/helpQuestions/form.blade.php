@@ -37,6 +37,14 @@
     {{-- Answer --}}
     <div class="col-md-12">
         <div class="form-group mb-3">
+
+            {{-- Style to hide file upload --}}
+            <style>
+                .trix-button--icon-attach {
+                    display: none !important;
+                }
+            </style>
+
             <label for="answer">Answer</label>
             <input id="answer" type="hidden" name="answer"
                 value="{{ old('answer', $helpQuestion['answer'] ?? '') }}" required>

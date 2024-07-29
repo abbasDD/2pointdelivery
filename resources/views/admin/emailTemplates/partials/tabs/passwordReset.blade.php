@@ -14,6 +14,12 @@
                             placeholder="Enter Subject" value="{{ $passwordResetEmail->subject ?? '' }}" required>
                     </div>
                     <div class="form-group mb-3">
+                        {{-- Style to hide file upload --}}
+                        <style>
+                            .trix-button--icon-attach {
+                                display: none !important;
+                            }
+                        </style>
                         <label for="passwordResetBody">Body</label>
                         <input id="passwordResetBody" type="hidden" name="body"
                             value="{{ old('body', $passwordResetEmail->body ?? '') }}">

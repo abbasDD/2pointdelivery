@@ -696,6 +696,8 @@ w-70 {
 .dropdown-notification[data-bs-popper] {
     width: 300px;
     left: -250px;
+    height: 500px;
+    overflow: scroll;
 }
 
 /* Notification Section END */
@@ -836,9 +838,14 @@ w-70 {
     /* Adjust the height as per your requirement */
 }
 
-.trix-button--icon-attach {
-    display: none !important;
+figure a img {
+    width: 100%;
+    height: auto;
 }
+
+/* .trix-button--icon-attach {
+    display: none !important;
+} */
 
 /* Help Topic CSS End */
 

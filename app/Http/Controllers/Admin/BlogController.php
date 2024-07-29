@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BlogController extends Controller
 {
@@ -27,13 +28,12 @@ class BlogController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'author' => 'required|string|max:255',
             'body' => 'required|string',
         ]);
 
         $blog = new Blog();
         $blog->title = $request->title;
-        $blog->author = $request->author;
+        $blog->author = Auth::user()->id;
         $blog->body = $request->body;
         $blog->save();
 
@@ -56,7 +56,6 @@ class BlogController extends Controller
         // Validate the request
         $request->validate([
             'title' => 'required|string|max:255',
-            'author' => 'required|string|max:255',
             'body' => 'required|string',
         ]);
 

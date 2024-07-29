@@ -15,16 +15,12 @@
     </div>
     {{-- Answer --}}
     <div class="col-md-12">
-        {{-- <div class="form-group mb-3">
-            <label for="answer">Answer</label>
-            <textarea class="form-control @error('answer') is-invalid @enderror" id="answer" name="answer" rows="6"
-                placeholder="Enter Answer" required>{{ old('answer', $faq['answer'] ?? '') }}</textarea>
-            @error('answer')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
-        </div> --}}
+        {{-- Style to hide file upload --}}
+        <style>
+            .trix-button--icon-attach {
+                display: none !important;
+            }
+        </style>
         <div class="form-group mb-3">
             <label for="answer">Answer</label>
             <input id="answer" type="hidden" name="answer" value="{{ old('answer', $faq['answer'] ?? '') }}"

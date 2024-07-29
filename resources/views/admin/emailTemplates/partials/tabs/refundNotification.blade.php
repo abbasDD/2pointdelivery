@@ -15,6 +15,12 @@
                     </div>
 
                     <div class="form-group mb-3">
+                        {{-- Style to hide file upload --}}
+                        <style>
+                            .trix-button--icon-attach {
+                                display: none !important;
+                            }
+                        </style>
                         <label for="refundNotificationEmailBody">Body</label>
                         <input id="refundNotificationEmailBody" type="hidden" name="body"
                             value="{{ old('body', $refundNotificationEmail->body ?? '') }}">

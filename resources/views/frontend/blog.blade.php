@@ -9,18 +9,12 @@
         <div class="container my-5">
             <div class="row align-items-center">
                 <div class="col-md-7 px-5">
-                    <h2>Discover the Comprehensive <span class="text-primary">Range of Services</span> We Offer</h2>
-                    <p>Embark on a journey with us as we unveil a plethora of services tailored to meet your every need. At
-                        2 Point Delivery, we take pride in delivering excellence at every touchpoint, ensuring that each
-                        interaction leaves you not just satisfied, but delighted. </p>
-                    {{-- <a href="#" class="btn btn-primary mt-3">Book a Service</a> --}}
-                    {{-- Redirect to Book Service --}}
-                    <div class="arrow-button">
-                        <a href="{{ route('newBooking') }}">
-                            <i class="fas fa-long-arrow-alt-right mr-2"></i> Book a Service
-                        </a>
-                    </div>
-
+                    <h2>Top Tips for a Smooth and Efficient Move: Expert Advice from <span class="text-primary">2 Point
+                            Delivery</span> </h2>
+                    <p>Whether you're planning a local move, a long-distance relocation, or simply need reliable delivery
+                        services, our blog offers insightful articles to make your experience as smooth and stress-free as
+                        possible. From packing hacks and moving checklists to choosing the right service provider, we've got
+                        you covered. Stay tuned for regular updates and let us help you move with confidence!</p>
                 </div>
                 <div class="col-md-5 text-center">
                     <img src="{{ asset('frontend/images/services/service-bg.png') }}" alt="Image" class="img-fluid">
