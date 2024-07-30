@@ -14,6 +14,7 @@ use App\Models\Helper;
 use App\Models\HelperCompany;
 use App\Models\HelperVehicle;
 use App\Models\Message;
+use App\Models\ServiceType;
 use App\Models\SocialLink;
 use App\Models\TeamInvitation;
 use App\Models\User;
@@ -281,14 +282,17 @@ class HelperController extends Controller
             'email' => $user->email,
             'profile_image' => $helper->profile_image ? asset('images/users/' . $helper->profile_image) : asset('images/users/default.png'),
             'service_badge_id' => $helper->service_badge_id,
-            'services' => $helperServiceIds
+            'helperServiceIds' => $helperServiceIds
         ];
 
 
         return response()->json([
             'success' => true,
             'message' => 'Helper Personal Profile fetched successfully',
-            'data' => $helperData
+            'data' => [
+                'helperData' => $helperData,
+                'services' => ServiceType::where('is_active', 1)->get(),
+            ],
         ], 200);
     }
 
@@ -1346,29 +1350,29 @@ class HelperController extends Controller
                 if ($otherUser->client_enabled) {
                     $chat->otherUserInfo = Client::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
                     // profile_image
-                    $chat->otherUserInfo->profile_image = asset($chat->otherUserInfo->profile_image);
+                    $chat->otherUserInfo->profile_image = asset('images/users/' . $chat->otherUserInfo->profile_image);
                 } else {
                     $chat->otherUserInfo = Helper::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
-                    $chat->otherUserInfo->profile_image = asset($chat->otherUserInfo->profile_image);
+                    $chat->otherUserInfo->profile_image = asset('images/users/' . $chat->otherUserInfo->profile_image);
                 }
                 // Check if user is admin
                 if ($otherUser->user_type == 'admin') {
                     $chat->otherUserInfo = Admin::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
-                    $chat->otherUserInfo->profile_image = asset($chat->otherUserInfo->profile_image);
+                    $chat->otherUserInfo->profile_image = asset('images/users/' . $chat->otherUserInfo->profile_image);
                 }
             } else {
                 $otherUser = User::findOrFail($chat->user1_id);
                 if ($otherUser->client_enabled) {
                     $chat->otherUserInfo = Client::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
-                    $chat->otherUserInfo->profile_image = asset($chat->otherUserInfo->profile_image);
+                    $chat->otherUserInfo->profile_image = asset('images/users/' . $chat->otherUserInfo->profile_image);
                 } else {
                     $chat->otherUserInfo = Helper::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
-                    $chat->otherUserInfo->profile_image = asset($chat->otherUserInfo->profile_image);
+                    $chat->otherUserInfo->profile_image = asset('images/users/' . $chat->otherUserInfo->profile_image);
                 }
                 // Check if user is admin
                 if ($otherUser->user_type == 'admin') {
                     $chat->otherUserInfo = Admin::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
-                    $chat->otherUserInfo->profile_image = asset($chat->otherUserInfo->profile_image);
+                    $chat->otherUserInfo->profile_image = asset('images/users/' . $chat->otherUserInfo->profile_image);
                 }
             }
         }
