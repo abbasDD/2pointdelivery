@@ -102,6 +102,7 @@ class PassportAuthController extends Controller
         }
 
         $userData = [
+            'user_id' => $user->id,
             'email' => $user->email,
             'referral_code' => $user->referral_code,
             'language_code' => $user->language_code,
@@ -204,6 +205,7 @@ class PassportAuthController extends Controller
             // remove extra field from user
 
             $userData = [
+                'user_id' => $user->id,
                 'email' => $user->email,
                 'referral_code' => $user->referral_code,
                 'language_code' => $user->language_code,
@@ -257,6 +259,7 @@ class PassportAuthController extends Controller
 
                 if ($client->company_enabled == 1) {
                     // Get client company details
+                    $userData['company_details'] = true;
                     $clientCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
                     if (isset($clientCompany) && $clientCompany->legal_name != null) {
                         $userData['company_details'] = true;
@@ -283,6 +286,7 @@ class PassportAuthController extends Controller
                 $userData['personal_details'] = false;
                 $userData['address_details'] = false;
                 $userData['company_details'] = false;
+                $userData['vehicle_details'] = false;
                 $userData['is_approved'] = $helper->is_approved;
 
                 // Check if helper completed its personal details
@@ -297,7 +301,7 @@ class PassportAuthController extends Controller
 
                 if ($helper->company_enabled == 1) {
                     // Get helper company details
-                    $helperCompany = HelperCompany::where('user_id', auth()->user()->id)->first();
+                    $helperCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
                     if (isset($helperCompany) && $helperCompany->legal_name != null) {
                         $userData['company_details'] = true;
                     }
@@ -323,8 +327,8 @@ class PassportAuthController extends Controller
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
-                'message' => 'Unauthorized.',
-                'errors' => 'Unauthorized',
+                'message' => 'Invalid credentials.',
+                'errors' => 'Invalid credentials.',
             ], 401);
         }
     }

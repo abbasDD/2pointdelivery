@@ -869,7 +869,7 @@ class HelperBookingController extends Controller
         $helperServiceIds = $helperServices->pluck('id')->toArray();
         // dd($helperServiceIds);
 
-        $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
+        $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status')
             ->where('status', 'pending')
             ->whereIn('service_type_id', $helperServiceIds)
             ->orderBy('bookings.updated_at', 'desc')->get();
@@ -897,7 +897,7 @@ class HelperBookingController extends Controller
 
         $userId = auth()->user()->id;
 
-        $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
+        $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status')
             ->where(function ($query) use ($userId) {
                 $query->where('helper_user_id', $userId)
                     ->orWhere('helper_user_id2', $userId);
@@ -936,7 +936,7 @@ class HelperBookingController extends Controller
 
         $userId = auth()->user()->id;
 
-        $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
+        $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status')
             ->where(function ($query) use ($userId) {
                 $query->where('helper_user_id', $userId)
                     ->orWhere('helper_user_id2', $userId);
@@ -966,10 +966,10 @@ class HelperBookingController extends Controller
 
         // Check if booking type is delivery
         if ($booking_type == 'delivery') {
-            $bookingDelivery = BookingDelivery::where('booking_id', $booking_id)->where('payment_status', 'unpaid')->first();
+            $bookingDelivery = BookingDelivery::where('booking_id', $booking_id)->first();
 
             if (!$bookingDelivery) {
-                return false;
+                return $bookingPayment;
             }
 
             $bookingPayment['helper_fee'] = $bookingDelivery->helper_fee;
@@ -977,10 +977,10 @@ class HelperBookingController extends Controller
 
         // Check if booking type is moving
         if ($booking_type == 'moving') {
-            $bookingMoving = BookingMoving::where('booking_id', $booking_id)->where('payment_status', 'unpaid')->first();
+            $bookingMoving = BookingMoving::where('booking_id', $booking_id)->first();
 
             if (!$bookingMoving) {
-                return false;
+                return $bookingPayment;
             }
 
             $bookingPayment['helper_fee'] = $bookingMoving->helper_fee;

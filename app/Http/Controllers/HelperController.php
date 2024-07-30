@@ -367,12 +367,18 @@ class HelperController extends Controller
             'company_enabled' => 'required|integer',
             'services' => 'required|array',
         ]);
+        // dd($request->all());
 
         // Check if user exist
         $helper = Helper::where('user_id', auth()->user()->id)->first();
 
         if (!$helper) {
             return redirect()->back()->with('error', 'Helper not found');
+        }
+
+        // Check date of birth format
+        if (!preg_match('/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/', $request->date_of_birth)) {
+            return redirect()->back()->with('error', 'Invalid date format. Date should be in YYYY-MM-DD format');
         }
 
         // Set default profile image to null

@@ -128,6 +128,9 @@
                             <option value="female"
                                 {{ old('gender', $clientData['gender'] ?? '') == 'female' ? 'selected' : '' }}>
                                 Female</option>
+                            <option value="other"
+                                {{ old('gender', $clientData['gender'] ?? '') == 'other' ? 'selected' : '' }}>
+                                Other</option>
                         </select>
                         @error('gender')
                             <span class="invalid-feedback" role="alert">

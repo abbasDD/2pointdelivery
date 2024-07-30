@@ -127,6 +127,9 @@
                             <option value="female"
                                 {{ old('gender', $helperData['gender'] ?? '') == 'female' ? 'selected' : '' }}>
                                 Female</option>
+                            <option value="other"
+                                {{ old('gender', $helperData['gender'] ?? '') == 'other' ? 'selected' : '' }}>
+                                Other</option>
                         </select>
                         @error('gender')
                             <span class="invalid-feedback" role="alert">

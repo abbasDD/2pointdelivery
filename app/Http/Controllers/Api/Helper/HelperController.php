@@ -43,11 +43,17 @@ class HelperController extends Controller
 
         $user = auth()->user();
 
-        // Calculate helper earnings
+        // Calculate helper delivery earnings
         $helper_earnings = Booking::where('bookings.helper_user_id', auth()->user()->id)
             ->join('booking_deliveries', 'bookings.id', '=', 'booking_deliveries.booking_id')
             ->where('bookings.status', 'completed')
             ->sum('booking_deliveries.helper_fee');
+
+        // Calculate helper moving earnings
+        $helper_earnings += Booking::where('bookings.helper_user_id', auth()->user()->id)
+            ->join('booking_movings', 'bookings.id', '=', 'booking_movings.booking_id')
+            ->where('bookings.status', 'completed')
+            ->sum('booking_movings.helper_fee');
 
         // Statistics
         $data = [
@@ -66,7 +72,7 @@ class HelperController extends Controller
         $helperServiceIds = $helperServices->pluck('id')->toArray();
         // dd($helperServiceIds);
 
-        $data['bookings'] = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
+        $data['bookings'] = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status')
             ->where('status', 'pending')
             ->where('client_user_id', '!=', auth()->user()->id)
             ->whereIn('service_type_id', $helperServiceIds)
@@ -220,7 +226,7 @@ class HelperController extends Controller
             // Get client company details
             $clientCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
             if (isset($clientCompany) && $clientCompany->legal_name != null) {
-                $responseData['company_details'] = true;
+                $userData['company_details'] = true;
             }
         }
 
@@ -258,6 +264,12 @@ class HelperController extends Controller
             $helper->save();
         }
 
+        // Get helperServices list
+        $helperServices = $helper->service_types();
+
+        // pluck the service type ids
+        $helperServiceIds = $helperServices->pluck('id')->toArray();
+
         $helperData = [
             'account_type' => $helper->company_enabled ? 'company' : 'individual',
             'first_name' => $helper->first_name,
@@ -268,13 +280,14 @@ class HelperController extends Controller
             'date_of_birth' => $helper->date_of_birth,
             'email' => $user->email,
             'profile_image' => $helper->profile_image ? asset('images/users/' . $helper->profile_image) : asset('images/users/default.png'),
-            'service_badge_id' => $helper->service_badge_id
+            'service_badge_id' => $helper->service_badge_id,
+            'services' => $helperServiceIds
         ];
 
 
         return response()->json([
             'success' => true,
-            'message' => 'Helper Profile fetched successfully',
+            'message' => 'Helper Personal Profile fetched successfully',
             'data' => $helperData
         ], 200);
     }
@@ -300,6 +313,9 @@ class HelperController extends Controller
             'phone_no' => 'required|string',
             'gender' => 'required|in:male,female',
             'date_of_birth' => 'required|string',
+            // array of services ids
+            'services' => 'required|array',
+
         ]);
 
         if ($validator->fails()) {
@@ -310,8 +326,6 @@ class HelperController extends Controller
             ], 422);
         }
 
-
-        $user = auth()->user();
 
         // If helper is found, update its attributes
         $helper = Helper::where('user_id', auth()->user()->id)->first();
@@ -368,6 +382,9 @@ class HelperController extends Controller
 
         // Update helper
         $helper->update($updated_data);
+
+        // Sync services for the vehicle type
+        $helper->service_types()->sync($request->services);
 
 
         return response()->json([
@@ -1328,23 +1345,30 @@ class HelperController extends Controller
                 $otherUser = User::findOrFail($chat->user2_id);
                 if ($otherUser->client_enabled) {
                     $chat->otherUserInfo = Client::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+                    // profile_image
+                    $chat->otherUserInfo->profile_image = asset($chat->otherUserInfo->profile_image);
                 } else {
                     $chat->otherUserInfo = Helper::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+                    $chat->otherUserInfo->profile_image = asset($chat->otherUserInfo->profile_image);
                 }
                 // Check if user is admin
                 if ($otherUser->user_type == 'admin') {
                     $chat->otherUserInfo = Admin::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+                    $chat->otherUserInfo->profile_image = asset($chat->otherUserInfo->profile_image);
                 }
             } else {
                 $otherUser = User::findOrFail($chat->user1_id);
                 if ($otherUser->client_enabled) {
                     $chat->otherUserInfo = Client::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+                    $chat->otherUserInfo->profile_image = asset($chat->otherUserInfo->profile_image);
                 } else {
                     $chat->otherUserInfo = Helper::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+                    $chat->otherUserInfo->profile_image = asset($chat->otherUserInfo->profile_image);
                 }
                 // Check if user is admin
                 if ($otherUser->user_type == 'admin') {
                     $chat->otherUserInfo = Admin::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+                    $chat->otherUserInfo->profile_image = asset($chat->otherUserInfo->profile_image);
                 }
             }
         }
@@ -1372,7 +1396,7 @@ class HelperController extends Controller
         }
 
         // Retrieve the user
-        $user = User::findOrFail(Auth::user()->id);
+        $user = User::findOrFail($request->user_id);
 
         if (!$user) {
             return response()->json([
@@ -1383,22 +1407,24 @@ class HelperController extends Controller
             ], 401);
         }
 
-        // Check if user exists
-        if (!$user) {
-            return response()->json(['success' => false, 'chat_id' => 0, 'message' => 'User not found']);
-        }
 
         if ($user->user_type == 'admin') {
             $userInfo = Admin::select('first_name', 'last_name', 'profile_image')->where('user_id', $user->id)->first();
+            // profile_image
+            $userInfo->profile_image = asset($userInfo->profile_image);
         }
 
         // Get User detail as per user type
         if ($user->client_enabled == 1) {
             $userInfo = Client::select('first_name', 'last_name', 'profile_image')->where('user_id', $user->id)->first();
+            // profile_image
+            $userInfo->profile_image = asset($userInfo->profile_image);
         }
 
         if ($user->helper_enabled == 1) {
             $userInfo = Helper::select('first_name', 'last_name', 'profile_image')->where('user_id', $user->id)->first();
+            // profile_image
+            $userInfo->profile_image = asset($userInfo->profile_image);
         }
 
         // Check chat between users already exists
@@ -1459,42 +1485,50 @@ class HelperController extends Controller
             ], 401);
         }
 
-        $validator = Validator::make($request->all(), [
-            'chat_id' => 'required',
-        ]);
-
-        if ($validator->fails()) {
+        $chat = Chat::find($request->chat_id);
+        if (!$chat) {
             return response()->json([
                 'success' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
+                'statusCode' => 422,
+                'message' => 'Chat not found.',
+                'errors' => 'Chat not found',
             ], 422);
         }
-
-        $chat = Chat::find($request->chat_id);
         $messages = $chat->messages()->orderBy('created_at', 'asc')->get();
 
         if ($chat->user1_id == Auth::user()->id) {
             $otherUser = User::findOrFail($chat->user2_id);
             if ($otherUser->client_enabled) {
                 $otherUserInfo = Client::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+                // profile_image
+                $otherUserInfo->profile_image = asset($otherUserInfo->profile_image);
             } else {
                 $otherUserInfo = Helper::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+                // profile_image
+                $otherUserInfo->profile_image = asset($otherUserInfo->profile_image);
             }
             // Check if user is admin
             if ($otherUser->user_type == 'admin') {
                 $otherUserInfo = Admin::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+                // profile_image
+                $otherUserInfo->profile_image = asset($otherUserInfo->profile_image);
             }
         } else {
             $otherUser = User::findOrFail($chat->user1_id);
             if ($otherUser->client_enabled) {
                 $otherUserInfo = Client::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+                // profile_image
+                $otherUserInfo->profile_image = asset($otherUserInfo->profile_image);
             } else {
                 $otherUserInfo = Helper::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+                // profile_image
+                $otherUserInfo->profile_image = asset($otherUserInfo->profile_image);
             }
             // Check if user is admin
             if ($otherUser->user_type == 'admin') {
                 $otherUserInfo = Admin::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+                // profile_image
+                $otherUserInfo->profile_image = asset($otherUserInfo->profile_image);
             }
         }
 
