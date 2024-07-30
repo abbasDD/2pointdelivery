@@ -559,7 +559,12 @@ class GetEstimateController extends Controller
     public function generateInvoice($booking_id)
     {
         // Check if booking exist
-        $booking = Booking::where('id', $booking_id)->first();
+        $booking = Booking::where('id', $booking_id)
+            ->with('prioritySetting')
+            ->with('serviceType')
+            ->with('serviceCategory')
+            ->first();
+
         if (!$booking) {
             return 0;
         }

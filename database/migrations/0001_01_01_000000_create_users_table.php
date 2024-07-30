@@ -20,6 +20,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('referral_code')->nullable()->unique();
+            $table->text('fcm_token')->nullable();
             $table->string('language_code')->default('en');
             $table->boolean('is_active')->default(true);
             $table->boolean('is_updated')->default(false);

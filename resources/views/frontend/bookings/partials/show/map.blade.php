@@ -4,13 +4,13 @@
         <div class="d-flex align-items-center gap-3">
             {{-- Show Invoice Download button --}}
             @if ($booking->invoice_file)
-                <a href="{{ asset('pdfs/invoices/' . $booking->invoice_file) }}" class="btn btn-primary btn-sm"
-                    target="_blank"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i>
+                <a href="{{ route('invoice.download', $booking->id) }}" class="btn btn-primary btn-sm" target="_blank"><i
+                        class="fa-solid fa-file-arrow-down" aria-hidden="true"></i>
                     <span class="d-none d-md-inline">Download Invoice</span></a>
             @endif
             {{-- Show shipping label download button --}}
             @if ($booking->label_file)
-                <a href="{{ asset('pdfs/shipping-labels/' . $booking->label_file) }}" class="btn btn-primary btn-sm"
+                <a href="{{ route('shippinglabel.download', $booking->id) }}" class="btn btn-primary btn-sm"
                     target="_blank"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i>
                     <span class="d-none d-md-inline">Download Shipping Label</span></a>
             @endif

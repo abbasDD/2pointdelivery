@@ -293,36 +293,39 @@ class BookingController extends Controller
             $helper2VehicleData = HelperVehicle::where('user_id', $booking->helper_user_id2)->first();
         }
 
-        // Check if invoice already created
-        if ($booking->invoice_file == null) {
-            // Generate invoice from this url bookingInvoicePDF
-            // $this->generateInvoice($booking->id);
-            $booking_invoice = $this->getEstimateController->generateInvoice($booking->id);
-            if ($booking_invoice) {
-                // Update booking
-                Booking::where('id', $booking->id)->update([
-                    'invoice_file' => $booking_invoice
-                ]);
-            }
-        }
+        // // Check if invoice already created
+        // if ($booking->invoice_file == null) {
+        //     // Generate invoice from this url bookingInvoicePDF
+        //     // $this->generateInvoice($booking->id);
+        //     $booking_invoice = $this->getEstimateController->generateInvoice($booking->id);
+        //     if ($booking_invoice) {
+        //         // Update booking
+        //         Booking::where('id', $booking->id)->update([
+        //             'invoice_file' => $booking_invoice
+        //         ]);
+        //     }
+        // }
 
-        // Check if label_file already created
-        if ($booking->label_file == null) {
-            // Generate label from this url bookingLabelPDF
-            // $this->generateLabel($booking->id);
-            $booking_label = $this->getEstimateController->generateLabel($booking->id);
-            if ($booking_label) {
-                // Update booking
-                Booking::where('id', $booking->id)->update([
-                    'label_file' => $booking_label
-                ]);
-            }
-        }
+        // // Check if label_file already created
+        // if ($booking->label_file == null) {
+        //     // Generate label from this url bookingLabelPDF
+        //     // $this->generateLabel($booking->id);
+        //     $booking_label = $this->getEstimateController->generateLabel($booking->id);
+        //     if ($booking_label) {
+        //         // Update booking
+        //         Booking::where('id', $booking->id)->update([
+        //             'label_file' => $booking_label
+        //         ]);
+        //     }
+        // }
 
         // dd($booking);
 
         return view('frontend.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'helper2Data', 'clientData', 'vehicleTypeData', 'helper2VehicleData', 'helperVehicleData', 'clientView', 'helperView'));
     }
+
+
+
     // Start Booking
     public function start(Request $request)
     {

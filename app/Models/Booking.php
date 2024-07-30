@@ -105,4 +105,14 @@ class Booking extends Model
     {
         return $this->hasOne(BookingDelivery::class);
     }
+
+    public function bookingDelivery()
+    {
+        return $this->hasOne(BookingDelivery::class, 'booking_id');
+    }
+
+    public function bookingMoving()
+    {
+        return $this->hasOne(BookingMoving::class, 'booking_id');
+    }
 }

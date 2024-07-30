@@ -117,6 +117,12 @@ class PassportAuthController extends Controller
             'is_approved' => 0
         ];
 
+        // Update fcm_token if exists
+        if ($request->has('fcm_token')) {
+            $user->fcm_token = $request->fcm_token;
+            $user->save();
+        }
+
         // Check if user added refferal code
         if ($request->has('referral_code')) {
             $refferr_user = User::where('referral_code', $request->referral_code)->first();
@@ -213,6 +219,12 @@ class PassportAuthController extends Controller
                 'vehicle_details' => false,
                 'is_approved' => 0
             ];
+
+            // Update fcm_token if exists
+            if ($request->has('fcm_token')) {
+                $user->fcm_token = $request->fcm_token;
+                $user->save();
+            }
 
             // If user is client
             if ($request->user_type == 'client') {

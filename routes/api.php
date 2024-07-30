@@ -193,10 +193,14 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     Route::post('logout', [PassportAuthController::class, 'logout']);
 
     // Chats
-    Route::get('chats', [ClientController::class, 'getChatList']);
-    Route::post('chat/create', [ClientController::class, 'createChat']);
-    Route::get('chat/user/{chat_id}', [ClientController::class, 'getUserChat']);
-    Route::post('chat/message/send', [ClientController::class, 'sendMessage']);
+    Route::get('chats', [HelperController::class, 'getChatList']);
+    Route::post('chat/create', [HelperController::class, 'createChat']);
+    Route::get('chat/user/{chat_id}', [HelperController::class, 'getUserChat']);
+    Route::post('chat/message/send', [HelperController::class, 'sendMessage']);
+
+    // Wallet
+    Route::get('wallet/balance', [HelperController::class, 'getWalletBalance']);
+    Route::get('wallet/earning', [HelperController::class, 'getWalletEarning']);
 
     // Helper Routes End
 });

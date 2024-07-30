@@ -56,7 +56,12 @@ class PDFController extends Controller
 
 
         // Check if booking exist
-        $booking = Booking::where('id', $booking_id)->first();
+        $booking = Booking::where('id', $booking_id)
+            ->with('prioritySetting')
+            ->with('serviceType')
+            ->with('serviceCategory')
+            ->first();
+
         if (!$booking) {
             return 0;
         }

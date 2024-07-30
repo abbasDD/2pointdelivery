@@ -157,99 +157,52 @@
         <div
             style="background: #038164 url(https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/shopping-cart-shop-drop-trolly-128.png) no-repeat;width: 50px;height: 50px;margin-right: 10px;background-position: center;background-size: 25px;float: left; margin-bottom: 15px;">
         </div>
-        <h3>Payment Details</h3>
+        <h3>Booking Details</h3>
 
         <table width="100%" style="border-collapse: collapse;border-bottom:1px solid #eee;">
             <tr>
                 <td width="20%" class="column-header">Sr No</td>
-                <td width="60%" class="column-header">Description</td>
-                <td width="20%" class="column-header">Price</td>
+                <td width="40%" class="column-header">Description</td>
+                <td width="40%" class="column-header">Value</td>
             </tr>
-            {{-- Service Price --}}
+            {{-- Service Type --}}
             <tr>
                 <td class="row">{{ $index++ }}</td>
-                <td class="row">Service Price</td>
-                <td class="row">${{ $bookingPayment->service_price }}</td>
+                <td class="row">Service Type</td>
+                <td class="row">{{ $booking->serviceType->name }}</td>
             </tr>
-            {{-- Distance Price --}}
+            {{-- Service Category --}}
             <tr>
                 <td class="row">{{ $index++ }}</td>
-                <td class="row">Distance Price</td>
-                <td class="row">${{ $bookingPayment->distance_price }}</td>
+                <td class="row">Service Category</td>
+                <td class="row">{{ $booking->serviceCategory->name }}</td>
             </tr>
-            {{-- Weight Price --}}
+            {{-- Priority Setting --}}
             <tr>
                 <td class="row">{{ $index++ }}</td>
-                <td class="row">Weight Price</td>
-                <td class="row">${{ $bookingPayment->weight_price }}</td>
+                <td class="row">Priority Setting</td>
+                <td class="row">{{ $booking->prioritySetting->name }}</td>
             </tr>
-            {{-- Priority Price --}}
+            {{-- Total Price --}}
             <tr>
                 <td class="row">{{ $index++ }}</td>
-                <td class="row">Priority Price</td>
-                <td class="row">${{ $bookingPayment->priority_price }}</td>
+                <td class="row">Total Price</td>
+                <td class="row">${{ $booking->total_price }}</td>
             </tr>
-            {{-- Moving Details Start --}}
-            @if ($booking->booking_type == 'moving')
-                {{-- Floor Access Price --}}
-                <tr>
-                    <td class="row">{{ $index++ }}</td>
-                    <td class="row">Floor Access Price</td>
-                    <td class="row">${{ $bookingPayment->floor_assess_price }}</td>
-                </tr>
-                {{-- Floor Plan Price --}}
-                <tr>
-                    <td class="row">{{ $index++ }}</td>
-                    <td class="row">Floor Plan Price</td>
-                    <td class="row">${{ $bookingPayment->floor_plan_price }}</td>
-                </tr>
-                {{-- Job Details Price --}}
-                <tr>
-                    <td class="row">{{ $index++ }}</td>
-                    <td class="row">Job Details Price</td>
-                    <td class="row">${{ $bookingPayment->job_details_price }}</td>
-                </tr>
-                {{-- No of Room Price --}}
-                <tr>
-                    <td class="row">{{ $index++ }}</td>
-                    <td class="row">No of Room Price</td>
-                    <td class="row">${{ $bookingPayment->no_of_room_price }}</td>
-                </tr>
-            @endif
-            {{-- Moving Details End --}}
-
-            {{-- Delivery Details Start --}}
-            @if ($booking->booking_type == 'delivery')
-                {{-- Vehicle Price --}}
-                <tr>
-                    <td class="row">{{ $index++ }}</td>
-                    <td class="row">Vehicle Price</td>
-                    <td class="row">${{ $bookingPayment->vehicle_price }}</td>
-                </tr>
-            @endif
-            {{-- Delivery Details End --}}
         </table>
         <br>
-        <table width="100%" style="background:#eee;padding:20px;">
-            <tr>
-                <td>
-                    <table width="300px" style="float:right">
-                        <tr>
-                            <td><strong>Sub-total:</strong></td>
-                            <td>${{ $bookingPayment->sub_total }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Tax:</strong></td>
-                            <td>${{ $bookingPayment->tax_price }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Grand total:</strong></td>
-                            <td>${{ $bookingPayment->total_price }}</td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
+
+        {{-- Payment Terms --}}
+        <h3>Payment Terms</h3>
+        <p>
+            We accept payments via credit card, bank transfer, and PayPal.
+        </p>
+        <p>
+            Any disputes regarding the invoice must be reported within 10 days of the invoice date.
+        </p>
+        <p>
+            For payment inquiries, please contact our billing department at 2pointdelivery@gmail.com.
+        </p>
 
     </div><!-- container -->
 </body>

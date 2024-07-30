@@ -3,12 +3,17 @@
 namespace App\Http\Controllers\Api\Helper;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\Booking;
+use App\Models\BookingDelivery;
+use App\Models\BookingMoving;
+use App\Models\Chat;
 use App\Models\Client;
 use App\Models\ClientCompany;
 use App\Models\Helper;
 use App\Models\HelperCompany;
 use App\Models\HelperVehicle;
+use App\Models\Message;
 use App\Models\SocialLink;
 use App\Models\TeamInvitation;
 use App\Models\User;
@@ -1284,6 +1289,442 @@ class HelperController extends Controller
             'statusCode' => 200,
             'message' => 'Invitation declined successfully',
             'data' => []
+        ], 200);
+    }
+
+    // Chats
+    public function getChatList()
+    {
+
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Retrieve the user
+        $user = User::findOrFail(Auth::user()->id);
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Get the user's chats along with the other user in the chat
+        $chats = $user->chats()->with('otherUser')->get();
+
+        foreach ($chats as $chat) {
+            $chat->last_message = $chat->messages()->latest()->first();
+            if ($chat->user1_id == Auth::user()->id) {
+                $otherUser = User::findOrFail($chat->user2_id);
+                if ($otherUser->client_enabled) {
+                    $chat->otherUserInfo = Client::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+                } else {
+                    $chat->otherUserInfo = Helper::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+                }
+                // Check if user is admin
+                if ($otherUser->user_type == 'admin') {
+                    $chat->otherUserInfo = Admin::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+                }
+            } else {
+                $otherUser = User::findOrFail($chat->user1_id);
+                if ($otherUser->client_enabled) {
+                    $chat->otherUserInfo = Client::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+                } else {
+                    $chat->otherUserInfo = Helper::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+                }
+                // Check if user is admin
+                if ($otherUser->user_type == 'admin') {
+                    $chat->otherUserInfo = Admin::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+                }
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Chats retrieved successfully',
+            'data' => $chats
+        ], 200);
+    }
+
+    // Create Chat
+    public function createChat(Request $request)
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Retrieve the user
+        $user = User::findOrFail(Auth::user()->id);
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Check if user exists
+        if (!$user) {
+            return response()->json(['success' => false, 'chat_id' => 0, 'message' => 'User not found']);
+        }
+
+        if ($user->user_type == 'admin') {
+            $userInfo = Admin::select('first_name', 'last_name', 'profile_image')->where('user_id', $user->id)->first();
+        }
+
+        // Get User detail as per user type
+        if ($user->client_enabled == 1) {
+            $userInfo = Client::select('first_name', 'last_name', 'profile_image')->where('user_id', $user->id)->first();
+        }
+
+        if ($user->helper_enabled == 1) {
+            $userInfo = Helper::select('first_name', 'last_name', 'profile_image')->where('user_id', $user->id)->first();
+        }
+
+        // Check chat between users already exists
+        $chatExists = Chat::where('user1_id', $user->id)->where('user2_id', Auth::user()->id)->orWhere('user1_id', Auth::user()->id)->where('user2_id', $user->id)->first();
+
+        if ($chatExists) {
+            // return response()->json(['success' => true, 'chat_id' => $chatExists->id, 'userInfo' => $userInfo, 'message' => 'Chat already exists']);
+            return response()->json([
+                'success' => true,
+                'statusCode' => 200,
+                'message' => 'Chats already exists',
+                'data' => [
+                    'chat_id' => $chatExists->id,
+                    'userInfo' => $userInfo
+                ]
+            ], 200);
+        }
+        // Create chat between user_id and current user
+        $chat = new Chat();
+        $chat->user1_id = $user->id;
+        $chat->user2_id = Auth::user()->id;
+        $chat->save();
+
+        // return response()->json(['success' => true, 'chat_id' => $chat->id, 'userInfo' => $userInfo, 'message' => 'Chat created successfully']);
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Chats created successfully',
+            'data' => [
+                'chat_id' => $chat->id,
+                'userInfo' => $userInfo
+            ]
+        ]);
+    }
+
+    public function getUserChat(Request $request)
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Retrieve the user
+        $user = User::findOrFail(Auth::user()->id);
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'chat_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $chat = Chat::find($request->chat_id);
+        $messages = $chat->messages()->orderBy('created_at', 'asc')->get();
+
+        if ($chat->user1_id == Auth::user()->id) {
+            $otherUser = User::findOrFail($chat->user2_id);
+            if ($otherUser->client_enabled) {
+                $otherUserInfo = Client::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+            } else {
+                $otherUserInfo = Helper::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+            }
+            // Check if user is admin
+            if ($otherUser->user_type == 'admin') {
+                $otherUserInfo = Admin::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+            }
+        } else {
+            $otherUser = User::findOrFail($chat->user1_id);
+            if ($otherUser->client_enabled) {
+                $otherUserInfo = Client::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+            } else {
+                $otherUserInfo = Helper::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+            }
+            // Check if user is admin
+            if ($otherUser->user_type == 'admin') {
+                $otherUserInfo = Admin::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+            }
+        }
+
+        // Return a json object
+        // return response()->json(['success' => true, 'otherUserInfo' => $otherUserInfo, 'data' => $messages]);
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Chats retrieved successfully',
+            'data' => [
+                'otherUserInfo' => $otherUserInfo,
+                'data' => $messages
+            ]
+        ], 200);
+    }
+
+    public function sendMessage(Request $request)
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Retrieve the user
+        $user = User::findOrFail(Auth::user()->id);
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'chat_id' => 'required',
+            'message' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $chat = Chat::find($request->chat_id);
+
+        if (!$chat) {
+            // return response()->json(['success' => false, 'data' => 'Unable to find chat']);
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unable to find chat .',
+                'errors' => 'Unable to find chat',
+            ], 401);
+        }
+
+        if ($chat->user1_id != Auth::user()->id && $chat->user2_id != Auth::user()->id) {
+            // return response()->json(['success' => false, 'data' => 'Unable to send message']);
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unable to send message .',
+                'errors' => 'Unable to send message',
+            ], 401);
+        }
+
+        $message = Message::create([
+            'chat_id' => $request->chat_id,
+            'sender_id' => Auth::user()->id,
+            'message' => $request->message,
+        ]);
+
+        // Return a json object
+        // return response()->json(['success' => true, 'data' => $message]);
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Message sent successfully',
+            'data' => $message
+        ], 200);
+    }
+
+    // Wallet APIs -------
+
+    // getWalletBalance
+    public function getWalletBalance(): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Check if user is helper
+
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        if (!$helper) {
+            return response()->json([
+                'success' => true,
+                'statusCode' => 200,
+                'message' => 'No balance',
+                'data' => [
+                    'balance' => 0
+                ]
+            ], 200);
+        }
+
+        $userId = auth()->user()->id;
+
+        // Get all for completed bookings
+        $completedBookings = Booking::where('status', 'completed')
+            ->where(function ($query) use ($userId) {
+                $query->where('helper_user_id', $userId)
+                    ->orWhere('helper_user_id2', $userId);
+            })
+            ->with(['bookingDelivery', 'bookingMoving'])
+            ->get();
+
+        // Initialize total earnings
+        $totalEarning = 0;
+
+        // Loop through each completed booking
+        foreach ($completedBookings as $booking) {
+            if ($booking->booking_type == 'delivery' && $booking->bookingDelivery) {
+                $totalEarning += $booking->bookingDelivery->helper_fee;
+            } elseif ($booking->booking_type != 'delivery' && $booking->bookingMoving) {
+                $totalEarning += $booking->bookingMoving->helper_fee;
+            }
+        }
+
+
+        // Total Withdraw Amount
+        $totalWithdraw = 0;
+
+
+        // Total Balance
+        $totalBalance = $totalEarning - $totalWithdraw;
+
+        // Return a json object
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Balance retrieved successfully',
+            'data' => [
+                'balance' => $totalBalance
+            ]
+        ], 200);
+    }
+
+
+    // Get credit wallet history
+    public function getWalletEarning(): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Check if user is helper
+
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        if (!$helper) {
+            return response()->json([
+                'success' => true,
+                'statusCode' => 200,
+                'message' => 'No history',
+                'data' => []
+            ], 200);
+        }
+
+        $userId = auth()->user()->id;
+
+        // Get all completed bookings for the helper with only necessary columns and eager loading
+        $completedBookings = Booking::select('id', 'uuid', 'booking_type')
+            ->where('status', 'completed')
+            ->where(function ($query) use ($userId) {
+                $query->where('helper_user_id', $userId)
+                    ->orWhere('helper_user_id2', $userId);
+            })
+            ->with([
+                'bookingDelivery:id,booking_id,helper_fee',
+                'bookingMoving:id,booking_id,helper_fee'
+            ])
+            ->get();
+
+        // Transform the bookings into the desired structure
+        $completedBookingList = $completedBookings->map(function ($booking) {
+            if ($booking->booking_type == 'delivery' && $booking->bookingDelivery) {
+                return [
+                    'booking_id' => $booking->id,
+                    'booking_type' => $booking->booking_type,
+                    'booking_uuid' => $booking->uuid,
+                    'helper_fee' => $booking->bookingDelivery->helper_fee,
+                ];
+            } elseif ($booking->booking_type != 'delivery' && $booking->bookingMoving) {
+                return [
+                    'booking_id' => $booking->id,
+                    'booking_type' => $booking->booking_type,
+                    'booking_uuid' => $booking->uuid,
+                    'helper_fee' => $booking->bookingMoving->helper_fee,
+                ];
+            }
+        })->filter()->values()->all(); // Filter out null values and reindex the array
+
+
+        // Return a json object
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Credit wallet history retrieved successfully',
+            'data' => $completedBookingList
         ], 200);
     }
 }

@@ -24,6 +24,7 @@ class User extends Authenticatable
         'email',
         'password',
         'referral_code',
+        'fcm_token',
         'language_code',
         'is_active',
         'is_updated',
