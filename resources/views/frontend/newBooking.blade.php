@@ -799,10 +799,6 @@
 
 
 
-
-        // Get estimate from https://secureship.ca/ship/api/docs#tag/Carriers/operation/Carriers_CalculateRates
-        var apiKey = '0226b62a-f112-4d22-a8fc-d05b67a38e26'; // Replace 'YOUR_API_KEY' with your actual API key
-
         // Function to call the API
         function getEstimatedFees() {
 
@@ -882,45 +878,6 @@
 
             return false;
 
-            // Get all the form data
-            // var shippingData = getShippingData();
-
-            // event.preventDefault(); // Prevent the default form submission behavior
-
-            // var apiUrl = 'https://secureship.ca/ship/api/v1/carriers/rates';
-            // // var apiUrl =
-            // //     'https://secureship.ca/ship/connect/query-string/get-estimate?FromCC=CA&FromPC=k1k1k1&FromCity=Ottawa&ToCC=US&ToPC=90210&ToCity=Beverly%20Hills&PT1=MyPackage&Weight1=5&PT2=MyPackage&Weight2=6&L2=4&W2=6&H2=8&Debug=true';
-            // // console.log('Function Called');
-
-            // // Make an AJAX POST request to the API
-            // fetch(apiUrl, {
-            //         // method: 'GET',
-            //         method: 'POST',
-            //         headers: {
-            //             'Content-Type': 'application/json',
-            //             'x-api-key': apiKey
-            //         },
-            //         body: JSON.stringify(shippingData)
-            //     })
-            //     .then(response => {
-            //         if (!response.ok) {
-            //             throw new Error('Network response was not ok');
-            //         }
-            //         return response.json();
-            //     })
-            //     .then(json => {
-            //         // console.log('API response:', json);
-            //         if (json.length > 0) {
-            //             alert('Estimated Fees: ');
-            //         } else {
-            //             alert('No rates found');
-            //         }
-            //         // Handle the API response as needed
-            //     })
-            //     .catch(error => {
-            //         console.error('There was a problem with the API request:', error.message);
-            //         // Handle errors
-            //     });
         }
 
         // Update the form data as per the service type

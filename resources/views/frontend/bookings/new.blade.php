@@ -77,6 +77,11 @@
                                             value="{{ request()->get('dropoff_longitude') }}" required>
                                     </div>
                                 </div>
+
+
+                                {{-- Load mapjs script here --}}
+                                @include('frontend.bookings.js.map')
+
                                 {{-- Service Type --}}
                                 <div class="col-md-6">
                                     <label for="serviceType">Service Type</label>

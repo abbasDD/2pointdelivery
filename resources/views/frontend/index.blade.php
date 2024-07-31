@@ -73,8 +73,15 @@
         </form>
         <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places"></script>
         <script>
-            var pickupAutocomplete = new google.maps.places.Autocomplete(document.getElementById('pickupLocation'));
-            var deliveryAutocomplete = new google.maps.places.Autocomplete(document.getElementById('deliveryLocation'));
+            var options = {
+                componentRestrictions: {
+                    country: ["ca", "us"]
+                }
+            };
+
+            var pickupAutocomplete = new google.maps.places.Autocomplete(document.getElementById('pickupLocation'), options);
+            var deliveryAutocomplete = new google.maps.places.Autocomplete(document.getElementById('deliveryLocation'),
+                options);
 
             pickupAutocomplete.addListener('place_changed', function() {
                 var place = pickupAutocomplete.getPlace();
@@ -88,6 +95,7 @@
             });
         </script>
     </section>
+
 
     {{-- About Us Section  --}}
     @include('frontend.includes.about')

@@ -10,6 +10,7 @@ use App\Models\HelperCompany;
 use App\Models\HelperVehicle;
 use App\Models\PaymentSetting;
 use App\Models\Referral;
+use App\Models\SmtpSetting;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -403,6 +404,28 @@ class PassportAuthController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
+
+        $smtpSettings = SmtpSetting::get();
+        if ($smtpSettings->isEmpty()) {
+            return $this->sendResetLinkFailedResponse($request, 'smtp.not_configured');
+        }
+
+        $smtpSettingEnabled = $smtpSettings->where('key', 'smtp_enabled')->first();
+        if ($smtpSettingEnabled->value == 'no') {
+            return $this->sendResetLinkFailedResponse($request, 'smtp.disabled');
+        }
+
+        // Configure mailer with the SMTP settings
+        config([
+            'mail.mailers.smtp.transport' => 'smtp',
+            'mail.mailers.smtp.host' => $smtpSettings->where('key', 'smtp_host')->first()->value,
+            'mail.mailers.smtp.port' => $smtpSettings->where('key', 'smtp_port')->first()->value,
+            'mail.mailers.smtp.encryption' => $smtpSettings->where('key', 'smtp_encryption')->first()->value,
+            'mail.mailers.smtp.username' => $smtpSettings->where('key', 'smtp_username')->first()->value,
+            'mail.mailers.smtp.password' => $smtpSettings->where('key', 'smtp_password')->first()->value,
+            'mail.from.address' => $smtpSettings->where('key', 'smtp_from_email')->first()->value,
+            'mail.from.name' => $smtpSettings->where('key', 'smtp_from_name')->first()->value,
+        ]);
 
         $response = $this->broker()->sendResetLink(
             $this->credentials($request)

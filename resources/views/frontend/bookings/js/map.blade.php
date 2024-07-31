@@ -23,8 +23,14 @@
         var pickupInput = document.getElementById('pickup_address');
         var deliveryInput = document.getElementById('dropoff_address');
 
-        var pickupAutocomplete = new google.maps.places.Autocomplete(pickupInput);
-        var deliveryAutocomplete = new google.maps.places.Autocomplete(deliveryInput);
+        var options = {
+            componentRestrictions: {
+                country: ["ca", "us"]
+            }
+        };
+
+        var pickupAutocomplete = new google.maps.places.Autocomplete(pickupInput, options);
+        var deliveryAutocomplete = new google.maps.places.Autocomplete(deliveryInput, options);
 
         pickupAutocomplete.addListener('place_changed', function() {
             var place = pickupAutocomplete.getPlace();

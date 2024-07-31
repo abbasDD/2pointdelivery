@@ -118,3 +118,6 @@ Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
 
 // Upload Trix attachment
 Route::post('/attachments', [AttachmentController::class, 'store'])->name('attachments.store');
+
+
+Route::post('/secureship/estimate', [GetEstimateController::class, 'getSecureshipEstimate']);

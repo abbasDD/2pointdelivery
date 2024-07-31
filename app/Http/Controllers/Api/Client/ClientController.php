@@ -1353,20 +1353,20 @@ class ClientController extends Controller
         if ($user->user_type == 'admin') {
             $userInfo = Admin::select('first_name', 'last_name', 'profile_image')->where('user_id', $user->id)->first();
             // profile_image
-            $userInfo->profile_image = asset($userInfo->profile_image);
+            $userInfo->profile_image = asset('images/users/' . $userInfo->profile_image);
         }
 
         // Get User detail as per user type
         if ($user->client_enabled == 1) {
             $userInfo = Client::select('first_name', 'last_name', 'profile_image')->where('user_id', $user->id)->first();
             // profile_image
-            $userInfo->profile_image = asset($userInfo->profile_image);
+            $userInfo->profile_image = asset('images/users/' . $userInfo->profile_image);
         }
 
         if ($user->helper_enabled == 1) {
             $userInfo = Helper::select('first_name', 'last_name', 'profile_image')->where('user_id', $user->id)->first();
             // profile_image
-            $userInfo->profile_image = asset($userInfo->profile_image);
+            $userInfo->profile_image = asset('images/users/' . $userInfo->profile_image);
         }
 
         // Check chat between users already exists
@@ -1443,34 +1443,34 @@ class ClientController extends Controller
             if ($otherUser->client_enabled) {
                 $otherUserInfo = Client::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
                 // profile_image
-                $otherUserInfo->profile_image = asset($otherUserInfo->profile_image);
+                $otherUserInfo->profile_image = asset('images/users/' . $otherUserInfo->profile_image);
             } else {
                 $otherUserInfo = Helper::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
                 // profile_image
-                $otherUserInfo->profile_image = asset($otherUserInfo->profile_image);
+                $otherUserInfo->profile_image = asset('images/users/' . $otherUserInfo->profile_image);
             }
             // Check if user is admin
             if ($otherUser->user_type == 'admin') {
                 $otherUserInfo = Admin::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
                 // profile_image
-                $otherUserInfo->profile_image = asset($otherUserInfo->profile_image);
+                $otherUserInfo->profile_image = asset('images/users/' . $otherUserInfo->profile_image);
             }
         } else {
             $otherUser = User::findOrFail($chat->user1_id);
             if ($otherUser->client_enabled) {
                 $otherUserInfo = Client::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
                 // profile_image
-                $otherUserInfo->profile_image = asset($otherUserInfo->profile_image);
+                $otherUserInfo->profile_image = asset('images/users/' . $otherUserInfo->profile_image);
             } else {
                 $otherUserInfo = Helper::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
                 // profile_image
-                $otherUserInfo->profile_image = asset($otherUserInfo->profile_image);
+                $otherUserInfo->profile_image = asset('images/users/' . $otherUserInfo->profile_image);
             }
             // Check if user is admin
             if ($otherUser->user_type == 'admin') {
                 $otherUserInfo = Admin::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
                 // profile_image
-                $otherUserInfo->profile_image = asset($otherUserInfo->profile_image);
+                $otherUserInfo->profile_image = asset('images/users/' . $otherUserInfo->profile_image);
             }
         }
 

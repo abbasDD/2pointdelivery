@@ -7,6 +7,7 @@ use App\Models\BookingDelivery;
 use App\Models\BookingMoving;
 use App\Models\Client;
 use App\Models\ClientCompany;
+use App\Models\DeliveryConfig;
 use App\Models\MovingConfig;
 use App\Models\MovingDetail;
 use App\Models\PrioritySetting;
@@ -64,7 +65,8 @@ class GetEstimateController extends Controller
         if ($serviceCategory->is_secureship_enabled) {
 
             // Call Secureship API function
-            $data = $this->getSecureshipEstimate($request, $serviceType, $serviceCategory, $prioritySetting);
+            $data = $this->getSecureshipEstimate($request);
+            // $data = $this->getSecureshipEstimate();
 
             // Return data
             return response()->json([
@@ -683,10 +685,175 @@ class GetEstimateController extends Controller
 
 
     // getSecureshipEstimate
-    public function getSecureshipEstimate($request, $serviceType, $serviceCategory, $prioritySetting)
+    public function getSecureshipEstimate(Request $request)
+    // public function getSecureshipEstimate()
     {
-        $data = [];
+        // Get pickup_address object from lat long
+        $pickup_address = $this->getAddressFromLatLong($request->pickup_latitude, $request->pickup_longitude);
 
-        return $data;
+        if (!$pickup_address) {
+            return false;
+        }
+
+        // Get dropoffaddress object from lat long
+        $dropoff_address = $this->getAddressFromLatLong($request->dropoff_latitude, $request->dropoff_longitude);
+        if (!$dropoff_address) {
+            return false;
+        }
+
+        // dd($address);
+        // return response()->json($pickup_address);
+        // Static JSON data
+        $payload = [
+            'fromAddress' => [
+                'addr1' => $pickup_address['addr1'],
+                'countryCode' => $pickup_address['countryCode'],
+                'postalCode' => $pickup_address['postalCode'],
+                'city' => $pickup_address['city'],
+                'taxId' => 'A-123456-Z',
+                'residential' => true,
+                'isSaturday' => true,
+                'isInside' => true,
+                'isTailGate' => true,
+                'isTradeShow' => true,
+                'isLimitedAccess' => true,
+                'appointment' => [
+                    'appointmentType' => 'None',
+                    'phone' => '613-723-5891',
+                    'date' => '2024-08-10',
+                    'time' => '3:00 PM'
+                ]
+            ],
+            'toAddress' => [
+                'addr1' => $dropoff_address['addr1'],
+                'countryCode' => $dropoff_address['countryCode'],
+                'postalCode' => $dropoff_address['postalCode'],
+                'city' => $dropoff_address['city'],
+                'taxId' => 'A-123456-Z',
+                'residential' => true,
+                'isSaturday' => true,
+                'isInside' => true,
+                'isTailGate' => true,
+                'isTradeShow' => true,
+                'isLimitedAccess' => true,
+                'appointment' => [
+                    'appointmentType' => 'None',
+                    'phone' => '613-723-5891',
+                    'date' => '2024-08-19',
+                    'time' => '3:00 PM'
+                ]
+            ],
+            'packages' => [
+                [
+                    'packageType' => 'MyPackage',
+                    'userDefinedPackageType' => 'Refrigerator',
+                    'weight' => (float)$request->package_weight,
+                    'weightUnits' => 'Lbs',
+                    'length' => (float)$request->package_length,
+                    'width' => (float)$request->package_width,
+                    'height' => (float)$request->package_height,
+                    'dimUnits' => 'Inches',
+                    'insurance' => 18.3,
+                    'isAdditionalHandling' => false,
+                    'signatureOptions' => 'None',
+                    'description' => 'Gift for darling',
+                    'temperatureProtection' => true,
+                    'isDangerousGoods' => true,
+                    'isNonStackable' => true
+                ]
+            ],
+            'shipDateTime' => now(),
+            'currencyCode' => 'CAD',
+            'billingOptions' => 'Prepaid',
+            'isDocumentsOnly' => true,
+            'isStopinOnly' => true
+        ];
+
+        // dd($payload);
+        // return response()->json($payload);
+
+        // Get secureship API key
+        $secureship_api_key = DeliveryConfig::where('key', 'secureship_api_key')->first();
+        if (!$secureship_api_key) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Secureship API key not found',
+            ]);
+        }
+
+        // API URL
+        $apiUrl = 'https://secureship.ca/ship/api/v1/carriers/rates';
+
+        // Make the API request
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'x-api-key' => $secureship_api_key->value,
+        ])->post($apiUrl, $payload);
+
+        if ($response->successful()) {
+            return response()->json([
+                'status' => 'success',
+                'data' => $response->json(),
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve estimate',
+                'error' => $response->json(),
+            ]);
+        }
+    }
+
+    // getAddressFromLatLong
+    public function getAddressFromLatLong($latitude, $longitude)
+    {
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" . $latitude . "," . $longitude . "&key=" . env('GOOGLE_MAPS_API_KEY');
+        $response = Http::get($url);
+        // $address = $response->json()['results'][0];
+
+        if ($response->successful()) {
+            $addressComponents = $response->json()['results'][0]['address_components'];
+            $address = $this->parseAddressComponents($addressComponents);
+
+            return $address;
+        }
+
+
+        return false;
+    }
+
+    private function parseAddressComponents($components)
+    {
+        $address = [
+            'addr1' => '',
+            'countryCode' => '',
+            'postalCode' => '',
+            'city' => ''
+        ];
+
+        // Check ig components object is not empty
+        if (empty($components)) {
+            return $address;
+        }
+
+        foreach ($components as $component) {
+            if (in_array('street_number', $component['types'])) {
+                $address['addr1'] = $component['long_name'];
+            }
+            if (in_array('route', $component['types'])) {
+                $address['addr1'] .= ' ' . $component['long_name'];
+            }
+            if (in_array('locality', $component['types'])) {
+                $address['city'] = $component['long_name'];
+            }
+            if (in_array('postal_code', $component['types'])) {
+                $address['postalCode'] = $component['long_name'];
+            }
+            if (in_array('country', $component['types'])) {
+                $address['countryCode'] = $component['short_name'];
+            }
+        }
+
+        return $address;
     }
 }

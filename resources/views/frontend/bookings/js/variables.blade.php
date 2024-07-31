@@ -315,6 +315,23 @@
         formData.append('selectedJobDetailsID', selectedJobDetailsID); // selectedJobDetailsID
         formData.append('selectedMovingDetailsID', selectedMovingDetailsID); // selectedMovingDetailsID
 
+        // Append map variables
+        formData.append('pickup_latitude', parseFloat(document.getElementById('pickup_latitude').value ||
+            defaultPickupLat)); // pickup_latitude
+        formData.append('pickup_longitude', parseFloat(document.getElementById('pickup_longitude').value ||
+            defaultPickupLng)); // pickup_longitude
+        formData.append('dropoff_latitude', parseFloat(document.getElementById('dropoff_latitude').value ||
+            defaultDropLat)); // dropoff_latitude
+        formData.append('dropoff_longitude', parseFloat(document.getElementById('dropoff_longitude').value ||
+            defaultDropLng)); // dropoff_longitude
+
+        // booking date
+        booking_date = document.querySelector('input[name="booking_date"]').value;
+        formData.append('booking_date', booking_date);
+        // booking time
+        booking_time = document.querySelector('input[name="booking_time"]').value;
+        formData.append('booking_time', booking_time);
+
         // Get declared value of package
         package_value = document.querySelector('input[name="package_value"]').value;
         // if not empty
