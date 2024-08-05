@@ -524,10 +524,10 @@ w-70 {
 
 /* Header Section */
 #pageheader {
-    height: 500px;
     color: var(--white);
     background-size: cover;
     background-position: center;
+    padding: 7rem 1rem;
 }
 
 #pageheader .content {
@@ -1823,9 +1823,7 @@ footer hr {
 /* Responsive CSS */
 /* For mobile phones: */
 @media only screen and (max-width: 768px) {
-    #pageheader {
-        height: 300px;
-    }
+
 
     #pageheader .content h3 {
         font-size: 24px;
@@ -1859,17 +1857,8 @@ footer hr {
         font-size: 1rem;
     }
 
-    #pageheader {
-        height: 500px;
-    }
 }
 
-/* For large desktops and laptops: */
-@media only screen and (min-width: 1025px) {
-    #pageheader {
-        height: 500px;
-    }
-}
 
 /* For Mobile Devices */
 @media only screen and (max-width: 767px) {
@@ -1878,9 +1867,6 @@ footer hr {
         font-size: 1rem;
     }
 
-    #pageheader {
-        height: 300px;
-    }
 
     .authpage .card {
         margin: 5px;

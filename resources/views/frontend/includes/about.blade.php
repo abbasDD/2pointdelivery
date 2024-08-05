@@ -1,6 +1,30 @@
-<section id="aboutus" class="about pt-5">
+<section id="aboutus" class="about">
     <div class="container">
         <div class="row">
+            <div class="col-12 col-lg-7">
+                <div class="about-text">
+                    <div class="heading">
+                        <h6>{{ __('frontend.about_section.heading') }}</h6>
+                        <h2>{{ __('frontend.about_section.title') }}</h2>
+                    </div>
+                    <div class="content mt-3">
+                        <p>
+                            {{ __('frontend.about_section.content1') }}
+                        </p>
+                        <p>
+                            {{ __('frontend.about_section.content2') }}
+                        </p>
+                        {{-- Redirect to About Us --}}
+                        <div class="arrow-button">
+                            <a href="{{ route('about-us') }}">
+                                <i class="fas fa-long-arrow-alt-right mr-2"></i>
+                                {{ __('frontend.about_section.button_text') }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-12 col-lg-5">
                 <div class="slider">
                     <div id="carouselAboutIndicators" class="carousel slide" data-bs-ride="carousel">
@@ -60,29 +84,6 @@
                     </div>
                 </div>
 
-            </div>
-            <div class="col-12 col-lg-7">
-                <div class="about-text">
-                    <div class="heading">
-                        <h6>{{ __('frontend.about_section.heading') }}</h6>
-                        <h2>{{ __('frontend.about_section.title') }}</h2>
-                    </div>
-                    <div class="content mt-3">
-                        <p>
-                            {{ __('frontend.about_section.content1') }}
-                        </p>
-                        <p>
-                            {{ __('frontend.about_section.content2') }}
-                        </p>
-                        {{-- Redirect to About Us --}}
-                        <div class="arrow-button">
-                            <a href="{{ route('about-us') }}">
-                                <i class="fas fa-long-arrow-alt-right mr-2"></i>
-                                {{ __('frontend.about_section.button_text') }}
-                            </a>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 

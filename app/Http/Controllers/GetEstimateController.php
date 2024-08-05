@@ -55,10 +55,13 @@ class GetEstimateController extends Controller
         // Check if priority setting exist
         $prioritySetting = PrioritySetting::where('id', $request->priorityID)->where('is_active', 1)->first();
         if (!$prioritySetting) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Priority setting not found',
-            ]);
+            // return response()->json([
+            //     'status' => 'error',
+            //     'message' => 'Priority setting not found',
+            // ]);
+
+            // Get first
+            $prioritySetting = PrioritySetting::where('is_active', 1)->first();
         }
 
         // Check if service category has secureship api enabled

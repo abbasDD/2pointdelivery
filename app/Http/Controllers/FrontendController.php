@@ -38,9 +38,52 @@ class FrontendController extends Controller
             })
             // ->where('type', 'delivery')      // uncomment if you want to use only delivery
             ->get();
-        // dd($serviceTypes);
+
         return view('frontend.index', compact('serviceTypes'));
-        // return view('frontend.index');
+    }
+
+    // getTrackingDetail
+    public function getTrackingDetail(Request $request)
+    {
+
+        // dd($tracking_number);
+
+        // $booking  = Booking::select('uuid')->where('uuid', $trackingCode)->first();
+        $booking = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'pickup_latitude', 'pickup_longitude', 'dropoff_latitude', 'dropoff_longitude', 'booking_date', 'booking_time', 'status', 'booking_at', 'completed_at')
+            ->where('bookings.uuid', $request->trackingCode)
+            ->first();
+
+        if (!$booking) {
+            return response()->json(['success' => false, 'message' => 'Booking not found']);
+        }
+
+        $booking->currentStatus = 1;
+        // switch to manage booking status
+        switch ($booking->status) {
+            case 'pending':
+                $booking->currentStatus = 0;
+                break;
+            case 'accepted':
+                $booking->currentStatus = 1;
+                break;
+            case 'started':
+                $booking->currentStatus = 2;
+                break;
+            case 'in_transit':
+                $booking->currentStatus = 3;
+                break;
+            case 'completed':
+                $booking->currentStatus = 4;
+                break;
+            case 'incompleted':
+                $booking->currentStatus = 5;
+                break;
+            default:
+                $booking->currentStatus = 1;
+                break;
+        }
+
+        return response()->json(['success' => true, 'data' => $booking]);
     }
 
     // Services Page
@@ -465,13 +508,14 @@ class FrontendController extends Controller
     public function fetch_services_categories(Request $request)
     {
         // service Categories of selected service type
-        // $serviceCategories = ServiceCategory::where('service_type_id', $request->serviceType)->with('serviceType')->with('vehicleType')->get();
-        $serviceCategories = ServiceCategory::select('service_categories.*', 'service_types.uuid as service_uuid', 'service_types.type as service_type', 'service_types.name as service_name', 'vehicle_types.uuid as vehicle_uuid', 'vehicle_types.name as vehicle_name', 'vehicle_types.price as vehicle_price', 'vehicle_types.price_type as vehicle_price_type')
-            ->join('service_types', 'service_categories.service_type_id', '=', 'service_types.id')
-            ->join('vehicle_types', 'service_categories.vehicle_type_id', '=', 'vehicle_types.id')
-            ->where('service_type_id', $request->serviceType)
-            ->where('service_categories.is_active', 1)
-            ->get();
+        $serviceCategories = ServiceCategory::where('service_type_id', $request->serviceType)->get();
+        // $serviceCategories = ServiceCategory::select('id', 'uuid', 'name', 'description', 'is_secureship_enabled')->where('service_type_id', $request->serviceType)->get();
+        // $serviceCategories = ServiceCategory::select('service_categories.*', 'service_types.uuid as service_uuid', 'service_types.type as service_type', 'service_types.name as service_name', 'vehicle_types.uuid as vehicle_uuid', 'vehicle_types.name as vehicle_name', 'vehicle_types.price as vehicle_price', 'vehicle_types.price_type as vehicle_price_type')
+        //     ->join('service_types', 'service_categories.service_type_id', '=', 'service_types.id')
+        //     ->join('vehicle_types', 'service_categories.vehicle_type_id', '=', 'vehicle_types.id')
+        //     ->where('service_type_id', $request->serviceType)
+        //     ->where('service_categories.is_active', 1)
+        //     ->get();
         // return a json object
         return response()->json($serviceCategories);
     }

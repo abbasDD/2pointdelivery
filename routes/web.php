@@ -84,7 +84,10 @@ Route::middleware(['app_language'])->group(function () {
     //Booking Routes
     Route::get('/new-booking', [FrontendController::class, 'newBooking'])->name('newBooking');
     Route::post('/estimate/index', [GetEstimateController::class, 'index'])->name('estimate.index'); //Get order details
-    Route::get('/fetch/service-categories', [FrontendController::class, 'fetch_services_categories'])->name('fetch.service.categories');
+    Route::get('/fetch/service-categories/{serviceType?}', [FrontendController::class, 'fetch_services_categories'])->name('fetch.service.categories');
+
+    // getTrackingDetail
+    Route::get('/get-tracking-detail/{trackingCode?}', [FrontendController::class, 'getTrackingDetail'])->name('getTrackingDetail');
 
     // Route Chat Page
     Route::get('/chat', [ChatController::class, 'redirectChat'])->name('chat');

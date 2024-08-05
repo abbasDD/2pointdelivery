@@ -9,6 +9,8 @@
     <meta name="author" content="Elabd Technologies" />
     <title>@yield('title')</title>
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <link rel="icon" type="image/x-icon"
         href="{{ config('website_favicon') ? asset('images/logo/' . config('website_favicon')) : asset('images/logo/icon.png') }}">
 
