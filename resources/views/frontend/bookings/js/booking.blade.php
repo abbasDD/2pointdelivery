@@ -154,25 +154,49 @@
             .catch(error => {
                 console.error('Error:', error);
             });
+
+        // Update service form data
+        updateServiceFormData();
     }
 
-    // Parcel Type changes background color function
-    function toggleBackground(id) {
-        var divs = document.querySelectorAll('.parcel-type');
-        divs.forEach(function(div) {
-            if (div.id === id) {
-                div.classList.add('active-parcel');
-            } else {
-                div.classList.remove('active-parcel');
-            }
-        });
+    // Update the form data as per the service type
+    function updateServiceFormData() {
+        console.log('Update service form function called');
 
-        // console.log('Here id is:' + id);
-        selectedServiceCategoryUuid = id;
+        // console.log(selectedServiceType);
+        if (selectedServiceType == 'moving') {
+            // Hide and Show Div
+            $("#deliveryPackageDetails").addClass("d-none");
+            $("#movingPackageDetails").removeClass("d-none");
+
+            // Add and Remove required attribute
+            $("#movingPackageDetails input").prop("required", true);
+            $("#deliveryPackageDetails input").prop("required", false);
+
+            // Hide and Show Prices
+            $(".calculated-amount .moving").removeClass("d-none");
+            $(".calculated-amount .delivery").addClass("d-none");
+
+        } else {
+            // Hide and Show Div
+            $("#deliveryPackageDetails").removeClass("d-none");
+            $("#movingPackageDetails").addClass("d-none");
+
+            // Add and Remove required attribute
+            $("#movingPackageDetails input").prop("required", false);
+            $("#deliveryPackageDetails input").prop("required", true);
+
+            // Hide and Show Prices
+            $(".calculated-amount .moving").addClass("d-none");
+            $(".calculated-amount .delivery").removeClass("d-none");
+        }
     }
 
     // Update priority as per the service type selected
     function updatePriority(selectedServiceType) {
+
+        console.log('Update priority function called');
+
         // Get selected service type
         // console.log(prioritySettings);
         newUpdatedPriority = [];
@@ -202,21 +226,35 @@
 
     }
 
+    // Parcel Type changes background color function
+    function toggleBackground(id) {
+        console.log('Toggle background function called');
 
-    // Update the Payment Amount Card
-    function updatePaymentAmount() {
-        console.log('Distance: ' + distance_in_km);
+        var divs = document.querySelectorAll('.parcel-type');
+        divs.forEach(function(div) {
+            if (div.id === id) {
+                div.classList.add('active-parcel');
+            } else {
+                div.classList.remove('active-parcel');
+            }
+        });
 
-        updateMovingPackageDetails();
+        // console.log('Here id is:' + id);
+        selectedServiceCategoryUuid = id;
 
+        // updateFormFields
+        updateFormFields();
+    }
+
+
+    // Update the Form Fields
+    function updateFormFields() {
+        console.log('Update field function called');
         // If selectedServiceCategoryUuid is empty
         if (selectedServiceCategoryUuid == '') {
             // Get from first service type from serviceCategories
             selectedServiceCategoryUuid = serviceCategories[0].uuid;
-            vehicle_price = serviceCategories[0].vehicle_price;
-            vehicle_price_type = serviceCategories[0].vehicle_price_type;
             volume_enabled = serviceCategories[0].volume_enabled;
-            moving_price_type = serviceCategories[0].moving_price_type;
             no_of_room_enabled = serviceCategories[0].no_of_room_enabled;
             floor_plan_enabled = serviceCategories[0].floor_plan_enabled;
             floor_assess_enabled = serviceCategories[0].floor_assess_enabled;
@@ -228,46 +266,15 @@
         // Get data on selected uuid
         for (let i = 0; i < serviceCategories.length; i++) {
             if (serviceCategories[i].uuid === selectedServiceCategoryUuid) {
-                // console.log(serviceCategories[i].base_price);
-                if (distance_in_km > parseFloat(serviceCategories[i].base_distance)) {
-                    distance_price = (distance_in_km - parseFloat(
-                        serviceCategories[i].base_distance)) * parseFloat(serviceCategories[i].extra_distance_price);
-                } else {
-                    distance_price = 0;
-                }
-
-                // Update payment details
-                payment_base_price = serviceCategories[i].base_price;
-                payment_base_distance = serviceCategories[i].base_distance;
-                payment_extra_distance_price = serviceCategories[i].extra_distance_price;
-                payment_base_weight = serviceCategories[i].base_weight;
-                payment_extra_weight_price = serviceCategories[i].extra_weight_price;
-                vehicle_price = serviceCategories[i].vehicle_price;
-                vehicle_price_type = serviceCategories[i].vehicle_price_type;
-                volume_enabled = serviceCategories[i].volume_enabled;
-                moving_price_type = serviceCategories[i].moving_price_type;
 
                 no_of_room_enabled = serviceCategories[i].no_of_room_enabled;
                 floor_plan_enabled = serviceCategories[i].floor_plan_enabled;
                 floor_assess_enabled = serviceCategories[i].floor_assess_enabled;
                 job_details_enabled = serviceCategories[i].job_details_enabled;
                 moving_details_enabled = serviceCategories[i].moving_details_enabled;
+                volume_enabled = serviceCategories[i].volume_enabled;
                 updateMovingFormFields();
 
-                helper_fee = serviceCategories[i].helper_fee;
-
-                base_price = serviceCategories[i].base_price;
-
-                vehicle_price_value = parseFloat(vehicle_price) * parseFloat(distance_in_km);
-            }
-        }
-
-        // Get value of priority option
-        priorityID = document.querySelector('select[name="priority"]').value;
-        // Get price of priority from prioritySettings
-        for (let i = 0; i < prioritySettings.length; i++) {
-            if (prioritySettings[i].id == priorityID) {
-                priorityPriceValue = prioritySettings[i].price;
             }
         }
 
@@ -295,6 +302,7 @@
         }
 
         // Show or Hide deliveryPackageDimensions based on volume_enabled
+        console.log('Volume enabled:' + volume_enabled);
         if (volume_enabled == 1) {
             document.getElementById('deliveryPackageDimensions').style.display = 'flex';
             // Add required fields to package_length, package_width, package_height
@@ -309,10 +317,53 @@
             document.querySelector('input[name="package_height"]').removeAttribute('required');
         }
 
-        // Using AJAX call to calculate data from server
-        calculateDeliveryEstimateUsingAjax();
+    }
+
+    // Update the moving fields as per the service type selected
+    function updateMovingFormFields() {
+
+        console.log('Update moving field function called');
+        // No of Rooms div
+        if (no_of_room_enabled == 1) {
+            $("#no_of_rooms_div").removeClass("d-none");
+        } else {
+            $("#no_of_rooms_div").addClass("d-none");
+        }
+
+        // Floor Plan div
+        if (floor_plan_enabled == 1) {
+            $("#floor_plan_div").removeClass("d-none");
+        } else {
+            $("#floor_plan_div").addClass("d-none");
+        }
+
+        // Floor Access div
+        if (floor_assess_enabled == 1) {
+            $("#floor_assess_div").removeClass("d-none");
+        } else {
+            $("#floor_assess_div").addClass("d-none");
+        }
+
+        // Job Details div
+        if (job_details_enabled == 1) {
+            $("#job_details_div").removeClass("d-none");
+        } else {
+            $("#job_details_div").addClass("d-none");
+        }
+
+        document.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
+            checkbox.required = false;
+        });
+
+        // Moving Details div
+        if (moving_details_enabled == 1) {
+            $("#moving_details_div").removeClass("d-none");
+        } else {
+            $("#moving_details_div").addClass("d-none");
+        }
 
     }
+
 
     // Get Estimate on form submit
     document.getElementById('newBookingForm').onsubmit = function(event) {
@@ -320,9 +371,6 @@
         // getTrackingDetail();
         alert('Booking Submitted');
     };
-
-
-
 
     // Calculate amount to pay
     function calculateDeliveryEstimateUsingAjax() {
@@ -419,51 +467,6 @@
             }
         });
 
-
-    }
-
-
-    // Update the moving fields as per the service type selected
-    function updateMovingFormFields() {
-
-        // No of Rooms div
-        if (no_of_room_enabled == 1) {
-            $("#no_of_rooms_div").removeClass("d-none");
-        } else {
-            $("#no_of_rooms_div").addClass("d-none");
-        }
-
-        // Floor Plan div
-        if (floor_plan_enabled == 1) {
-            $("#floor_plan_div").removeClass("d-none");
-        } else {
-            $("#floor_plan_div").addClass("d-none");
-        }
-
-        // Floor Access div
-        if (floor_assess_enabled == 1) {
-            $("#floor_assess_div").removeClass("d-none");
-        } else {
-            $("#floor_assess_div").addClass("d-none");
-        }
-
-        // Job Details div
-        if (job_details_enabled == 1) {
-            $("#job_details_div").removeClass("d-none");
-        } else {
-            $("#job_details_div").addClass("d-none");
-        }
-
-        document.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
-            checkbox.required = false;
-        });
-
-        // Moving Details div
-        if (moving_details_enabled == 1) {
-            $("#moving_details_div").removeClass("d-none");
-        } else {
-            $("#moving_details_div").addClass("d-none");
-        }
 
     }
 </script>

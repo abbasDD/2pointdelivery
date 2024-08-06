@@ -25,6 +25,83 @@ use Illuminate\Support\Facades\Validator;
 
 class ClientController extends Controller
 {
+    // Get Client Profile
+    public function index(): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        $user = auth()->user();
+        $userData = [
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'referral_code' => $user->referral_code,
+            'language_code' => $user->language_code,
+            'is_active' => $user->is_active,
+            'company_enabled' => null,
+            'first_name' => null,
+            'middle_name' => null,
+            'last_name' => null,
+            'profile_image' => asset('images/users/default.png'),
+            'personal_details' => false,
+            'address_details' => false,
+            'company_details' => false,
+            'vehicle_details' => false,
+            'is_notified' => 0
+        ];
+
+        $client = Client::where('user_id', $user->id)->first();
+        if (!$client) {
+            // Create a new client
+            $client = new Client();
+            $client->user_id = $user->id;
+            $client->save();
+        }
+        $userData['company_enabled'] = $client->company_enabled;
+        $userData['first_name'] = $client->first_name;
+        $userData['middle_name'] = $client->middle_name;
+        $userData['last_name'] = $client->last_name;
+        $userData['profile_image'] = $client->profile_image == null ? asset('images/users/default.png') : asset('images/users/' . $client->profile_image);
+        $userData['personal_details'] = false;
+        $userData['address_details'] = false;
+        $userData['company_details'] = false;
+        $userData['is_notified'] = $client->is_notified;
+
+        // Check if client completed its personal details
+        if (isset($client) && $client->first_name != null) {
+            $userData['personal_details'] = true;
+        }
+
+        // Check if client completed its address details
+        if (isset($client) && $client->zip_code != null) {
+            $userData['address_details'] = true;
+        }
+
+        if ($client->company_enabled == 1) {
+            // Get client company details
+            $userData['company_details'] = true;
+            $clientCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
+            if (isset($clientCompany) && $clientCompany->legal_name != null) {
+                $userData['company_details'] = true;
+            }
+        }
+
+        // Success response
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Client profile account fetched successfully',
+            'data' => $userData,
+        ], 200);
+    }
+
     // Home Page 
     public function home(): JsonResponse
     {
@@ -131,6 +208,7 @@ class ClientController extends Controller
         $user = auth()->user();
 
         $userData = [
+            'user_id' => $user->id,
             'email' => $user->email,
             'referral_code' => $user->referral_code,
             'language_code' => $user->language_code,
@@ -144,7 +222,8 @@ class ClientController extends Controller
             'address_details' => false,
             'company_details' => false,
             'vehicle_details' => false,
-            'is_approved' => 0
+            'is_approved' => 0,
+            'is_notified' => 0
         ];
 
         // Get Helper data from DB
@@ -207,6 +286,7 @@ class ClientController extends Controller
         $userData['company_details'] = false;
         $userData['vehicle_details'] = false;
         $userData['is_approved'] = $helper->is_approved;
+        $userData['is_notified'] = $helper->is_notified;
 
         // Check if helper completed its personal details
         if (isset($helper) && $helper->first_name != null) {
@@ -239,6 +319,43 @@ class ClientController extends Controller
             'message' => 'Switched to helper account successfully',
             'data' => $userData,
         ], 200);
+    }
+
+    // toggleNotification
+    public function toggleNotification(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        $client = Client::where('user_id', auth()->user()->id)->first();
+
+        if (!$client) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 404,
+                'message' => 'Unable to find client.',
+                'errors' => 'Unable to find client.',
+            ], 401);
+        }
+        // Toggle is_notified field
+        $client->is_notified = $client->is_notified == 1 ? 0 : 1;
+        $client->save();
+
+
+        // Success response
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Notification toggled successfully',
+            'data' => $client->is_notified
+        ]);
     }
 
     // getPersonalInfo
@@ -1113,6 +1230,88 @@ class ClientController extends Controller
             'message' => 'Unable to find this invitation',
             'data' => []
         ], 422);
+    }
+
+    public function switchUser(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $userId = $request->user_id;
+
+        $user = Auth::user();
+        $invitation = TeamInvitation::where('invitee_id', $user->id)
+            ->where('inviter_id', $userId)
+            ->where('status', 'accepted')
+            ->first();
+
+        if ($invitation) {
+
+            // Store original user ID in the session
+            session(['original_user_id' => $user->id]);
+
+            Auth::loginUsingId($userId);
+            // return response()->json(['message' => 'Switched user successfully']);
+            return redirect()->back()->with('success', 'Switched user successfully');
+        }
+
+        // return response()->json(['message' => 'Unauthorized'], 403);
+        // return redirect()->back()->with('error', 'Unauthorized');
+        return response()->json([
+            'success' => false,
+            'statusCode' => 403,
+            'message' => 'Unable to switch.',
+            'errors' => 'Unable to switch.',
+        ], 403);
+    }
+
+    // Switch  to self user
+    public function switchToSelf(): JsonResponse
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Get from session
+        $originalUserId = session('original_user_id');
+        Auth::loginUsingId($originalUserId);
+        // Remove from session
+        session()->forget('original_user_id');
+        // return response()->json(['message' => 'Switched user successfully']);
+        // return redirect()->back()->with('success', 'Switched user successfully');
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Switched user successfully',
+            'data' => []
+        ]);
     }
 
     // Invitaions

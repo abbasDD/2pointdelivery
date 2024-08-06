@@ -29,6 +29,84 @@ use Illuminate\Support\Facades\Validator;
 class HelperController extends Controller
 {
 
+    // Get Helper Profile
+    public function index(): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        $user = auth()->user();
+
+        $userData = [
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'referral_code' => $user->referral_code,
+            'language_code' => $user->language_code,
+            'is_active' => $user->is_active,
+            'company_enabled' => null,
+            'first_name' => null,
+            'middle_name' => null,
+            'last_name' => null,
+            'profile_image' => asset('images/users/default.png'),
+            'personal_details' => false,
+            'address_details' => false,
+            'company_details' => false,
+            'is_approved' => 0,
+            'is_notified' => 0
+        ];
+
+
+        $helper = Client::where('user_id', auth()->user()->id)->first();
+        if (!$helper) {
+            // Create a new helper
+            $helper = new Client();
+            $helper->user_id = auth()->user()->id;
+            $helper->save();
+        }
+        $userData['company_enabled'] = $helper->company_enabled;
+        $userData['first_name'] = $helper->first_name;
+        $userData['middle_name'] = $helper->middle_name;
+        $userData['last_name'] = $helper->last_name;
+        $userData['profile_image'] = $helper->profile_image == null ? asset('images/users/default.png') : asset('images/users/' . $helper->profile_image);
+        $userData['personal_details'] = false;
+        $userData['address_details'] = false;
+        $userData['company_details'] = false;
+        $userData['is_notified'] = $helper->is_notified;
+
+        // Check if helper completed its personal details
+        if (isset($helper) && $helper->first_name != null) {
+            $userData['personal_details'] = true;
+        }
+
+        // Check if helper completed its address details
+        if (isset($helper) && $helper->zip_code != null) {
+            $userData['address_details'] = true;
+        }
+
+        if ($helper->company_enabled == 1) {
+            // Get helper company details
+            $helperCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
+            if (isset($helperCompany) && $helperCompany->legal_name != null) {
+                $userData['company_details'] = true;
+            }
+        }
+
+        // Success response
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Helper profile account fetched successfully',
+            'data' => $userData,
+        ], 200);
+    }
+
     // home
     public function home(): JsonResponse
     {
@@ -141,6 +219,7 @@ class HelperController extends Controller
         $user = auth()->user();
 
         $userData = [
+            'user_id' => $user->id,
             'email' => $user->email,
             'referral_code' => $user->referral_code,
             'language_code' => $user->language_code,
@@ -153,7 +232,8 @@ class HelperController extends Controller
             'personal_details' => false,
             'address_details' => false,
             'company_details' => false,
-            'is_approved' => 0
+            'is_approved' => 0,
+            'is_notified' => 0
         ];
 
         // Get Client data from DB
@@ -212,6 +292,7 @@ class HelperController extends Controller
         $userData['personal_details'] = false;
         $userData['address_details'] = false;
         $userData['company_details'] = false;
+        $userData['is_notified'] = $client->is_notified;
 
         // Check if client completed its personal details
         if (isset($client) && $client->first_name != null) {
@@ -238,6 +319,48 @@ class HelperController extends Controller
             'message' => 'Switched to client account successfully',
             'data' => $userData,
         ], 200);
+    }
+
+    // toggleNotification
+    public function toggleNotification(): JsonResponse
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Get helper
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
+
+
+        if (!$helper) {
+            // Response not found
+            return response()->json([
+                'success' => false,
+                'statusCode' => 404,
+                'message' => 'Helper not found.',
+                'errors' => 'Helper not found',
+            ], 404);
+        }
+
+        // Toggle is_notified field
+        $helper->is_notified = $helper->is_notified == 1 ? 0 : 1;
+        $helper->save();
+
+
+        // Success response
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Notification toggled successfully',
+            'data' => $helper->is_notified
+        ]);
     }
 
     // getPersonalInfo

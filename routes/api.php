@@ -25,6 +25,9 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::get('index', [PassportAuthController::class, 'me']);
     Route::get('address-book', [ClientController::class, 'getAddressBook']);
 
+    // Get Logged In Client Personal Details
+    Route::get('profile', [ClientController::class, 'index']);
+
     // Update Client Personal Details
     Route::get('personal', [ClientController::class, 'getPersonalInfo']);
     Route::post('personal/update', [ClientController::class, 'personalUpdate']);
@@ -50,6 +53,9 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     // Switch to Helper
     Route::post('switch', [ClientController::class, 'switchToHelper']);
 
+    // Toggle Notification
+    Route::post('notification/toggle', [ClientController::class, 'toggleNotification']);
+
     // Booking Form APIs
     Route::get('booking/new/page1', [ClientBookingController::class, 'newBookingPage1']);
     Route::get('booking/new/page2', [ClientBookingController::class, 'newBookingPage2']);
@@ -62,8 +68,6 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::post('booking/payment/cod', [ClientBookingController::class, 'codPaymentBooking']);
     Route::post('booking/payment/paypal', [ClientBookingController::class, 'paypalPaymentBooking']);
     Route::post('booking/payment/stripe', [ClientBookingController::class, 'stripePaymentBooking']);
-
-
 
     // Track Booking
     Route::post('booking/track', [ClientBookingController::class, 'trackBooking']);
@@ -87,6 +91,8 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::get('teams', [ClientController::class, 'getInvitedUsers']);
     Route::post('team/invite', [ClientController::class, 'inviteTeamMember']);
     Route::post('team/remove', [ClientController::class, 'removeTeamMember']);
+    Route::post('team/switch-user', [ClientController::class, 'switchUser']);
+    Route::post('team/switch-self', [ClientController::class, 'switchToSelf']);
 
     // invitations
     Route::get('invitations', [ClientController::class, 'getInvitations']);
@@ -123,6 +129,9 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     // Get the authenticated User Data
     Route::get('index', [PassportAuthController::class, 'me']);
 
+    // Get Logged In Helper Personal Details
+    Route::get('profile', [HelperController::class, 'index']);
+
     // Update Helper Personal Details
     Route::get('personal', [HelperController::class, 'getPersonalInfo']);
     Route::post('personal/update', [HelperController::class, 'personalUpdate']);
@@ -151,6 +160,9 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
 
     // Switch to Client
     Route::post('switch', [HelperController::class, 'switchToClient']);
+
+    // Toggle Notification
+    Route::post('notification/toggle', [HelperController::class, 'toggleNotification']);
 
     // Bookings APIs
     Route::get('booking/details/{id}', [HelperBookingController::class, 'getBookingDetails']);

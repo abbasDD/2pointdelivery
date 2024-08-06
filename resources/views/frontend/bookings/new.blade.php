@@ -204,4 +204,10 @@
     {{-- Define some javascript variables to be used in JS --}}
     @include('frontend.bookings.js.booking')
 
+    <script>
+        $(document).ready(function() {
+            parcelCategoriesDiv();
+        });
+    </script>
+
 @endsection

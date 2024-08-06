@@ -89,6 +89,9 @@ Route::middleware(['app_language'])->group(function () {
     // getTrackingDetail
     Route::get('/get-tracking-detail/{trackingCode?}', [FrontendController::class, 'getTrackingDetail'])->name('getTrackingDetail');
 
+    //Track Booking
+    Route::post('/track-booking', [FrontendController::class, 'track_booking'])->name('trackBooking');
+
     // Route Chat Page
     Route::get('/chat', [ChatController::class, 'redirectChat'])->name('chat');
 

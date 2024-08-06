@@ -110,7 +110,8 @@
                                         <h2>Track Your Booking</h2>
                                     </div>
                                     {{-- Tracking Form  --}}
-                                    <form id="trackingForm" method="GET">
+                                    <form action="{{ route('trackBooking') }}" method="POST">
+                                        @csrf
                                         <div class="row">
                                             <div class="mb-3">
                                                 <input id="trackingCode" class="form-control" type="text"
@@ -129,124 +130,6 @@
             </div>
         </div>
     </section>
-
-    {{-- Modal of Tracking Booking Details --}}
-    <div class="modal fade" id="trackingModal" tabindex="-1" aria-labelledby="trackingModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="trackingModalLabel">Booking Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="trackingModalBody">
-                    <div class="card">
-                        <div class="card-body">
-                            <div id="tracking" class="tracking">
-                                <div class="tracking-list">
-                                    {{-- Pending --}}
-                                    <div class="tracking-item-pending">
-                                        <div class="tracking-icon status-current">
-                                            <svg class="svg-inline--fa fa-circle fa-w-16" aria-hidden="true"
-                                                data-prefix="fas" data-icon="circle" role="img"
-                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-                                                data-fa-i2svg="">
-                                                <path fill="currentColor"
-                                                    d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z">
-                                                </path>
-                                            </svg>
-                                        </div>
-                                        <div class="tracking-date"><img
-                                                src="https://raw.githubusercontent.com/shajo/portfolio/a02c5579c3ebe185bb1fc085909c582bf5fad802/delivery.svg"
-                                                class="img-responsive" alt="order-placed" /></div>
-                                        <div class="tracking-content">Order Placed
-                                            <span>Expected</span>
-                                        </div>
-                                    </div>
-                                    {{-- Accepted --}}
-                                    <div class="tracking-item-pending">
-                                        <div class="tracking-icon status-current">
-                                            <svg class="svg-inline--fa fa-circle fa-w-16" aria-hidden="true"
-                                                data-prefix="fas" data-icon="circle" role="img"
-                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-                                                data-fa-i2svg="">
-                                                <path fill="currentColor"
-                                                    d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z">
-                                                </path>
-                                            </svg>
-                                        </div>
-                                        <div class="tracking-date"><img
-                                                src="https://raw.githubusercontent.com/shajo/portfolio/a02c5579c3ebe185bb1fc085909c582bf5fad802/delivery.svg"
-                                                class="img-responsive" alt="order-placed" /></div>
-                                        <div class="tracking-content">Order Accepted
-                                            <span>Expected</span>
-                                        </div>
-                                    </div>
-                                    {{-- Started --}}
-                                    <div class="tracking-item-pending">
-                                        <div class="tracking-icon status-current">
-                                            <svg class="svg-inline--fa fa-circle fa-w-16" aria-hidden="true"
-                                                data-prefix="fas" data-icon="circle" role="img"
-                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-                                                data-fa-i2svg="">
-                                                <path fill="currentColor"
-                                                    d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z">
-                                                </path>
-                                            </svg>
-                                        </div>
-                                        <div class="tracking-date"><img
-                                                src="https://raw.githubusercontent.com/shajo/portfolio/a02c5579c3ebe185bb1fc085909c582bf5fad802/delivery.svg"
-                                                class="img-responsive" alt="order-placed" /></div>
-                                        <div class="tracking-content">Order Started
-                                            <span>Expected</span>
-                                        </div>
-                                    </div>
-                                    {{-- In Transit --}}
-                                    <div class="tracking-item-pending">
-                                        <div class="tracking-icon status-current">
-                                            <svg class="svg-inline--fa fa-circle fa-w-16" aria-hidden="true"
-                                                data-prefix="fas" data-icon="circle" role="img"
-                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-                                                data-fa-i2svg="">
-                                                <path fill="currentColor"
-                                                    d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z">
-                                                </path>
-                                            </svg>
-                                        </div>
-                                        <div class="tracking-date"><img
-                                                src="https://raw.githubusercontent.com/shajo/portfolio/a02c5579c3ebe185bb1fc085909c582bf5fad802/delivery.svg"
-                                                class="img-responsive" alt="order-placed" /></div>
-                                        <div class="tracking-content">In Transit
-                                            <span>Expected</span>
-                                        </div>
-                                    </div>
-                                    {{-- Completed --}}
-                                    <div class="tracking-item-pending">
-                                        <div class="tracking-icon status-current">
-                                            <svg class="svg-inline--fa fa-circle fa-w-16" aria-hidden="true"
-                                                data-prefix="fas" data-icon="circle" role="img"
-                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-                                                data-fa-i2svg="">
-                                                <path fill="currentColor"
-                                                    d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z">
-                                                </path>
-                                            </svg>
-                                        </div>
-                                        <div class="tracking-date"><img
-                                                src="https://raw.githubusercontent.com/shajo/portfolio/a02c5579c3ebe185bb1fc085909c582bf5fad802/delivery.svg"
-                                                class="img-responsive" alt="order-placed" /></div>
-                                        <div class="tracking-content">Order Completed
-                                            <span>Expected</span>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     {{-- Modal of Booking Estimated Price --}}
     <div class="modal fade" id="bookingEstimateModal" tabindex="-1" aria-labelledby="bookingEstimateModalLabel"
@@ -273,7 +156,7 @@
     {{-- Load JS of Map --}}
     <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places"></script>
     <script>
-        // CAll updateServiceCategoryList onload
+        // Call updateServiceCategoryList onload
         $(document).ready(function() {
             updateServiceCategoryList();
         });
@@ -327,45 +210,6 @@
                             .name + '</option>');
                     });
 
-                },
-                error: function(error) {
-                    console.log(error);
-                }
-            });
-        }
-
-        // Get Tracking Detail
-        document.getElementById('trackingForm').onsubmit = function(event) {
-            event.preventDefault(); // Prevent the default form submission
-            getTrackingDetail();
-        };
-
-        function getTrackingDetail() {
-            var trackingCode = document.getElementById('trackingCode').value;
-            document.getElementById('trackingError').innerHTML = '';
-            // Your tracking detail logic here
-            console.log('Tracking Code:', trackingCode);
-
-            // AJAX Call to getTrackingDetail
-            $.ajax({
-                url: "{{ route('getTrackingDetail') }}",
-                type: 'GET',
-                data: {
-                    trackingCode: trackingCode
-                },
-                success: function(response) {
-                    // Display tracking detail
-                    if (response.success == true) {
-                        console.log(response);
-                        // open modal
-                        $('#trackingModal').modal('show');
-                        // set modal body
-                        // document.getElementById('trackingModalBody').innerHTML = response
-                        //     .trackingDetail;
-                    } else {
-                        // trackingError
-                        document.getElementById('trackingError').innerHTML = response.message;
-                    }
                 },
                 error: function(error) {
                     console.log(error);

@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('country')->nullable();
             $table->string('zip_code')->nullable();
             $table->boolean('is_approved')->default(false);
+            $table->boolean('is_notified')->default(true);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
