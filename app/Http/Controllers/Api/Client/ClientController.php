@@ -17,6 +17,7 @@ use App\Models\SocialLink;
 use App\Models\TeamInvitation;
 use App\Models\User;
 use App\Models\UserNotification;
+use App\Models\UserSwitch;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -1246,44 +1247,56 @@ class ClientController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
+            'user_id' => 'required|exists:users,id',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Validation error',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
         $userId = $request->user_id;
 
-        $user = Auth::user();
-        $invitation = TeamInvitation::where('invitee_id', $user->id)
+        $currentUser = auth()->user();
+
+        $invitation = TeamInvitation::where('invitee_id', $currentUser->id)
             ->where('inviter_id', $userId)
             ->where('status', 'accepted')
             ->first();
 
         if ($invitation) {
+            // Store the switch in the database
+            UserSwitch::create([
+                'original_user_id' => $currentUser->id,
+                'switched_user_id' => $userId,
+                'platform' => 'api',
+            ]);
 
-            // Store original user ID in the session
-            session(['original_user_id' => $user->id]);
+            // Revoke the current token
+            $currentUser->token()->revoke();
 
-            Auth::loginUsingId($userId);
-            // return response()->json(['message' => 'Switched user successfully']);
-            return redirect()->back()->with('success', 'Switched user successfully');
+            // Generate a new token for the user being switched to
+            $newToken = $currentUser->createToken('2PointDeliveryJWTAuthenticationToken')->accessToken;
+
+            // Return the new token
+            return response()->json([
+                'success' => true,
+                'message' => 'Switched user successfully',
+                'token' => $newToken,
+            ], 200);
         }
 
-        // return response()->json(['message' => 'Unauthorized'], 403);
-        // return redirect()->back()->with('error', 'Unauthorized');
         return response()->json([
             'success' => false,
             'statusCode' => 403,
-            'message' => 'Unable to switch.',
-            'errors' => 'Unable to switch.',
+            'message' => 'Unable to find invitation.',
+            'errors' => 'Unable to find invitation.',
         ], 403);
     }
+
 
     // Switch  to self user
     public function switchToSelf(): JsonResponse
@@ -1299,19 +1312,45 @@ class ClientController extends Controller
             ], 401);
         }
 
-        // Get from session
-        $originalUserId = session('original_user_id');
-        Auth::loginUsingId($originalUserId);
-        // Remove from session
-        session()->forget('original_user_id');
-        // return response()->json(['message' => 'Switched user successfully']);
-        // return redirect()->back()->with('success', 'Switched user successfully');
+        // Find the switch record
+        $switchRecord = UserSwitch::where('original_user_id', auth()->user()->id)->first();
+
+        if (!$switchRecord) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 400,
+                'message' => 'Original user ID not found.',
+                'errors' => 'Original user ID not found.',
+            ], 400);
+        }
+
+        // Revoke the current token
+        auth()->user()->token()->revoke();
+
+        // Log in using the original user ID
+        $originalUser = User::find($switchRecord->original_user_id);
+        if (!$originalUser) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 400,
+                'message' => 'Original user not found.',
+                'errors' => 'Original user not found.',
+            ], 400);
+        }
+
+        // Generate a new token for the original user
+        $newToken = auth()->user()->createToken('2PointDeliveryJWTAuthenticationToken')->accessToken;
+
+        // Delete the switch record
+        $switchRecord->delete();
+
+        // Return the new token
         return response()->json([
             'success' => true,
             'statusCode' => 200,
-            'message' => 'Switched user successfully',
-            'data' => []
-        ]);
+            'message' => 'Switched back to original user successfully',
+            'token' => $newToken,
+        ], 200);
     }
 
     // Invitaions
