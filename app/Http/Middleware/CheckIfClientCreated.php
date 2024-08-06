@@ -27,7 +27,7 @@ class CheckIfClientCreated
         // Check if client is enabled in user table
         $user = User::where('id', auth()->user()->id)->first();
         if (!$user->client_enabled) {
-            return redirect()->route('client.profile')->with('error', 'Please fill your client detail first');
+            return redirect()->back()->with('error', 'No client profile found');
         }
 
         // Get Client data from DB

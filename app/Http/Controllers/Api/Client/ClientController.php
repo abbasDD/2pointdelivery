@@ -1233,6 +1233,7 @@ class ClientController extends Controller
         ], 422);
     }
 
+
     // Switch to User
     public function switchUser(Request $request): JsonResponse
     {
@@ -1276,11 +1277,19 @@ class ClientController extends Controller
                 'platform' => 'api',
             ]);
 
-            // Revoke the current token
-            $currentUser->token()->revoke();
-
             // Generate a new token for the user being switched to
-            $newToken = $currentUser->createToken('2PointDeliveryJWTAuthenticationToken')->accessToken;
+            $switchedUser = User::find($userId);
+            if (!$switchedUser) {
+                return response()->json([
+                    'success' => false,
+                    'statusCode' => 404,
+                    'message' => 'User not found.',
+                    'errors' => 'User not found.',
+                ]);
+            }
+
+            $tokenResult = $switchedUser->createToken('2PointDeliveryJWTAuthenticationToken');
+            $newToken = $tokenResult->accessToken;
 
             // Return the new token
             return response()->json([
@@ -1339,7 +1348,8 @@ class ClientController extends Controller
         }
 
         // Generate a new token for the original user
-        $newToken = auth()->user()->createToken('2PointDeliveryJWTAuthenticationToken')->accessToken;
+        $tokenResult = $originalUser->createToken('2PointDeliveryJWTAuthenticationToken');
+        $newToken = $tokenResult->accessToken;
 
         // Delete the switch record
         $switchRecord->delete();

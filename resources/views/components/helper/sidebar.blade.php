@@ -37,7 +37,6 @@
                         class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
             </li>
         </ul>
-        <a href="{{ route('client.index') }}" class="btn btn-primary">Switch to Client</a>
     </nav>
 </div>
 

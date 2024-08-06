@@ -37,6 +37,6 @@
                         class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
             </li>
         </ul>
-        <a href="{{ route('helper.index') }}" class="btn btn-primary">Switch to Helper</a>
+
     </nav>
 </div>

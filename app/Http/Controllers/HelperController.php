@@ -53,6 +53,15 @@ class HelperController extends Controller
      */
     public function switchToClient()
     {
+        // Get user data
+        $user = User::where('id', auth()->user()->id)->first();
+        if (!$user) {
+            return redirect()->route('index')->with('error', 'User not found');
+        }
+        $user->client_enabled = 1;
+        $user->save();
+
+
         // Store login_type to Session
         session(['login_type' => 'client']);
 
