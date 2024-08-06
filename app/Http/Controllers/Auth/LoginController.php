@@ -104,12 +104,13 @@ class LoginController extends Controller
                     session(['profile_image' => asset('images/users/' . $clientInfo->profile_image)]);
                 }
             }
-
-            if (!isset($intendedUrl) || $intendedUrl == route('index') || $intendedUrl == url('/')) {
+            // dd(route('newBooking'));
+            if ($intendedUrl == route('newBooking')) {
                 // Redirect the user back to the intended URL
-                return redirect()->route('client.index')->with('success', 'Login Successful');
-            } else {
                 return redirect()->to($intendedUrl)->with('success', 'Login Successful');
+            } else {
+                // Redirect the user back to the intended URL
+                return redirect()->route('client.index')->with('success', 'Login Successful to Dashboard');
             }
         }
 
@@ -175,11 +176,13 @@ class LoginController extends Controller
                 }
             }
 
-            if (!isset($intendedUrl) || $intendedUrl == route('index') || $intendedUrl == url('/')) {
+            // dd(route('newBooking'));
+            if ($intendedUrl == route('newBooking')) {
                 // Redirect the user back to the intended URL
-                return redirect()->route('helper.index')->with('success', 'Login Successful');
-            } else {
                 return redirect()->to($intendedUrl)->with('success', 'Login Successful');
+            } else {
+                // Redirect the user back to the intended URL
+                return redirect()->route('helper.index')->with('success', 'Login Successful to Dashboard');
             }
         }
 

@@ -1233,6 +1233,7 @@ class ClientController extends Controller
         ], 422);
     }
 
+    // Switch to User
     public function switchUser(Request $request): JsonResponse
     {
         // If token is not valid return error
@@ -1296,7 +1297,6 @@ class ClientController extends Controller
             'errors' => 'Unable to find invitation.',
         ], 403);
     }
-
 
     // Switch  to self user
     public function switchToSelf(): JsonResponse

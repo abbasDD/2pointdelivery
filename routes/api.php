@@ -191,6 +191,8 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     Route::get('teams', [HelperController::class, 'getInvitedUsers']);
     Route::post('team/invite', [HelperController::class, 'inviteTeamMember']);
     Route::post('team/remove', [HelperController::class, 'removeTeamMember']);
+    Route::post('team/switch-user', [HelperController::class, 'switchUser']);
+    Route::post('team/switch-self', [HelperController::class, 'switchToSelf']);
 
     // invitations
     Route::get('invitations', [HelperController::class, 'getInvitations']);
