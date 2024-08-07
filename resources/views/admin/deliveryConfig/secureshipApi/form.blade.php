@@ -39,6 +39,21 @@
         </div>
     </div>
 
+    {{-- secureship_fee --}}
+    <div class="col-md-12">
+        <div class="form-group mb-3">
+            <label for="secureship_fee">Secureship Fee</label>
+            <input type="text" class="form-control @error('secureship_fee') is-invalid @enderror" id="secureship_fee"
+                name="secureship_fee" value="{{ old('secureship_fee', $secureshipApi['secureship_fee'] ?? '') }}"
+                placeholder="Enter Secureship Fee" required>
+            @error('secureship_fee')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
 
     {{-- Submit Button --}}
     <div class="col-md-12 text-right">

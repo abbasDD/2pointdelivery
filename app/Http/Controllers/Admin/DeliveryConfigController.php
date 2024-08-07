@@ -48,6 +48,12 @@ class DeliveryConfigController extends Controller
             $secureshipApi['secureship_api_key'] = $secureship_api_key->value;
         }
 
+        // secureship_fee
+        $secureship_fee = DeliveryConfig::where('key', 'secureship_fee')->first();
+        if ($secureship_fee) {
+            $secureshipApi['secureship_fee'] = $secureship_fee->value;
+        }
+
         // Priority Settings
         $prioritySettings = PrioritySetting::where('type', 'delivery')->where('is_deleted', 0)->paginate(10); // 10 items per page
 
@@ -120,6 +126,7 @@ class DeliveryConfigController extends Controller
 
             $request->validate([
                 'secureship_api_key' => 'required',
+                'secureship_fee' => 'required',
             ]);
         }
 
@@ -145,6 +152,18 @@ class DeliveryConfigController extends Controller
         } else {
             $secureship_api_enable->value = $request->secureship_api_enable;
             $secureship_api_enable->save();
+        }
+
+        // Update Secureship API Fee
+        $secureship_fee = DeliveryConfig::where('key', 'secureship_fee')->first();
+        if (!$secureship_fee) {
+            $deliveryConfig = new DeliveryConfig();
+            $deliveryConfig->key = 'secureship_fee';
+            $deliveryConfig->value = $request->secureship_fee ?? '';
+            $deliveryConfig->save();
+        } else {
+            $secureship_fee->value = $request->secureship_fee ?? '';
+            $secureship_fee->save();
         }
 
         return redirect()->back()->with('success', 'Secureship API Updated Successfully');

@@ -133,8 +133,8 @@
 
     {{-- Modal of Booking Estimated Price --}}
     <div class="modal fade" id="bookingEstimateModal" tabindex="-1" aria-labelledby="bookingEstimateModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="bookingEstimateModalLabel">Estimated Price</h5>
@@ -142,16 +142,16 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-12">
-                            <div id="bookingEstimateModalBody">
-                                <p> Test Here </p>
-                            </div>
+                        <div id="bookingEstimateModalBody" class="col-md-12 overflow-scroll">
+
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 
     {{-- Load JS of Map --}}
     <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places"></script>
@@ -252,21 +252,143 @@
                     dropoff_longitude: $('#dropoff_longitude').val(),
                 },
                 success: function(response) {
-                    console.log(response);
-                    // Display booking estimate
-                    if (response.status == 'success') {
-                        // open modal
-                        $('#bookingEstimateModal').modal('show');
+                    console.log('Success:', response);
+                    // open modal bookingEstimateModalBody
+                    // bookingEstimateModalBody empty it first
+                    document.getElementById('bookingEstimateModalBody').innerHTML = '';
+                    $('#bookingEstimateModal').modal('show');
+                    if (response.deliveryMethod == 'secureship') {
+                        secureshipDataLoad(response.data);
                     } else {
-                        // bookingError
-                        document.getElementById('bookingError').innerHTML = response.message;
-                        alert(response.message);
+                        bookingEstimateDataLoad(response.data);
                     }
+                    // handle success
                 },
-                error: function(error) {
-                    console.log(error);
+                error: function(xhr, status, error) {
+                    console.log('Error:', xhr.responseText);
+                    // handle error
                 }
             });
+        }
+
+        // secureshipDataLoad
+        function secureshipDataLoad(data) {
+            // bookingEstimateModalBody
+            // bookingEstimateModalBody empty it first
+            document.getElementById('bookingEstimateModalBody').innerHTML = '';
+            // Check if data array is empty
+            if (data.length == 0) {
+                // Load no data found message in bookingEstimateModalBody
+                document.getElementById('bookingEstimateModalBody').innerHTML = `
+                    <p>No data found</p>
+                `;
+            } else {
+                // Load data in bookingEstimateModalBody using loop thorugh each object
+                var output = '';
+                output += `
+                        <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Carrier Code</th>
+                                        <th>Service Level</th>
+                                        <th>Est Delivery Time</th>
+                                        <th>Billable Weight</th>
+                                        <th>Price</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookingEstimateTableBody">
+                                    <!-- Table rows will be appended here -->
+                                
+                `;
+                $.each(data, function(key, value) {
+                    output += `
+                        <tr>
+                            <td>${value.carrierCode}</td>
+                            <td>
+                                <p>${value.selectedService}</p>
+                                <p>${value.serviceName}</p>
+                            </td>
+                            <td>${value.deliveryTime.friendlyTime}</td>
+                            <td>${value.billableWeight.value} ${value.billableWeight.units}</td>
+                            <td>
+                                <p>${value.regularPrice}</p>
+                                <p>Reg: ${value.total}</p>
+                            </td>
+                            <td><a href="{{ route('newBooking') }}" class="btn btn-sm btn-primary">Select</a></td>
+                        </tr>
+                    `;
+                });
+                output += `
+                        </tbody>
+                            </table>
+                            {{-- Notification --}}
+                            <p class="text-center">
+                                Shipment estimate was calculated by Secureship on {{ date('Y-m-d') }} at
+                                {{ date('H:i') }}
+                                Eastern Standard Time
+                            </p>
+                            `;
+                document.getElementById('bookingEstimateModalBody').innerHTML = output;
+
+            }
+        }
+
+        // bookingEstimateDataLoad
+        function bookingEstimateDataLoad(data) {
+            // bookingEstimateModalBody
+
+            // bookingEstimateModalBody empty it first
+            document.getElementById('bookingEstimateModalBody').innerHTML = '';
+
+            if (data) {
+                // Load data in bookingEstimateModalBody using loop thorugh each object
+                var output = '';
+                output += `
+                        <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Service Level</th>
+                                        <th>Est Delivery Time</th>
+                                        <th>Billable Weight</th>
+                                        <th>Price</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookingEstimateTableBody">
+                                    <!-- Table rows will be appended here -->
+                                
+                `;
+
+                output += `
+                        <tr>
+                            <td>
+                                2 Point Delivery
+                            </td>
+                            <td>{{ date('Y-m-d') }} at {{ date('H:i') }}</td>
+                            <td>${data.base_weight} Kgs</td>
+                            <td>
+                                <p>${data.amountToPay ?? '-'}</p>
+                            </td>
+                            <td><a href="{{ route('newBooking') }}" class="btn btn-sm btn-primary">Select</a></td>
+                        </tr>
+                    `;
+                output += `
+                        </tbody>
+                            </table>
+                            {{-- Notification --}}
+                            <p class="text-center">
+                                Shipment estimate was calculated by Secureship on {{ date('Y-m-d') }} at
+                                {{ date('H:i') }}
+                                Eastern Standard Time
+                            </p>
+                            `;
+                document.getElementById('bookingEstimateModalBody').innerHTML = output;
+            } else {
+                document.getElementById('bookingEstimateModalBody').innerHTML = `
+                    <p>No data found</p>
+                `;
+            }
         }
     </script>
 

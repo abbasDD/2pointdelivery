@@ -246,6 +246,17 @@ class HelperBookingController extends Controller
             ], 422);
         }
 
+        // Check if user has helper_enabled
+        $user = User::where('id', auth()->user()->id)->first();
+        if (!$user->helper_enabled) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'In order to accept booking please enable your profile',
+                'errors' => 'In order to accept booking please enable your profile',
+            ], 422);
+        }
+
         // Check if booking exist
         $booking = Booking::where('id', $request->booking_id)->first();
         if (!$booking) {

@@ -62,7 +62,6 @@ Route::middleware(['app_language'])->group(function () {
         Route::post('/booking/complete/', [BookingController::class, 'complete'])->name('booking.complete');
         Route::post('/booking/incomplete/', [BookingController::class, 'incomplete'])->name('booking.incomplete');
 
-
         // Team 
         Route::get('team/index', [TeamInvitationController::class, 'getInvitedUsers'])->name('team.index');
         Route::post('team/invite', [TeamInvitationController::class, 'invite'])->name('team.invite');

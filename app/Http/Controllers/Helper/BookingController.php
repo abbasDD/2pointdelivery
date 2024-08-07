@@ -13,6 +13,7 @@ use App\Models\Helper;
 use App\Models\HelperCompany;
 use App\Models\HelperVehicle;
 use App\Models\ServiceCategory;
+use App\Models\User;
 use App\Models\UserNotification;
 use App\Models\VehicleType;
 use Carbon\Carbon;
@@ -69,6 +70,11 @@ class BookingController extends Controller
 
     public function acceptBooking(Request $request)
     {
+        // Check if user has helper_enabled
+        $user = User::where('id', auth()->user()->id)->first();
+        if (!$user->helper_enabled) {
+            return redirect()->route('helper.profile')->with('error', 'In order to accept booking please enable your profile');
+        }
 
         // Check if helper completed its profile
         $helper = Helper::where('user_id', auth()->user()->id)->first();

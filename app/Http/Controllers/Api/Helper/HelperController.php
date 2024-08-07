@@ -1343,6 +1343,16 @@ class HelperController extends Controller
             ->first();
 
         if ($invitation) {
+            // Check if userswitch already exist
+            if (UserSwitch::where('original_user_id', $currentUser->id)->where('switched_user_id', $userId)->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'statusCode' => 422,
+                    'message' => 'You have already switched to this user',
+                    'errors' => 'You have already switched to this user',
+                ]);
+            }
+
             // Store the switch in the database
             UserSwitch::create([
                 'original_user_id' => $currentUser->id,
@@ -1395,7 +1405,7 @@ class HelperController extends Controller
         }
 
         // Find the switch record
-        $switchRecord = UserSwitch::where('original_user_id', auth()->user()->id)->first();
+        $switchRecord = UserSwitch::where('switched_user_id', auth()->user()->id)->first();
 
         if (!$switchRecord) {
             return response()->json([

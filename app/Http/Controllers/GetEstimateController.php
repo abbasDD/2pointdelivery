@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\File;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Carbon\Carbon;
 
 class GetEstimateController extends Controller
 {
@@ -74,10 +75,13 @@ class GetEstimateController extends Controller
             // Return data
             return response()->json([
                 'status' => 'success',
+                'deliveryMethod' => 'secureship',
                 'data' => $data,
             ]);
         }
 
+        // base_weight from service category
+        $data['base_weight'] = $serviceCategory->base_weight;
 
         // Get package value and calculate insurance
         $data['insurance_value'] = $this->getInsuranceValue($request->selectedServiceType, $request->package_value);
@@ -136,6 +140,7 @@ class GetEstimateController extends Controller
         // return response()->json($data);
         return response()->json([
             'status' => 'success',
+            'deliveryMethod' => '2point',
             'data' => $data,
         ]);
     }
@@ -688,8 +693,8 @@ class GetEstimateController extends Controller
 
 
     // getSecureshipEstimate
-    public function getSecureshipEstimate(Request $request)
     // public function getSecureshipEstimate()
+    public function getSecureshipEstimate(Request $request)
     {
         // Get pickup_address object from lat long
         $pickup_address = $this->getAddressFromLatLong($request->pickup_latitude, $request->pickup_longitude);
@@ -705,7 +710,7 @@ class GetEstimateController extends Controller
         }
 
         // dd($address);
-        // return response()->json($pickup_address);
+        // return response()->json($request->package_weight);
         // Static JSON data
         $payload = [
             'fromAddress' => [
@@ -713,8 +718,8 @@ class GetEstimateController extends Controller
                 'countryCode' => $pickup_address['countryCode'],
                 'postalCode' => $pickup_address['postalCode'],
                 'city' => $pickup_address['city'],
-                'taxId' => 'A-123456-Z',
-                'residential' => true,
+                'taxId' => '',
+                'residential' => false,
                 'isSaturday' => true,
                 'isInside' => true,
                 'isTailGate' => true,
@@ -722,18 +727,18 @@ class GetEstimateController extends Controller
                 'isLimitedAccess' => true,
                 'appointment' => [
                     'appointmentType' => 'None',
-                    'phone' => '613-723-5891',
-                    'date' => '2024-08-10',
-                    'time' => '3:00 PM'
+                    'phone' => '',
+                    'date' => now()->format('Y-m-d'),
+                    'time' => now()->format('H:i:s')
                 ]
             ],
             'toAddress' => [
-                'addr1' => $dropoff_address['addr1'],
+                'addr1' =>  $dropoff_address['addr1'],
                 'countryCode' => $dropoff_address['countryCode'],
                 'postalCode' => $dropoff_address['postalCode'],
                 'city' => $dropoff_address['city'],
-                'taxId' => 'A-123456-Z',
-                'residential' => true,
+                'taxId' => '',
+                'residential' => false,
                 'isSaturday' => true,
                 'isInside' => true,
                 'isTailGate' => true,
@@ -741,31 +746,31 @@ class GetEstimateController extends Controller
                 'isLimitedAccess' => true,
                 'appointment' => [
                     'appointmentType' => 'None',
-                    'phone' => '613-723-5891',
-                    'date' => '2024-08-19',
-                    'time' => '3:00 PM'
+                    'phone' => '1234567690',
+                    'date' => now()->addDays(3)->format('Y-m-d'), // Adding 3 days to the current date
+                    'time' => now()->format('H:i:s')
                 ]
             ],
             'packages' => [
                 [
                     'packageType' => 'MyPackage',
                     'userDefinedPackageType' => 'Refrigerator',
-                    'weight' => (float)$request->package_weight,
+                    'weight' => $request->package_weight ? (float)$request->package_weight : 1.0,
                     'weightUnits' => 'Lbs',
-                    'length' => (float)$request->package_length,
-                    'width' => (float)$request->package_width,
-                    'height' => (float)$request->package_height,
+                    'length' => $request->package_length ? (float)$request->package_length : 1.0,
+                    'width' => $request->package_width ? (float)$request->package_width : 1.0,
+                    'height' => $request->package_height ? (float)$request->package_height : 1.0,
                     'dimUnits' => 'Inches',
-                    'insurance' => 18.3,
+                    'insurance' => 0.0,
                     'isAdditionalHandling' => false,
                     'signatureOptions' => 'None',
-                    'description' => 'Gift for darling',
+                    'description' => 'Gift',
                     'temperatureProtection' => true,
                     'isDangerousGoods' => true,
                     'isNonStackable' => true
                 ]
             ],
-            'shipDateTime' => now(),
+            'shipDateTime' => Carbon::now()->toIso8601String(),
             'currencyCode' => 'CAD',
             'billingOptions' => 'Prepaid',
             'isDocumentsOnly' => true,
@@ -794,16 +799,19 @@ class GetEstimateController extends Controller
         ])->post($apiUrl, $payload);
 
         if ($response->successful()) {
-            return response()->json([
-                'status' => 'success',
-                'data' => $response->json(),
-            ]);
+            // return response()->json([
+            //     'status' => 'success',
+            //     'data' => $response->json(),
+            // ]);
+            return $response->json();
         } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to retrieve estimate',
-                'error' => $response->json(),
-            ]);
+            // return response()->json([
+            //     'status' => 'error',
+            //     'message' => 'Failed to retrieve estimate',
+            //     'error' => $response->json(),
+            // ]);
+
+            return false;
         }
     }
 
