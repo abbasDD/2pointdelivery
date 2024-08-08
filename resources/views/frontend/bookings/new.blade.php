@@ -26,10 +26,9 @@
                                 </div>
                             @endif
                         </div>
-                        {{-- Booking Form --}}
-                        <div class="row">
-                            @csrf
-                            <div class="col-md-12">
+                        @csrf
+                        <div class="card">
+                            <div class="card-body">
                                 {{-- Showing text fields to add pickup and drop off --}}
                                 <div class="row">
                                     {{-- Pickup Location --}}
@@ -179,22 +178,31 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
 
+                        <div class="card">
+                            <div class="card-body">
                                 {{-- Delivery Package Details --}}
                                 @include('frontend.bookings.partials.new.delivery')
 
                                 {{-- Moving Package Details --}}
                                 @include('frontend.bookings.partials.new.moving')
 
-                                {{-- Receiver Details --}}
-                                {{-- @include('frontend.bookings.partials.new.receiver') --}}
+                                {{-- Secureship Details --}}
+                                @include('frontend.bookings.partials.new.secureship')
                             </div>
                         </div>
+
+                        {{-- Include a Submit Button --}}
                         <div class="row">
                             <div class="col-md-12 text-right">
                                 <button type="submit" class="btn btn-primary btn-block">Get Estimate</button>
                             </div>
                         </div>
+
+                        {{-- Get and Show Calculated Price --}}
+                        @include('frontend.bookings.partials.new.cart')
                     </form>
                 </div>
             </div>
@@ -203,6 +211,8 @@
 
     {{-- Define some javascript variables to be used in JS --}}
     @include('frontend.bookings.js.booking')
+    {{-- secureship JS --}}
+    @include('frontend.bookings.js.secureship')
 
     <script>
         $(document).ready(function() {

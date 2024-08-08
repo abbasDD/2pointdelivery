@@ -80,6 +80,10 @@ class GetEstimateController extends Controller
             ]);
         }
 
+        // Calculate distance between pickup and delivery
+        $distance_in_km = 5;
+        // $distance_in_km = $this->getDistance($request->pickup_latitude, $request->pickup_longitude, $request->dropoff_latitude, $request->dropoff_longitude, 'K');
+
         // base_weight from service category
         $data['base_weight'] = $serviceCategory->base_weight;
 
@@ -90,13 +94,13 @@ class GetEstimateController extends Controller
         $data['base_price'] = $this->getBasePrice($serviceType->type, $serviceCategory->base_price, $serviceCategory->moving_price_type, $request->floor_size, $request->no_of_hours);
 
         // Distance Price
-        $data['distance_price'] = $this->getDistancePrice($serviceCategory->base_distance, $serviceCategory->extra_distance_price, $request->distance_in_km);
+        $data['distance_price'] = $this->getDistancePrice($serviceCategory->base_distance, $serviceCategory->extra_distance_price, $distance_in_km);
 
         // Priority Price
         $data['priority_price'] = $prioritySetting->price;
 
         // Vehicle Price
-        $data['vehicle_price'] = $this->getVehiclePrice($serviceType->type, $serviceCategory->vehicle_type_id, $request->distance_in_km);
+        $data['vehicle_price'] = $this->getVehiclePrice($serviceType->type, $serviceCategory->vehicle_type_id, $distance_in_km);
 
         // Weight Price
         $data['weight_price'] = $this->getWeightPrice($serviceType->type, $serviceCategory, $request->package_weight, $request->package_length, $request->package_width, $request->package_height, $request->selectedMovingDetailsID);

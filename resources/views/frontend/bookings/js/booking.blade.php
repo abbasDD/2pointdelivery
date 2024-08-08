@@ -37,6 +37,9 @@
     console.log('Selected Priority ID: ' + selectedPriorityID);
     var newUpdatedPriority = [];
 
+    // Empty array for secureship_packages
+    var secureshipPackages = [];
+
     // Store addresses to JS array
     var addresses = {!! json_encode($addresses) !!};
 
@@ -63,16 +66,7 @@
     var serviceCategories = {!! json_encode($serviceCategories) !!};
     if (serviceCategories.length > 0) {
         selectedServiceCategoryUuid = serviceCategories[0].uuid;
-        vehicle_price = serviceCategories[0].vehicle_price;
-        vehicle_price_type = serviceCategories[0].vehicle_price_type;
         selectedParcelTypeSecureshipEnable = serviceCategories[0].is_secureship_enabled;
-        moving_price_type = serviceCategories[0].moving_price_type;
-        // Update payment details
-        payment_base_price = serviceCategories[0].base_price;
-        payment_base_distance = serviceCategories[0].base_distance;
-        payment_extra_distance_price = serviceCategories[0].extra_distance_price;
-        payment_base_weight = serviceCategories[0].base_weight;
-        payment_extra_weight_price = serviceCategories[0].extra_weight_price;
         volume_enabled = serviceCategories[0].volume_enabled;
         no_of_room_enabled = serviceCategories[0].no_of_room_enabled;
         floor_plan_enabled = serviceCategories[0].floor_plan_enabled;
@@ -155,41 +149,38 @@
                 console.error('Error:', error);
             });
 
-        // Update service form data
-        updateServiceFormData();
     }
 
     // Update the form data as per the service type
     function updateServiceFormData() {
-        console.log('Update service form function called');
+        console.log('Update service form function called' + selectedParcelTypeSecureshipEnable);
 
         // console.log(selectedServiceType);
         if (selectedServiceType == 'moving') {
             // Hide and Show Div
             $("#deliveryPackageDetails").addClass("d-none");
             $("#movingPackageDetails").removeClass("d-none");
+            $("#deliverySecureshipDetails").addClass("d-none");
 
-            // Add and Remove required attribute
-            $("#movingPackageDetails input").prop("required", true);
-            $("#deliveryPackageDetails input").prop("required", false);
+            return true;
 
-            // Hide and Show Prices
-            $(".calculated-amount .moving").removeClass("d-none");
-            $(".calculated-amount .delivery").addClass("d-none");
-
-        } else {
-            // Hide and Show Div
-            $("#deliveryPackageDetails").removeClass("d-none");
-            $("#movingPackageDetails").addClass("d-none");
-
-            // Add and Remove required attribute
-            $("#movingPackageDetails input").prop("required", false);
-            $("#deliveryPackageDetails input").prop("required", true);
-
-            // Hide and Show Prices
-            $(".calculated-amount .moving").addClass("d-none");
-            $(".calculated-amount .delivery").removeClass("d-none");
         }
+
+        if (selectedParcelTypeSecureshipEnable == 1) {
+            // Hide and Show Div
+            $("#deliveryPackageDetails").addClass("d-none");
+            $("#movingPackageDetails").addClass("d-none");
+            $("#deliverySecureshipDetails").removeClass("d-none");
+            return true;
+
+        }
+
+        // Hide and Show Div
+        $("#deliveryPackageDetails").removeClass("d-none");
+        $("#movingPackageDetails").addClass("d-none");
+        $("#deliverySecureshipDetails").addClass("d-none");
+
+        return true;
     }
 
     // Update priority as per the service type selected
@@ -250,6 +241,7 @@
     // Update the Form Fields
     function updateFormFields() {
         console.log('Update field function called');
+
         // If selectedServiceCategoryUuid is empty
         if (selectedServiceCategoryUuid == '') {
             // Get from first service type from serviceCategories
@@ -260,6 +252,7 @@
             floor_assess_enabled = serviceCategories[0].floor_assess_enabled;
             job_details_enabled = serviceCategories[0].job_details_enabled;
             moving_details_enabled = serviceCategories[0].moving_details_enabled;
+            selectedParcelTypeSecureshipEnable = serviceCategories[0].is_secureship_enabled;
             updateMovingFormFields();
         }
 
@@ -273,10 +266,15 @@
                 job_details_enabled = serviceCategories[i].job_details_enabled;
                 moving_details_enabled = serviceCategories[i].moving_details_enabled;
                 volume_enabled = serviceCategories[i].volume_enabled;
+                selectedParcelTypeSecureshipEnable = serviceCategories[i].is_secureship_enabled;
                 updateMovingFormFields();
 
             }
         }
+
+
+        // Update service form data
+        updateServiceFormData();
 
         // if service type is moving
         if (selectedServiceType == 'moving') {
@@ -368,19 +366,15 @@
     // Get Estimate on form submit
     document.getElementById('newBookingForm').onsubmit = function(event) {
         event.preventDefault(); // Prevent the default form submission
-        // getTrackingDetail();
-        alert('Booking Submitted');
+        calculateDeliveryEstimateUsingAjax();
+        //alert('Booking Submitted');
     };
 
     // Calculate amount to pay
     function calculateDeliveryEstimateUsingAjax() {
-        console.log('Function calling ' + floor_assess_enabled);
 
         // Create a form data and appnd data
         var formData = new FormData();
-
-        // Calculate Weight Price Value before calling AJAX
-        calculateWeightPrice();
 
         // Add csrf token
         formData.append('_token', "{{ csrf_token() }}");
@@ -389,17 +383,14 @@
         formData.append('selectedParcelTypeSecureshipEnable', selectedParcelTypeSecureshipEnable);
 
         // Append variables
-        formData.append('distance_in_km', distance_in_km); // distance
         formData.append('selectedServiceType', selectedServiceType); // service type
         formData.append('selectedServiceTypeID', selectedServiceTypeID); // service type
-        formData.append('moving_price_type', moving_price_type); // moving_price_type
         formData.append('selectedServiceCategoryUuid', selectedServiceCategoryUuid); // parcel type
         formData.append('priorityID', priorityID); // priority
         formData.append('package_weight', package_weight); // package_weight
         formData.append('package_length', package_length); // package_length
         formData.append('package_width', package_width); // package_width
         formData.append('package_height', package_height); // package_height
-        formData.append('calculated_weight', calculated_weight); // calculated_weight
         formData.append('selectedNoOfRoomID', selectedNoOfRoomID); // selectedNoOfRoomID
         formData.append('selectedFloorPlanID', selectedFloorPlanID); // selectedFloorPlanID
         formData.append('selectedFloorAssessID', selectedFloorAssessID); // selectedFloorAssessID
@@ -458,8 +449,14 @@
             contentType: false,
             success: function(response) {
                 console.log(response);
+                // remove d-none class
+                document.getElementById('calculatedAmountCart').classList.remove('d-none');
                 if (response.status == 'success') {
-                    updatePaymentCartData(response.data);
+                    if (response.deliveryMethod == 'secureship') {
+                        secureshipDataLoad(response.data);
+                    } else {
+                        bookingEstimateDataLoad(response.data);
+                    }
                 }
             },
             error: function(error) {
@@ -468,5 +465,125 @@
         });
 
 
+    }
+
+    // secureshipDataLoad
+    function secureshipDataLoad(data) {
+        // calculatedAmountCartBody
+        // calculatedAmountCartBody empty it first
+        document.getElementById('calculatedAmountCartBody').innerHTML = '';
+        // Check if data array is empty
+        if (data.length == 0) {
+            // Load no data found message in calculatedAmountCartBody
+            document.getElementById('calculatedAmountCartBody').innerHTML = `
+                    <p>No data found</p>
+                `;
+        } else {
+            // Load data in calculatedAmountCartBody using loop thorugh each object
+            var output = '';
+            output += `
+                        <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Carrier Code</th>
+                                        <th>Service Level</th>
+                                        <th>Est Delivery Time</th>
+                                        <th>Billable Weight</th>
+                                        <th>Price</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookingEstimateTableBody">
+                                    <!-- Table rows will be appended here -->
+                                
+                `;
+            $.each(data, function(key, value) {
+                output += `
+                        <tr>
+                            <td>${value.carrierCode}</td>
+                            <td>
+                                <p>${value.selectedService}</p>
+                                <p>${value.serviceName}</p>
+                            </td>
+                            <td>${value.deliveryTime.friendlyTime}</td>
+                            <td>${value.billableWeight.value} ${value.billableWeight.units}</td>
+                            <td>
+                                <p>${value.regularPrice}</p>
+                                <p>Reg: ${value.total}</p>
+                            </td>
+                            <td><a href="{{ route('newBooking') }}" class="btn btn-sm btn-primary">Select</a></td>
+                        </tr>
+                    `;
+            });
+            output += `
+                        </tbody>
+                            </table>
+                            {{-- Notification --}}
+                            <p class="text-center">
+                                Shipment estimate was calculated by Secureship on {{ date('Y-m-d') }} at
+                                {{ date('H:i') }}
+                                Eastern Standard Time
+                            </p>
+                            `;
+            document.getElementById('calculatedAmountCartBody').innerHTML = output;
+
+        }
+    }
+
+    // bookingEstimateDataLoad
+    function bookingEstimateDataLoad(data) {
+        // calculatedAmountCartBody
+
+        // calculatedAmountCartBody empty it first
+        document.getElementById('calculatedAmountCartBody').innerHTML = '';
+
+        if (data) {
+            // Load data in calculatedAmountCartBody using loop thorugh each object
+            var output = '';
+            output += `
+                        <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Service Level</th>
+                                        <th>Est Delivery Time</th>
+                                        <th>Billable Weight</th>
+                                        <th>Price</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookingEstimateTableBody">
+                                    <!-- Table rows will be appended here -->
+                                
+                `;
+
+            output += `
+                        <tr>
+                            <td>
+                                2 Point Delivery
+                            </td>
+                            <td>{{ date('Y-m-d') }} at {{ date('H:i') }}</td>
+                            <td>${data.base_weight} Kgs</td>
+                            <td>
+                                <p>${data.amountToPay ?? '-'}</p>
+                            </td>
+                            <td><a href="{{ route('newBooking') }}" class="btn btn-sm btn-primary">Select</a></td>
+                        </tr>
+                    `;
+            output += `
+                        </tbody>
+                            </table>
+                            {{-- Notification --}}
+                            <p class="text-center">
+                                Shipment estimate was calculated by Secureship on {{ date('Y-m-d') }} at
+                                {{ date('H:i') }}
+                                Eastern Standard Time
+                            </p>
+                            `;
+            document.getElementById('calculatedAmountCartBody').innerHTML = output;
+        } else {
+            document.getElementById('calculatedAmountCartBody').innerHTML = `
+                    <p>No data found</p>
+                `;
+        }
     }
 </script>
