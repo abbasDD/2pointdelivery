@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->enum('type', ['client', 'helper'])->default('client');
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('kyc_type_id');
             $table->string('front_image')->nullable();
             $table->string('back_image')->nullable();
             $table->string('id_type')->nullable();
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('kyc_type_id')->references('id')->on('kyc_types');
         });
     }
 

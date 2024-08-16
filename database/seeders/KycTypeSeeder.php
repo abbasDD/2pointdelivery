@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class KycTypeSeeder extends Seeder
 {
@@ -12,6 +14,15 @@ class KycTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        DB::table('kyc_types')->insert([
+            [
+                'uuid' => Str::random(8),
+                'name' => 'Residence ID',
+            ],
+            [
+                'uuid' => Str::random(8),
+                'name' => 'Drivers License',
+            ],
+        ]);
     }
 }

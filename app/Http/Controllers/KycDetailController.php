@@ -10,6 +10,7 @@ use App\Models\Country;
 use App\Models\KycType;
 use App\Models\State;
 use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
 
 class KycDetailController extends Controller
@@ -36,9 +37,17 @@ class KycDetailController extends Controller
             'selectedCities' => [],
         ];
 
+        // Check if kyc_types exist
+        $kycTypes = KycType::all();
+        if ($kycTypes->count() == 0) {
+            return redirect()->back()->with('error', 'KYC types not found');
+        }
 
         // Get already added Kyc Types
-        $existedKycTypes = KycDetail::where('user_id', auth()->user()->id)->pluck('kyc_type_id')->toArray();
+        $existedKycTypes = KycDetail::where('user_id', auth()->user()->id)->get();
+        if ($existedKycTypes) {
+            $existedKycTypes = $existedKycTypes->pluck('kyc_type_id')->toArray();
+        }
 
 
         // Get KYC Types not present in the existedKycTypes array
@@ -53,7 +62,7 @@ class KycDetailController extends Controller
     {
         // Validate the request
         $request->validate([
-            'kyc_type_id' => 'required|string|max:255',
+            'kyc_type_id' => 'required|exists:kyc_types,id',
             'id_number' => 'required|string|max:255',
             'country' => 'required|string|max:255',
             'state' => 'required|string|max:255',
@@ -78,6 +87,7 @@ class KycDetailController extends Controller
         $kycDetail = KycDetail::create([
             'user_id' => auth()->user()->id,
             'type' => 'client',
+            'kyc_type_id' => $request->kyc_type_id,
         ]);
 
         // Check if front_image exist or not
@@ -122,6 +132,18 @@ class KycDetailController extends Controller
         $kycDetail->expiry_date = $request->expiry_date;
 
         $kycDetail->save();
+
+        // Send Notification to Admin
+        UserNotification::create([
+            'sender_user_id' => auth()->user()->id,
+            'receiver_user_id' => 1,
+            'receiver_user_type' => 'admin',
+            'reference_id' => $kycDetail->id,
+            'type' => 'kyc_detail',
+            'title' => 'KYC details added',
+            'content' => 'KYC is submitted by ' . auth()->user()->name . ' for ' . $kycDetail->kycType->name . ' KYC',
+            'read' => 0
+        ]);
 
         // Redirect to kyc details page
         return redirect()->route('client.kyc_details')->with('success', 'KYC details added successfully');

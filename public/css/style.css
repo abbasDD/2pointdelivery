@@ -696,7 +696,7 @@ w-70 {
 .dropdown-notification[data-bs-popper] {
     width: 300px;
     left: -250px;
-    height: 500px;
+    max-height: 500px;
     overflow: scroll;
 }
 
@@ -1347,6 +1347,10 @@ figure a img {
 
 .authpage {
     overflow-x: hidden;
+}
+
+.authpage .card {
+    min-width: 300px;
 }
 
 .authpage .switch-user a {

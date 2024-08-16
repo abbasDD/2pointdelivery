@@ -157,10 +157,10 @@ class ClientController extends Controller
      */
     public function index()
     {
-        // Change session variable user_type to client
+        // Change session variable login_type to client
         session(['login_type' => 'client']);
 
-        // dd(session('user_type'));
+        // dd(session('login_type'));
 
         // Statistics
         $satistics = [

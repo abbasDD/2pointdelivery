@@ -65,10 +65,10 @@ class KycDetailController extends Controller
         $kycDetail->save();
 
         // Send Notification
-        $userNotification = UserNotification::create([
+        UserNotification::create([
             'sender_user_id' => auth()->user()->id,
             'receiver_user_id' => $kycDetail->user_id,
-            'receiver_user_type' => 'admin',
+            'receiver_user_type' => $kycDetail->type,
             'reference_id' => $kycDetail->id,
             'type' => 'kyc_detail',
             'title' => 'KYC details approved',
@@ -90,9 +90,10 @@ class KycDetailController extends Controller
         $kycDetail->save();
 
         // Send Notification
-        $userNotification = UserNotification::create([
+        UserNotification::create([
             'sender_user_id' => auth()->user()->id,
             'receiver_user_id' => $kycDetail->user_id,
+            'receiver_user_type' => $kycDetail->type,
             'reference_id' => $kycDetail->id,
             'type' => 'kyc_detail',
             'title' => 'KYC details rejected',

@@ -16,12 +16,14 @@ class UserNotificationController extends Controller
         if (!auth()->user()) {
             return response()->json([]);
         }
+
+
         // Get only 10
         $notifications = UserNotification::where('receiver_user_id', auth()->user()->id)
-            ->where('receiver_user_type', session('user_type') ?? 'client')
+            ->where('receiver_user_type', session('login_type') ?? 'client')
             ->orderBy('created_at', 'asc')->take(10)->get();
         $unread_notification = UserNotification::where('receiver_user_id', auth()->user()->id)
-            ->where('receiver_user_type', session('user_type') ?? 'client')
+            ->where('receiver_user_type', session('login_type') ?? 'client')
             ->where('read', 0)->count();
         $data = [
             'notifications' => $notifications,
@@ -38,7 +40,7 @@ class UserNotificationController extends Controller
         }
 
         // Mark all as read
-        UserNotification::where('receiver_user_id', auth()->user()->id)->where('receiver_user_type', session('user_type') ?? 'client')->update(['read' => 1]);
+        UserNotification::where('receiver_user_id', auth()->user()->id)->where('receiver_user_type', session('login_type') ?? 'client')->update(['read' => 1]);
         // return response()->json($notifications);
         return redirect()->back()->with('success', 'All notifications marked as read');
     }
@@ -54,7 +56,7 @@ class UserNotificationController extends Controller
         $notification->read = 1;
         $notification->save();
 
-        // dd(session('user_type'));
+        // dd(session('login_type'));
 
         // Check notificationType
         $notificationType = $notification->type;
@@ -63,28 +65,31 @@ class UserNotificationController extends Controller
         switch ($notificationType) {
             case 'booking':
                 // Booking
-                if (session('user_type') == 'client') {
+                if (session('login_type') == 'client') {
                     return redirect()->route('client.booking.show', $notification->reference_id);
                 }
                 return redirect()->route('helper.booking.show', $notification->reference_id);
                 break;
             case 'team_invitation':
                 // team_inviation
-                if (session('user_type') == 'client') {
+                if (session('login_type') == 'client') {
                     return redirect()->route('client.invitations');
                 }
                 return redirect()->route('helper.invitations');
                 break;
             case 'kyc_detail':
                 // kyc_detail
-                if (session('user_type') == 'client') {
-                    return redirect()->route('client.kyc_details', $notification->reference_id);
+                if (session('login_type') == 'admin') {
+                    return redirect()->route('admin.kycDetail.show', $notification->reference_id);
                 }
-                return redirect()->route('helper.kyc_details', $notification->reference_id);
+                if (session('login_type') == 'helper') {
+                    return redirect()->route('helper.kyc_details');
+                }
+                return redirect()->route('client.kyc_details');
                 break;
             case 'user_registered':
                 // user_registered
-                if (session('user_type') == 'admin') {
+                if (session('login_type') == 'admin') {
                     return redirect()->route('admin.newHelpers');
                 }
                 // Redirect back with error

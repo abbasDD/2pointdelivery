@@ -20,6 +20,7 @@
                     @csrf
                     {{-- Hidden field for helper --}}
                     <input type="hidden" name="user_type" value="user">
+                    <input type="hidden" name="login_type" value="helper">
 
                     <div class="row">
 

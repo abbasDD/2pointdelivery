@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('sender_user_id')->nullable();
             $table->unsignedBigInteger('receiver_user_id');
-            $table->enum('receiver_user_type', ['client', 'helper'])->default('client');
+            $table->enum('receiver_user_type', ['admin', 'client', 'helper'])->default('client');
             $table->string('reference_id')->nullable();
             $table->string('type');
             $table->string('title');

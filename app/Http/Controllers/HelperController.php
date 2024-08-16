@@ -126,10 +126,10 @@ class HelperController extends Controller
      */
     public function index()
     {
-        // Change session variable user_type to client
+        // Change session variable login_type to client
         session(['login_type' => 'helper']);
 
-        // dd(session('user_type'));
+        // dd(session('login_type'));
 
         $helper_id = 0;
         // Get helper_id from Helper

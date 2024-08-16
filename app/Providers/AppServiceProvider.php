@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\SystemSetting;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
@@ -32,6 +33,14 @@ class AppServiceProvider extends ServiceProvider
         } else {
 
             $this->app->setLocale('en');
+        }
+
+        // Get timezone from SystemSetting
+        $timezone = SystemSetting::where('key', 'timezone')->first();
+        if ($timezone) {
+            date_default_timezone_set($timezone->value);
+        } else {
+            date_default_timezone_set('UTC');
         }
 
         Passport::tokensExpireIn(now()->addDays(15));
