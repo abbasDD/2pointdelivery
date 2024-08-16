@@ -289,6 +289,18 @@ class HelperBookingController extends Controller
             ]);
         }
 
+        // Check for vehicleData
+        $vehicleData = HelperVehicle::where('user_id', auth()->user()->id)->where('is_approved', 1)->first();
+
+        if (!$vehicleData) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Admin have not approved your vehicle.',
+                'errors' => 'Admin have not approved your vehicle.',
+            ], 422);
+        }
+
         // Check if booking is still in pending status
         if ($booking->status == 'pending') {
 
@@ -883,6 +895,7 @@ class HelperBookingController extends Controller
         $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status')
             ->where('status', 'pending')
             ->whereIn('service_type_id', $helperServiceIds)
+            ->where('client_user_id', '!=', auth()->user()->id)
             ->orderBy('bookings.updated_at', 'desc')->get();
 
         return response()->json([

@@ -240,7 +240,13 @@ class ClientController extends Controller
 
                 // Check if client first name and last name is not null
                 if ($client->first_name == null || $client->last_name == null || $client->city == null) {
-                    return redirect()->route('client.profile')->with('error', 'Please fill your client detail first');
+                    // return redirect()->route('client.profile')->with('error', 'Please fill your client detail first');
+                    return response()->json([
+                        'success' => false,
+                        'statusCode' => 422,
+                        'message' => 'Please fill your client detail first',
+                        'errors' => 'Please fill your client detail first',
+                    ], 422);
                 }
 
                 $helper = Helper::create([

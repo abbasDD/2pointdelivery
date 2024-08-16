@@ -135,10 +135,15 @@ class HelperController extends Controller
             ->where('bookings.status', 'completed')
             ->sum('booking_deliveries.helper_fee');
 
+        $userId = auth()->user()->id;
+
         // Calculate helper moving earnings
-        $helper_earnings += Booking::where('bookings.helper_user_id', auth()->user()->id)
+        $helper_earnings += Booking::where('bookings.status', 'completed')
+            ->where(function ($query) use ($userId) {
+                $query->where('helper_user_id', $userId)
+                    ->orWhere('helper_user_id2', $userId);
+            })
             ->join('booking_movings', 'bookings.id', '=', 'booking_movings.booking_id')
-            ->where('bookings.status', 'completed')
             ->sum('booking_movings.helper_fee');
 
         // Statistics
@@ -255,7 +260,13 @@ class HelperController extends Controller
             if ($helper) {
                 // Check if helper first name and last name is not null
                 if ($helper->first_name == null || $helper->last_name == null) {
-                    return redirect()->route('helper.profile')->with('error', 'Please fill your helper detail first');
+                    // return redirect()->route('helper.profile')->with('error', 'Please fill your helper detail first');
+                    return response()->json([
+                        'success' => false,
+                        'statusCode' => 422,
+                        'message' => 'Please fill your helper detail first',
+                        'errors' => 'Please fill your helper detail first',
+                    ], 422);
                 }
 
                 $client = Client::create([
@@ -266,6 +277,7 @@ class HelperController extends Controller
                     'last_name' => $helper->last_name ?? '',
                     'gender' => $helper->gender ?? '',
                     'date_of_birth' => $helper->date_of_birth ?? '',
+                    'profile_image' => $helper->profile_image ?? '',
                     'tax_id' => $helper->tax_id ?? '',
                     'phone_no' => $helper->phone_no ?? '',
                     'suite' => $helper->suite ?? '',
@@ -1964,6 +1976,7 @@ class HelperController extends Controller
             ]
         ], 200);
     }
+
 
 
     // Get credit wallet history
