@@ -12,6 +12,7 @@ use App\Models\PaymentSetting;
 use App\Models\Referral;
 use App\Models\SmtpSetting;
 use App\Models\SocialLoginSetting;
+use App\Models\SystemSetting;
 use App\Models\User;
 use App\Services\FcmService;
 use Illuminate\Http\Request;
@@ -681,5 +682,78 @@ class PassportAuthController extends Controller
         } else {
             return response()->json(['message' => $result['message']], 500);
         }
+    }
+
+    // appDetails
+
+    public function appDetails(): JsonResponse
+    {
+
+        $data = [
+            'app_name' => '2 Point Delivery',
+            'currency_symbol' => 'cad',
+            'language' => 'en',
+            'dimension' => 'cm',
+            'weight' => 'kg',
+            'timezone' => 'UTC',
+            'time_format' => 'AM/PM',
+            'date_format' => 'DD/MM/YYYY',
+        ];
+
+        // Get system settings
+        $websiteName = SystemSetting::where('key', 'website_name')->first();
+        if ($websiteName) {
+            $data['app_name'] = $websiteName->value ?? '2 Point Delivery';
+        }
+
+        // Get currency
+        $currency = SystemSetting::where('key', 'currency')->first();
+        if ($currency) {
+            $data['currency_symbol'] = $currency->value ?? 'cad';
+        }
+
+        // language
+        $language = SystemSetting::where('key', 'language')->first();
+        if ($language) {
+            $data['language'] = $language->value ?? 'en';
+        }
+
+        // dimension
+        $dimension = SystemSetting::where('key', 'dimension')->first();
+        if ($dimension) {
+            $data['dimension'] = $dimension->value ?? 'cm';
+        }
+
+        // weight
+        $weight = SystemSetting::where('key', 'weight')->first();
+        if ($weight) {
+            $data['weight'] = $weight->value ?? 'kg';
+        }
+
+        // timezone
+        $timezone = SystemSetting::where('key', 'timezone')->first();
+        if ($timezone) {
+            $data['timezone'] = $timezone->value ?? 'UTC';
+        }
+
+        // time_format
+        $timeFormat = SystemSetting::where('key', 'time_format')->first();
+        if ($timeFormat) {
+            $data['time_format'] = $timeFormat->value ?? 'AM/PM';
+        }
+
+        // date_format
+        $dateFormat = SystemSetting::where('key', 'date_format')->first();
+        if ($dateFormat) {
+            $data['date_format'] = $dateFormat->value ?? 'DD/MM/YYYY';
+        }
+
+
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'App details.',
+            'data' => $data,
+        ], 200);
     }
 }

@@ -10,6 +10,7 @@ use App\Models\BookingDelivery;
 use App\Models\BookingMoving;
 use App\Models\BookingReview;
 use App\Models\Client;
+use App\Models\DeliveryConfig;
 use App\Models\Helper;
 use App\Models\HelperVehicle;
 use App\Models\MovingConfig;
@@ -275,6 +276,72 @@ class ClientBookingController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Estimate price generated successfully',
+            'data' => $data
+        ], 200);
+    }
+
+    // secureshipBooking
+    public function secureshipBooking(Request $request): JsonResponse
+    {
+
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Get secureship enable from Delivery Setting
+
+        $secureship_api_enable = DeliveryConfig::where('key', 'secureship_api_enable')->first();
+        if (!$secureship_api_enable) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Secureship API enable not found',
+                'errors' => 'Secureship API enable not found',
+            ], 422);
+        }
+
+        if ($secureship_api_enable->value == 0) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Secureship API not enabled',
+                'errors' => 'Secureship API not enabled',
+            ], 422);
+        }
+
+        // secureship_api_key
+        $secureship_api_key = DeliveryConfig::where('key', 'secureship_api_key')->first();
+        if (!$secureship_api_key) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Secureship API key not found',
+                'errors' => 'Secureship API key not found',
+            ], 422);
+        }
+
+        // secureship_fee
+        $secureship_fee = DeliveryConfig::where('key', 'secureship_fee')->first();
+        if (!$secureship_fee) {
+            $secureship_fee = 0;
+        }
+
+
+        $data['secureship_api_enable'] = $secureship_api_enable->value;
+        $data['secureship_api_key'] = $secureship_api_key->value;
+        $data['secureship_fee'] = $secureship_fee->value;
+
+
+        // return a json object
+        return response()->json([
+            'success' => true,
+            'message' => 'Secureship price generated successfully',
             'data' => $data
         ], 200);
     }
@@ -1148,7 +1215,7 @@ class ClientBookingController extends Controller
         $bookingData['helper_user2'] = $helper_user2;
 
         // Get helper vehicle data
-        $helperVehicleData = [
+        $helperVehicleDataList = [
             'vehicle_type' => '',
             'vehicle_number' => '',
             'vehicle_make' => '',
@@ -1170,12 +1237,13 @@ class ClientBookingController extends Controller
                 } else {
                     $helperVehicleData->vehicle_image = asset('images/vehicle_types/default.png');
                 }
+                $helperVehicleDataList = $helperVehicleData;
             }
         }
-        $bookingData['helperVehicleData'] = $helperVehicleData;
+        $bookingData['helperVehicleData'] = $helperVehicleDataList;
 
         // Get helper2 vehicle data
-        $helperVehicleData2 = [
+        $helperVehicleData2List = [
             'vehicle_type' => '',
             'vehicle_number' => '',
             'vehicle_make' => '',
@@ -1197,9 +1265,10 @@ class ClientBookingController extends Controller
                 } else {
                     $helperVehicleData2->vehicle_image = asset('images/vehicle_types/default.png');
                 }
+                $helperVehicleData2List = $helperVehicleData2;
             }
         }
-        $bookingData['helperVehicleData2'] = $helperVehicleData2;
+        $bookingData['helperVehicleData2'] = $helperVehicleData2List;
 
 
         // Get Boking Review

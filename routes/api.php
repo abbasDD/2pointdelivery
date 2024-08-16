@@ -21,6 +21,9 @@ Route::get('auth/{provider}/callback', [PassportAuthController::class, 'handlePr
 // Send a test notification
 Route::post('send-test-notification', [PassportAuthController::class, 'sendTestNotification']);
 
+// Get app details
+Route::get('app-details', [PassportAuthController::class, 'appDetails']);
+
 
 // ---------------- CLIENT ROUTES START ---------------- //
 
@@ -67,6 +70,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::get('booking/new/page2', [ClientBookingController::class, 'newBookingPage2']);
     Route::post('booking/estimate', [ClientBookingController::class, 'estimateBooking']);
     Route::get('booking/insurance', [ClientBookingController::class, 'insuranceBooking']);
+    Route::get('booking/secureship', [ClientBookingController::class, 'secureshipBooking']);
     Route::post('booking/create', [ClientBookingController::class, 'createBooking']);
     Route::get('booking/payment/{id}', [ClientBookingController::class, 'getPaymentBooking']);
     Route::get('booking/details/{id}', [ClientBookingController::class, 'getBookingDetails']);

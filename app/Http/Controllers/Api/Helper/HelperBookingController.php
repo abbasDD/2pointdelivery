@@ -151,8 +151,9 @@ class HelperBookingController extends Controller
 
         $bookingData['helper_user2'] = $helper_user2;
 
+
         // Get helper vehicle data
-        $helperVehicleData = [
+        $helperVehicleDataList = [
             'vehicle_type' => '',
             'vehicle_number' => '',
             'vehicle_make' => '',
@@ -166,17 +167,21 @@ class HelperBookingController extends Controller
             $helperVehicleData = HelperVehicle::select('helper_vehicles.vehicle_number', 'helper_vehicles.vehicle_make', 'helper_vehicles.vehicle_model', 'helper_vehicles.vehicle_color', 'helper_vehicles.vehicle_year', 'vehicle_types.name as vehicle_type', 'vehicle_types.image as vehicle_image', 'vehicle_types.description')
                 ->join('vehicle_types', 'vehicle_types.id', '=', 'helper_vehicles.vehicle_type_id')
                 ->where('user_id', $booking->helper_user_id)->first();
-            // Update Image with link
-            if ($helperVehicleData->vehicle_image) {
-                $helperVehicleData->vehicle_image = asset('images/vehicle_types/' . $helperVehicleData->vehicle_image);
-            } else {
-                $helperVehicleData->vehicle_image = asset('images/vehicle_types/default.png');
+
+            if ($helperVehicleData) {
+                // Update Image with link
+                if ($helperVehicleData->vehicle_image) {
+                    $helperVehicleData->vehicle_image = asset('images/vehicle_types/' . $helperVehicleData->vehicle_image);
+                } else {
+                    $helperVehicleData->vehicle_image = asset('images/vehicle_types/default.png');
+                }
+                $helperVehicleDataList = $helperVehicleData;
             }
         }
-        $bookingData['helperVehicleData'] = $helperVehicleData;
+        $bookingData['helperVehicleData'] = $helperVehicleDataList;
 
         // Get helper2 vehicle data
-        $helperVehicleData2 = [
+        $helperVehicleData2List = [
             'vehicle_type' => '',
             'vehicle_number' => '',
             'vehicle_make' => '',
@@ -190,14 +195,18 @@ class HelperBookingController extends Controller
             $helperVehicleData2 = HelperVehicle::select('helper_vehicles.vehicle_number', 'helper_vehicles.vehicle_make', 'helper_vehicles.vehicle_model', 'helper_vehicles.vehicle_color', 'helper_vehicles.vehicle_year', 'vehicle_types.name as vehicle_type', 'vehicle_types.image as vehicle_image', 'vehicle_types.description')
                 ->join('vehicle_types', 'vehicle_types.id', '=', 'helper_vehicles.vehicle_type_id')
                 ->where('user_id', $booking->helper_user_id2)->first();
-            // Update Image with link
-            if ($helperVehicleData2->vehicle_image) {
-                $helperVehicleData2->vehicle_image = asset('images/vehicle_types/' . $helperVehicleData2->vehicle_image);
-            } else {
-                $helperVehicleData2->vehicle_image = asset('images/vehicle_types/default.png');
+
+            if ($helperVehicleData2) {
+                // Update Image with link
+                if ($helperVehicleData2->vehicle_image) {
+                    $helperVehicleData2->vehicle_image = asset('images/vehicle_types/' . $helperVehicleData2->vehicle_image);
+                } else {
+                    $helperVehicleData2->vehicle_image = asset('images/vehicle_types/default.png');
+                }
+                $helperVehicleData2List = $helperVehicleData2;
             }
         }
-        $bookingData['helperVehicleData2'] = $helperVehicleData2;
+        $bookingData['helperVehicleData2'] = $helperVehicleData2List;
 
         // Get Boking Review
         $bookingData['booking_review'] = [
