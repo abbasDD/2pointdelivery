@@ -165,12 +165,6 @@ class BookingController extends Controller
             }
         }
 
-        $data_test = $this->createSecureshipBooking($request, $booking, $serviceCategory, $booking_type, $sechureshipData);
-
-        return response()->json([
-            'success' => false,
-            'data' => $data_test,
-        ]);
 
         // Create new booking
         $booking = Booking::create([

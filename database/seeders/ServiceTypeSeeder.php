@@ -19,6 +19,7 @@ class ServiceTypeSeeder extends Seeder
                 'uuid' => Str::random(32),
                 'name' => 'Delivery',
                 'description' => 'Delivery Service',
+                'type' => 'delivery',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -26,6 +27,7 @@ class ServiceTypeSeeder extends Seeder
                 'uuid' => Str::random(32),
                 'name' => 'Moving',
                 'description' => 'Moving Service',
+                'type' => 'moving',
                 'created_at' => now(),
                 'updated_at' => now()
             ],

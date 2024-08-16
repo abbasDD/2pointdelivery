@@ -442,7 +442,9 @@
         formData.append('booking_time', booking_time);
 
         // Get declared value of package
-        package_value = document.querySelector('input[name="package_value"]').value;
+        @if (config('declare_package_value') == 'yes')
+            package_value = document.querySelector('input[name="package_value"]').value;
+        @endif
         // if not empty
         if (package_value == '') {
             package_value = 0;
@@ -558,7 +560,7 @@
                                 <p>CAD ${value.regularPrice}</p>
                                 <p>Reg: CAD ${value.total}</p>
                             </td>
-                            <td><button type="button" class="btn btn-primary btn-sm" onclick="bookService('${value.selectedService}')">Add</button></td>
+                            <td><button type="button" class="btn btn-primary btn-sm" onclick="bookService('${value.selectedService}')">Select</button></td>
                         </tr>
                     `;
             });
@@ -613,7 +615,7 @@
                             <td>
                                 <p>CAD ${data.amountToPay ?? '-'}</p>
                             </td>
-                            <td><button type="button" class="btn btn-primary btn-sm" onclick="bookService('2 Point')">Add</button></td>
+                            <td><button type="button" class="btn btn-primary btn-sm" onclick="bookService('2 Point')">Select</button></td>
                         </tr>
                     `;
             output += `

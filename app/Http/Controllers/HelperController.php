@@ -62,6 +62,48 @@ class HelperController extends Controller
         $user->save();
 
 
+        // Get Client data from DB
+        $client = Client::where('user_id', auth()->user()->id)->first();
+
+        // If client not found
+        if (!$client) {
+            // Check if Helper is created with same id
+            $helper = Helper::where('user_id', auth()->user()->id)->first();
+
+            // If helper is found then duplicate data to client
+            if ($helper) {
+                // Check if helper first name and last name is not null
+                if ($helper->first_name == null || $helper->last_name == null) {
+                    return redirect()->route('helper.profile')->with('error', 'Please fill your helper detail first');
+                }
+
+                $client = Client::create([
+                    'user_id' => auth()->user()->id,
+                    'company_enabled' => 0,
+                    'first_name' => $helper->first_name ?? '',
+                    'middle_name' => $helper->middle_name ?? '',
+                    'last_name' => $helper->last_name ?? '',
+                    'gender' => $helper->gender ?? '',
+                    'date_of_birth' => $helper->date_of_birth ?? '',
+                    'profile_image' => $helper->profile_image ?? '',
+                    'phone_no' => $helper->phone_no ?? '',
+                    'suite' => $helper->suite ?? '',
+                    'street' => $helper->street ?? '',
+                    'city' => $helper->city     ?? '',
+                    'state' => $helper->state ?? '',
+                    'country' => $helper->country ?? '',
+                    'zip_code' => $helper->zip_code ?? '',
+                ]);
+            }
+            // If not then create a simple client
+            else {
+                $client = Client::create([
+                    'user_id' => auth()->user()->id,
+                ]);
+            }
+        }
+
+
         // Store login_type to Session
         session(['login_type' => 'client']);
 
@@ -421,6 +463,15 @@ class HelperController extends Controller
 
         // Sync services for the vehicle type
         $helper->service_types()->sync($request->services);
+
+        // Update session data as well for name
+
+        session(['full_name' => $helper->first_name . ' ' . $helper->last_name]);
+        // set profile_image
+        if ($helper->profile_image) {
+            session(['profile_image' => asset('images/users/' . $helper->profile_image)]);
+        }
+
 
         return redirect()->back()->with('success', 'Profile info updated successfully!');
     }

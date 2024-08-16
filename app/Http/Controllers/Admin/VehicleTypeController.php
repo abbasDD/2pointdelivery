@@ -45,10 +45,11 @@ class VehicleTypeController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
-            'services' => 'required|array',
+            // 'services' => 'required|array',
             'price' => 'required|string',
             'price_type' => 'required|string',
         ]);
+
 
         // Upload the image if provided
         if ($request->hasFile('image')) {
@@ -61,18 +62,19 @@ class VehicleTypeController extends Controller
             $updatedFilename = null;
         }
 
+
         // Create the vehicle type
         $vehicle = VehicleType::create([
             'uuid' => Str::random(32),
             'name' => $validatedData['name'],
             'description' => $validatedData['description'],
             'image' => $updatedFilename,
-            'price' => $validatedData['price'],
+            'price' => (float) preg_replace('/[^0-9.]/', '', $request->price),
             'price_type' => $validatedData['price_type'],
         ]);
 
         // Adding services to the vehicle type
-        $vehicle->service_types()->attach($validatedData['services']);
+        // $vehicle->service_types()->attach($validatedData['services']);
 
         // Redirect with a success message
         return redirect()->route('admin.vehicleTypes')->with('success', 'Vehicle created successfully!');
@@ -102,7 +104,7 @@ class VehicleTypeController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
-            'services' => 'required|array',
+            // 'services' => 'required|array',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'price' => 'required|string',
             'price_type' => 'required|string',
@@ -131,7 +133,8 @@ class VehicleTypeController extends Controller
         // Update the vehicle type attributes
         $vehicle_type->name = $request->name;
         $vehicle_type->description = $request->description;
-        $vehicle_type->price = $request->price;
+        // Convert price to numeric
+        $vehicle_type->price = (float) preg_replace('/[^0-9.]/', '', $request->price);
         $vehicle_type->price_type = $request->price_type;
 
         // dd($vehicle_type);
@@ -140,7 +143,7 @@ class VehicleTypeController extends Controller
         $vehicle_type->save();
 
         // Sync services for the vehicle type
-        $vehicle_type->service_types()->sync($request->services);
+        // $vehicle_type->service_types()->sync($request->services);
 
         // Redirect with a success message
         return redirect()->route('admin.vehicleTypes')->with('success', 'Vehicle updated successfully!');

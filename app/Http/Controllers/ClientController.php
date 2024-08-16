@@ -62,6 +62,49 @@ class ClientController extends Controller
         $user->helper_enabled = 1;
         $user->save();
 
+
+        // Get Helper data from DB
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
+
+        // If helper not found
+        if (!$helper) {
+            // Check if Client is created with same id
+            $client = Client::where('user_id', auth()->user()->id)->first();
+
+            // If client is found then duplicate data to helper
+            if ($client) {
+
+                // Check if client first name and last name is not null
+                if ($client->first_name == null || $client->last_name == null || $client->city == null) {
+                    return redirect()->route('client.profile')->with('error', 'Please fill your client detail first');
+                }
+
+                $helper = Helper::create([
+                    'user_id' => auth()->user()->id,
+                    'company_enabled' => 0,
+                    'first_name' => $client->first_name ?? '',
+                    'middle_name' => $client->middle_name ?? '',
+                    'last_name' => $client->last_name ?? '',
+                    'gender' => $client->gender ?? '',
+                    'date_of_birth' => $client->date_of_birth ?? '',
+                    'profile_image' => $client->profile_image ?? '',
+                    'phone_no' => $client->phone_no ?? '',
+                    'suite' => $client->suite ?? '',
+                    'street' => $client->street ?? '',
+                    'city' => $client->city     ?? '',
+                    'state' => $client->state ?? '',
+                    'country' => $client->country ?? '',
+                    'zip_code' => $client->zip_code ?? '',
+                ]);
+            }
+            // If not then create a simple helper
+            else {
+                $helper = Helper::create([
+                    'user_id' => auth()->user()->id,
+                ]);
+            }
+        }
+
         // Store login_type to Session
         session(['login_type' => 'helper']);
 
@@ -268,6 +311,15 @@ class ClientController extends Controller
         ]);
         // dd($request->all());
 
+
+        // Update session data as well for name
+
+        session(['full_name' => $client->first_name . ' ' . $client->last_name]);
+        // set profile_image
+        if ($client->profile_image) {
+            session(['profile_image' => asset('images/users/' . $client->profile_image)]);
+        }
+
         return redirect()->back()->with('success', 'Profile info updated successfully!');
     }
 
@@ -414,16 +466,6 @@ class ClientController extends Controller
         return redirect()->back()->with('success', 'Profile Address updated successfully!');
     }
 
-    public function orders()
-    {
-        return view('client.orders');
-    }
-
-    public function invoices()
-    {
-        return view('client.invoices');
-    }
-
     public function referrals()
     {
         // Get all referred list
@@ -432,11 +474,6 @@ class ClientController extends Controller
             ->where('referred_user_id', auth()->user()->id)->get();
 
         return view('client.referrals', compact('referrals'));
-    }
-
-    public function settings()
-    {
-        return view('client.settings');
     }
 
 

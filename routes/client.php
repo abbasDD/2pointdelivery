@@ -17,6 +17,7 @@ Route::middleware(['app_language'])->group(function () {
 
     //Client Auth Routes
     // Route::get('client/login', 'App\Http\Controllers\Auth\LoginController@showLoginFormClient')->name('client.login');
+    Route::get('/login', [LoginController::class, 'showLoginFormClient'])->name('login');
     Route::get('/client/login', [LoginController::class, 'showLoginFormClient'])->name('client.login');
     Route::post('/client/login', [LoginController::class, 'postClientLoginForm'])->name('client.login');
     // Route::post('client/login', 'App\Http\Controllers\Auth\LoginController@login')->name('client.login');
@@ -38,8 +39,16 @@ Route::middleware(['app_language'])->group(function () {
         // Switch to Helper
         Route::get('switch-to-helper', [ClientController::class, 'switchToHelper'])->name('switchToHelper');
 
-        // Reuqest Client Companpy
+        // Request Client Companpy
         Route::post('/company/request', [ClientController::class, 'requestCompany'])->name('company.request');
+
+        //Edit Profile -- Update Profile Routes
+        Route::get('/profile', [ClientController::class, 'edit_profile'])->name('profile');
+        Route::post('/update/personal', [ClientController::class, 'personalInfo'])->name('update.personal');
+        Route::post('/update/address', [ClientController::class, 'addressInfo'])->name('update.address');
+        Route::post('/update/company', [ClientController::class, 'companyInfo'])->name('update.company');
+        Route::post('/update/social', [ClientController::class, 'socialInfo'])->name('update.social');
+        Route::post('/update/password', [ClientController::class, 'passwordInfo'])->name('update.password');
 
         //KYC Details
         Route::get('/kyc-details', [KycDetailController::class, 'index'])->name('kyc_details');
@@ -87,23 +96,8 @@ Route::middleware(['app_language'])->group(function () {
         Route::get('/chat/messages/{id}', [MessageController::class, 'index'])->name('chat.messages');
         Route::post('/chat/messages/store', [MessageController::class, 'store'])->name('chat.messages.store');
 
-
-        //Invoices
-        Route::get('/invoices', [ClientController::class, 'invoices'])->name('invoices');
-
         //referrals
         Route::get('/referrals', [ClientController::class, 'referrals'])->name('referrals');
-
-        //settings
-        Route::get('/settings', [ClientController::class, 'settings'])->name('settings');
-
-        //Edit Profile -- Update Profile Routes
-        Route::get('/profile', [ClientController::class, 'edit_profile'])->name('profile');
-        Route::post('/update/personal', [ClientController::class, 'personalInfo'])->name('update.personal');
-        Route::post('/update/address', [ClientController::class, 'addressInfo'])->name('update.address');
-        Route::post('/update/company', [ClientController::class, 'companyInfo'])->name('update.company');
-        Route::post('/update/social', [ClientController::class, 'socialInfo'])->name('update.social');
-        Route::post('/update/password', [ClientController::class, 'passwordInfo'])->name('update.password');
 
         //Track Booking
         Route::get('/track-order/{id?}', [ClientController::class, 'track_order'])->name('trackOrder');

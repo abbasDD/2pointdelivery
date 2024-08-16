@@ -33,7 +33,8 @@ Route::middleware(['app_language'])->group(function () {
 
 
     //Redirect to Home page as login is valid for user
-    Route::get('/login', [FrontendController::class, 'index'])->name('login');
+    // Route::get('/login', [FrontendController::class, 'index'])->name('login');
+
 
     // Custom route for password reset
     Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');

@@ -5,7 +5,7 @@
             <th>Image</th>
             <th>Vehice Name</th>
             <th>Description</th>
-            <th>Service Availble</th>
+            {{-- <th>Service Availble</th> --}}
             <th>Vehicle Price</th>
             <th>Status</th>
             <th>Action</th>
@@ -19,13 +19,7 @@
                         alt="" width="50px" height="50px"></td>
                 <td>{{ $vehicle_type->name }}</td>
                 <td>{{ $vehicle_type->description }}</td>
-                <td>
-                    @if ($vehicle_type->service_types->isNotEmpty())
-                        {{ implode(', ', $vehicle_type->service_types->pluck('name')->toArray()) }}
-                    @else
-                        <span class="badge badge-danger">No service available</span>
-                    @endif
-                </td>
+
                 <td>{{ $vehicle_type->price . '$ per ' . $vehicle_type->price_type }}</td>
                 <td>
                     <button type="button" id="statusButton_{{ $vehicle_type->id }}"
