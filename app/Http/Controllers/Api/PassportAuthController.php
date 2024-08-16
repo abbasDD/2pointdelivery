@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Password;
+use Laravel\Socialite\Facades\Socialite;
 
 class PassportAuthController extends Controller
 {
@@ -164,6 +165,47 @@ class PassportAuthController extends Controller
                 'message' => 'Validation error',
                 'errors' => $validator->errors()
             ], 422);
+        }
+
+        // if user_type is other than client or helper
+        if ($request->user_type != 'client' && $request->user_type != 'helper') {
+            return response()->json([
+                'success' => false,
+                'message' => 'User type is invalid.',
+            ], 422);
+        }
+
+        // Check if email exist
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+
+        // Check 
+        if ($request->user_type == 'client' && $user->client_enabled == 0) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'unable to find client.',
+                'errors' => 'Unauthorized',
+            ]);
+        }
+
+        // Check
+        if ($request->user_type == 'helper' && $user->helper_enabled == 0) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'unable to find helper.',
+                'errors' => 'Unauthorized',
+            ]);
         }
 
         // Check if user exists
@@ -498,5 +540,47 @@ class PassportAuthController extends Controller
         // }
 
         return new JsonResponse(['success' => false, 'statusCode' => 422, 'message' => trans($response)], 422);
+    }
+
+
+    /**
+     * Social Login
+     */
+    public function redirectToProvider($provider)
+    {
+        return Socialite::driver($provider)->stateless()->redirect();
+    }
+
+    public function handleProviderCallback($provider)
+    {
+        $socialUser = Socialite::driver($provider)->stateless()->user();
+
+        // Check if the user exists by provider ID
+        $user = User::where('provider_id', $socialUser->getId())->first();
+
+        if (!$user) {
+            // Create a new user if not exists
+            $user = User::create([
+                'name' => $socialUser->getName(),
+                'email' => $socialUser->getEmail(), // This might be null
+                'provider_name' => $provider,
+                'provider_id' => $socialUser->getId(),
+                'password' => null, // No password for social logins
+            ]);
+        }
+
+        // Log the user in
+        Auth::login($user);
+
+        // Create a token for the user
+        $tokenResult = $user->createToken('2PointDeliveryJWTAuthenticationToken');
+        $token = $tokenResult->accessToken;
+
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'token' => $token,
+            'message' => 'Logged in successfully.',
+        ], 200);
     }
 }

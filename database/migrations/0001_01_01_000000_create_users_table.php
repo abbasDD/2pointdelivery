@@ -16,9 +16,11 @@ return new class extends Migration
             $table->enum('user_type', ['admin', 'user']);
             $table->boolean('client_enabled')->default(true);
             $table->boolean('helper_enabled')->default(false);
-            $table->string('email')->unique();
+            $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
+            $table->string('provider_name')->nullable();
+            $table->string('provider_id')->nullable();
             $table->string('referral_code')->nullable()->unique();
             $table->text('fcm_token')->nullable();
             $table->string('language_code')->default('en');

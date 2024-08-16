@@ -11,7 +11,6 @@
     var calculated_weight = 0;
     var vehicle_price = 0;
     var vehicle_price_type = 0;
-    var priorityID = 0;
     var tax_price = 0;
     var volume_enabled = 0;
     var package_value = 0;
@@ -183,6 +182,12 @@
         return true;
     }
 
+    // Change setPriority
+    function setPriority() {
+        selectedPriorityID = document.getElementById('priorityDropdown').value;
+        console.log('Selected Priority: ' + selectedPriorityID);
+    }
+
     // Update priority as per the service type selected
     function updatePriority(selectedServiceType) {
 
@@ -299,6 +304,10 @@
             }
         }
 
+        if (selectedParcelTypeSecureshipEnable == 1) {
+            volume_enabled = 0;
+        }
+
         // Show or Hide deliveryPackageDimensions based on volume_enabled
         console.log('Volume enabled:' + volume_enabled);
         if (volume_enabled == 1) {
@@ -314,6 +323,9 @@
             document.querySelector('input[name="package_width"]').removeAttribute('required');
             document.querySelector('input[name="package_height"]').removeAttribute('required');
         }
+
+        // Add d-none class to calculatedAmountCart
+        document.getElementById('calculatedAmountCart').classList.add('d-none');
 
     }
 
@@ -370,9 +382,8 @@
         //alert('Booking Submitted');
     };
 
-    // Calculate amount to pay
-    function calculateDeliveryEstimateUsingAjax() {
-
+    // Collect formData and return
+    function collectFormData() {
         // Create a form data and appnd data
         var formData = new FormData();
 
@@ -386,14 +397,30 @@
         formData.append('selectedServiceType', selectedServiceType); // service type
         formData.append('selectedServiceTypeID', selectedServiceTypeID); // service type
         formData.append('selectedServiceCategoryUuid', selectedServiceCategoryUuid); // parcel type
-        formData.append('priorityID', priorityID); // priority
+        formData.append('priorityID', selectedPriorityID); // priority
         formData.append('package_weight', package_weight); // package_weight
         formData.append('package_length', package_length); // package_length
         formData.append('package_width', package_width); // package_width
         formData.append('package_height', package_height); // package_height
-        formData.append('selectedNoOfRoomID', selectedNoOfRoomID); // selectedNoOfRoomID
+        // selectedNoOfRoomID
+        selectedNoOfRoomID = $("select[name='no_of_rooms']").val();
+        formData.append('selectedNoOfRoomID', selectedNoOfRoomID);
+        selectedFloorPlanID = $("select[name='floor_plan']").val();
         formData.append('selectedFloorPlanID', selectedFloorPlanID); // selectedFloorPlanID
+        selectedFloorAssessID = $("select[name='floor_assess']").val();
         formData.append('selectedFloorAssessID', selectedFloorAssessID); // selectedFloorAssessID
+        // chheck if job details is enabled
+        if (job_details_enabled == 1) {
+            // get value from radio button field name job_details[]
+            const checkboxes = document.querySelectorAll('input[name="job_details[]"]:checked');
+
+            selectedJobDetailsID = [];
+
+            checkboxes.forEach((checkbox) => {
+                selectedJobDetailsID.push(checkbox.value);
+            });
+        }
+        console.log('job_details_enabled ' + selectedJobDetailsID);
         formData.append('selectedJobDetailsID', selectedJobDetailsID); // selectedJobDetailsID
         formData.append('selectedMovingDetailsID', selectedMovingDetailsID); // selectedMovingDetailsID
 
@@ -435,6 +462,26 @@
             no_of_hours = 1;
         }
         formData.append('no_of_hours', no_of_hours);
+
+        // Add secureshipPackages array to formData as json object
+        formData.append('secureshipPackages', JSON.stringify(secureshipPackages));
+
+        // secureship_signature
+        var secureship_signature = document.getElementById('secureship_signature').value;
+        formData.append('secureship_signature', secureship_signature);
+
+        // documents_only
+        var documents_only = document.getElementById('documents_only').value;
+        formData.append('documents_only', documents_only);
+
+        return formData;
+    }
+
+    // Calculate amount to pay
+    function calculateDeliveryEstimateUsingAjax() {
+
+        // Collect formData
+        var formData = collectFormData();
 
 
         console.log(formData);
@@ -508,10 +555,10 @@
                             <td>${value.deliveryTime.friendlyTime}</td>
                             <td>${value.billableWeight.value} ${value.billableWeight.units}</td>
                             <td>
-                                <p>${value.regularPrice}</p>
-                                <p>Reg: ${value.total}</p>
+                                <p>CAD ${value.regularPrice}</p>
+                                <p>Reg: CAD ${value.total}</p>
                             </td>
-                            <td><a href="{{ route('newBooking') }}" class="btn btn-sm btn-primary">Select</a></td>
+                            <td><button type="button" class="btn btn-primary btn-sm" onclick="bookService('${value.selectedService}')">Add</button></td>
                         </tr>
                     `;
             });
@@ -564,9 +611,9 @@
                             <td>{{ date('Y-m-d') }} at {{ date('H:i') }}</td>
                             <td>${data.base_weight} Kgs</td>
                             <td>
-                                <p>${data.amountToPay ?? '-'}</p>
+                                <p>CAD ${data.amountToPay ?? '-'}</p>
                             </td>
-                            <td><a href="{{ route('newBooking') }}" class="btn btn-sm btn-primary">Select</a></td>
+                            <td><button type="button" class="btn btn-primary btn-sm" onclick="bookService('2 Point')">Add</button></td>
                         </tr>
                     `;
             output += `
@@ -574,7 +621,7 @@
                             </table>
                             {{-- Notification --}}
                             <p class="text-center">
-                                Shipment estimate was calculated by Secureship on {{ date('Y-m-d') }} at
+                                Shipment estimate was calculated by 22 Point Delivery on {{ date('Y-m-d') }} at
                                 {{ date('H:i') }}
                                 Eastern Standard Time
                             </p>
@@ -585,5 +632,59 @@
                     <p>No data found</p>
                 `;
         }
+    }
+
+
+    // bookService
+    function bookService(selectedService) {
+        // alert(selectedService);
+
+
+
+        // Collect formData
+        var formData = collectFormData();
+
+        // add csrf token
+
+        formData.append('_token', '{{ csrf_token() }}');
+
+        // Add selectedService
+        formData.append('selectedService', selectedService);
+
+        // pickup_address
+        formData.append('pickup_address', document.getElementById('pickup_address').value);
+        // dropoff_address
+        formData.append('dropoff_address', document.getElementById('dropoff_address').value);
+
+        let base_url = '{{ url('/') }}';
+
+        console.log(formData);
+
+        // POST AJAX Call to /client/booking/store
+
+        $.ajax({
+            url: base_url + '/client/booking/store',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                console.log(response);
+                if (response.success == true) {
+                    window.location.href = base_url + '/client/booking/payment/' + response.data.id;
+                }
+            },
+            error: function(error) {
+                alert(error);
+                console.log(error);
+            }
+        });
+
+
+
+        return false;
     }
 </script>

@@ -713,6 +713,44 @@ class GetEstimateController extends Controller
             return false;
         }
 
+        // Check if $request->secureshipPackages is present and not empty
+        if ($request->secureshipPackages) {
+            // Decode the JSON string into an array
+            $packages = json_decode($request->secureshipPackages, true);
+
+            // Check if the decoded array is empty
+            if (empty($packages)) {
+                // Handle the case where the array is empty
+                $secureshipPackages = $this->getDefaultPackage($request);
+            } else {
+                // Process the packages to ensure correct data types
+                $secureshipPackages = array_map(function ($package) use ($request) {
+                    return [
+                        'packageType' => $package['packageType'] ?? 'MyPackage',
+                        'userDefinedPackageType' => $package['userDefinedPackageType'] ?? 'Refrigerator',
+                        'weight' => isset($package['weight']) ? (float) $package['weight'] : ($request->package_weight ? (float) $request->package_weight : 1.0),
+                        'weightUnits' => $package['weightUnits'] ?? 'Lbs',
+                        'length' => isset($package['length']) ? (float) $package['length'] : ($request->package_length ? (float) $request->package_length : 1.0),
+                        'width' => isset($package['width']) ? (float) $package['width'] : ($request->package_width ? (float) $request->package_width : 1.0),
+                        'height' => isset($package['height']) ? (float) $package['height'] : ($request->package_height ? (float) $request->package_height : 1.0),
+                        'dimUnits' => $package['dimUnits'] ?? 'Inches',
+                        'insurance' => isset($package['insurance']) ? (float) $package['insurance'] : 0.0,
+                        'isAdditionalHandling' => isset($package['isAdditionalHandling']) && $package['isAdditionalHandling'] === 'on' ? true : false,
+                        'signatureOptions' => $package['signatureOptions'] ?? 'None',
+                        'description' => $package['description'] ?? 'Gift',
+                        'temperatureProtection' => isset($package['temperatureProtection']) ? (bool) $package['temperatureProtection'] : true,
+                        'isDangerousGoods' => isset($package['isDangerousGoods']) ? (bool) $package['isDangerousGoods'] : true,
+                        'isNonStackable' => isset($package['isNonStackable']) ? (bool) $package['isNonStackable'] : true
+                    ];
+                }, $packages);
+            }
+        } else {
+            // Handle the case where secureshipPackages is not provided
+            $secureshipPackages = $this->getDefaultPackage($request);
+        }
+
+
+
         // dd($address);
         // return response()->json($request->package_weight);
         // Static JSON data
@@ -755,25 +793,7 @@ class GetEstimateController extends Controller
                     'time' => now()->format('H:i:s')
                 ]
             ],
-            'packages' => [
-                [
-                    'packageType' => 'MyPackage',
-                    'userDefinedPackageType' => 'Refrigerator',
-                    'weight' => $request->package_weight ? (float)$request->package_weight : 1.0,
-                    'weightUnits' => 'Lbs',
-                    'length' => $request->package_length ? (float)$request->package_length : 1.0,
-                    'width' => $request->package_width ? (float)$request->package_width : 1.0,
-                    'height' => $request->package_height ? (float)$request->package_height : 1.0,
-                    'dimUnits' => 'Inches',
-                    'insurance' => 0.0,
-                    'isAdditionalHandling' => false,
-                    'signatureOptions' => 'None',
-                    'description' => 'Gift',
-                    'temperatureProtection' => true,
-                    'isDangerousGoods' => true,
-                    'isNonStackable' => true
-                ]
-            ],
+            'packages' => $secureshipPackages,
             'shipDateTime' => Carbon::now()->toIso8601String(),
             'currencyCode' => 'CAD',
             'billingOptions' => 'Prepaid',
@@ -815,8 +835,33 @@ class GetEstimateController extends Controller
             //     'error' => $response->json(),
             // ]);
 
+            // return $response->json();
+
             return false;
         }
+    }
+
+    private function getDefaultPackage($request)
+    {
+        return [
+            [
+                'packageType' => 'MyPackage',
+                'userDefinedPackageType' => 'Refrigerator',
+                'weight' => $request->package_weight ? (float)$request->package_weight : 1.0,
+                'weightUnits' => 'Lbs',
+                'length' => $request->package_length ? (float)$request->package_length : 1.0,
+                'width' => $request->package_width ? (float)$request->package_width : 1.0,
+                'height' => $request->package_height ? (float)$request->package_height : 1.0,
+                'dimUnits' => 'Inches',
+                'insurance' => 0.0,
+                'isAdditionalHandling' => false,
+                'signatureOptions' => 'None',
+                'description' => 'Gift',
+                'temperatureProtection' => true,
+                'isDangerousGoods' => true,
+                'isNonStackable' => true
+            ]
+        ];
     }
 
     // getAddressFromLatLong

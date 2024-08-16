@@ -15,6 +15,10 @@ Route::post('register', [PassportAuthController::class, 'register']);
 Route::post('login', [PassportAuthController::class, 'login']);
 Route::post('forget-password', [PassportAuthController::class, 'forgetPassword']);
 
+Route::get('auth/{provider}', [PassportAuthController::class, 'redirectToProvider']);
+Route::get('auth/{provider}/callback', [PassportAuthController::class, 'handleProviderCallback']);
+
+
 
 // ---------------- CLIENT ROUTES START ---------------- //
 

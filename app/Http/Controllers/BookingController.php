@@ -77,9 +77,9 @@ class BookingController extends Controller
     {
         // Validate request
         $validator = Validator::make($request->all(), [
-            'service_type_id' => 'required|integer|exists:service_types,id',
-            'priority_setting_id' => 'required|integer|exists:priority_settings,id',
-            'service_category_id' => 'required|string|exists:service_categories,uuid',
+            'selectedServiceTypeID' => 'required|integer|exists:service_types,id',
+            'priorityID' => 'required|integer|exists:priority_settings,id',
+            'selectedServiceCategoryUuid' => 'required|string|exists:service_categories,uuid',
             'pickup_address' => 'required|string|max:255',
             'dropoff_address' => 'required|string|max:255',
             'pickup_latitude' => 'required|string|max:255',
@@ -88,8 +88,8 @@ class BookingController extends Controller
             'dropoff_longitude' => 'required|string|max:255',
             'booking_date' => 'required|string|max:255',
             'booking_time' => 'required|string|max:255',
-            'booking_type' => 'required|string|max:255',
-            'total_price' => 'required|string|max:255',
+            'selectedServiceType' => 'required|string|max:255',
+            'total_price' => 'nullable|string|max:255',
             'base_price' => 'nullable|string|max:255',
             'distance' => 'nullable|string|max:255',
             'base_distance' => 'nullable|string|max:255',
@@ -100,13 +100,13 @@ class BookingController extends Controller
         ]);
 
         // Check if service type available for booking
-        $serviceType = ServiceType::where('id', $request->service_type_id)->where('is_active', 1)->first();
+        $serviceType = ServiceType::where('id', $request->selectedServiceTypeID)->where('is_active', 1)->first();
         if ($serviceType) {
             $request->request->add(['service_type_id' => $serviceType->id]);
         }
 
         // Get service_category_id from uuid
-        $serviceCategory = ServiceCategory::where('uuid', $request->service_category_id)->first();
+        $serviceCategory = ServiceCategory::where('uuid', $request->selectedServiceCategoryUuid)->first();
         if ($serviceCategory) {
             $request->request->add(['service_category_id' => $serviceCategory->id]);
         }
@@ -114,6 +114,11 @@ class BookingController extends Controller
         // Check if validation fails
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->errors()]);
+        }
+
+        // priorityID
+        if (isset($request->priorityID)) {
+            $request->request->add(['priority_setting_id' => $request->priorityID]);
         }
 
         // Generate numeric uuid
@@ -132,6 +137,7 @@ class BookingController extends Controller
 
         // Add client_user_id
         $client = Client::where('user_id', auth()->user()->id)->first();
+
         // if not found then create
         if (!$client) {
             $newClient = Client::create([
@@ -140,132 +146,78 @@ class BookingController extends Controller
             $client = Client::where('user_id', auth()->user()->id)->first();
         }
 
-        $client_user_id = $client->id;
 
-        $request->request->add(['client_user_id' => auth()->user()->id]);
 
-        // Add booking_at to current datetime
-        $request->request->add(['booking_at' => now()]);
+        // Check booking type
+        $booking_type = $this->checkBookingType($serviceType, $serviceCategory);
+
+        // Check if Secureship is enabled
+        if ($serviceCategory->is_secureship_enabled) {
+
+            // Call Secureship API function
+            $sechureshipData = $this->getEstimateController->getSecureshipEstimate($request);
+
+            if (count($sechureshipData) == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Secureship API error',
+                ]);
+            }
+        }
+
+        $data_test = $this->createSecureshipBooking($request, $booking, $serviceCategory, $booking_type, $sechureshipData);
+
+        return response()->json([
+            'success' => false,
+            'data' => $data_test,
+        ]);
 
         // Create new booking
-        $booking = Booking::create($request->all());
+        $booking = Booking::create([
+            'uuid' => $uuid,
+            'client_user_id' => auth()->user()->id,
+            'service_type_id' => $request->selectedServiceTypeID,
+            'service_category_id' => $serviceCategory->id,
+            'priority_setting_id' => $request->priorityID,
+            'booking_type' => $booking_type ?? 'delivery',
+            'pickup_address' => $request->pickup_address,
+            'dropoff_address' => $request->dropoff_address,
+            'pickup_latitude' => $request->pickup_latitude,
+            'pickup_longitude' => $request->pickup_longitude,
+            'dropoff_latitude' => $request->dropoff_latitude,
+            'dropoff_longitude' => $request->dropoff_longitude,
+            'booking_date' => $request->booking_date,
+            'booking_time' => $request->booking_time,
+            'total_price' => 0,
+            'booking_at' => now(),
+        ]);
 
-        // Calculate prices
-
-        // Get package value and calculate insurance
-        $insurance_value = $this->getEstimateController->getInsuranceValue($request->selectedServiceType, $request->package_value);
-
-        // Get Base Price Value
-        $service_price = $this->getEstimateController->getBasePrice($serviceType->type, $serviceCategory->base_price, $serviceCategory->moving_price_type, $request->floor_size, $request->no_of_hours);
-
-        // Distance Price
-        $distance_price = $this->getEstimateController->getDistancePrice($serviceCategory->base_distance, $serviceCategory->extra_distance_price, $request->distance_in_km);
-
-        // Get priority_price
-        $priority_price  = 0;
-        // Check if priority setting exist
-        if (isset($request->priority_setting_id)) {
-            $priority_setting = PrioritySetting::find($request->priority_setting_id);
-            if ($priority_setting) {
-                $priority_price = $priority_setting->price;
-            }
+        // Now we have 3 cases 1. Delivery 2. Moving 3. Secureship
+        switch ($booking_type) {
+            case 'delivery':
+                $response = $this->createDeliveryBooking($request, $booking, $serviceCategory, $booking_type);
+                break;
+            case 'moving':
+                $response = $this->createMovingBooking($request, $booking, $serviceCategory, $booking_type);
+                break;
+            case 'secureship':
+                $response = $this->createSecureshipBooking($request, $booking, $serviceCategory, $booking_type, $sechureshipData);
+                break;
+            default:
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invalid booking type',
+                ]);
+                break;
         }
 
-        // Vehicle Price
-        $vehicle_price = $this->getEstimateController->getVehiclePrice($serviceType->type, $serviceCategory->vehicle_type_id, $request->distance_in_km);
-
-        // Weight Price
-        $weight_price = $this->getEstimateController->getWeightPrice($serviceType->type, $serviceCategory, $request->package_weight, $request->package_length, $request->package_width, $request->package_height, $request->selectedMovingDetailsID);
-
-
-        // If service type is moving
-        $no_of_room_price = 0;
-        $floor_plan_price = 0;
-        $floor_assess_price = 0;
-        $job_details_price = 0;
-
-        if ($serviceType->type == 'moving') {
-            // Get Room Price
-            $no_of_room_price = $this->getEstimateController->getNoOfRoomPrice($request->selectedNoOfRoomID, $serviceCategory, $request->floor_size, $request->no_of_hours);
-
-            // Get Floor Plan Price
-            $floor_plan_price = $this->getEstimateController->getFloorPlanPrice($request->selectedFloorPlanID, $serviceCategory, $request->floor_size, $request->no_of_hours);
-
-            // Get Floor Access Price
-            $floor_assess_price = $this->getEstimateController->getFloorAccessPrice($request->selectedFloorAssessID, $serviceCategory, $request->floor_size, $request->no_of_hours);
-
-            // Get Job Details Price
-            if ($request->selectedJobDetailsID != '') {
-                $job_details_price = $this->getEstimateController->getJobDetailsPrice($request->selectedJobDetailsID, $serviceCategory, $request->floor_size, $request->no_of_hours);
-            }
-        }
-
-        // Sub Total
-        $sub_total = $service_price + $distance_price + $priority_price + $vehicle_price + $weight_price + $no_of_room_price + $floor_plan_price + $floor_assess_price + $job_details_price;
-
-
-        //  Tax Price
-        $tax_price = $this->getEstimateController->getTaxPrice($sub_total);
-
-
-        // Total amountToPay
-        $amountToPay = $service_price + $distance_price + $priority_price + $vehicle_price + $weight_price + $no_of_room_price + $floor_plan_price + $floor_assess_price + $job_details_price + $tax_price;
-
-        // helper_fee
-        $helper_fee = $serviceCategory->helper_fee;
-
-
-        if ($serviceType->type == 'delivery') {
-            // Create Booking Payment
-            $deliveryBooking = BookingDelivery::create([
-                'booking_id' => $booking->id,
-                'distance_price' => number_format((float)$distance_price, 2, '.', ''),
-                'weight_price' => number_format((float)$weight_price, 2, '.', ''),
-                'priority_price' => number_format((float)$priority_price, 2, '.', ''),
-                'service_price' => number_format((float)$service_price, 2, '.', ''),
-                'sub_total' => number_format((float)$sub_total, 2, '.', ''),
-                'vehicle_price' => number_format((float)$vehicle_price, 2, '.', ''),
-                'insurance_price' => number_format((float)$insurance_value, 2, '.', ''), // 'insurance_price'
-                'tax_price' => number_format((float)$tax_price, 2, '.', ''),
-                'helper_fee' => number_format((float)$helper_fee, 2, '.', ''),
-                'total_price' => number_format((float)$amountToPay, 2, '.', ''),
-                'payment_method' => 'cod',
-                'payment_status' => 'unpaid',
+        // If response is false
+        if (!$response) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to create booking',
+                'data' => $response,
             ]);
-
-            // if unable to create deliveryBooking then rollback booking
-            if (!$deliveryBooking) {
-                $booking->delete();
-                return response()->json(['success' => false, 'data' => 'Unable to create booking']);
-            }
-        }
-
-
-        if ($serviceType->type == 'moving') {
-            // Create Booking Payment
-            $movingBooking = BookingMoving::create([
-                'booking_id' => $booking->id,
-                'service_price' => number_format((float)$service_price, 2, '.', ''),
-                'distance_price' => number_format((float)$distance_price, 2, '.', ''),
-                'floor_assess_price' => number_format((float)$floor_assess_price, 2, '.', ''),
-                'floor_plan_price' => number_format((float)$floor_plan_price, 2, '.', ''),
-                'job_details_price' => number_format((float)$job_details_price, 2, '.', ''),
-                'no_of_room_price' => number_format((float)$no_of_room_price, 2, '.', ''),
-                'priority_price' => number_format((float)$priority_price, 2, '.', ''),
-                'weight_price' => number_format((float)$weight_price, 2, '.', ''),
-                'sub_total' => number_format((float)$sub_total, 2, '.', ''),
-                'tax_price' => number_format((float)$tax_price, 2, '.', ''),
-                'helper_fee' => number_format((float)$helper_fee, 2, '.', ''),
-                'total_price' => number_format((float)$amountToPay, 2, '.', ''),
-                'payment_method' => 'cod',
-                'payment_status' => 'unpaid',
-            ]);
-
-            // if unable to create movingBooking then rollback booking
-            if (!$movingBooking) {
-                $booking->delete();
-                return response()->json(['success' => false, 'data' => 'Unable to create booking']);
-            }
         }
 
 
@@ -307,6 +259,178 @@ class BookingController extends Controller
         return response()->json(['success' => true, 'data' => $booking, 'message' => 'Booking created successfully'], 201);
     }
 
+    // Check Booking Type
+    private function checkBookingType($serviceType, $serviceCategory)
+    {
+        if ($serviceType->type == 'moving') {
+
+            return 'moving';
+        }
+
+        // Check if secureship is enabled
+        if ($serviceCategory->is_secureship_enabled == 1) {
+            return 'secureship';
+        }
+
+        return 'delivery';
+    }
+
+    // createDeliveryBooking
+    private function createDeliveryBooking($request, $booking, $serviceCategory, $booking_type)
+    {
+        // Get priority_price
+        $priority_price  = 0;
+        // Check if priority setting exist
+        if (isset($request->priorityID)) {
+            $priority_setting = PrioritySetting::find($request->priorityID);
+            if ($priority_setting) {
+                $priority_price = $priority_setting->price;
+            }
+        }
+
+        // Calculate prices
+        $distance_price = $this->getEstimateController->getDistancePrice($serviceCategory->base_distance, $serviceCategory->extra_distance_price, $request->distance_in_km);
+        $weight_price = $this->getEstimateController->getWeightPrice($booking_type, $serviceCategory, $request->package_weight, $request->package_length, $request->package_width, $request->package_height, $request->selectedMovingDetailsID);
+        $service_price = $this->getEstimateController->getBasePrice($booking_type, $serviceCategory->base_price, $serviceCategory->moving_price_type, $request->floor_size, $request->no_of_hours);
+        $vehicle_price = $this->getEstimateController->getVehiclePrice($booking_type, $serviceCategory->vehicle_type_id, $request->distance_in_km);
+        $insurance_price = $this->getEstimateController->getInsuranceValue($booking_type, $request->package_value);
+
+        $sub_total = $distance_price + $weight_price + $service_price + $priority_price + $vehicle_price + $insurance_price;
+
+
+        //  Tax Price
+        $tax_price = $this->getEstimateController->getTaxPrice($sub_total);
+
+        // Total Price
+        $amountToPay = $sub_total + $tax_price;
+
+        // helper_fee
+        $helper_fee = $serviceCategory->helper_fee;
+
+        $deliveryBooking = BookingDelivery::create([
+            'booking_id' => $booking->id,
+            'distance_price' => number_format((float)$distance_price, 2, '.', ''),
+            'weight_price' => number_format((float)$weight_price, 2, '.', ''),
+            'priority_price' => number_format((float)$priority_price, 2, '.', ''),
+            'service_price' => number_format((float)$service_price, 2, '.', ''),
+            'sub_total' => number_format((float)$sub_total, 2, '.', ''),
+            'vehicle_price' => number_format((float)$vehicle_price, 2, '.', ''),
+            'insurance_price' => number_format((float)$insurance_price, 2, '.', ''), // 'insurance_price'
+            'tax_price' => number_format((float)$tax_price, 2, '.', ''),
+            'helper_fee' => number_format((float)$helper_fee, 2, '.', ''),
+            'total_price' => number_format((float)$amountToPay, 2, '.', ''),
+            'payment_method' => 'cod',
+            'payment_status' => 'unpaid',
+        ]);
+
+        if ($deliveryBooking) {
+
+            // Update booking
+            $booking->total_price = number_format((float)$amountToPay, 2, '.', '');
+            $booking->save();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    // createMovingBooking
+    private function createMovingBooking($request, $booking, $serviceCategory, $booking_type)
+    {
+        // Get priority_price
+        $priority_price  = 0;
+        // Check if priority setting exist
+        if (isset($request->priorityID)) {
+            $priority_setting = PrioritySetting::find($request->priorityID);
+            if ($priority_setting) {
+                $priority_price = $priority_setting->price;
+            }
+        }
+
+        // Calculate prices
+        // Get Base Price Value
+        $service_price = $this->getEstimateController->getBasePrice($booking_type, $serviceCategory->base_price, $serviceCategory->moving_price_type, $request->floor_size, $request->no_of_hours);
+
+        // distance_price
+        $distance_price = $this->getEstimateController->getDistancePrice($serviceCategory->base_distance, $serviceCategory->extra_distance_price, $request->distance_in_km);
+
+        // Get Weight Price
+        $weight_price = $this->getEstimateController->getWeightPrice($booking_type, $serviceCategory, $request->package_weight, $request->package_length, $request->package_width, $request->package_height, $request->selectedMovingDetailsID);
+
+        // Get Room Price
+        $no_of_room_price = $this->getEstimateController->getNoOfRoomPrice($request->selectedNoOfRoomID, $serviceCategory, $request->floor_size, $request->no_of_hours);
+
+        // Get Floor Plan Price
+        $floor_plan_price = $this->getEstimateController->getFloorPlanPrice($request->selectedFloorPlanID, $serviceCategory, $request->floor_size, $request->no_of_hours);
+
+        // Get Floor Access Price
+        $floor_assess_price = $this->getEstimateController->getFloorAccessPrice($request->selectedFloorAssessID, $serviceCategory, $request->floor_size, $request->no_of_hours);
+
+        // Get Job Details Price
+        if ($request->selectedJobDetailsID != '') {
+            $job_details_price = $this->getEstimateController->getJobDetailsPrice($request->selectedJobDetailsID, $serviceCategory, $request->floor_size, $request->no_of_hours);
+        }
+
+        // Sub total
+        $sub_total = $distance_price + $weight_price + $service_price + $priority_price + $no_of_room_price + $floor_plan_price + $floor_assess_price + $job_details_price;
+
+        //  Tax Price
+        $tax_price = $this->getEstimateController->getTaxPrice($sub_total);
+
+        // Total Price
+        $amountToPay = $sub_total + $tax_price;
+
+        // helper_fee
+        $helper_fee = $serviceCategory->helper_fee;
+
+        // Create Booking Payment
+        $movingBooking = BookingMoving::create([
+            'booking_id' => $booking->id,
+            'service_price' => number_format((float)$service_price, 2, '.', ''),
+            'distance_price' => number_format((float)$distance_price, 2, '.', ''),
+            'floor_assess_price' => number_format((float)$floor_assess_price, 2, '.', ''),
+            'floor_plan_price' => number_format((float)$floor_plan_price, 2, '.', ''),
+            'job_details_price' => number_format((float)$job_details_price, 2, '.', ''),
+            'no_of_room_price' => number_format((float)$no_of_room_price, 2, '.', ''),
+            'priority_price' => number_format((float)$priority_price, 2, '.', ''),
+            'weight_price' => number_format((float)$weight_price, 2, '.', ''),
+            'sub_total' => number_format((float)$sub_total, 2, '.', ''),
+            'tax_price' => number_format((float)$tax_price, 2, '.', ''),
+            'helper_fee' => number_format((float)$helper_fee, 2, '.', ''),
+            'total_price' => number_format((float)$amountToPay, 2, '.', ''),
+            'payment_method' => 'cod',
+            'payment_status' => 'unpaid',
+        ]);
+
+        if ($movingBooking) {
+            // Update booking
+            $booking->total_price = number_format((float)$amountToPay, 2, '.', '');
+            $booking->save();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    // createSecureshipBooking
+    private function createSecureshipBooking($request, $booking, $serviceCategory, $booking_type, $sechureshipData)
+    {
+        if ($serviceCategory->is_secureship_enabled == 0) {
+            return false;
+        }
+
+        $selectedSecureshipService = $request->selectedServiceID;
+
+        // Find Secureship Service Details as per selectedSecureshipService from sechureshipData
+
+
+
+
+        // Return data
+        return $sechureshipData;
+    }
 
     public function payment(Request $request)
     {

@@ -76,6 +76,11 @@
                 var secureship_package_weight = document.getElementById('secureship_package_weight').value;
                 // get secureship_weight_unit value
                 var secureship_weight_unit = document.getElementById('secureship_weight_unit').value;
+                if (secureship_package_weight == 0) {
+                    // show error on field
+                    document.getElementById('secureship_package_weight').classList.add('is-invalid');
+                    return false;
+                }
 
                 // get secureship_additional_handling value
                 var secureship_additional_handling = document.getElementById('secureship_additional_handling').value;
@@ -96,6 +101,11 @@
                 var secureship_package_weight = document.getElementById('secureship_package_weight').value;
                 // get secureship_weight_unit value
                 var secureship_weight_unit = document.getElementById('secureship_weight_unit').value;
+                if (secureship_package_weight == 0) {
+                    // show error on field
+                    document.getElementById('secureship_package_weight').classList.add('is-invalid');
+                    return false;
+                }
 
                 // get secureship_additional_handling value
                 var secureship_additional_handling = document.getElementById('secureship_additional_handling').value;
@@ -118,6 +128,11 @@
                 var secureship_package_weight = document.getElementById('secureship_package_weight').value;
                 // get secureship_weight_unit value
                 var secureship_weight_unit = document.getElementById('secureship_weight_unit').value;
+                if (secureship_package_weight == 0) {
+                    // show error on field
+                    document.getElementById('secureship_package_weight').classList.add('is-invalid');
+                    return false;
+                }
 
                 // get secureship_additional_handling value
                 var secureship_additional_handling = document.getElementById('secureship_additional_handling').value;
@@ -191,6 +206,8 @@
         // Add row to table deliverySecureshipPackagesTableBody
         addSecureshipPackageToTable(secureshipPackageItem);
 
+        // Remove in-valid error from secureship_package_weight
+        document.getElementById('secureship_package_weight').classList.remove('is-invalid');
 
     }
 

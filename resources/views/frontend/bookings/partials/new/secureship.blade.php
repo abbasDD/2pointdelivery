@@ -78,8 +78,8 @@
                 <div class="input-group mb-3">
                     {{-- Select Dimension Unit --}}
                     <select class="form-control" name="secureship_dimension_unit" id="secureship_dimension_unit">
-                        <option value="in">Inches</option>
-                        <option value="cm">CM</option>
+                        <option value="Inches">Inches</option>
+                        <option value="CM">CM</option>
                     </select>
                 </div>
             </div>
@@ -141,6 +141,32 @@
         <button type="button" class="btn btn-primary" id="add_secureship_package" onclick="addSecureshipPackage()">Add
             Package</button>
     </div>
+
+
+    {{-- Extras --}}
+    <h4>Extras</h4>
+    {{-- Dropdown for Signature Selections --}}
+    <div class="col-md-6">
+        <label for="secureship_signature">Signature Options</label>
+        <div class="input-group mb-3">
+            <select class="form-control" name="secureship_signature" id="secureship_signature">
+                {{-- <option value="" disabled>Select Signature Options</option> --}}
+                <option value="None">None</option>
+                <option value="SignatureRequired">Signature Required</option>
+                <option value="AdultSignatureRequired">Adult Signature Required</option>
+            </select>
+        </div>
+    </div>
+
+    {{-- Documents Only Checkbox --}}
+    <div class="col-md-6">
+        <label for="documents_only">Documents Only</label>
+        <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" name="documents_only" id="documents_only">
+            <label class="form-check-label" for="documents_only">Documents Only</label>
+        </div>
+    </div>
+
 </div>
 
 {{-- End of Packages --}}

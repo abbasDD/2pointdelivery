@@ -23,6 +23,8 @@ class User extends Authenticatable
         'helper_enabled',
         'email',
         'password',
+        'provider_name',
+        'provider_id',
         'referral_code',
         'fcm_token',
         'language_code',

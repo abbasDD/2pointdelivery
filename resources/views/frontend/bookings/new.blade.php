@@ -131,8 +131,8 @@
                                     <div class="col-md-6">
                                         <label for="priority">Priority</label>
                                         <div class="mb-3">
-                                            <select class="form-control h-100" id="priorityDropdown" name="priority"
-                                                aria-label="Priority" required>
+                                            <select class="form-control h-100" id="priorityDropdown"
+                                                onchange="setPriority()" name="priority" aria-label="Priority" required>
                                                 {{-- Loop through prioritySettings --}}
                                                 @foreach ($prioritySettings as $priority)
                                                     {{-- Check if priority is selected --}}

@@ -78,9 +78,6 @@
                     </label>
                 </div>
             @endforelse
-
-
-
         </div>
     </div>
 
