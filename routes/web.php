@@ -42,8 +42,8 @@ Route::middleware(['app_language'])->group(function () {
     Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
     // Google URL
-    Route::get('/google/redirect', [GoogleLoginController::class, 'redirectToGoogle'])->name('google.redirect');
-    Route::get('/google/callback', [GoogleLoginController::class, 'handleGoogleCallback'])->name('google.callback');
+    Route::get('auth/{provider}', [GoogleLoginController::class, 'redirectToProvider'])->name('google.redirect');
+    Route::get('auth/{provider}/callback', [GoogleLoginController::class, 'handleProviderCallback'])->name('google.callback');
 
     // Facebook URL
 

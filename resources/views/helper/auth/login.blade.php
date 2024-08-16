@@ -98,7 +98,7 @@
                         {{-- Google Login Button  --}}
                         @if (isset($socialLoginSettingPair['google_enabled']) && $socialLoginSettingPair['google_enabled'] == 'yes')
                             <div class="mb-3">
-                                <a href="{{ route('google.redirect') }}" class="btn btn-google"><i
+                                <a href="{{ url('auth/google') }}" class="btn btn-google"><i
                                         class="fa-brands fa-google"></i>
                                 </a>
                             </div>

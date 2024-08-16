@@ -196,6 +196,28 @@ class PassportAuthController extends Controller
             ], 401);
         }
 
+        // Check if user is_deleted
+
+        if ($user->is_deleted == 1) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'User is deleted.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Check if user is active
+
+        if ($user->is_active == 0) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'User is not active.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
 
         // Check 
         if ($request->user_type == 'client' && $user->client_enabled == 0) {
@@ -581,12 +603,36 @@ class PassportAuthController extends Controller
             config(['services.google.redirect' => $socialLoginSetting->value]);
         }
 
-
         return Socialite::driver($provider)->stateless()->redirect();
     }
 
     public function handleProviderCallback($provider)
     {
+
+        //  Check if provider is google
+        if ($provider == 'google') {
+            // Get config from SocialLoginSetting
+            $socialLoginSetting = SocialLoginSetting::where('key', 'google_client_id')->first();
+            if (!$socialLoginSetting) {
+                return new JsonResponse(['success' => false, 'statusCode' => 422, 'message' => 'Google client ID not configured.'], 422);
+            }
+
+            $socialLoginSetting = SocialLoginSetting::where('key', 'google_secret_id')->first();
+            if (!$socialLoginSetting) {
+                return new JsonResponse(['success' => false, 'statusCode' => 422, 'message' => 'Google client secret not configured.'], 422);
+            }
+
+            $socialLoginSetting = SocialLoginSetting::where('key', 'google_redirect_uri')->first();
+            if (!$socialLoginSetting) {
+                return new JsonResponse(['success' => false, 'statusCode' => 422, 'message' => 'Google redirect URL not configured.'], 422);
+            }
+
+            // Load as config
+            config(['services.google.client_id' => $socialLoginSetting->value]);
+            config(['services.google.client_secret' => $socialLoginSetting->value]);
+            config(['services.google.redirect' => $socialLoginSetting->value]);
+        }
+
         $socialUser = Socialite::driver($provider)->stateless()->user();
 
         // Check if the user exists by provider ID
