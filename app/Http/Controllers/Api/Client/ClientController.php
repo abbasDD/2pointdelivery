@@ -1820,4 +1820,48 @@ class ClientController extends Controller
             'data' => $message
         ], 200);
     }
+
+
+    // deleteAccount
+    public function deleteAccount(): JsonResponse
+    {
+
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Retrieve the user
+        $user = User::findOrFail(Auth::user()->id);
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // updatea is_deleted to 1
+        $user->is_deleted = 1;
+        $user->deleted_at = now();
+        $user->save();
+
+
+        // Return a json object
+        // return response()->json(['success' => true, 'data' => $user]);
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Account deleted successfully',
+            'data' => $user
+        ], 200);
+    }
 }

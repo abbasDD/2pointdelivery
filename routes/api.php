@@ -18,6 +18,8 @@ Route::post('forget-password', [PassportAuthController::class, 'forgetPassword']
 Route::get('auth/{provider}', [PassportAuthController::class, 'redirectToProvider']);
 Route::get('auth/{provider}/callback', [PassportAuthController::class, 'handleProviderCallback']);
 
+// Send a test notification
+Route::post('send-test-notification', [PassportAuthController::class, 'sendTestNotification']);
 
 
 // ---------------- CLIENT ROUTES START ---------------- //
@@ -109,6 +111,9 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);
+
+    // Delete account API
+    Route::post('account/delete', [ClientController::class, 'deleteAccount']);
 
     // Chats
     Route::get('chats', [ClientController::class, 'getChatList']);
@@ -209,6 +214,9 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);
+
+    // Delete account API
+    Route::post('account/delete', [HelperController::class, 'deleteAccount']);
 
     // Chats
     Route::get('chats', [HelperController::class, 'getChatList']);

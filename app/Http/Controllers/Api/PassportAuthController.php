@@ -11,7 +11,9 @@ use App\Models\HelperVehicle;
 use App\Models\PaymentSetting;
 use App\Models\Referral;
 use App\Models\SmtpSetting;
+use App\Models\SocialLoginSetting;
 use App\Models\User;
+use App\Services\FcmService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +24,13 @@ use Laravel\Socialite\Facades\Socialite;
 
 class PassportAuthController extends Controller
 {
+
+    protected $fcmService;
+
+    public function __construct(FcmService $fcmService)
+    {
+        $this->fcmService = $fcmService;
+    }
 
     /**
      * User registration
@@ -548,6 +557,31 @@ class PassportAuthController extends Controller
      */
     public function redirectToProvider($provider)
     {
+        //  Check if provider is google
+        if ($provider == 'google') {
+            // Get config from SocialLoginSetting
+            $socialLoginSetting = SocialLoginSetting::where('key', 'google_client_id')->first();
+            if (!$socialLoginSetting) {
+                return new JsonResponse(['success' => false, 'statusCode' => 422, 'message' => 'Google client ID not configured.'], 422);
+            }
+
+            $socialLoginSetting = SocialLoginSetting::where('key', 'google_secret_id')->first();
+            if (!$socialLoginSetting) {
+                return new JsonResponse(['success' => false, 'statusCode' => 422, 'message' => 'Google client secret not configured.'], 422);
+            }
+
+            $socialLoginSetting = SocialLoginSetting::where('key', 'google_redirect_uri')->first();
+            if (!$socialLoginSetting) {
+                return new JsonResponse(['success' => false, 'statusCode' => 422, 'message' => 'Google redirect URL not configured.'], 422);
+            }
+
+            // Load as config
+            config(['services.google.client_id' => $socialLoginSetting->value]);
+            config(['services.google.client_secret' => $socialLoginSetting->value]);
+            config(['services.google.redirect' => $socialLoginSetting->value]);
+        }
+
+
         return Socialite::driver($provider)->stateless()->redirect();
     }
 
@@ -582,5 +616,24 @@ class PassportAuthController extends Controller
             'token' => $token,
             'message' => 'Logged in successfully.',
         ], 200);
+    }
+
+    // sendTestNotification
+
+    public function sendTestNotification(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+            'title' => 'required',
+            'body' => 'required',
+        ]);
+
+        $result = $this->fcmService->sendFcmNotification($request->user_id, $request->title, $request->body);
+
+        if ($result['success']) {
+            return response()->json(['message' => $result['message'], 'response' => $result['response']]);
+        } else {
+            return response()->json(['message' => $result['message']], 500);
+        }
     }
 }
