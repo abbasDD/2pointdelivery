@@ -18,25 +18,25 @@ class GoogleLoginController extends Controller
         //  Check if provider is google
         if ($provider == 'google') {
             // Get config from SocialLoginSetting
-            $socialLoginSetting = SocialLoginSetting::where('key', 'google_client_id')->first();
-            if (!$socialLoginSetting) {
+            $google_client_id = SocialLoginSetting::where('key', 'google_client_id')->first();
+            if (!$google_client_id) {
                 return response()->json(['success' => false, 'statusCode' => 422, 'message' => 'Google client ID not configured.'], 422);
             }
 
-            $socialLoginSetting = SocialLoginSetting::where('key', 'google_secret_id')->first();
-            if (!$socialLoginSetting) {
+            $google_secret_id = SocialLoginSetting::where('key', 'google_secret_id')->first();
+            if (!$google_secret_id) {
                 return response()->json(['success' => false, 'statusCode' => 422, 'message' => 'Google client secret not configured.'], 422);
             }
 
-            $socialLoginSetting = SocialLoginSetting::where('key', 'google_redirect_uri')->first();
-            if (!$socialLoginSetting) {
+            $google_redirect_uri = SocialLoginSetting::where('key', 'google_redirect_uri')->first();
+            if (!$google_redirect_uri) {
                 return response()->json(['success' => false, 'statusCode' => 422, 'message' => 'Google redirect URL not configured.'], 422);
             }
 
             // Load as config
-            config(['services.google.client_id' => $socialLoginSetting->value]);
-            config(['services.google.client_secret' => $socialLoginSetting->value]);
-            config(['services.google.redirect' => $socialLoginSetting->value]);
+            config(['services.google.client_id' => $google_client_id->value]);
+            config(['services.google.client_secret' => $google_secret_id->value]);
+            config(['services.google.redirect' => $google_redirect_uri->value]);
         }
 
         // dd($socialLoginSetting->value);
@@ -50,25 +50,25 @@ class GoogleLoginController extends Controller
         //  Check if provider is google
         if ($provider == 'google') {
             // Get config from SocialLoginSetting
-            $socialLoginSetting = SocialLoginSetting::where('key', 'google_client_id')->first();
-            if (!$socialLoginSetting) {
+            $google_client_id = SocialLoginSetting::where('key', 'google_client_id')->first();
+            if (!$google_client_id) {
                 return response()->json(['success' => false, 'statusCode' => 422, 'message' => 'Google client ID not configured.'], 422);
             }
 
-            $socialLoginSetting = SocialLoginSetting::where('key', 'google_secret_id')->first();
-            if (!$socialLoginSetting) {
+            $google_secret_id = SocialLoginSetting::where('key', 'google_secret_id')->first();
+            if (!$google_secret_id) {
                 return response()->json(['success' => false, 'statusCode' => 422, 'message' => 'Google client secret not configured.'], 422);
             }
 
-            $socialLoginSetting = SocialLoginSetting::where('key', 'google_redirect_uri')->first();
-            if (!$socialLoginSetting) {
+            $google_redirect_uri = SocialLoginSetting::where('key', 'google_redirect_uri')->first();
+            if (!$google_redirect_uri) {
                 return response()->json(['success' => false, 'statusCode' => 422, 'message' => 'Google redirect URL not configured.'], 422);
             }
 
             // Load as config
-            config(['services.google.client_id' => $socialLoginSetting->value]);
-            config(['services.google.client_secret' => $socialLoginSetting->value]);
-            config(['services.google.redirect' => $socialLoginSetting->value]);
+            config(['services.google.client_id' => $google_client_id->value]);
+            config(['services.google.client_secret' => $google_secret_id->value]);
+            config(['services.google.redirect' => $google_redirect_uri->value]);
         }
 
         $socialUser = Socialite::driver($provider)->stateless()->user();

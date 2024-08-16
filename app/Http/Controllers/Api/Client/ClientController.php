@@ -1837,10 +1837,36 @@ class ClientController extends Controller
             ], 401);
         }
 
+        // Validate password & reason
+
+        $validator = Validator::make(request()->all(), [
+            'password' => 'required',
+            'reason' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
         // Retrieve the user
         $user = User::findOrFail(Auth::user()->id);
 
         if (!$user) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Check and matach password
+
+        if (!Hash::check(request('password'), $user->password)) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
