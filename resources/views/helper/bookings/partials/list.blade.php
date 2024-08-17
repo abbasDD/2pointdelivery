@@ -3,7 +3,6 @@
         <tr>
             <th>Order#</th>
             <th>Date Time</th>
-            <th>Priority</th>
             <th>Service Type</th>
             <th>Address</th>
             <th>Fee</th>
@@ -19,7 +18,6 @@
                     <p>{{ app('dateHelper')->formatTimestamp($booking->created_at, 'Y-m-d') }} </p>
                     <p>{{ $booking->booking_time }}</p>
                 </td>
-                <td>{{ $booking->prioritySetting->name }}</td>
                 <td>
                     {{-- Service Type --}}
                     <p>{{ $booking->serviceType->name }}</p>

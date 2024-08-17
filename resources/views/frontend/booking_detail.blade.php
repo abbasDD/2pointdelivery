@@ -31,11 +31,6 @@
                             <h5 class="mb-0">Order Summary</h5>
                         </div>
                         <div class="card-body">
-                            {{-- Priority --}}
-                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                <p class="mb-0">Priority:</p>
-                                <h6 class="mb-0">{{ $booking->prioritySetting->name }}</h6>
-                            </div>
                             {{-- Vehicle --}}
                             <div class="d-flex align-items-center justify-content-between mb-3">
                                 <p class="mb-0">Vehicle:</p>

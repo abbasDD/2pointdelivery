@@ -7,13 +7,13 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
-use Google_Client;
 
 class GoogleLoginController extends Controller
 {
     public function redirectToProvider($provider)
     {
-        if ($provider == 'google') {
+        if ($provider === 'google') {
+            // Retrieve Google credentials from the database
             $google_client_id = SocialLoginSetting::where('key', 'google_client_id')->first();
             $google_secret_id = SocialLoginSetting::where('key', 'google_secret_id')->first();
             $google_redirect_uri = SocialLoginSetting::where('key', 'google_redirect_uri')->first();
@@ -26,75 +26,75 @@ class GoogleLoginController extends Controller
                 ], 422);
             }
 
+            // Set Google client credentials
             config([
                 'services.google.client_id' => $google_client_id->value,
                 'services.google.client_secret' => $google_secret_id->value,
                 'services.google.redirect' => $google_redirect_uri->value,
             ]);
+
+            // Redirect to Google for authentication
+            return Socialite::driver($provider)->stateless()->redirect();
         }
 
-        return Socialite::driver($provider)->stateless()->redirect();
+        return response()->json([
+            'success' => false,
+            'statusCode' => 400,
+            'message' => 'Invalid provider.',
+        ], 400);
     }
 
-    public function handleProviderCallback($provider, Request $request)
+    public function handleProviderCallback($provider)
     {
-        if ($provider == 'google') {
+        if ($provider === 'google') {
+            // Retrieve Google credentials from the database
             $google_client_id = SocialLoginSetting::where('key', 'google_client_id')->first();
-            if (!$google_client_id) {
+            $google_secret_id = SocialLoginSetting::where('key', 'google_secret_id')->first();
+            $google_redirect_uri = SocialLoginSetting::where('key', 'google_redirect_uri')->first();
+
+            if (!$google_client_id || !$google_secret_id || !$google_redirect_uri) {
                 return response()->json([
                     'success' => false,
                     'statusCode' => 422,
-                    'message' => 'Google client ID not configured.',
+                    'message' => 'Google configuration is incomplete.'
                 ], 422);
             }
 
-            $token = $request->input('token');
-
-            if (!$token) {
-                return response()->json([
-                    'success' => false,
-                    'statusCode' => 400,
-                    'message' => 'Token is required.',
-                ], 400);
-            }
+            // Set Google client credentials
+            config([
+                'services.google.client_id' => $google_client_id->value,
+                'services.google.client_secret' => $google_secret_id->value,
+                'services.google.redirect' => $google_redirect_uri->value,
+            ]);
 
             try {
-                $client = new Google_Client(['client_id' => $google_client_id->value]);
-                $payload = $client->verifyIdToken($token);
+                // Retrieve the user information from Google
+                $socialiteUser = Socialite::driver($provider)->stateless()->user();
 
-                if (!$payload) {
-                    return response()->json([
-                        'success' => false,
-                        'statusCode' => 401,
-                        'message' => 'Invalid ID token.',
-                    ], 401);
-                }
-
-                $user = User::where('provider_id', $payload['sub'])->first();
+                // Check if the user already exists in your database
+                $user = User::where('provider_id', $socialiteUser->getId())->first();
 
                 if (!$user) {
+                    // Create a new user if one doesn't exist
                     $user = User::create([
-                        'name' => $payload['name'] ?? 'Unnamed',
-                        'email' => $payload['email'] ?? null,
+                        'name' => $socialiteUser->getName(),
+                        'email' => $socialiteUser->getEmail(),
+                        'user_type' => 'user',
                         'provider_name' => $provider,
-                        'provider_id' => $payload['sub'],
+                        'provider_id' => $socialiteUser->getId(),
                         'password' => null,
                     ]);
                 }
 
+                // Log in the user
                 Auth::login($user);
+
+                // Create a token for API authentication (using Laravel Passport or Sanctum)
                 $tokenResult = $user->createToken('2PointDeliveryJWTAuthenticationToken');
                 $token = $tokenResult->accessToken;
 
-                // return response()->json([
-                //     'success' => true,
-                //     'statusCode' => 200,
-                //     'token' => $token,
-                //     'user' => $user,
-                //     'message' => 'Logged in successfully.',
-                // ], 200);
-                // Check if the request expects a JSON response (e.g., from a mobile client)
-                if ($request->expectsJson()) {
+                // Return the response based on whether the request expects JSON
+                if (request()->expectsJson()) {
                     return response()->json([
                         'success' => true,
                         'statusCode' => 200,
@@ -103,7 +103,6 @@ class GoogleLoginController extends Controller
                         'message' => 'Logged in successfully.',
                     ], 200);
                 } else {
-                    // Redirect for web clients
                     return redirect()->route('index')->with('success', 'Logged in successfully.');
                 }
             } catch (\Exception $e) {

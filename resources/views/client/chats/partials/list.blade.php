@@ -15,12 +15,13 @@
                 <li class="clearfix">
                     <div id="user_chat_{{ $chat->id }}" class="d-flex align-items-center p-2 item"
                         onclick="loadChat({{ $chat->id }})">
-                        <img src="{{ $chat->otherUserInfo->profile_image ? asset('images/users/' . $chat->otherUserInfo->profile_image) : asset('images/users/default.png') }}"
+                        <img src="{{ $chat->otherUserInfo && $chat->otherUserInfo->profile_image ? asset('images/users/' . $chat->otherUserInfo->profile_image) : asset('images/users/default.png') }}"
                             alt="avatar" />
                         <div class="about">
                             <div class="name">
-                                {{ $chat->otherUserInfo->first_name . ' ' . $chat->otherUserInfo->last_name }}</div>
-                            <p class="mb-0">{{ $chat->last_message->message ?? 'Send A Message' }}</p>
+                                {{ $chat->otherUserInfo ? $chat->otherUserInfo->first_name . ' ' . $chat->otherUserInfo->last_name : 'Client' }}
+                            </div>
+                            <p class="mb-0">{{ $chat->last_message->message ?? 'Start Chat' }}</p>
                         </div>
                     </div>
                 </li>
@@ -95,20 +96,19 @@
                     // Set selectedChatID
                     selectedChatID = id;
 
+                    var image_path = '{{ asset('images/users/default.png') }}';
+
                     // Update User Info at top
                     console.log(response);
-                    $('#chat-with').html(response.otherUserInfo.first_name + ' ' + response.otherUserInfo
-                        .last_name);
-                    // $('#user-status').html(response.otherUserInfo.is_online ? 'Online' : 'Offline');
+                    if (response.otherUserInfo != null) {
+                        $('#chat-with').html(response.otherUserInfo.first_name + ' ' + response
+                            .otherUserInfo.last_name);
 
-
-                    // Update Image
-                    if (response.otherUserInfo.profile_image) {
                         var image_path = '{{ asset('images/users/') }}' + '/' + response.otherUserInfo
                             .profile_image;
-                    } else {
-                        var image_path = '{{ asset('images/users/default.png') }}';
                     }
+                    // $('#user-status').html(response.otherUserInfo.is_online ? 'Online' : 'Offline');
+
                     $('#chat-avatar').attr('src', image_path);
 
                     // Clear items in chat history

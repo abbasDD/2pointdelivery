@@ -177,12 +177,6 @@
                 <td class="row">Service Category</td>
                 <td class="row">{{ $booking->serviceCategory->name }}</td>
             </tr>
-            {{-- Priority Setting --}}
-            <tr>
-                <td class="row">{{ $index++ }}</td>
-                <td class="row">Priority Setting</td>
-                <td class="row">{{ $booking->prioritySetting->name }}</td>
-            </tr>
             {{-- Total Price --}}
             <tr>
                 <td class="row">{{ $index++ }}</td>

@@ -155,7 +155,10 @@
                             document.getElementById('message-to-send').value = '';
 
                             // Append new chat to chat list
-                            addChatToChatList(data.chat_id, data.userInfo);
+                            // addChatToChatList(data.chat_id, data.userInfo);
+
+                            // refresh the page
+                            location.reload();
 
                             // Open Chat Window with Selected User
                             loadMessages(data.chat_id);
@@ -188,7 +191,7 @@
                         </div>
                     </div>
                 </li>`;
-            $("#chat-list-wrapper").append(listItem);
+            $("#people-list").append(listItem);
 
             // remove active class from all items
             $('.item').removeClass('active');

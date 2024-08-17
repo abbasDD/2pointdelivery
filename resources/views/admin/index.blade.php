@@ -221,8 +221,6 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Date</th>
-                                {{-- <th>Client</th> --}}
-                                <th>Priority</th>
                                 <th>Service Type</th>
                                 <th>Address</th>
                                 <th>Price</th>
@@ -235,8 +233,6 @@
                                 <tr>
                                     <td>{{ $loop->index + 1 }}</td>
                                     <td>{{ app('dateHelper')->formatTimestamp($booking->created_at, 'Y-m-d') }}</td>
-                                    {{-- <td>{{ $booking->client->first_name }}</td> --}}
-                                    <td>{{ $booking->prioritySetting->name }}</td>
                                     <td>
                                         {{-- Service Type --}}
                                         <p>{{ $booking->serviceType->name }}</p>

@@ -49,11 +49,6 @@
                             <h6>Service Category:</h6>
                             <p>{{ $booking->serviceCategory->name }}</p>
                         </div>
-                        {{-- Priority Setting --}}
-                        <div class="d-flex align-items-center justify-content-between">
-                            <h6>Priority Setting:</h6>
-                            <p>{{ $booking->prioritySetting->name }}</p>
-                        </div>
                         {{-- Is Secureship Enabled --}}
                         <div class="d-flex align-items-center justify-content-between">
                             <h6>Secureship API Enabled:</h6>

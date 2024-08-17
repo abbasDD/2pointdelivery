@@ -44,6 +44,8 @@ class MessageController extends Controller
             }
         }
 
+        // dd($otherUserInfo);
+
         // Return a json object
         return response()->json(['success' => true, 'otherUserInfo' => $otherUserInfo, 'data' => $messages]);
     }

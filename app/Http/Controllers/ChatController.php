@@ -41,34 +41,39 @@ class ChatController extends Controller
 
         foreach ($chats as $chat) {
             $chat->last_message = $chat->messages()->latest()->first();
+            // Set other user info null as default
+            $otherUserInfo = null;
+
             if ($chat->user1_id == Auth::user()->id) {
                 $otherUser = User::findOrFail($chat->user2_id);
                 if ($otherUser->client_enabled) {
-                    $chat->otherUserInfo = Client::where('user_id', $otherUser->id)->first();
+                    $otherUserInfo = Client::where('user_id', $otherUser->id)->first();
                 } else {
-                    $chat->otherUserInfo = Helper::where('user_id', $otherUser->id)->first();
+                    $otherUserInfo = Helper::where('user_id', $otherUser->id)->first();
                 }
                 // Check if user is admin
                 if ($otherUser->user_type == 'admin') {
-                    $chat->otherUserInfo = Admin::where('user_id', $otherUser->id)->first();
+                    $otherUserInfo = Admin::where('user_id', $otherUser->id)->first();
                 }
             } else {
                 $otherUser = User::findOrFail($chat->user1_id);
                 if ($otherUser->client_enabled) {
-                    $chat->otherUserInfo = Client::where('user_id', $otherUser->id)->first();
+                    $otherUserInfo = Client::where('user_id', $otherUser->id)->first();
                 } else {
-                    $chat->otherUserInfo = Helper::where('user_id', $otherUser->id)->first();
+                    $otherUserInfo = Helper::where('user_id', $otherUser->id)->first();
                 }
                 // Check if user is admin
                 if ($otherUser->user_type == 'admin') {
-                    $chat->otherUserInfo = Admin::where('user_id', $otherUser->id)->first();
+                    $otherUserInfo = Admin::where('user_id', $otherUser->id)->first();
                 }
             }
+
+            $chat->otherUserInfo = $otherUserInfo;
         }
-        // dd($chats[1]->otherUserInfo);
+        // dd($chat->otherUserInfo);
         // Pass the chat list to the view or return it as JSON
         // return response()->json($chats);
-        return view('client.chats.index', ['chats' => $chats]);
+        return view('client.chats.index', compact('chats'));
     }
 
     public function create(Request $request)
@@ -92,6 +97,10 @@ class ChatController extends Controller
 
         if ($user->helper_enabled == 1) {
             $userInfo = Helper::where('user_id', $user->id)->first();
+        }
+
+        if (!$userInfo) {
+            return response()->json(['success' => false, 'chat_id' => 0, 'message' => 'User not found']);
         }
 
         // Check chat between users already exists
