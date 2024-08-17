@@ -30,6 +30,9 @@ return new class extends Migration
             $table->string('toAddress_city')->nullable();
             $table->string('toAddress_taxId')->nullable();
             $table->boolean('toAddress_residential')->default(true);
+            $table->string('billableWeight')->nullable();
+            $table->string('billableWeightUnit')->nullable();
+
             // Other Details
             $table->string('shipDateTime')->nullable();
             $table->string('currencyCode')->nullable();
@@ -47,6 +50,7 @@ return new class extends Migration
             $table->string('2pointCommission')->nullable();
             $table->string('total')->nullable();
             $table->string('regularPrice')->nullable();
+            $table->string('grandTotal')->nullable();
 
             $table->string('payment_status')->default('unpaid');
             $table->timestamp('payment_at')->nullable();

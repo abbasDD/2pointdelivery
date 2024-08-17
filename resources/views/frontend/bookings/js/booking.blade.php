@@ -398,9 +398,13 @@
         formData.append('selectedServiceTypeID', selectedServiceTypeID); // service type
         formData.append('selectedServiceCategoryUuid', selectedServiceCategoryUuid); // parcel type
         formData.append('priorityID', selectedPriorityID); // priority
+        package_weight = $("input[name='package_weight']").val();
         formData.append('package_weight', package_weight); // package_weight
+        package_length = $("input[name='package_length']").val();
         formData.append('package_length', package_length); // package_length
+        package_width = $("input[name='package_width']").val();
         formData.append('package_width', package_width); // package_width
+        package_height = $("input[name='package_height']").val();
         formData.append('package_height', package_height); // package_height
         // selectedNoOfRoomID
         selectedNoOfRoomID = $("select[name='no_of_rooms']").val();
@@ -506,6 +510,11 @@
                     } else {
                         bookingEstimateDataLoad(response.data);
                     }
+                } else {
+                    // Load no data found message in calculatedAmountCartBody
+                    document.getElementById('calculatedAmountCartBody').innerHTML = `
+                            <p>${response.message}</p>
+                        `;
                 }
             },
             error: function(error) {
@@ -611,7 +620,7 @@
                                 2 Point Delivery
                             </td>
                             <td>{{ date('Y-m-d') }} at {{ date('H:i') }}</td>
-                            <td>${data.base_weight} Kgs</td>
+                            <td>${data.billable_weight} Kgs</td>
                             <td>
                                 <p>CAD ${data.amountToPay ?? '-'}</p>
                             </td>
@@ -623,7 +632,7 @@
                             </table>
                             {{-- Notification --}}
                             <p class="text-center">
-                                Shipment estimate was calculated by 22 Point Delivery on {{ date('Y-m-d') }} at
+                                Shipment estimate was calculated by 2 Point Delivery on {{ date('Y-m-d') }} at
                                 {{ date('H:i') }}
                                 Eastern Standard Time
                             </p>

@@ -27,6 +27,8 @@ class BookingSecureship extends Model
         'toAddress_city',
         'toAddress_taxId',
         'toAddress_residential',
+        'billableWeight',
+        'billableWeightUnit',
         'shipDateTime',
         'currencyCode',
         'carrierCode',
@@ -42,6 +44,7 @@ class BookingSecureship extends Model
         '2pointCommission',
         'total',
         'regularPrice',
+        'grandTotal',
         'payment_status',
         'payment_at',
     ];
@@ -60,5 +63,14 @@ class BookingSecureship extends Model
     public function booking()
     {
         return $this->belongsTo(Booking::class);
+    }
+
+    /**
+     * Get the package that owns the secure shipment.
+     */
+
+    public function packages()
+    {
+        return $this->hasMany(BookingSecureshipPackage::class);
     }
 }

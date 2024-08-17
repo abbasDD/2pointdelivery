@@ -26,6 +26,7 @@ use Illuminate\Support\Str;
 use App\Http\Controllers\GetEstimateController;
 use App\Models\BookingMoving;
 use App\Models\BookingReview;
+use App\Models\BookingSecureship;
 use App\Models\UserNotification;
 
 class BookingController extends Controller
@@ -155,14 +156,23 @@ class BookingController extends Controller
         if ($serviceCategory->is_secureship_enabled) {
 
             // Call Secureship API function
-            $sechureshipData = $this->getEstimateController->getSecureshipEstimate($request);
+            $secureshipDataResponse = $this->getEstimateController->getSecureshipEstimate($request);
 
-            if (count($sechureshipData) == 0) {
+            if ($secureshipDataResponse['status'] == 'error') {
                 return response()->json([
                     'success' => false,
                     'message' => 'Secureship API error',
                 ]);
             }
+
+            if (count($secureshipDataResponse['data']) == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Secureship API error',
+                ]);
+            }
+
+            $secureshipData = $secureshipDataResponse['data'];
         }
 
 
@@ -174,6 +184,7 @@ class BookingController extends Controller
             'service_category_id' => $serviceCategory->id,
             'priority_setting_id' => $request->priorityID,
             'booking_type' => $booking_type ?? 'delivery',
+            'is_secureship_enabled' => $serviceCategory->is_secureship_enabled,
             'pickup_address' => $request->pickup_address,
             'dropoff_address' => $request->dropoff_address,
             'pickup_latitude' => $request->pickup_latitude,
@@ -186,6 +197,13 @@ class BookingController extends Controller
             'booking_at' => now(),
         ]);
 
+        // $distance_in_km = 5;
+        $distance_in_km = $this->getEstimateController->getDistanceInKM($request->pickup_latitude, $request->pickup_longitude, $request->dropoff_latitude, $request->dropoff_longitude, 'K');
+        // add to request
+        $request->request->add([
+            'distance_in_km' => $distance_in_km,
+        ]);
+
         // Now we have 3 cases 1. Delivery 2. Moving 3. Secureship
         switch ($booking_type) {
             case 'delivery':
@@ -195,7 +213,14 @@ class BookingController extends Controller
                 $response = $this->createMovingBooking($request, $booking, $serviceCategory, $booking_type);
                 break;
             case 'secureship':
-                $response = $this->createSecureshipBooking($request, $booking, $serviceCategory, $booking_type, $sechureshipData);
+                $response = $this->createSecureshipBooking($request, $booking, $serviceCategory, $secureshipData);
+                if ($response['status'] == false) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => $response['message'],
+                        'data' => $response['data'],
+                    ]);
+                }
                 break;
             default:
                 return response()->json([
@@ -409,21 +434,103 @@ class BookingController extends Controller
     }
 
     // createSecureshipBooking
-    private function createSecureshipBooking($request, $booking, $serviceCategory, $booking_type, $sechureshipData)
+    private function createSecureshipBooking($request, $booking, $serviceCategory, $secureshipData)
     {
         if ($serviceCategory->is_secureship_enabled == 0) {
-            return false;
+            return ['status' => false, 'message' => 'Secureship is not enabled for this service', 'data' => []];
         }
 
-        $selectedSecureshipService = $request->selectedServiceID;
+        $selectedSecureshipService = $request->selectedService;
 
-        // Find Secureship Service Details as per selectedSecureshipService from sechureshipData
+        // Find Secureship Service Details as per selectedSecureshipService from secureshipData
+        $selectedServiceDetail = null;
 
+        foreach ($secureshipData as $item) {
+            if ($item['selectedService'] === $selectedSecureshipService) {
+                $selectedServiceDetail = $item;
+                break;
+            }
+        }
 
+        if (!$selectedServiceDetail) {
+            return ['status' => false, 'message' => 'No item found for selected service', 'data' => []];
+        }
+
+        // Get pickup_address object from lat long
+        $pickup_address = $this->getEstimateController->getAddressFromLatLong($request->pickup_latitude, $request->pickup_longitude);
+
+        if (!$pickup_address) {
+            return ['status' => 'error', 'message' => 'Invalid pickup address. Please try again.'];
+        }
+
+        // Get dropoffaddress object from lat long
+        $dropoff_address = $this->getEstimateController->getAddressFromLatLong($request->dropoff_latitude, $request->dropoff_longitude);
+        if (!$dropoff_address) {
+            return ['status' => 'error', 'message' => 'Invalid dropoff address. Please try again.'];
+        }
+
+        // Calculate $platformCommission
+        $platformCommission = 0;
+
+        // Adjust data as per secureship booking table
+        $bookingSecureshipTableData = [
+            'booking_id' => $booking->id,
+            'fromAddress_addr1' => $pickup_address['addr1'],
+            'fromAddress_countryCode' => $pickup_address['countryCode'],
+            'fromAddress_postalCode' => $pickup_address['postalCode'],
+            'fromAddress_city' => $pickup_address['city'],
+            'fromAddress_taxId' => null,
+            'fromAddress_residential' => false,
+            'toAddress_addr1' => $dropoff_address['addr1'],
+            'toAddress_countryCode' => $dropoff_address['countryCode'],
+            'toAddress_postalCode' => $dropoff_address['postalCode'],
+            'toAddress_city' => $dropoff_address['city'],
+            'toAddress_taxId' => null,
+            'toAddress_residential' => false,
+            'billableWeight' => $selectedServiceDetail['billableWeight']['value'],
+            'billableWeightUnit' => $selectedServiceDetail['billableWeight']['units'],
+            'shipDateTime' => null,
+            'currencyCode' => $selectedServiceDetail['currencyCode'],
+            'carrierCode' => $selectedServiceDetail['carrierCode'],
+            'selectedService' => $selectedServiceDetail['selectedService'],
+            'serviceName' => $selectedServiceDetail['serviceName'],
+            'useSecureship' => $selectedServiceDetail['useSecureship'],
+            'rateZone' => $selectedServiceDetail['rateZone'],
+            'pickupAvailable' => $selectedServiceDetail['pickupAvailable'],
+            'pickupFee' => $selectedServiceDetail['pickupFee'],
+            'fuelSurcharge' => $selectedServiceDetail['fuelSurcharge']['amount'],
+            'subTotal' => $selectedServiceDetail['subTotal'],
+            'taxAmount' => $selectedServiceDetail['taxDetails']['amount'],
+            'total' => $selectedServiceDetail['total'],
+            'regularPrice' => $selectedServiceDetail['regularPrice'],
+            '2pointCommission' => $platformCommission,
+            'grandTotal' => $selectedServiceDetail['total'] + $platformCommission,
+        ];
+
+        // return [
+        //     'status' => false,
+        //     'message' => 'Secureship booking created successfully',
+        //     'data' => $selectedServiceDetail
+        // ];
+
+        $secureshipBooking = BookingSecureship::create($bookingSecureshipTableData);
+
+        if (!$secureshipBooking) {
+            return ['status' => false, 'message' => 'Secureship booking not created', 'data' => []];
+        }
+
+        // Create Secureship Booking Packages
+        $packages = $this->getEstimateController->getSecureshipPackages($request);
+
+        $secureshipBooking->packages()->createMany($packages);
 
 
         // Return data
-        return $sechureshipData;
+        return [
+            'status' => true,
+            'message' => 'Secureship booking created successfully',
+            'data' => $secureshipBooking
+        ];
     }
 
     public function payment(Request $request)
@@ -476,6 +583,32 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking not found');
         }
 
+        // If booking status is not in draft
+        if ($booking->status != 'draft') {
+            return redirect()->back()->with('error', 'Booking already paid');
+        }
+
+        // Check if booking payment time is exceeded
+        $bookingTime = Carbon::parse($booking->booking_at); //Booking Time
+
+        $currentTime = Carbon::now(); //Current Time
+
+        // Difference in Minutes
+        // $timeDifferenceInSeconds = $currentTime->diffInMinutes($bookingTime);
+        $timeDifferenceInSeconds = $bookingTime->diffInSeconds($currentTime);
+
+        // if 30 minutes passed then cancel booking
+        if ($timeDifferenceInSeconds > 30) {
+            $booking->update(['status' => 'expired']);
+            return redirect()->back()->with('error', 'Booking already expired');
+        }
+
+        // dd($timeDifferenceInSeconds);
+        // Convert timeDifferenceInSeconds to minutes
+
+        // Time Left
+        $bookingTimeLeft = (int)(30 - $timeDifferenceInSeconds);
+
         // Get payment settings
         $cod_enabled = PaymentSetting::where('key', 'cod_enabled')->first();
         $paypal_enabled = PaymentSetting::where('key', 'paypal_enabled')->first();
@@ -523,9 +656,14 @@ class BookingController extends Controller
         if ($booking->booking_type == 'moving') {
             $bookingData = BookingMoving::where('booking_id', $booking->id)->first();
         }
+
+        // get booking secureship
+        if ($booking->booking_type == 'secureship') {
+            $bookingData = BookingSecureship::where('booking_id', $booking->id)->first();
+        }
         // dd($bookingDelivery);
 
-        return view('frontend.payment_booking', compact('booking', 'bookingData', 'paypalEnabled', 'stripeEnabled', 'codEnabled', 'stripe_publishable_key'));
+        return view('frontend.payment_booking', compact('booking', 'bookingData', 'paypalEnabled', 'stripeEnabled', 'codEnabled', 'stripe_publishable_key', 'bookingTimeLeft'));
     }
 
     // Make Online Payment using Paypal
@@ -865,6 +1003,15 @@ class BookingController extends Controller
             $bookingPayment = BookingMoving::where('booking_id', $booking->id)->first();
         }
 
+        if ($booking->booking_type == 'secureship') {
+            $bookingPayment = BookingSecureship::where('booking_id', $booking->id)->first();
+        }
+
+        // if bookingPayment not found
+        if (!$bookingPayment) {
+            return redirect()->back()->with('error', 'Booking not found');
+        }
+
         $booking->currentStatus = 1;
         // switch to manage booking status
         switch ($booking->status) {
@@ -885,6 +1032,9 @@ class BookingController extends Controller
                 break;
             case 'incomplete':
                 $booking->currentStatus = 5;
+                break;
+            case 'expired':
+                $booking->currentStatus = 6;
                 break;
             default:
                 $booking->currentStatus = 1;
@@ -942,32 +1092,6 @@ class BookingController extends Controller
         if ($booking->helper_user_id2) {
             $helper2VehicleData = HelperVehicle::where('user_id', $booking->helper_user_id2)->first();
         }
-
-        // Check if invoice already created
-        // if ($booking->invoice_file == null) {
-        //     // Generate invoice from this url bookingInvoicePDF
-        //     // $this->generateInvoice($booking->id);
-        //     $booking_invoice = $this->getEstimateController->generateInvoice($booking->id);
-        //     if ($booking_invoice) {
-        //         // Update booking
-        //         Booking::where('id', $booking->id)->update([
-        //             'invoice_file' => $booking_invoice
-        //         ]);
-        //     }
-        // }
-
-        // Check if label_file already created
-        // if ($booking->label_file == null) {
-        //     // Generate label from this url bookingLabelPDF
-        //     // $this->generateLabel($booking->id);
-        //     $booking_label = $this->getEstimateController->generateLabel($booking->id);
-        //     if ($booking_label) {
-        //         // Update booking
-        //         Booking::where('id', $booking->id)->update([
-        //             'label_file' => $booking_label
-        //         ]);
-        //     }
-        // }
 
         // Check if review exist for booking
         $review = BookingReview::where('booking_id', $booking->id)->first();

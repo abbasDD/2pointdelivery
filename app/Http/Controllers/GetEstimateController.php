@@ -53,16 +53,11 @@ class GetEstimateController extends Controller
             ]);
         }
 
+        $prioritySettingPrice = 0;
         // Check if priority setting exist
         $prioritySetting = PrioritySetting::where('id', $request->priorityID)->where('is_active', 1)->first();
-        if (!$prioritySetting) {
-            // return response()->json([
-            //     'status' => 'error',
-            //     'message' => 'Priority setting not found',
-            // ]);
-
-            // Get first
-            $prioritySetting = PrioritySetting::where('is_active', 1)->first();
+        if ($prioritySetting) {
+            $prioritySettingPrice = $prioritySetting->price;
         }
 
         // Check if service category has secureship api enabled
@@ -71,21 +66,36 @@ class GetEstimateController extends Controller
             // Call Secureship API function
             $data = $this->getSecureshipEstimate($request);
             // $data = $this->getSecureshipEstimate();
-
+            if ($data['status'] == 'error') {
+                return response()->json(
+                    [
+                        'status' => 'error',
+                        'deliveryMethod' => 'secureship',
+                        'message' => $data['message'],
+                    ]
+                );
+            }
             // Return data
             return response()->json([
                 'status' => 'success',
                 'deliveryMethod' => 'secureship',
-                'data' => $data,
+                'data' => $data['data'],
             ]);
         }
 
         // Calculate distance between pickup and delivery
-        $distance_in_km = 5;
-        // $distance_in_km = $this->getDistance($request->pickup_latitude, $request->pickup_longitude, $request->dropoff_latitude, $request->dropoff_longitude, 'K');
+        // $distance_in_km = 5;
+        $distance_in_km = $this->getDistanceInKM($request->pickup_latitude, $request->pickup_longitude, $request->dropoff_latitude, $request->dropoff_longitude, 'K');
 
         // base_weight from service category
         $data['base_weight'] = $serviceCategory->base_weight;
+
+        // billable_weight from request
+        $data['billable_weight'] = $request->package_weight;
+
+        if ($data['billable_weight'] < $data['base_weight']) {
+            $data['billable_weight'] = $data['base_weight'];
+        }
 
         // Get package value and calculate insurance
         $data['insurance_value'] = $this->getInsuranceValue($request->selectedServiceType, $request->package_value);
@@ -97,7 +107,7 @@ class GetEstimateController extends Controller
         $data['distance_price'] = $this->getDistancePrice($serviceCategory->base_distance, $serviceCategory->extra_distance_price, $distance_in_km);
 
         // Priority Price
-        $data['priority_price'] = $prioritySetting->price;
+        $data['priority_price'] = $prioritySettingPrice;
 
         // Vehicle Price
         $data['vehicle_price'] = $this->getVehiclePrice($serviceType->type, $serviceCategory->vehicle_type_id, $distance_in_km);
@@ -137,7 +147,7 @@ class GetEstimateController extends Controller
 
 
         // Total amountToPay
-        $data['amountToPay'] = $data['sub_total'] + $data['tax_price'];
+        $data['amountToPay'] = number_format((float)($data['sub_total'] + $data['tax_price']), 2, '.', '');
 
 
         // return a json object
@@ -147,6 +157,28 @@ class GetEstimateController extends Controller
             'deliveryMethod' => '2point',
             'data' => $data,
         ]);
+    }
+
+    // getDistanceInKM
+    public function getDistanceInKM($pickup_latitude, $pickup_longitude, $dropoff_latitude, $dropoff_longitude, $unit)
+    {
+
+        $unit = strtoupper($unit);
+
+        $theta = $pickup_longitude - $dropoff_longitude;
+        $dist = sin(deg2rad($pickup_latitude)) * sin(deg2rad($dropoff_latitude)) + cos(deg2rad($pickup_latitude)) * cos(deg2rad($dropoff_latitude)) * cos(deg2rad($theta));
+        $dist = acos($dist);
+        $dist = rad2deg($dist);
+        $miles = $dist * 60 * 1.1515;
+        $unit = strtoupper($unit);
+
+        if ($unit == "K") {
+            return ($miles * 1.609344);
+        } elseif ($unit == "N") {
+            return ($miles * 0.8684);
+        } else {
+            return $miles;
+        }
     }
 
 
@@ -704,55 +736,22 @@ class GetEstimateController extends Controller
         $pickup_address = $this->getAddressFromLatLong($request->pickup_latitude, $request->pickup_longitude);
 
         if (!$pickup_address) {
-            return false;
+            return ['status' => 'error', 'message' => 'Invalid pickup address. Please try again.'];
         }
 
         // Get dropoffaddress object from lat long
         $dropoff_address = $this->getAddressFromLatLong($request->dropoff_latitude, $request->dropoff_longitude);
         if (!$dropoff_address) {
-            return false;
+            return ['status' => 'error', 'message' => 'Invalid dropoff address. Please try again.'];
         }
 
-        // Check if $request->secureshipPackages is present and not empty
-        if ($request->secureshipPackages) {
-            // Decode the JSON string into an array
-            $packages = json_decode($request->secureshipPackages, true);
+        // return ['status' => 'error', 'message' => $pickup_address];
 
-            // Check if the decoded array is empty
-            if (empty($packages)) {
-                // Handle the case where the array is empty
-                $secureshipPackages = $this->getDefaultPackage($request);
-            } else {
-                // Process the packages to ensure correct data types
-                $secureshipPackages = array_map(function ($package) use ($request) {
-                    return [
-                        'packageType' => $package['packageType'] ?? 'MyPackage',
-                        'userDefinedPackageType' => $package['userDefinedPackageType'] ?? 'Refrigerator',
-                        'weight' => isset($package['weight']) ? (float) $package['weight'] : ($request->package_weight ? (float) $request->package_weight : 1.0),
-                        'weightUnits' => $package['weightUnits'] ?? 'Lbs',
-                        'length' => isset($package['length']) ? (float) $package['length'] : ($request->package_length ? (float) $request->package_length : 1.0),
-                        'width' => isset($package['width']) ? (float) $package['width'] : ($request->package_width ? (float) $request->package_width : 1.0),
-                        'height' => isset($package['height']) ? (float) $package['height'] : ($request->package_height ? (float) $request->package_height : 1.0),
-                        'dimUnits' => $package['dimUnits'] ?? 'Inches',
-                        'insurance' => isset($package['insurance']) ? (float) $package['insurance'] : 0.0,
-                        'isAdditionalHandling' => isset($package['isAdditionalHandling']) && $package['isAdditionalHandling'] === 'on' ? true : false,
-                        'signatureOptions' => $package['signatureOptions'] ?? 'None',
-                        'description' => $package['description'] ?? 'Gift',
-                        'temperatureProtection' => isset($package['temperatureProtection']) ? (bool) $package['temperatureProtection'] : true,
-                        'isDangerousGoods' => isset($package['isDangerousGoods']) ? (bool) $package['isDangerousGoods'] : true,
-                        'isNonStackable' => isset($package['isNonStackable']) ? (bool) $package['isNonStackable'] : true
-                    ];
-                }, $packages);
-            }
-        } else {
-            // Handle the case where secureshipPackages is not provided
-            $secureshipPackages = $this->getDefaultPackage($request);
-        }
-
-
+        $secureshipPackages = $this->getSecureshipPackages($request);
 
         // dd($address);
-        // return response()->json($request->package_weight);
+        // return ['status' => 'error', 'message' => $secureshipPackages];
+
         // Static JSON data
         $payload = [
             'fromAddress' => [
@@ -802,15 +801,16 @@ class GetEstimateController extends Controller
         ];
 
         // dd($payload);
-        // return response()->json($payload);
+
+        // return ['status' => 'error', 'message' => $payload];
 
         // Get secureship API key
         $secureship_api_key = DeliveryConfig::where('key', 'secureship_api_key')->first();
         if (!$secureship_api_key) {
-            return response()->json([
+            return [
                 'status' => 'error',
                 'message' => 'Secureship API key not found',
-            ]);
+            ];
         }
 
         // API URL
@@ -827,7 +827,7 @@ class GetEstimateController extends Controller
             //     'status' => 'success',
             //     'data' => $response->json(),
             // ]);
-            return $response->json();
+            return ['status' => 'success', 'data' => $response->json()];
         } else {
             // return response()->json([
             //     'status' => 'error',
@@ -837,8 +837,49 @@ class GetEstimateController extends Controller
 
             // return $response->json();
 
-            return false;
+            return ['status' => 'error', 'message' => 'Failed to retrieve estimate'];
         }
+    }
+
+    public function getSecureshipPackages($request)
+    {
+        // Check if $request->secureshipPackages is present and not empty
+        if ($request->secureshipPackages) {
+            // Decode the JSON string into an array
+            $packages = json_decode($request->secureshipPackages, true);
+
+            // Check if the decoded array is empty
+            if (empty($packages)) {
+                // Handle the case where the array is empty
+                $secureshipPackages = $this->getDefaultPackage($request);
+            } else {
+                // Process the packages to ensure correct data types
+                $secureshipPackages = array_map(function ($package) use ($request) {
+                    return [
+                        'packageType' => $package['packageType'] ?? 'MyPackage',
+                        'userDefinedPackageType' => $package['userDefinedPackageType'] ?? 'Refrigerator',
+                        'weight' => isset($package['weight']) ? (float) $package['weight'] : (1.0),
+                        'weightUnits' => $package['weightUnits'] ?? 'Lbs',
+                        'length' => isset($package['length']) ? (float) $package['length'] : (1.0),
+                        'width' => isset($package['width']) ? (float) $package['width'] : (1.0),
+                        'height' => isset($package['height']) ? (float) $package['height'] : (1.0),
+                        'dimUnits' => $package['dimUnits'] ?? 'Inches',
+                        'insurance' => isset($package['insurance']) ? (float) $package['insurance'] : 0.0,
+                        'isAdditionalHandling' => isset($package['isAdditionalHandling']) && $package['isAdditionalHandling'] === 'on' ? true : false,
+                        'signatureOptions' => $package['signatureOptions'] ?? 'None',
+                        'description' => $package['description'] ?? 'Gift',
+                        'temperatureProtection' => isset($package['temperatureProtection']) ? (bool) $package['temperatureProtection'] : true,
+                        'isDangerousGoods' => isset($package['isDangerousGoods']) ? (bool) $package['isDangerousGoods'] : true,
+                        'isNonStackable' => isset($package['isNonStackable']) ? (bool) $package['isNonStackable'] : true
+                    ];
+                }, $packages);
+            }
+        } else {
+            // Handle the case where secureshipPackages is not provided
+            $secureshipPackages = $this->getDefaultPackage($request);
+        }
+
+        return $secureshipPackages;
     }
 
     private function getDefaultPackage($request)
@@ -847,11 +888,11 @@ class GetEstimateController extends Controller
             [
                 'packageType' => 'MyPackage',
                 'userDefinedPackageType' => 'Refrigerator',
-                'weight' => $request->package_weight ? (float)$request->package_weight : 1.0,
+                'weight' => 1.0,
                 'weightUnits' => 'Lbs',
-                'length' => $request->package_length ? (float)$request->package_length : 1.0,
-                'width' => $request->package_width ? (float)$request->package_width : 1.0,
-                'height' => $request->package_height ? (float)$request->package_height : 1.0,
+                'length' => 1.0,
+                'width' => 1.0,
+                'height' => 1.0,
                 'dimUnits' => 'Inches',
                 'insurance' => 0.0,
                 'isAdditionalHandling' => false,
@@ -869,7 +910,7 @@ class GetEstimateController extends Controller
     {
         $url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" . $latitude . "," . $longitude . "&key=" . env('GOOGLE_MAPS_API_KEY');
         $response = Http::get($url);
-        // $address = $response->json()['results'][0];
+        // return $response->json()['results'][0];
 
         if ($response->successful()) {
             $addressComponents = $response->json()['results'][0]['address_components'];
@@ -877,7 +918,6 @@ class GetEstimateController extends Controller
 
             return $address;
         }
-
 
         return false;
     }

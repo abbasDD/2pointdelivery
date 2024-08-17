@@ -5,6 +5,13 @@
 @section('content')
     <div class="container py-5">
         <div class="row">
+            {{-- Show bookingTimeLeft --}}
+            <div class="col-md-12 my-5">
+                <div class="text-center">
+                    <h4 class="text-primary">Time Left: {{ $bookingTimeLeft }} Minutes</h4>
+                </div>
+            </div>
+
             {{-- Booking Details --}}
             <div class="col-md-6">
                 <div class="card">
@@ -50,7 +57,7 @@
                         {{-- Is Secureship Enabled --}}
                         <div class="d-flex align-items-center justify-content-between">
                             <h6>Secureship API Enabled:</h6>
-                            <p>{{ $booking->is_secure_ship ? 'Yes' : 'No' }}</p>
+                            <p>{{ $booking->booking_type == 'secureship' ? 'Yes' : 'No' }}</p>
                         </div>
                     </div>
                 </div>
@@ -66,17 +73,29 @@
                         {{-- Service Price --}}
                         <div class="d-flex align-items-center justify-content-between">
                             <h6>Service Price:</h6>
-                            <p>${{ $bookingData->sub_total }}</p>
+                            @if ($booking->booking_type == 'secureship')
+                                <p>${{ $bookingData->subTotal }}</p>
+                            @else
+                                <p>${{ $bookingData->sub_total }}</p>
+                            @endif
                         </div>
                         {{-- Tax Price --}}
                         <div class="d-flex align-items-center justify-content-between">
                             <h6>Tax Price:</h6>
-                            <p>${{ $bookingData->tax_price }}</p>
+                            @if ($booking->booking_type == 'secureship')
+                                <p>${{ $bookingData->taxAmount }}</p>
+                            @else
+                                <p>${{ $bookingData->tax_price }}</p>
+                            @endif
                         </div>
                         {{-- Total Price --}}
                         <div class="d-flex align-items-center justify-content-between">
                             <h6>Total Price:</h6>
-                            <p>${{ $bookingData->total_price }}</p>
+                            @if ($booking->booking_type == 'secureship')
+                                <p>${{ $bookingData->grandTotal }}</p>
+                            @else
+                                <p>${{ $bookingData->total_price }}</p>
+                            @endif
                         </div>
                         @if ($bookingData->payment_status == 'unpaid')
                             {{-- Payment Status --}}
@@ -87,7 +106,7 @@
                             {{-- Payment Method --}}
                             <div class="d-flex align-items-center justify-content-between">
                                 <h6>Payment Method:</h6>
-                                <p>{{ $bookingData->payment_method }}</p>
+                                <p>{{ $bookingData->payment_method ?? '-' }}</p>
                             </div>
                         @endif
 
@@ -108,9 +127,14 @@
                                                 @csrf
                                                 <input type="hidden" name="booking_id" value="{{ $booking->id }}">
                                                 <!-- Assuming $booking is available with the booking details -->
+                                                @if ($booking->booking_type == 'secureship')
+                                                    <input type="hidden" name="total_price"
+                                                        value="{{ $bookingData->grandTotal }}">
+                                                @else
+                                                    <input type="hidden" name="total_price"
+                                                        value="{{ $bookingData->total_price }}">
+                                                @endif
 
-                                                <input type="hidden" name="total_price"
-                                                    value="{{ $bookingData->total_price }}">
                                                 <!-- Assuming the total_price is fixed -->
                                                 <button type="submit" class="btn btn-paypal d-flex align-items-center">
                                                     <i class="fab fa-paypal"></i>
