@@ -10,6 +10,7 @@ use App\Models\Booking;
 use App\Models\BookingDelivery;
 use App\Models\BookingMoving;
 use App\Models\BookingReview;
+use App\Models\BookingSecureship;
 use App\Models\Client;
 use App\Models\DeliveryConfig;
 use App\Models\Helper;
@@ -837,7 +838,7 @@ class ClientBookingController extends Controller
             'success' => true,
             'statusCode' => 200,
             'message' => 'Booking created successfully',
-            'data' => $booking->uuid
+            'data' => $booking->id
         ], 200);
     }
 
@@ -884,6 +885,10 @@ class ClientBookingController extends Controller
         // Get $bookingPayment
         $bookingPayment = $this->getBookingPayment($booking_id, $booking->booking_type);
         if (!$bookingPayment) {
+
+            // delete booking
+            $booking->delete();
+
             return response()->json([
                 'success' => false,
                 'statusCode' => 422,
@@ -891,6 +896,7 @@ class ClientBookingController extends Controller
                 'errors' => 'Unable to get booking.',
             ], 422);
         }
+
 
         // Get payment settings
         $paymentSettings = [
@@ -1305,8 +1311,6 @@ class ClientBookingController extends Controller
             ], 422);
         }
 
-
-
         $booking_id = $request->id;
 
         $booking = Booking::select('bookings.id', 'bookings.uuid', 'bookings.client_user_id', 'bookings.helper_user_id', 'bookings.helper_user_id2', 'service_types.name as service_type', 'service_categories.name as service_category', 'priority_settings.name as priority_setting', 'bookings.booking_type', 'bookings.pickup_address', 'bookings.dropoff_address', 'bookings.pickup_latitude', 'bookings.pickup_longitude', 'bookings.dropoff_latitude', 'bookings.dropoff_longitude', 'bookings.booking_date', 'bookings.booking_time', 'bookings.status', 'bookings.total_price', 'bookings.receiver_name', 'bookings.receiver_phone', 'bookings.receiver_email', 'bookings.delivery_note', 'bookings.booking_at')
@@ -1355,6 +1359,10 @@ class ClientBookingController extends Controller
 
         // Check if booking payment exist
         if (!$bookingData['bookingPayment']) {
+
+            // delete booking
+            $booking->delete();
+
             return response()->json([
                 'success' => false,
                 'statusCode' => 422,
@@ -1552,6 +1560,64 @@ class ClientBookingController extends Controller
             'success' => true,
             'statusCode' => 200,
             'message' => 'Booking cancelled successfully.',
+            'data' => $booking,
+        ], 200);
+    }
+
+    // expired Booking
+    public function expireBooking(Request $request)
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        if (!isset($request->id)) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Booking ID is required.',
+                'errors' => 'Booking ID is required.',
+            ], 422);
+        }
+
+        $booking = Booking::where('id', $request->id)
+            ->with('client')
+            ->with('prioritySetting')
+            ->with('serviceType')
+            ->with('serviceCategory')
+            ->first();
+
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to get booking.',
+                'errors' => 'Unable to get booking.',
+            ], 422);
+        }
+        if ($booking->status != 'draft') {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to expire booking.',
+                'errors' => 'Unable to expire booking.',
+            ]);
+        }
+
+        $booking->status = 'expired';
+        $booking->save();
+
+        // Return response
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Booking expired successfully.',
             'data' => $booking,
         ], 200);
     }
@@ -1815,6 +1881,19 @@ class ClientBookingController extends Controller
             $bookingPayment['tax_price'] = $bookingMoving->tax_price;
             $bookingPayment['total_price'] = $bookingMoving->total_price;
             $bookingPayment['payment_method'] = $bookingMoving->payment_method;
+        }
+
+        // check ig booking is secureship
+        if ($booking_type == 'secureship') {
+            $bookingSecureship = BookingSecureship::where('booking_id', $booking_id)->first();
+
+            if (!$bookingSecureship) {
+                return false;
+            }
+
+            $bookingPayment['sub_total'] = $bookingSecureship->subTotal;
+            $bookingPayment['tax_price'] = $bookingSecureship->taxAmount;
+            $bookingPayment['total_price'] = $bookingSecureship->grandTotal;
         }
 
         return $bookingPayment;

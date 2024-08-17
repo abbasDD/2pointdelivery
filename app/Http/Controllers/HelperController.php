@@ -41,16 +41,6 @@ class HelperController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function complete_profile()
-    {
-        return view('helper.auth.complete_profile');
-    }
-
-    /**
-     * Show the application complete profile.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
     public function switchToClient()
     {
         // Get user data
@@ -278,12 +268,6 @@ class HelperController extends Controller
         $booking->save();
 
         return redirect()->back()->with('success', 'Booking accepted successfully!');
-    }
-
-
-    public function settings()
-    {
-        return view('helper.settings');
     }
 
 
@@ -718,5 +702,21 @@ class HelperController extends Controller
         $users = $clients->union($helpers)->union($admins)->get();
 
         return response()->json($users);
+    }
+
+    // wallet
+
+    public function wallet()
+    {
+        // Get available balance
+        $balance['available'] = 100;
+
+        // Total Earning
+        $balance['total'] = 110;
+
+        // WithdrawnAmount
+        $balance['withdrawn'] = 10;
+
+        return view('helper.wallet.index', compact('balance'));
     }
 }

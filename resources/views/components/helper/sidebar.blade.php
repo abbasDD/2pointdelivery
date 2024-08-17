@@ -21,6 +21,9 @@
             {{-- Bookings --}}
             <li class="nav-item"><a class="nav-link" href="{{ route('helper.bookings') }}"><i class="fa fa-dolly"></i>
                     Bookings</a></li>
+            {{-- Wallet --}}
+            <li class="nav-item"><a class="nav-link" href="{{ route('helper.wallet') }}"><i class="fa fa-wallet"></i>
+                    Wallet</a></li>
             {{-- Invitations --}}
             <li class="nav-item"><a class="nav-link" href="{{ route('helper.invitations') }}"><i
                         class="fa-solid fa-handshake"></i> Invitations</a></li>

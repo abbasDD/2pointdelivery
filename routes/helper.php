@@ -81,10 +81,6 @@ Route::middleware(['app_language'])->group(function () {
         Route::get('/chat/messages/{id}', [MessageController::class, 'index'])->name('chat.messages');
         Route::post('/chat/messages/store', [MessageController::class, 'store'])->name('chat.messages.store');
 
-
-        //settings
-        Route::get('/settings', [HelperController::class, 'settings'])->name('settings');
-
         //Edit Profile -- Update Profile Routes
         Route::get('/profile', [HelperController::class, 'edit_profile'])->name('profile');
         Route::post('/update/personal', [HelperController::class, 'personalInfo'])->name('update.personal');
@@ -94,6 +90,8 @@ Route::middleware(['app_language'])->group(function () {
         Route::post('/update/social', [HelperController::class, 'socialInfo'])->name('update.social');
         Route::post('/update/password', [HelperController::class, 'passwordInfo'])->name('update.password');
 
+        // Wallet
+        Route::get('/wallet', [HelperController::class, 'wallet'])->name('wallet');
 
         //Teams
         Route::get('/teams', [HelperController::class, 'teams'])->name('teams');

@@ -74,6 +74,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::get('booking/payment/{id}', [ClientBookingController::class, 'getPaymentBooking']);
     Route::get('booking/details/{id}', [ClientBookingController::class, 'getBookingDetails']);
     Route::get('booking/cancel/{id}', [ClientBookingController::class, 'cancelBooking']);
+    Route::get('booking/expire/{id}', [ClientBookingController::class, 'expireBooking']);
     Route::post('booking/payment/cod', [ClientBookingController::class, 'codPaymentBooking']);
     Route::post('booking/payment/paypal', [ClientBookingController::class, 'paypalPaymentBooking']);
     Route::post('booking/payment/stripe', [ClientBookingController::class, 'stripePaymentBooking']);
