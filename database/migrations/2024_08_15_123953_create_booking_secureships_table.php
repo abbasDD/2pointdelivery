@@ -38,7 +38,7 @@ return new class extends Migration
             $table->string('currencyCode')->nullable();
             // Payment Details
             $table->string('carrierCode')->nullable();
-            $table->string('selectedService')->nullable();
+            $table->string('selectedSecureshipService')->nullable();
             $table->string('serviceName')->nullable();
             $table->string('useSecureship')->nullable();
             $table->string('rateZone')->nullable();

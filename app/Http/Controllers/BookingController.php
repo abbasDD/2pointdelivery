@@ -27,6 +27,8 @@ use App\Http\Controllers\GetEstimateController;
 use App\Models\BookingMoving;
 use App\Models\BookingReview;
 use App\Models\BookingSecureship;
+use App\Models\BookingSecureshipPackage;
+use App\Models\DeliveryConfig;
 use App\Models\UserNotification;
 
 class BookingController extends Controller
@@ -69,7 +71,6 @@ class BookingController extends Controller
 
         return view('client.bookings.index', compact('bookings'));
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -434,13 +435,13 @@ class BookingController extends Controller
     }
 
     // createSecureshipBooking
-    private function createSecureshipBooking($request, $booking, $serviceCategory, $secureshipData)
+    public function createSecureshipBooking($request, $booking, $serviceCategory, $secureshipData)
     {
         if ($serviceCategory->is_secureship_enabled == 0) {
             return ['status' => false, 'message' => 'Secureship is not enabled for this service', 'data' => []];
         }
 
-        $selectedSecureshipService = $request->selectedService;
+        $selectedSecureshipService = $request->selectedSecureshipService;
 
         // Find Secureship Service Details as per selectedSecureshipService from secureshipData
         $selectedServiceDetail = null;
@@ -492,7 +493,7 @@ class BookingController extends Controller
             'shipDateTime' => null,
             'currencyCode' => $selectedServiceDetail['currencyCode'],
             'carrierCode' => $selectedServiceDetail['carrierCode'],
-            'selectedService' => $selectedServiceDetail['selectedService'],
+            'selectedSecureshipService' => $selectedServiceDetail['selectedService'],
             'serviceName' => $selectedServiceDetail['serviceName'],
             'useSecureship' => $selectedServiceDetail['useSecureship'],
             'rateZone' => $selectedServiceDetail['rateZone'],
@@ -523,6 +524,12 @@ class BookingController extends Controller
         $packages = $this->getEstimateController->getSecureshipPackages($request);
 
         $secureshipBooking->packages()->createMany($packages);
+
+        if ($secureshipBooking) {
+            // Update booking
+            $booking->total_price = number_format((float)($selectedServiceDetail['total'] + $platformCommission), 2, '.', '');
+            $booking->save();
+        }
 
 
         // Return data
@@ -666,6 +673,34 @@ class BookingController extends Controller
         return view('frontend.payment_booking', compact('booking', 'bookingData', 'paypalEnabled', 'stripeEnabled', 'codEnabled', 'stripe_publishable_key', 'bookingTimeLeft'));
     }
 
+    public function verifyBookingBeforePayment($bookingId)
+    {
+        // Get uuid of booking from id
+        $booking = Booking::where('id', $bookingId)->where('client_user_id', auth()->user()->id)->first();
+        if (!$booking) {
+            return redirect()->back()->with('error', 'Booking not found');
+        }
+        $booking_uuid = $booking->uuid;
+        // dd($booking_uuid);
+
+        // Check if booking payment time is exceeded
+        $bookingTime = Carbon::parse($booking->booking_at); //Booking Time
+
+        $currentTime = Carbon::now(); //Current Time
+
+        // Difference in Minutes
+        // $timeDifferenceInSeconds = $currentTime->diffInMinutes($bookingTime);
+        $timeDifferenceInSeconds = $bookingTime->diffInSeconds($currentTime);
+
+        // if 30 minutes passed then cancel booking
+        if ($timeDifferenceInSeconds > 30) {
+            $booking->update(['status' => 'expired']);
+            return redirect()->back()->with('error', 'Booking already expired');
+        }
+
+        return $booking_uuid;
+    }
+
     // Make Online Payment using Paypal
 
     public function createPaypalPayment(Request $request)
@@ -676,13 +711,8 @@ class BookingController extends Controller
         if (!$bookingId) {
             return redirect()->back()->with('error', 'Booking ID not found');
         }
-        // Get uuid of booking from id
-        $booking = Booking::where('id', $bookingId)->where('client_user_id', auth()->user()->id)->first();
-        if (!$booking) {
-            return redirect()->back()->with('error', 'Booking not found');
-        }
-        $booking_uuid = $booking->uuid;
-        // dd($booking_uuid);
+
+        $booking_uuid = $this->verifyBookingBeforePayment($bookingId);
 
         // Get Paypal Client ID from payment settings
         $paypal_client_id = PaymentSetting::where('key', 'paypal_client_id')->first();
@@ -717,7 +747,7 @@ class BookingController extends Controller
                 [
                     'amount' => [
                         'total' => $request->total_price, // Set the amount to charge
-                        'currency' => 'USD',
+                        'currency' => 'CAD',
                     ],
                     'custom' => $booking_uuid,
                 ],
@@ -803,6 +833,10 @@ class BookingController extends Controller
                 BookingMoving::where('booking_id', $booking->id)->update(['transaction_id' =>  $paymentDetails['id'], 'payment_status' => 'paid', 'payment_method' => 'paypal', 'payment_at' => Carbon::now()]);
             }
 
+            if ($booking->booking_type == 'secureship') {
+                $this->createSecureshipBookingUsingAPI($booking_uuid);
+            }
+
             // Send notification to user
             $userNofitication = UserNotification::create([
                 'sender_user_id' => null,
@@ -845,19 +879,13 @@ class BookingController extends Controller
     public function chargeStripePayment(Request $request)
     {
 
-
         // Retrieve booking ID from the request
         $bookingId = $request->input('booking_id');
         if (!$bookingId) {
             return redirect()->back()->with('error', 'Booking ID not found');
         }
-        // Get uuid of booking from id
-        $booking = Booking::where('id', $bookingId)->where('client_user_id', auth()->user()->id)->first();
-        if (!$booking) {
-            return redirect()->back()->with('error', 'Booking not found');
-        }
-        $booking_uuid = $booking->uuid;
-        // dd($booking_uuid);
+
+        $booking_uuid = $this->verifyBookingBeforePayment($bookingId);
 
         // Get Stripe Client ID from payment settings
         $stripe_publishable_key = PaymentSetting::where('key', 'stripe_publishable_key')->first();
@@ -890,7 +918,7 @@ class BookingController extends Controller
         $charge = \Stripe\Charge::create([
             'customer' => $customer->id,
             'amount' => $amount,
-            'currency' => 'usd',
+            'currency' => 'cad',
         ]);
 
         dd($charge);
@@ -929,6 +957,10 @@ class BookingController extends Controller
             if ($bookingMoving->payment_status == 'paid') {
                 return response()->json(['success' => false, 'data' => 'Booking already paid']);
             }
+        }
+
+        if ($booking->booking_type == 'secureship') {
+            return response()->json(['success' => false, 'data' => 'COD not allowed for secure ship']);
         }
 
         // dd($booking);
@@ -971,6 +1003,150 @@ class BookingController extends Controller
 
         return response()->json(['success' => true, 'data' => 'Booking paid successfully']);
     }
+
+    // createSecureshipBookingUsingAPI
+    public function createSecureshipBookingUsingAPI($booking_uuid)
+    {
+        // Get booking
+        $booking = Booking::where('uuid', $booking_uuid)->first();
+        if (!$booking) {
+            return ['success' => false, 'data' => 'Booking not found'];
+        }
+
+        // Get booking secureship
+        $bookingSecureship = BookingSecureship::where('booking_id', $booking->id)->first();
+        if (!$bookingSecureship) {
+            return ['success' => false, 'data' => 'Booking Secureship not found'];
+        }
+
+        // Get secureship booking packages
+        $secureshipBookingPackages = BookingSecureshipPackage::where('booking_secureship_id', $bookingSecureship->id)->get();
+        if ($secureshipBookingPackages->isEmpty()) {
+            return ['success' => false, 'data' => 'Secureship booking packages not found'];
+        }
+
+        // Convert package data to match API expectations
+        $packages = $secureshipBookingPackages->map(function ($package) {
+            return [
+                'packageType' => $package->packageType,
+                'userDefinedPackageType' => $package->userDefinedPackageType,
+                'weight' => (float)$package->weight,
+                'weightUnits' => $package->weightUnits,
+                'length' => (float)$package->length,
+                'width' => (float)$package->width,
+                'height' => (float)$package->height,
+                'dimUnits' => $package->dimUnits,
+                'insurance' => (float)$package->insurance,
+                'isAdditionalHandling' => filter_var($package->isAdditionalHandling, FILTER_VALIDATE_BOOLEAN),
+                'signatureOptions' => $package->signatureOptions,
+                'description' => $package->description,
+                'temperatureProtection' => filter_var($package->temperatureProtection, FILTER_VALIDATE_BOOLEAN),
+                'isDangerousGoods' => filter_var($package->isDangerousGoods, FILTER_VALIDATE_BOOLEAN),
+                'isNonStackable' => filter_var($package->isNonStackable, FILTER_VALIDATE_BOOLEAN),
+            ];
+        })->toArray();
+
+        $payload = [
+            'selectedSecureshipService' => $bookingSecureship->selectedSecureshipService,
+            'request' => 'createLabel', // Add the necessary request data here
+            'fromAddress' => [
+                'company' => '2 Point Delivery',
+                'contact' => 'Alex Tailor',
+                'phone' => '+1 613 714 0729 ext. 12345',
+                'addr1' => $bookingSecureship->fromAddress_addr1,
+                'addr2' => $bookingSecureship->fromAddress_addr2,
+                'addr3' => $bookingSecureship->fromAddress_addr3,
+                'countryCode' => $bookingSecureship->fromAddress_countryCode,
+                'postalCode' => $bookingSecureship->fromAddress_postalCode,
+                'city' => $bookingSecureship->fromAddress_city,
+                'province' => $bookingSecureship->fromAddress_province,
+                'residential' => filter_var($bookingSecureship->fromAddress_residential, FILTER_VALIDATE_BOOLEAN),
+                'taxId' => $bookingSecureship->fromAddress_taxId,
+                'emails' => ['2pointdelivery@gmail.com', auth()->user()->email],
+                'isInside' => filter_var($bookingSecureship->fromAddress_isInside, FILTER_VALIDATE_BOOLEAN),
+                'isTailGate' => filter_var($bookingSecureship->fromAddress_isTailGate, FILTER_VALIDATE_BOOLEAN),
+                'isTradeShow' => filter_var($bookingSecureship->fromAddress_isTradeShow, FILTER_VALIDATE_BOOLEAN),
+                'isLimitedAccess' => filter_var($bookingSecureship->fromAddress_isLimitedAccess, FILTER_VALIDATE_BOOLEAN),
+                'isSaturday' => filter_var($bookingSecureship->fromAddress_isSaturday, FILTER_VALIDATE_BOOLEAN),
+                'appointment' => [
+                    'appointmentType' => 'None',
+                    'phone' => '613-723-5891',
+                    'date' => now()->format('Y-m-d'),
+                    'time' => now()->format('H:i:s'),
+                ]
+            ],
+            'toAddress' => [
+                'company' => '2 Point Delivery',
+                'contact' => 'Alex Tailor',
+                'phone' => '+1 613 714 0729 ext. 12345',
+                'addr1' => $bookingSecureship->toAddress_addr1,
+                'addr2' => $bookingSecureship->toAddress_addr2,
+                'addr3' => $bookingSecureship->toAddress_addr3,
+                'countryCode' => $bookingSecureship->toAddress_countryCode,
+                'postalCode' => $bookingSecureship->toAddress_postalCode,
+                'city' => $bookingSecureship->toAddress_city,
+                'province' => $bookingSecureship->toAddress_province,
+                'residential' => filter_var($bookingSecureship->toAddress_residential, FILTER_VALIDATE_BOOLEAN),
+                'taxId' => $bookingSecureship->toAddress_taxId,
+                'emails' => ['2pointdelivery@gmail.com', auth()->user()->email],
+                'isInside' => filter_var($bookingSecureship->toAddress_isInside, FILTER_VALIDATE_BOOLEAN),
+                'isTailGate' => filter_var($bookingSecureship->toAddress_isTailGate, FILTER_VALIDATE_BOOLEAN),
+                'isTradeShow' => filter_var($bookingSecureship->toAddress_isTradeShow, FILTER_VALIDATE_BOOLEAN),
+                'isLimitedAccess' => filter_var($bookingSecureship->toAddress_isLimitedAccess, FILTER_VALIDATE_BOOLEAN),
+                'isSaturday' => filter_var($bookingSecureship->toAddress_isSaturday, FILTER_VALIDATE_BOOLEAN),
+                'appointment' => [
+                    'appointmentType' => 'None',
+                    'phone' => '613-723-5891',
+                    'date' => now()->addDays(3)->format('Y-m-d'),
+                    'time' => now()->format('H:i:s'),
+                ]
+            ],
+            'packages' => $packages,
+            'shipDateTime' => Carbon::now()->toIso8601String(),
+            'deliveryEmails' => ['2pointdelivery@gmail.com', auth()->user()->email],
+            'commercialInvoice' => null,  // Add the commercial invoice if necessary
+            'billingOption' => 'Prepaid',
+            'billingAccountNumber' => 'AB12345XYZ',
+            'documentsOnly' => false,
+            'isNonStackable' => true,
+            'isStopinOnly' => true,
+            'ecommerce' => null,  // Add ecommerce details if necessary
+            'references' => ["uuid: {$booking->uuid}", "description: shipping supplies"],
+            'comments' => 'Delivery created on 2 Point Delivery app',
+            'clearInProgress' => true,
+            'editTrackingNumber' => $booking->uuid,
+        ];
+
+        // Get secureship API key
+        $secureship_api_key = DeliveryConfig::where('key', 'secureship_api_key')->first();
+        if (!$secureship_api_key) {
+            return [
+                'status' => 'error',
+                'message' => 'Secureship API key not found',
+            ];
+        }
+
+        // API URL
+        $apiUrl = 'https://secureship.ca/ship/api/v1/carriers/create-label';
+
+        // Make the API request
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'x-api-key' => $secureship_api_key->value,
+        ])->post($apiUrl, $payload);
+
+        if ($response->successful()) {
+            return ['status' => 'success', 'data' => $response->json()];
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve estimate',
+                'error' => $response->json(),
+            ]);
+        }
+    }
+
+
 
     /**
      * Display the specified resource.

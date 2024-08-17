@@ -44,4 +44,19 @@ class BookingSecureshipPackage extends Model
     {
         return $this->belongsTo(BookingSecureship::class);
     }
+
+    /**
+     * Convert the model instance to an array, excluding timestamps.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $array = parent::toArray();
+
+        // Remove the created_at and updated_at columns
+        unset($array['created_at'], $array['updated_at']);
+
+        return $array;
+    }
 }

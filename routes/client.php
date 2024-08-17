@@ -87,6 +87,8 @@ Route::middleware(['app_language'])->group(function () {
         // Stripe
         Route::post('/booking/payment/stripe/charge', [BookingController::class, 'chargeStripePayment'])->name('booking.payment.stripe.charge');
 
+        Route::get('/booking/payment/securehsip/{booking_uuid}', [BookingController::class, 'createSecureshipBookingUsingAPI']);
+
         // Review to Booking
         Route::post('/booking/review/', [BookingReviewController::class, 'reviewBooking'])->name('booking.review');
 

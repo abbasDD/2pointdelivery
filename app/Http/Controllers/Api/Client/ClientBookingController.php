@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Client;
 
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\GetEstimateController;
 use App\Models\AddressBook;
@@ -31,10 +32,12 @@ use Carbon\Carbon;
 class ClientBookingController extends Controller
 {
     protected $getEstimateController;
+    protected $getBookingController;
 
-    public function __construct(GetEstimateController $getEstimateController)
+    public function __construct(GetEstimateController $getEstimateController, BookingController $getBookingController)
     {
         $this->getEstimateController = $getEstimateController;
+        $this->getBookingController = $getBookingController;
     }
 
 
@@ -642,6 +645,199 @@ class ClientBookingController extends Controller
             'success' => true,
             'message' => 'Booking created successfully',
             'data' => ['booking_id' => $new_booking->id]
+        ], 200);
+    }
+
+    // createSecureshipBooking
+    public function createSecureshipBooking(Request $request): JsonResponse
+    {
+
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Check if client have completed its profile
+        $client = Client::where('user_id', auth()->user()->id)->first();
+        if (!$client) {
+            // Create a new client
+            $client = new Client();
+            $client->user_id = auth()->user()->id;
+            $client->save();
+        }
+
+        // Check if client completed its personal details
+        if ($client->first_name == null) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Please complete your personal details',
+                'errors' => 'Please complete your personal details',
+            ], 422);
+        }
+
+        // Check if client completed its address details
+        if ($client->zip_code == null) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Please complete your address details',
+                'errors' => 'Please complete your address details',
+            ], 422);
+        }
+
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'selectedSecureshipService' => 'required',
+            'selectedServiceTypeID' => 'required|integer|exists:service_types,id',
+            'selectedServiceCategoryUuid' => 'required|string|exists:service_categories,uuid',
+            'distance_in_km' => 'required|numeric',
+            'pickup_address' => 'required|string|max:255',
+            'dropoff_address' => 'required|string|max:255',
+            'pickup_latitude' => 'required|numeric',
+            'pickup_longitude' => 'required|numeric',
+            'dropoff_latitude' => 'required|numeric',
+            'dropoff_longitude' => 'required|numeric',
+            'booking_date' => 'required|date',
+            'booking_time' => 'required|date_format:H:i',
+            'receiver_name' => 'required|string|max:255',
+            'receiver_phone' => 'required|string|max:255',
+            'delivery_note' => 'required|string|max:255',
+            'secureship_packages' => 'required|array|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+
+        // Check if service type available for booking
+        $serviceType = ServiceType::where('id', $request->selectedServiceTypeID)->where('is_active', 1)->first();
+        if (!$serviceType) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Service type not found',
+                'errors' => 'Service type not found',
+            ], 422);
+        }
+
+        // Check selected selectedServiceCategoryUuid is empty
+        $serviceCategory = ServiceCategory::where('uuid', $request->selectedServiceCategoryUuid)->where('is_active', 1)->first();
+        if (!$serviceCategory) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Service category not found',
+                'errors' => 'Service category not found',
+            ], 422);
+        }
+
+        // Check if is_secureship_enabled is 1
+        if (!$serviceCategory->is_secureship_enabled) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Service category not found',
+                'errors' => 'Service category not found',
+            ], 422);
+        }
+
+        if ($serviceCategory->is_secureship_enabled) {
+
+            // Call Secureship API function
+            $secureshipDataResponse = $this->getEstimateController->getSecureshipEstimate($request);
+
+            if ($secureshipDataResponse['status'] == 'error') {
+                return response()->json([
+                    'success' => false,
+                    'statusCode' => 422,
+                    'message' => 'Secureship API error',
+                ], 422);
+            }
+
+            if (count($secureshipDataResponse['data']) == 0) {
+                return response()->json([
+                    'success' => false,
+                    'statusCode' => 422,
+                    'message' => 'Secureship API error',
+                ], 422);
+            }
+
+            $secureshipData = $secureshipDataResponse['data'];
+        }
+
+        // Generate numeric uuid
+        $uuid = random_int(10000000, 99999999);
+
+        // Generate uuid and ensure it is unique
+        do {
+            $uuid = random_int(10000000, 99999999);
+            $booking = Booking::where('uuid', $uuid)->first();
+        } while ($booking);
+
+        // String uuid
+        $request->request->add([
+            'uuid' => $uuid,
+        ]);
+
+
+        // Create new booking
+        $booking = Booking::create([
+            'uuid' => $uuid,
+            'client_user_id' => auth()->user()->id,
+            'service_type_id' => $request->selectedServiceTypeID,
+            'service_category_id' => $serviceCategory->id,
+            'priority_setting_id' => $request->priorityID,
+            'booking_type' => $booking_type ?? 'delivery',
+            'is_secureship_enabled' => $serviceCategory->is_secureship_enabled,
+            'pickup_address' => $request->pickup_address,
+            'dropoff_address' => $request->dropoff_address,
+            'pickup_latitude' => $request->pickup_latitude,
+            'pickup_longitude' => $request->pickup_longitude,
+            'dropoff_latitude' => $request->dropoff_latitude,
+            'dropoff_longitude' => $request->dropoff_longitude,
+            'booking_date' => $request->booking_date,
+            'booking_time' => $request->booking_time,
+            'total_price' => 0,
+            'booking_at' => now(),
+        ]);
+
+        // $distance_in_km = 5;
+        $distance_in_km = $this->getEstimateController->getDistanceInKM($request->pickup_latitude, $request->pickup_longitude, $request->dropoff_latitude, $request->dropoff_longitude, 'K');
+        // add to request
+        $request->request->add([
+            'distance_in_km' => $distance_in_km,
+        ]);
+
+        $secureshipBookingResponse = $this->getBookingController->createSecureshipBooking($request, $booking, $serviceCategory, $secureshipData);
+
+        if ($secureshipBookingResponse['status'] == false) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Secureship API error',
+                'errors' => $secureshipBookingResponse['message'],
+            ], 422);
+
+            // Delete the booking
+            $booking->delete();
+        }
+
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Booking created successfully',
+            'data' => $booking->uuid
         ], 200);
     }
 

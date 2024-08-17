@@ -303,7 +303,7 @@
                         <tr>
                             <td>${value.carrierCode}</td>
                             <td>
-                                <p>${value.selectedService}</p>
+                                <p>${value.selectedSecureshipService}</p>
                                 <p>${value.serviceName}</p>
                             </td>
                             <td>${value.deliveryTime.friendlyTime}</td>

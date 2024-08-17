@@ -70,7 +70,6 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::get('booking/new/page2', [ClientBookingController::class, 'newBookingPage2']);
     Route::post('booking/estimate', [ClientBookingController::class, 'estimateBooking']);
     Route::get('booking/insurance', [ClientBookingController::class, 'insuranceBooking']);
-    Route::get('booking/secureship', [ClientBookingController::class, 'secureshipBooking']);
     Route::post('booking/create', [ClientBookingController::class, 'createBooking']);
     Route::get('booking/payment/{id}', [ClientBookingController::class, 'getPaymentBooking']);
     Route::get('booking/details/{id}', [ClientBookingController::class, 'getBookingDetails']);
@@ -78,6 +77,10 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::post('booking/payment/cod', [ClientBookingController::class, 'codPaymentBooking']);
     Route::post('booking/payment/paypal', [ClientBookingController::class, 'paypalPaymentBooking']);
     Route::post('booking/payment/stripe', [ClientBookingController::class, 'stripePaymentBooking']);
+
+    // Secureship booking
+    Route::get('booking/secureship', [ClientBookingController::class, 'secureshipBooking']);
+    Route::post('booking/secureship/create', [ClientBookingController::class, 'createSecureshipBooking']);
 
     // Track Booking
     Route::post('booking/track', [ClientBookingController::class, 'trackBooking']);

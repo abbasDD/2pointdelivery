@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('dimUnits')->nullable();
             $table->string('value')->nullable();
             $table->string('insurance')->nullable();
-            $table->string('isAdditionalHandling')->nullable();
+            $table->boolean('isAdditionalHandling')->default(true);
             $table->string('signatureOptions')->nullable();
             $table->string('description')->nullable();
             $table->boolean('isDangerousGoods')->default(true);

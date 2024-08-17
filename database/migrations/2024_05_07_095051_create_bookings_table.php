@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('helper_user_id')->nullable();
             $table->unsignedBigInteger('helper_user_id2')->nullable();
             $table->unsignedBigInteger('service_type_id');
-            $table->unsignedBigInteger('priority_setting_id');
+            $table->unsignedBigInteger('priority_setting_id')->nullable();
             $table->unsignedBigInteger('service_category_id');
             $table->string('booking_type')->default('delivery');
             $table->text('pickup_address');

@@ -84,7 +84,11 @@
 
                 // get secureship_additional_handling value
                 var secureship_additional_handling = document.getElementById('secureship_additional_handling').value;
-
+                if (secureship_additional_handling == 'on') {
+                    secureship_additional_handling = 1;
+                } else {
+                    secureship_additional_handling = 0;
+                }
                 // get secureship_package_value value
                 var secureship_package_value = document.getElementById('secureship_package_value').value;
                 break;
@@ -109,7 +113,9 @@
 
                 // get secureship_additional_handling value
                 var secureship_additional_handling = document.getElementById('secureship_additional_handling').value;
-
+                if (secureship_additional_handling == 'on') {
+                    secureship_additional_handling = 1;
+                }
                 // get secureship_package_value value
                 var secureship_package_value = document.getElementById('secureship_package_value').value;
                 break;
@@ -136,6 +142,9 @@
 
                 // get secureship_additional_handling value
                 var secureship_additional_handling = document.getElementById('secureship_additional_handling').value;
+                if (secureship_additional_handling == 'on') {
+                    secureship_additional_handling = 1;
+                }
 
                 // get secureship_package_value value
                 var secureship_package_value = document.getElementById('secureship_package_value').value;

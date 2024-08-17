@@ -560,7 +560,7 @@
                         <tr>
                             <td>${value.carrierCode}</td>
                             <td>
-                                <p>${value.selectedService}</p>
+                                <p>${value.selectedSecureshipService}</p>
                                 <p>${value.serviceName}</p>
                             </td>
                             <td>${value.deliveryTime.friendlyTime}</td>
@@ -569,7 +569,7 @@
                                 <p>CAD ${value.regularPrice}</p>
                                 <p>Reg: CAD ${value.total}</p>
                             </td>
-                            <td><button type="button" class="btn btn-primary btn-sm" onclick="bookService('${value.selectedService}')">Select</button></td>
+                            <td><button type="button" class="btn btn-primary btn-sm" onclick="bookService('${value.selectedSecureshipService}')">Select</button></td>
                         </tr>
                     `;
             });
@@ -647,8 +647,8 @@
 
 
     // bookService
-    function bookService(selectedService) {
-        // alert(selectedService);
+    function bookService(selectedSecureshipService) {
+        // alert(selectedSecureshipService);
 
 
 
@@ -659,8 +659,8 @@
 
         formData.append('_token', '{{ csrf_token() }}');
 
-        // Add selectedService
-        formData.append('selectedService', selectedService);
+        // Add selectedSecureshipService
+        formData.append('selectedSecureshipService', selectedSecureshipService);
 
         // pickup_address
         formData.append('pickup_address', document.getElementById('pickup_address').value);

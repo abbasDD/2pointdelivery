@@ -32,7 +32,7 @@ class BookingSecureship extends Model
         'shipDateTime',
         'currencyCode',
         'carrierCode',
-        'selectedService',
+        'selectedSecureshipService',
         'serviceName',
         'useSecureship',
         'rateZone',
