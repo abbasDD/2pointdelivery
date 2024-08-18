@@ -698,7 +698,7 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking already expired');
         }
 
-        return $booking_uuid;
+        return $booking;
     }
 
     // Make Online Payment using Paypal
@@ -712,7 +712,9 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking ID not found');
         }
 
-        $booking_uuid = $this->verifyBookingBeforePayment($bookingId);
+        $booking = $this->verifyBookingBeforePayment($bookingId);
+
+        $booking_uuid = $booking->uuid;
 
         // Get Paypal Client ID from payment settings
         $paypal_client_id = PaymentSetting::where('key', 'paypal_client_id')->first();
@@ -885,7 +887,7 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking ID not found');
         }
 
-        $booking_uuid = $this->verifyBookingBeforePayment($bookingId);
+        $booking = $this->verifyBookingBeforePayment($bookingId);
 
         // Get Stripe Client ID from payment settings
         $stripe_publishable_key = PaymentSetting::where('key', 'stripe_publishable_key')->first();

@@ -32,6 +32,8 @@ use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Admin\TaxSettingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\VehicleTypeController;
+use App\Http\Controllers\Admin\WalletAdmin;
+use App\Http\Controllers\Admin\WalletAdminController;
 use App\Http\Controllers\Auth\LoginController;
 
 //Admin Routes
@@ -279,6 +281,9 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     Route::get('/help-question/edit/{id}', [HelpQuestionController::class, 'edit'])->name('helpQuestion.edit');
     Route::post('/help-question/update', [HelpQuestionController::class, 'update'])->name('helpQuestion.update');
     Route::post('/help-question/update-status', [HelpQuestionController::class, 'updateStatus'])->name('helpQuestion.updateStatus');
+
+    // Wallet
+    Route::get('/wallet', [WalletAdminController::class, 'index'])->name('wallet');
 
     // End of Admin Routes
 });

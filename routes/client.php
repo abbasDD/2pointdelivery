@@ -104,6 +104,8 @@ Route::middleware(['app_language'])->group(function () {
         //Track Booking
         Route::get('/track-order/{id?}', [ClientController::class, 'track_order'])->name('trackOrder');
 
+        // Wallet
+        Route::get('/wallet', [ClientController::class, 'wallet'])->name('wallet');
 
         //Address Book
         Route::get('/address-books', [AddressBookController::class, 'index'])->name('addressBooks');

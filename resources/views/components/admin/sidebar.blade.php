@@ -47,6 +47,12 @@
                 <a class="nav-link" href="{{ route('admin.bookings') }}"><i class="fa fa-dolly"></i>
                     Bookings</a>
             </li>
+
+            {{-- Wallet --}}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.wallet') }}"><i class="fa fa-wallet"></i>
+                    Wallet</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.chats') }}"><i class="fa-solid fa-inbox"></i>
                     Chat</a>

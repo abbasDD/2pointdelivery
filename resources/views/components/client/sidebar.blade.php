@@ -26,6 +26,9 @@
             <li class="nav-item"><a class="nav-link" href="{{ route('client.chats') }}"><i
                         class="fa-solid fa-inbox"></i>
                     Chat</a></li>
+            {{-- Wallet --}}
+            <li class="nav-item"><a class="nav-link" href="{{ route('client.wallet') }}"><i class="fa fa-wallet"></i>
+                    Wallet</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.referrals') }}"><i
                         class="fa-solid fa-repeat"></i> Referrals</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('client.trackOrder') }}"><i class="fa fa-map"></i>
