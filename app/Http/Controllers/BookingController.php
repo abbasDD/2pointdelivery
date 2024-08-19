@@ -99,6 +99,7 @@ class BookingController extends Controller
             'weight' => 'nullable|string|max:255',
             'base_weight' => 'nullable|string|max:255',
             'extra_weight_price' => 'nullable|string|max:255',
+            'selectedSecureshipService' => 'nullable|string|max:255',
         ]);
 
         // Check if service type available for booking
@@ -608,7 +609,7 @@ class BookingController extends Controller
         $timeDifferenceInSeconds = $bookingTime->diffInSeconds($currentTime);
 
         // if 30 minutes passed then cancel booking
-        if ($timeDifferenceInSeconds > 30) {
+        if ($timeDifferenceInSeconds > 1800) {
             $booking->update(['status' => 'expired']);
             return redirect()->back()->with('error', 'Booking already expired');
         }
@@ -617,7 +618,9 @@ class BookingController extends Controller
         // Convert timeDifferenceInSeconds to minutes
 
         // Time Left
-        $bookingTimeLeft = (int)(30 - $timeDifferenceInSeconds);
+        $bookingTimeLeft = (int)(1800 - $timeDifferenceInSeconds);
+        // Convert to minutes and seconds
+        $bookingTimeLeft = (int)($bookingTimeLeft / 60) . ' minutes ' . ($bookingTimeLeft % 60) . ' seconds';
 
         // Get payment settings
         $cod_enabled = PaymentSetting::where('key', 'cod_enabled')->first();

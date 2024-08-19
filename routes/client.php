@@ -3,6 +3,7 @@
 use App\Http\Controllers\AddressBookController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Client\WalletClientController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BookingReviewController;
 use App\Http\Controllers\ChatController;
@@ -105,8 +106,8 @@ Route::middleware(['app_language'])->group(function () {
         Route::get('/track-order/{id?}', [ClientController::class, 'track_order'])->name('trackOrder');
 
         // Wallet
-        Route::get('/wallet', [ClientWalletController::class, 'index'])->name('wallet');
-        Route::get('/wallet/refund/request', [ClientWalletController::class, 'refundRequest'])->name('wallet.refund.request');
+        Route::get('/wallet', [WalletClientController::class, 'index'])->name('wallet');
+        Route::get('/wallet/refund/request', [WalletClientController::class, 'refundRequest'])->name('wallet.refund.request');
 
         //Address Book
         Route::get('/address-books', [AddressBookController::class, 'index'])->name('addressBooks');

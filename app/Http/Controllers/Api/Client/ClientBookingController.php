@@ -762,7 +762,7 @@ class ClientBookingController extends Controller
                 return response()->json([
                     'success' => false,
                     'statusCode' => 422,
-                    'message' => 'Secureship API error',
+                    'message' => $secureshipDataResponse['message'],
                 ], 422);
             }
 
@@ -770,7 +770,7 @@ class ClientBookingController extends Controller
                 return response()->json([
                     'success' => false,
                     'statusCode' => 422,
-                    'message' => 'Secureship API error',
+                    'message' => 'Secureship API data is empty',
                 ], 422);
             }
 
@@ -887,7 +887,7 @@ class ClientBookingController extends Controller
         if (!$bookingPayment) {
 
             // delete booking
-            $booking->delete();
+            // $booking->delete();
 
             return response()->json([
                 'success' => false,
@@ -914,6 +914,12 @@ class ClientBookingController extends Controller
         if (isset($codEnabled) && $codEnabled->value == 'yes') {
             $paymentSettings['cod_enabled'] = 1;
         }
+
+        // CHeck if booking_type is secureship then disable COD
+        if ($booking->booking_type == 'secureship') {
+            $paymentSettings['cod_enabled'] = 0;
+        }
+
         // Paypal Enabled
         $paypalEnabled = PaymentSetting::where('key', 'paypal_enabled')->first();
         if (isset($paypalEnabled) && $paypalEnabled->value == 'yes') {
@@ -1845,55 +1851,49 @@ class ClientBookingController extends Controller
         if ($booking_type == 'delivery') {
             $bookingDelivery = BookingDelivery::where('booking_id', $booking_id)->first();
 
-            if (!$bookingDelivery) {
-                return false;
+            if ($bookingDelivery) {
+                $bookingPayment['insurance_price'] = $bookingDelivery->insurance_price ?? 0;
+                $bookingPayment['base_price'] = $bookingDelivery->service_price ?? 0;
+                $bookingPayment['distance_price'] = $bookingDelivery->distance_price ?? 0;
+                $bookingPayment['priority_price'] = $bookingDelivery->priority_price ?? 0;
+                $bookingPayment['vehicle_price'] = $bookingDelivery->vehicle_price ?? 0;
+                $bookingPayment['weight_price'] = $bookingDelivery->weight_price ?? 0;
+                $bookingPayment['sub_total'] = $bookingDelivery->sub_total;
+                $bookingPayment['tax_price'] = $bookingDelivery->tax_price;
+                $bookingPayment['total_price'] = $bookingDelivery->total_price;
+                $bookingPayment['payment_method'] = $bookingDelivery->payment_method;
             }
-
-            $bookingPayment['insurance_price'] = $bookingDelivery->insurance_price ?? 0;
-            $bookingPayment['base_price'] = $bookingDelivery->service_price ?? 0;
-            $bookingPayment['distance_price'] = $bookingDelivery->distance_price ?? 0;
-            $bookingPayment['priority_price'] = $bookingDelivery->priority_price ?? 0;
-            $bookingPayment['vehicle_price'] = $bookingDelivery->vehicle_price ?? 0;
-            $bookingPayment['weight_price'] = $bookingDelivery->weight_price ?? 0;
-            $bookingPayment['sub_total'] = $bookingDelivery->sub_total;
-            $bookingPayment['tax_price'] = $bookingDelivery->tax_price;
-            $bookingPayment['total_price'] = $bookingDelivery->total_price;
-            $bookingPayment['payment_method'] = $bookingDelivery->payment_method;
         }
 
         // Check if booking type is moving
         if ($booking_type == 'moving') {
             $bookingMoving = BookingMoving::where('booking_id', $booking_id)->first();
 
-            if (!$bookingMoving) {
-                return false;
+            if ($bookingMoving) {
+                $bookingPayment['base_price'] = $bookingMoving->service_price;
+                $bookingPayment['distance_price'] = $bookingMoving->distance_price;
+                $bookingPayment['priority_price'] = $bookingMoving->priority_price;
+                $bookingPayment['weight_price'] = $bookingMoving->weight_price;
+                $bookingPayment['no_of_room_price'] = $bookingMoving->no_of_room_price;
+                $bookingPayment['floor_plan_price'] = $bookingMoving->floor_plan_price;
+                $bookingPayment['floor_assess_price'] = $bookingMoving->floor_assess_price;
+                $bookingPayment['job_details_price'] = $bookingMoving->job_details_price;
+                $bookingPayment['sub_total'] = $bookingMoving->sub_total;
+                $bookingPayment['tax_price'] = $bookingMoving->tax_price;
+                $bookingPayment['total_price'] = $bookingMoving->total_price;
+                $bookingPayment['payment_method'] = $bookingMoving->payment_method;
             }
-
-            $bookingPayment['base_price'] = $bookingMoving->service_price;
-            $bookingPayment['distance_price'] = $bookingMoving->distance_price;
-            $bookingPayment['priority_price'] = $bookingMoving->priority_price;
-            $bookingPayment['weight_price'] = $bookingMoving->weight_price;
-            $bookingPayment['no_of_room_price'] = $bookingMoving->no_of_room_price;
-            $bookingPayment['floor_plan_price'] = $bookingMoving->floor_plan_price;
-            $bookingPayment['floor_assess_price'] = $bookingMoving->floor_assess_price;
-            $bookingPayment['job_details_price'] = $bookingMoving->job_details_price;
-            $bookingPayment['sub_total'] = $bookingMoving->sub_total;
-            $bookingPayment['tax_price'] = $bookingMoving->tax_price;
-            $bookingPayment['total_price'] = $bookingMoving->total_price;
-            $bookingPayment['payment_method'] = $bookingMoving->payment_method;
         }
 
         // check ig booking is secureship
         if ($booking_type == 'secureship') {
             $bookingSecureship = BookingSecureship::where('booking_id', $booking_id)->first();
 
-            if (!$bookingSecureship) {
-                return false;
+            if ($bookingSecureship) {
+                $bookingPayment['sub_total'] = $bookingSecureship->subTotal;
+                $bookingPayment['tax_price'] = $bookingSecureship->taxAmount;
+                $bookingPayment['total_price'] = $bookingSecureship->grandTotal;
             }
-
-            $bookingPayment['sub_total'] = $bookingSecureship->subTotal;
-            $bookingPayment['tax_price'] = $bookingSecureship->taxAmount;
-            $bookingPayment['total_price'] = $bookingSecureship->grandTotal;
         }
 
         return $bookingPayment;

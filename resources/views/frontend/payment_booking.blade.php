@@ -8,7 +8,7 @@
             {{-- Show bookingTimeLeft --}}
             <div class="col-md-12 my-5">
                 <div class="text-center">
-                    <h4 class="text-primary">Time Left: {{ $bookingTimeLeft }} Minutes</h4>
+                    <h4 class="text-primary">Time Left: {{ $bookingTimeLeft }}</h4>
                 </div>
             </div>
 
