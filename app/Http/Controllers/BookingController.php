@@ -347,6 +347,7 @@ class BookingController extends Controller
 
             // Update booking
             $booking->total_price = number_format((float)$amountToPay, 2, '.', '');
+            $booking->booking_type = 'delivery';
             $booking->save();
 
             return true;
@@ -426,6 +427,7 @@ class BookingController extends Controller
         if ($movingBooking) {
             // Update booking
             $booking->total_price = number_format((float)$amountToPay, 2, '.', '');
+            $booking->booking_type = 'moving';
             $booking->save();
 
             return true;
@@ -528,6 +530,7 @@ class BookingController extends Controller
         if ($secureshipBooking) {
             // Update booking
             $booking->total_price = number_format((float)($selectedServiceDetail['total'] + $platformCommission), 2, '.', '');
+            $booking->booking_type = 'secureship';
             $booking->save();
         }
 

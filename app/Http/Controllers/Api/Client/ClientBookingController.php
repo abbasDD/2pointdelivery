@@ -748,8 +748,8 @@ class ClientBookingController extends Controller
             return response()->json([
                 'success' => false,
                 'statusCode' => 422,
-                'message' => 'Service category not found',
-                'errors' => 'Service category not found',
+                'message' => 'Secureship is not enabled for this service category',
+                'errors' => 'Secureship is not enabled for this service category',
             ], 422);
         }
 
@@ -799,7 +799,7 @@ class ClientBookingController extends Controller
             'service_type_id' => $request->selectedServiceTypeID,
             'service_category_id' => $serviceCategory->id,
             'priority_setting_id' => $request->priorityID,
-            'booking_type' => $booking_type ?? 'delivery',
+            'booking_type' => 'secureship',
             'is_secureship_enabled' => $serviceCategory->is_secureship_enabled,
             'pickup_address' => $request->pickup_address,
             'dropoff_address' => $request->dropoff_address,

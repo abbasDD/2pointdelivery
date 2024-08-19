@@ -573,22 +573,4 @@ class ClientController extends Controller
 
         return response()->json($users);
     }
-
-
-
-    // wallet
-
-    public function wallet()
-    {
-        // Get available balance
-        $balance['available'] = 100;
-
-        // Total Earning
-        $balance['total'] = 110;
-
-        // WithdrawnAmount
-        $balance['withdrawn'] = 10;
-
-        return view('client.wallet.index', compact('balance'));
-    }
 }
