@@ -1,6 +1,6 @@
 @extends('helper.layouts.app')
 
-@section('title', 'Invitations')
+@section('title', 'Team Invites')
 
 @section('content')
 

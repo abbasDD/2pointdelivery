@@ -69,7 +69,7 @@ Route::middleware(['app_language'])->group(function () {
         Route::get('team/switch-user/{user}', [TeamInvitationController::class, 'switchUser'])->name('team.switchUser');
         Route::get('team/switch-self', [TeamInvitationController::class, 'switchToSelf'])->name('team.switchToSelf');
 
-        // Invitations
+        // Team Invites
         Route::get('/invitations', [TeamInvitationController::class, 'invitations'])->name('invitations');
         Route::get('/invitation/accept/{id}', [TeamInvitationController::class, 'acceptInvitation'])->name('invitation.accept');
         Route::get('/invitation/decline/{id}', [TeamInvitationController::class, 'declineInvitation'])->name('invitation.decline');

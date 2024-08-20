@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('helper_id')->nullable();
+            $table->string('transaction_id')->nullable();
             $table->string('amount');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->string('reason')->nullable();

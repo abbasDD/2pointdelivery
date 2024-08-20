@@ -155,7 +155,10 @@
                             document.getElementById('message-to-send').value = '';
 
                             // Append new chat to chat list
-                            addChatToChatList(data.chat_id, data.userInfo);
+                            //addChatToChatList(data.chat_id, data.userInfo);
+
+                            // refresh the page
+                            location.reload();
 
                             // Open Chat Window with Selected User
                             loadMessages(data.chat_id);

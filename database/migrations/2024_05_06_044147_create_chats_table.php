@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user1_id');
             $table->unsignedBigInteger('user2_id');
+            $table->boolean('is_read')->default(false);
+            $table->boolean('is_accepted')->default(false);
             $table->timestamps();
 
             $table->foreign('user1_id')->references('id')->on('users');

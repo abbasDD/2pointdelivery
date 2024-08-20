@@ -1,6 +1,6 @@
 @extends('client.layouts.app')
 
-@section('title', 'Invitations')
+@section('title', 'Team Invites')
 
 @section('content')
 

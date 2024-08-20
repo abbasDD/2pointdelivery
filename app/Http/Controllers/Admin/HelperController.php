@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Helper;
+use App\Models\HelperVehicle;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -130,7 +131,11 @@ class HelperController extends Controller
             ->with('serviceCategory')
             ->paginate(10);
 
-        return view('admin.helpers.show', compact('helper', 'bookings'));
+        // Helper Vehicle
+        $helper_vehicle = HelperVehicle::where('helper_id', $helper->id)->with('vehicle_type')
+            ->first();
+
+        return view('admin.helpers.show', compact('helper', 'helper_vehicle', 'bookings'));
     }
 
 

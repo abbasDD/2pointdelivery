@@ -21,7 +21,7 @@
                         class="fa-solid fa-address-book"></i> Address Book</a></li>
 
             <li class="nav-item"><a class="nav-link" href="{{ route('client.invitations') }}"><i
-                        class="fa-solid fa-handshake"></i> Invitations</a></li>
+                        class="fa-solid fa-handshake"></i> Team Invites</a></li>
 
             <li class="nav-item"><a class="nav-link" href="{{ route('client.chats') }}"><i
                         class="fa-solid fa-inbox"></i>

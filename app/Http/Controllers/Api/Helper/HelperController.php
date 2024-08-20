@@ -191,7 +191,7 @@ class HelperController extends Controller
 
         if ($helper->company_enabled == 1) {
             // Get helper company details
-            $helperCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
+            $helperCompany = HelperCompany::where('user_id', auth()->user()->id)->first();
             if (isset($helperCompany) && $helperCompany->legal_name != null) {
                 $data['company_details'] = true;
             }

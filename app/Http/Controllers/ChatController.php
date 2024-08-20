@@ -37,7 +37,8 @@ class ChatController extends Controller
         $user = User::findOrFail(Auth::user()->id);
 
         // Get the user's chats along with the other user in the chat
-        $chats = $user->chats()->with('otherUser')->get();
+        // $chats = $user->chats()->with('otherUser')->get();
+        $chats = Chat::where('user1_id', $user->id)->orWhere('user2_id', $user->id)->with('otherUser')->get();
 
         foreach ($chats as $chat) {
             $chat->last_message = $chat->messages()->latest()->first();

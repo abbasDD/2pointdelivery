@@ -105,6 +105,31 @@
                             </div>
                         </div>
                         <div class="col-md-9">
+                            {{-- Helper Vehicle --}}
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4>Helper Vehicle</h4>
+                                    @if ($helper_vehicle)
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                                    <h6 class="mb-0">Vehicle Number</h6>
+                                                    <p class="mb-0">{{ $helper_vehicle->vehicle_number ?: '-' }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                                    <h6 class="mb-0">Vehicle Make</h6>
+                                                    <p class="mb-0">{{ $helper_vehicle->vehicle_make ?: '-' }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <p>No vehicle found</p>
+                                    @endif
+                                </div>
+                            </div>
+                            {{-- Booking List --}}
                             <div class="card">
                                 <div class="card-body">
                                     <div class="table-responsive">

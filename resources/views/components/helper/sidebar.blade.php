@@ -24,9 +24,9 @@
             {{-- Wallet --}}
             <li class="nav-item"><a class="nav-link" href="{{ route('helper.wallet') }}"><i class="fa fa-wallet"></i>
                     Wallet</a></li>
-            {{-- Invitations --}}
+            {{-- Team Invites --}}
             <li class="nav-item"><a class="nav-link" href="{{ route('helper.invitations') }}"><i
-                        class="fa-solid fa-handshake"></i> Invitations</a></li>
+                        class="fa-solid fa-handshake"></i> Team Invites</a></li>
             {{-- Chats --}}
             <li class="nav-item"><a class="nav-link" href="{{ route('helper.chats') }}"><i
                         class="fa-solid fa-inbox"></i>

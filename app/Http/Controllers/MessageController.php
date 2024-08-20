@@ -10,6 +10,7 @@ use App\Models\Chat;
 use App\Models\Client;
 use App\Models\Helper;
 use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -66,6 +67,21 @@ class MessageController extends Controller
             'chat_id' => $request->chat_id,
             'sender_id' => Auth::user()->id,
             'message' => $request->message,
+        ]);
+
+        // Make chat read 0
+        $chat->update(['is_read' => 0]);
+
+        // Send notification
+        UserNotification::create([
+            'sender_user_id' => auth()->user()->id,
+            'receiver_user_id' => $chat->user1_id == auth()->user()->id ? $chat->user2_id : $chat->user1_id,
+            'receiver_user_type' => 'client',
+            'reference_id' => $request->chat_id,
+            'type' => 'chat',
+            'title' => 'New Message',
+            'content' => 'New message from ' . Auth::user()->first_name . ' ' . Auth::user()->last_name,
+            'read' => 0
         ]);
 
         // Return a json object
