@@ -124,7 +124,7 @@ class AdminController extends Controller
     }
 
 
-    public function users(Request $request)
+    public function showUser(Request $request)
     {
         $user = User::where('id', $request->id)->first();
 

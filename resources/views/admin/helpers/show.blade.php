@@ -108,20 +108,66 @@
                             {{-- Helper Vehicle --}}
                             <div class="card">
                                 <div class="card-body">
-                                    <h4>Helper Vehicle</h4>
+                                    <div class="d-flex align-items-center justify-content-between mb-3">
+                                        <h4>Helper Vehicle</h4>
+                                    </div>
                                     @if ($helper_vehicle)
                                         <div class="row">
+                                            {{-- Vehicle Type --}}
                                             <div class="col-md-6">
                                                 <div class="d-flex align-items-center justify-content-between mb-3">
-                                                    <h6 class="mb-0">Vehicle Number</h6>
-                                                    <p class="mb-0">{{ $helper_vehicle->vehicle_number ?: '-' }}</p>
+                                                    <p class="mb-0">
+                                                        <span class="fw-bold">Vehicle Type : </span>
+                                                        {{ $helper_vehicle->vehicleType ? $helper_vehicle->vehicleType->name : '-' }}
+                                                    </p>
                                                 </div>
                                             </div>
+                                            {{-- Vehicle Number --}}
                                             <div class="col-md-6">
                                                 <div class="d-flex align-items-center justify-content-between mb-3">
-                                                    <h6 class="mb-0">Vehicle Make</h6>
-                                                    <p class="mb-0">{{ $helper_vehicle->vehicle_make ?: '-' }}</p>
+                                                    <p class="mb-0">
+                                                        <span class="fw-bold">Vehicle Number : </span>
+                                                        {{ $helper_vehicle->vehicle_number ?: '-' }}
+                                                    </p>
                                                 </div>
+                                            </div>
+                                            {{-- Vehicle Make --}}
+                                            <div class="col-md-6">
+                                                <div class="d-flex align-items-center  mb-3">
+                                                    <p class="mb-0">
+                                                        <span class="fw-bold">Vehicle Make : </span>
+                                                        {{ $helper_vehicle->vehicle_make ?: '-' }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            {{-- Vehicle Model --}}
+                                            <div class="col-md-6">
+                                                <div class="d-flex align-items-center  mb-3">
+                                                    <p class="mb-0">
+                                                        <span class="fw-bold">Vehicle Model : </span>
+                                                        {{ $helper_vehicle->vehicle_model ?: '-' }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            {{-- Vehicle Color --}}
+                                            <div class="col-md-6">
+                                                <div class="d-flex align-items-center  mb-3">
+                                                    <p class="mb-0">
+                                                        <span class="fw-bold">Vehicle Color : </span>
+                                                        {{ $helper_vehicle->vehicle_color ?: '-' }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            {{-- Approve/ Reject Button --}}
+                                            <div class="col-md-12">
+                                                @if ($helper_vehicle->is_approved == 0)
+                                                    <div class="d-flex align-items-center gap-3 justify-content-end">
+                                                        <a href="{{ route('admin.helpers.vehicles.approve', $helper_vehicle->id) }}"
+                                                            class="btn btn-primary btn-sm">Approve Vehicle</a>
+                                                        <a href="{{ route('admin.helpers.vehicles.reject', $helper_vehicle->id) }}"
+                                                            class="btn btn-danger btn-sm">Reject Vehicle</a>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
                                     @else
@@ -132,6 +178,7 @@
                             {{-- Booking List --}}
                             <div class="card">
                                 <div class="card-body">
+                                    <h4>Bookings</h4>
                                     <div class="table-responsive">
                                         @include('admin.bookings.partials.list')
                                     </div>
@@ -157,7 +204,7 @@
                     Are you sure you want to approve this helper?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('statusModal')"
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('approveModal')"
                         data-dismiss="modal">Close</button>
                     {{-- <a id="approveHelperLink" href="#" class="btn btn-primary">Update</a> --}}
                     <button type="button" id="approveHelperLink" class="btn btn-primary">Approve</button>
@@ -178,7 +225,7 @@
                     Are you sure you want to reject this helper?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('statusModal')"
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('rejectModal')"
                         data-dismiss="modal">Close</button>
                     {{-- <a id="rejectHelperLink" href="#" class="btn btn-primary">Update</a> --}}
                     <button type="button" id="rejectHelperLink" class="btn btn-danger">Reject</button>

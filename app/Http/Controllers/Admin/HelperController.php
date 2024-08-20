@@ -132,7 +132,7 @@ class HelperController extends Controller
             ->paginate(10);
 
         // Helper Vehicle
-        $helper_vehicle = HelperVehicle::where('helper_id', $helper->id)->with('vehicle_type')
+        $helper_vehicle = HelperVehicle::where('helper_id', $helper->id)->with('vehicleType')
             ->first();
 
         return view('admin.helpers.show', compact('helper', 'helper_vehicle', 'bookings'));
@@ -196,5 +196,31 @@ class HelperController extends Controller
         // return redirect()->route('admin.taxSettings')->with('success', 'Tax Country Status updated successfully!');
 
         return json_encode(['status' => 'error', 'message' => 'Helper not found']);
+    }
+
+    // Approve Helper Vehicle
+    public function approveHelperVehicles(Request $request)
+    {
+        $vehicle = HelperVehicle::where('id', $request->id)
+            ->first();
+        if ($vehicle) {
+            $vehicle->update(['is_approved' => 1]);
+            return redirect()->back()->with('success', 'Helper vehicle approved successfully!');
+        }
+
+        return redirect()->back()->with('error', 'Helper vehicle not found');
+    }
+
+    // Reject Helper Vehicle
+    public function rejectHelperVehicles(Request $request)
+    {
+        $vehicle = HelperVehicle::where('id', $request->id)
+            ->first();
+        if ($vehicle) {
+            $vehicle->update(['is_approved' => 2]); // 2 is rejected
+            return redirect()->back()->with('success', 'Helper vehicle rejected successfully!');
+        }
+
+        return redirect()->back()->with('error', 'Helper vehicle not found');
     }
 }

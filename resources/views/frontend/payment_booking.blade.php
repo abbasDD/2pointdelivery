@@ -8,7 +8,8 @@
             {{-- Show bookingTimeLeft --}}
             <div class="col-md-12 my-5">
                 <div class="text-center">
-                    <h4 class="text-primary">Time Left: {{ $bookingTimeLeft }}</h4>
+                    <h4>Time Left: <span id="timer" class="text-primary">{{ $bookingTimeLeft }}</span>
+                    </h4>
                 </div>
             </div>
 
@@ -387,3 +388,40 @@
         form.submit();
     }
 </script>
+
+@if (isset($bookingTimeLeft))
+    {{-- Timer Javascript --}}
+    <script>
+        // Get the initial time from Blade
+        const initialTime = '{{ $bookingTimeLeft }}';
+
+        // Convert the initial time to seconds
+        let seconds = timeToSeconds(initialTime);
+
+        // Function to convert time format to seconds
+        function timeToSeconds(time) {
+            const [hours, minutes, seconds] = time.split(':').map(Number);
+            return hours * 3600 + minutes * 60 + seconds;
+        }
+
+        // Function to update the timer display
+        function updateTimer() {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const remainingSeconds = seconds % 60;
+            document.getElementById('timer').innerText =
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+            seconds--;
+
+            // If time is 00:00:00, redirect to bookings
+            if (hours === 0 && minutes === 0 && remainingSeconds === 0) {
+                window.location.href = "{{ route('client.bookings') }}";
+            }
+
+
+        }
+
+        // Start the timer
+        setInterval(updateTimer, 1000); // Update every second
+    </script>
+@endif

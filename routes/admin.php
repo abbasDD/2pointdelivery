@@ -57,7 +57,7 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     Route::post('/admins/update', [AdminController::class, 'update'])->name('admin.update');
 
     // Create a route to redirect to user page as per user type
-    Route::get('/users/{id}', [AdminController::class, 'users'])->name('users');
+    Route::get('/users/{id}', [AdminController::class, 'showUser'])->name('user.show');
     // Route::get('/users/{id}', [AdminController::class, 'users'])->name('users');
 
     // Search Users Route
@@ -99,6 +99,10 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     Route::post('/helpers/approve', [HelperController::class, 'approve'])->name('helper.approve');
     Route::post('/helpers/reject', [HelperController::class, 'reject'])->name('helper.reject');
     Route::post('/helpers/reset-password', [HelperController::class, 'resetPassword'])->name('client.resetPassword');
+
+    // Helper Vehciles
+    Route::get('/helper/vehicles/approve/{id}', [HelperController::class, 'approveHelperVehicles'])->name('helpers.vehicles.approve');
+    Route::get('/helper/vehicles/reject/{id}', [HelperController::class, 'rejectHelperVehicles'])->name('helpers.vehicles.reject');
 
     // Service Types Page Routes
     Route::get('/service-types', [ServiceTypeController::class, 'index'])->name('serviceTypes');

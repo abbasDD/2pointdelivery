@@ -609,7 +609,7 @@ class BookingController extends Controller
         $timeDifferenceInSeconds = $bookingTime->diffInSeconds($currentTime);
 
         // if 30 minutes passed then cancel booking
-        if ($timeDifferenceInSeconds > 1800) {
+        if ($timeDifferenceInSeconds > 3600) {
             $booking->update(['status' => 'expired']);
             return redirect()->back()->with('error', 'Booking already expired');
         }
@@ -618,9 +618,11 @@ class BookingController extends Controller
         // Convert timeDifferenceInSeconds to minutes
 
         // Time Left
-        $bookingTimeLeft = (int)(1800 - $timeDifferenceInSeconds);
+        $bookingTimeLeft = (int)(3600 - $timeDifferenceInSeconds);
         // Convert to minutes and seconds
-        $bookingTimeLeft = (int)($bookingTimeLeft / 60) . ' minutes ' . ($bookingTimeLeft % 60) . ' seconds';
+        // $bookingTimeLeft = (int)($bookingTimeLeft / 60) . ' minutes ' . ($bookingTimeLeft % 60) . ' seconds';
+
+        $bookingTimeLeft = date('H:i:s', $bookingTimeLeft);
 
         // Get payment settings
         $cod_enabled = PaymentSetting::where('key', 'cod_enabled')->first();

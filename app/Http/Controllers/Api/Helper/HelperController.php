@@ -2078,6 +2078,17 @@ class HelperController extends Controller
             ], 422);
         }
 
+        // If aithdraw amount is 0  return error
+
+        if ($request->amount == 0) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Amount must be greater than 0',
+                'errors' => 'Amount must be greater than 0'
+            ], 422);
+        }
+
         // Check if helper exist
 
         $helper = Helper::where('user_id', auth()->user()->id)->first();
