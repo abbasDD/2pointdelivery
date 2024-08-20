@@ -49,9 +49,9 @@ class HomeController extends Controller
             'pending_bookings' => Booking::where('status', 'pending')->count(),
             'cancelled_bookings' => Booking::where('status', 'cancelled')->count(),
             // Users Data
-            'total_users' => User::where('user_type', 'user')->count(),
-            'total_helpers' => User::where('client_enabled', 1)->count(),
-            'total_clients' => User::where('helper_enabled', 1)->count(),
+            'total_admins' => User::where('user_type', 'admin')->count(),
+            'total_clients' => User::where('client_enabled', 1)->where('user_type', 'user')->count(),
+            'total_helpers' => User::where('helper_enabled', 1)->where('user_type', 'user')->count(),
             'requested_helpers' => Helper::where('is_approved', 0)->count(),
             // Earning Data
             'total_earnings' => ($total_earnings_delivery + $total_earnings_moving),

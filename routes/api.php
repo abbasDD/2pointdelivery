@@ -235,6 +235,8 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     // Wallet
     Route::get('wallet/balance', [HelperController::class, 'getWalletBalance']);
     Route::get('wallet/earning', [HelperController::class, 'getWalletEarning']);
+    Route::get('wallet/requests', [HelperController::class, 'getWalletWithdrawRequests']);
+    Route::post('wallet/withdraw/request', [HelperController::class, 'postWalletWithdrawRequest']);
 
     // Helper Routes End
 });

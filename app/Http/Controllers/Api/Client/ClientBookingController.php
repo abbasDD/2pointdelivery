@@ -1162,7 +1162,7 @@ class ClientBookingController extends Controller
 
         // Send notification to user
 
-        $userNofitication = UserNotification::create([
+        UserNotification::create([
             'sender_user_id' => null,
             'receiver_user_id' => auth()->user()->id,
             'receiver_user_type' => 'client',
@@ -1172,6 +1172,7 @@ class ClientBookingController extends Controller
             'content' => 'You have successfully paid for your booking',
             'read' => 0
         ]);
+
 
         return response()->json([
             'success' => true,

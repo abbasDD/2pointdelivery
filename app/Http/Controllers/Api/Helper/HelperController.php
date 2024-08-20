@@ -21,6 +21,7 @@ use App\Models\User;
 use App\Models\UserNotification;
 use App\Models\UserSwitch;
 use App\Models\VehicleType;
+use App\Models\WithdrawRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -330,6 +331,10 @@ class HelperController extends Controller
                 $userData['company_details'] = true;
             }
         }
+
+        // Make client_enabled = 1
+        $user->client_enabled = 1;
+        $user->save();
 
         // Success response
         return response()->json([
@@ -1935,36 +1940,9 @@ class HelperController extends Controller
             ], 200);
         }
 
-        $userId = auth()->user()->id;
 
-        // Get all for completed bookings
-        $completedBookings = Booking::where('status', 'completed')
-            ->where(function ($query) use ($userId) {
-                $query->where('helper_user_id', $userId)
-                    ->orWhere('helper_user_id2', $userId);
-            })
-            ->with(['bookingDelivery', 'bookingMoving'])
-            ->get();
-
-        // Initialize total earnings
-        $totalEarning = 0;
-
-        // Loop through each completed booking
-        foreach ($completedBookings as $booking) {
-            if ($booking->booking_type == 'delivery' && $booking->bookingDelivery) {
-                $totalEarning += $booking->bookingDelivery->helper_fee;
-            } elseif ($booking->booking_type != 'delivery' && $booking->bookingMoving) {
-                $totalEarning += $booking->bookingMoving->helper_fee;
-            }
-        }
-
-
-        // Total Withdraw Amount
-        $totalWithdraw = 0;
-
-
-        // Total Balance
-        $totalBalance = $totalEarning - $totalWithdraw;
+        // Get balance of helper
+        $totalBalance = $this->getHelperWalletBalance();
 
         // Return a json object
         return response()->json([
@@ -1976,7 +1954,6 @@ class HelperController extends Controller
             ]
         ], 200);
     }
-
 
 
     // Get credit wallet history
@@ -2046,6 +2023,147 @@ class HelperController extends Controller
             'message' => 'Credit wallet history retrieved successfully',
             'data' => $completedBookingList
         ], 200);
+    }
+
+    // getWalletWithdrawRequests
+    public function getWalletWithdrawRequests(): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Get withdraw requests
+        $withdrawRequests = WithdrawRequest::where('user_id', auth()->user()->id)->get();
+
+        // Return a json object
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Withdraw requests retrieved successfully',
+            'data' => $withdrawRequests
+        ], 200);
+    }
+
+    // postWalletWithdrawRequest
+    public function postWalletWithdrawRequest(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // validation for amount and reason
+
+        $validator = Validator::make(request()->all(), [
+            'amount' => 'required',
+            'reason' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // Check if helper exist
+
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        if (!$helper) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Helper not found',
+                'errors' => 'Helper not found'
+            ], 422);
+        }
+
+        // Get balance of helper
+        $balance = $this->getHelperWalletBalance();
+
+        if ($balance < $request->amount) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Insufficient balance',
+                'errors' => 'Insufficient balance'
+            ], 422);
+        }
+
+        // Add withdraw request
+        $withdrawRequest = WithdrawRequest::create([
+            'user_id' => auth()->user()->id,
+            'helper_id' => $helper->id,
+            'amount' => $request->amount,
+            'reason' => $request->reason,
+        ]);
+
+        if (!$withdrawRequest) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Withdraw request failed',
+                'errors' => 'Withdraw request failed'
+            ], 422);
+        }
+
+        // Return a json object
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Withdraw request created successfully',
+            'data' => []
+        ], 200);
+    }
+
+    // getHelperWalletBalance
+    private function getHelperWalletBalance()
+    {
+
+        $userId = auth()->user()->id;
+
+        // Get all for completed bookings
+        $completedBookings = Booking::where('status', 'completed')
+            ->where(function ($query) use ($userId) {
+                $query->where('helper_user_id', $userId)
+                    ->orWhere('helper_user_id2', $userId);
+            })
+            ->with(['bookingDelivery', 'bookingMoving'])
+            ->get();
+
+        // Initialize total earnings
+        $totalEarning = 0;
+
+        // Loop through each completed booking
+        foreach ($completedBookings as $booking) {
+            if ($booking->booking_type == 'delivery' && $booking->bookingDelivery) {
+                $totalEarning += $booking->bookingDelivery->helper_fee;
+            } elseif ($booking->booking_type != 'delivery' && $booking->bookingMoving) {
+                $totalEarning += $booking->bookingMoving->helper_fee;
+            }
+        }
+
+
+        // Total Withdraw Amount
+        $totalWithdraw = WithdrawRequest::where('user_id', auth()->user()->id)->whereIn('status', ['pending', 'approved'])->sum('amount');
+
+
+        // Total Balance
+        $totalBalance = $totalEarning - $totalWithdraw;
+
+        return $totalBalance;
     }
 
     // deleteAccount

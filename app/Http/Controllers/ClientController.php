@@ -59,8 +59,6 @@ class ClientController extends Controller
         if (!$user) {
             return redirect()->route('index')->with('error', 'User not found');
         }
-        $user->helper_enabled = 1;
-        $user->save();
 
 
         // Get Helper data from DB
@@ -115,6 +113,10 @@ class ClientController extends Controller
             // set profile_image
             session(['profile_image' => asset('images/users/' . $helperInfo->profile_image)]);
         }
+
+
+        $user->helper_enabled = 1;
+        $user->save();
 
         // Redirect to dashboard
         return redirect()->route('helper.index')->with('success', 'Switched to Helper Dashboard');

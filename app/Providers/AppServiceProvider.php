@@ -35,13 +35,18 @@ class AppServiceProvider extends ServiceProvider
             $this->app->setLocale('en');
         }
 
-        // Get timezone from SystemSetting
-        $timezone = SystemSetting::where('key', 'timezone')->first();
-        if ($timezone) {
-            date_default_timezone_set($timezone->value);
-        } else {
-            date_default_timezone_set('UTC');
+        // Default
+        date_default_timezone_set('UTC');
+
+        // Check if database has system settings table in it
+        if (!SystemSetting::count()) {
+            // Get timezone from SystemSetting
+            $timezone = SystemSetting::where('key', 'timezone')->first();
+            if ($timezone) {
+                date_default_timezone_set($timezone->value);
+            }
         }
+
 
         Passport::tokensExpireIn(now()->addDays(15));
         Passport::refreshTokensExpireIn(now()->addDays(30));

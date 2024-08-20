@@ -55,10 +55,10 @@
                             <i class="fas fa-users fa-2x text-primary"></i>
                         </div>
                         <hr>
-                        {{-- Total Users --}}
+                        {{-- Total Admins --}}
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <p class="mb-0 fs-14"><i class="fa fa-user text-success"></i> Total Users</p>
-                            <h6 class="mb-0">{{ $statistics['total_users'] }}</h6>
+                            <p class="mb-0 fs-14"><i class="fa fa-user text-success"></i> Total Admins</p>
+                            <h6 class="mb-0">{{ $statistics['total_admins'] }}</h6>
                         </div>
                         {{-- Total Clients --}}
                         <div class="d-flex align-items-center justify-content-between mb-2">

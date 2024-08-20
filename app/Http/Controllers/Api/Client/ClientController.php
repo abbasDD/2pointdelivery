@@ -319,6 +319,10 @@ class ClientController extends Controller
             $userData['vehicle_details'] = true;
         }
 
+        // Make helper_enabled 1
+        $user->helper_enabled = 1;
+        $user->save();
+
         // Success response
         return response()->json([
             'success' => true,
@@ -1815,6 +1819,18 @@ class ClientController extends Controller
             'chat_id' => $request->chat_id,
             'sender_id' => Auth::user()->id,
             'message' => $request->message,
+        ]);
+
+        // Send notification
+        UserNotification::create([
+            'sender_user_id' => auth()->user()->id,
+            'receiver_user_id' => $chat->user1_id == auth()->user()->id ? $chat->user2_id : $chat->user1_id,
+            'receiver_user_type' => 'client',
+            'reference_id' => $request->chat_id,
+            'type' => 'chat',
+            'title' => 'New Message',
+            'content' => 'New message from ' . Auth::user()->first_name . ' ' . Auth::user()->last_name,
+            'read' => 0
         ]);
 
         // Return a json object

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\UserNotification;
 use App\Http\Requests\StoreUserNotificationRequest;
 use App\Http\Requests\UpdateUserNotificationRequest;
+use App\Models\User;
 
 class UserNotificationController extends Controller
 {
@@ -90,10 +91,28 @@ class UserNotificationController extends Controller
             case 'user_registered':
                 // user_registered
                 if (session('login_type') == 'admin') {
+                    // Get User
+                    $user = User::where('id', $notification->reference_id)->first();
+                    if ($user) {
+                        if ($user->client_enabled == 1) {
+                            return redirect()->route('admin.clients');
+                        }
+                        return redirect()->route('admin.newHelpers');
+                    }
                     return redirect()->route('admin.newHelpers');
                 }
                 // Redirect back with error
                 return redirect()->back()->with('error', 'Unable to redirect notification');
+                break;
+            case 'chat':
+                // chat
+                if (session('login_type') == 'admin') {
+                    return redirect()->route('admin.chats');
+                }
+                if (session('login_type') == 'helper') {
+                    return redirect()->route('helper.chats');
+                }
+                return redirect()->route('client.chats');
                 break;
             default:
                 // default
