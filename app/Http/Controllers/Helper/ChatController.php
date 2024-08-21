@@ -32,6 +32,18 @@ class ChatController extends Controller
 
     public function index(Request $request)
     {
+        $chat_id = 0;
+        // Check if id is set in request
+        if ($request->id) {
+            // CHeck if chat exist on this id
+            $chat = Chat::where('id', $request->id)->first();
+            if ($chat) {
+                $chat_id = $request->id;
+            }
+        }
+
+        // dd($chat_id);
+
         // Retrieve the user
         $user = User::findOrFail(Auth::user()->id);
 
@@ -65,10 +77,10 @@ class ChatController extends Controller
                 }
             }
         }
-        // dd($chats[1]->otherUserInfo);
+        // dd($chat_id);
         // Pass the chat list to the view or return it as JSON
         // return response()->json($chats);
-        return view('helper.chats.index', ['chats' => $chats]);
+        return view('helper.chats.index', compact('chats', 'chat_id'));
     }
 
     public function create(Request $request)
@@ -108,5 +120,21 @@ class ChatController extends Controller
         $chat->save();
 
         return response()->json(['success' => true, 'chat_id' => $chat->id, 'userInfo' => $userInfo, 'message' => 'Chat created successfully']);
+    }
+
+    // adminChat
+    public function adminChat()
+    {
+        // Check chat between user aand admin already exists
+        $chatExists = Chat::where('user1_id', 1)->where('user2_id', Auth::user()->id)->orWhere('user1_id', Auth::user()->id)->where('user2_id', 1)->first();
+        if (!$chatExists) {
+            // Createa
+            $chat = new Chat();
+            $chat->user1_id = 1;
+            $chat->user2_id = Auth::user()->id;
+            $chat->save();
+        }
+
+        return redirect('/helper/chats/' . $chatExists->id);
     }
 }

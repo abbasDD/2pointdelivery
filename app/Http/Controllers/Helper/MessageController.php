@@ -18,6 +18,9 @@ class MessageController extends Controller
     public function index(Request $request)
     {
         $chat = Chat::find($request->id);
+        if (!$chat) {
+            return response()->json(['success' => false, 'data' => 'Unable to find chat']);
+        }
         $messages = $chat->messages()->orderBy('created_at', 'asc')->get();
 
         if ($chat->user1_id == Auth::user()->id) {

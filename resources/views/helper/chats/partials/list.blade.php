@@ -1,6 +1,6 @@
-<script>
+{{-- <script>
     var selectedChatID = 0;
-</script>
+</script> --}}
 
 <div class="row bg-light-gray">
     <div class="col-md-3 col-sm-2 people-list" id="people-list">
@@ -294,10 +294,16 @@
 {{-- On Page Load -> Load chat of first user --}}
 <script>
     window.onload = function() {
+
         @if (count($chats))
             var chats = @json($chats);
             // console.log(chats); // For testing
-            loadChat(chats[0].id); // Example: Load chat with the ID of the first chat
+            if (selectedChatID) {
+                console.log('Chat ID: ' + selectedChatID);
+                loadChat(selectedChatID);
+            } else {
+                loadChat(chats[0].id); // Example: Load chat with the ID of the first chat
+            }
         @endif
 
         // Loadin from Other Template File - chats/index.blade.php

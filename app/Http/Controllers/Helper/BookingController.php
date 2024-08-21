@@ -100,7 +100,12 @@ class BookingController extends Controller
         }
 
         // Check if helper is_approved is 0
-        if ($helper->is_approved == 0) {
+        if ($helper->is_approved != 0) {
+            return redirect()->back()->with('error', 'In order to accept booking, waiting for admin approval');
+        }
+
+        // Check if vehicle detail approved
+        if ($helperVehicle->is_approved != 1) {
             return redirect()->back()->with('error', 'In order to accept booking, waiting for admin approval');
         }
 
@@ -118,11 +123,6 @@ class BookingController extends Controller
             if ($companyData->company_alias == null || $companyData->city == null) {
                 return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
             }
-        }
-
-        // Check if client approve helper
-        if ($helper->is_approved == 0) {
-            return redirect()->route('helper.index')->with('error', 'Admin have not accept your request yet');
         }
 
 

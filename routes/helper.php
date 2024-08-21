@@ -76,7 +76,8 @@ Route::middleware(['app_language'])->group(function () {
         Route::get('/invitation/get-accepted-list', [TeamInvitationController::class, 'getAcceptedInvites'])->name('invitation.getAcceptedList');
 
         // Chat Page Routes
-        Route::get('/chats', [ChatController::class, 'index'])->name('chats');
+        Route::get('/chats/{id?}', [ChatController::class, 'index'])->name('chats');
+        Route::get('/chat/admin', [ChatController::class, 'adminChat'])->name('chat.admin');
         Route::post('/chat/create', [ChatController::class, 'create'])->name('chat.create');
         Route::get('/chat/messages/{id}', [MessageController::class, 'index'])->name('chat.messages');
         Route::post('/chat/messages/store', [MessageController::class, 'store'])->name('chat.messages.store');

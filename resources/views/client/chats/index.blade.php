@@ -7,6 +7,8 @@
     {{-- Define some javascript variables to be used in JS --}}
     <script>
         selectedNewChatUserID = 0;
+        // Selected Chat ID
+        selectedChatID = {!! isset($chat_id) ? $chat_id : 0 !!};
     </script>
 
     {{-- HTML Section Start --}}

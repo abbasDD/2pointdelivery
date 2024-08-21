@@ -544,6 +544,35 @@ class BookingController extends Controller
         ];
     }
 
+    // Calculate Booking Time Difference
+    public function calculateBookingTimeDifference($booking)
+    {
+        // Check if booking payment time is exceeded
+        $bookingTime = Carbon::parse($booking->booking_at); //Booking Time
+
+        $currentTime = Carbon::now(); //Current Time
+
+        // Difference in Minutes
+        // $timeDifferenceInSeconds = $currentTime->diffInMinutes($bookingTime);
+        $timeDifferenceInSeconds = $bookingTime->diffInSeconds($currentTime);
+
+        // if 30 minutes passed then cancel booking
+        if ($timeDifferenceInSeconds > 3600) {
+            $booking->update(['status' => 'expired']);
+            return redirect()->back()->with('error', 'Booking already expired');
+        }
+
+        // dd($timeDifferenceInSeconds);
+        // Convert timeDifferenceInSeconds to minutes
+
+        // Time Left
+        $bookingTimeLeft = (int)(3600 - $timeDifferenceInSeconds);
+        // Convert to minutes and seconds
+        // $bookingTimeLeft = (int)($bookingTimeLeft / 60) . ' minutes ' . ($bookingTimeLeft % 60) . ' seconds';
+
+        return $bookingTimeLeft;
+    }
+
     public function payment(Request $request)
     {
 
@@ -599,28 +628,14 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking already paid');
         }
 
-        // Check if booking payment time is exceeded
-        $bookingTime = Carbon::parse($booking->booking_at); //Booking Time
+        $bookingTimeLeft = $this->calculateBookingTimeDifference($booking);
 
-        $currentTime = Carbon::now(); //Current Time
+        // Check if booking time left is greater than 0
+        if ($bookingTimeLeft <= 0) {
 
-        // Difference in Minutes
-        // $timeDifferenceInSeconds = $currentTime->diffInMinutes($bookingTime);
-        $timeDifferenceInSeconds = $bookingTime->diffInSeconds($currentTime);
-
-        // if 30 minutes passed then cancel booking
-        if ($timeDifferenceInSeconds > 3600) {
             $booking->update(['status' => 'expired']);
             return redirect()->back()->with('error', 'Booking already expired');
         }
-
-        // dd($timeDifferenceInSeconds);
-        // Convert timeDifferenceInSeconds to minutes
-
-        // Time Left
-        $bookingTimeLeft = (int)(3600 - $timeDifferenceInSeconds);
-        // Convert to minutes and seconds
-        // $bookingTimeLeft = (int)($bookingTimeLeft / 60) . ' minutes ' . ($bookingTimeLeft % 60) . ' seconds';
 
         $bookingTimeLeft = date('H:i:s', $bookingTimeLeft);
 
@@ -1172,6 +1187,18 @@ class BookingController extends Controller
 
         if (!$booking) {
             return redirect()->back()->with('error', 'Booking not found');
+        }
+
+        // Check if booking status is draft
+        if ($booking->status == 'draft') {
+            $bookingTimeLeft = $this->calculateBookingTimeDifference($booking);
+
+            // Check if booking time left is greater than 0
+            if ($bookingTimeLeft <= 0) {
+
+                $booking->update(['status' => 'expired']);
+                return redirect()->back()->with('error', 'Booking already expired');
+            }
         }
 
         // Client view true

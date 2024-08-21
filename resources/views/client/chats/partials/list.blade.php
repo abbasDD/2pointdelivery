@@ -297,7 +297,12 @@
         @if (count($chats))
             var chats = @json($chats);
             // console.log(chats); // For testing
-            loadChat(chats[0].id); // Example: Load chat with the ID of the first chat
+            if (selectedChatID) {
+                console.log('Chat ID: ' + selectedChatID);
+                loadChat(selectedChatID);
+            } else {
+                loadChat(chats[0].id); // Example: Load chat with the ID of the first chat
+            }
         @endif
 
         // Loadin from Other Template File - chats/index.blade.php

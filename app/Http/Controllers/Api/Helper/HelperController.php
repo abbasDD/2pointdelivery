@@ -11,6 +11,7 @@ use App\Models\Chat;
 use App\Models\Client;
 use App\Models\ClientCompany;
 use App\Models\Helper;
+use App\Models\HelperBankAccount;
 use App\Models\HelperCompany;
 use App\Models\HelperVehicle;
 use App\Models\Message;
@@ -2066,6 +2067,7 @@ class HelperController extends Controller
         // validation for amount and reason
 
         $validator = Validator::make(request()->all(), [
+            'bank_id' => 'required',
             'amount' => 'required',
             'reason' => 'required',
         ]);
@@ -2136,6 +2138,30 @@ class HelperController extends Controller
             'statusCode' => 200,
             'message' => 'Withdraw request created successfully',
             'data' => []
+        ], 200);
+    }
+    // getBankAccounts
+    public function getBankAccounts(): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Get bank accounts
+        $bankAccounts = HelperBankAccount::where('user_id', auth()->user()->id)->get();
+
+        // Return a json object
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Bank accounts retrieved successfully',
+            'data' => $bankAccounts
         ], 200);
     }
 

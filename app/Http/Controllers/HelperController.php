@@ -230,7 +230,7 @@ class HelperController extends Controller
         }
         // $helperUpdated = false;
 
-        return view('helper.index', compact('helper', 'bookings', 'satistics', 'helperUpdated'));
+        return view('helper.index', compact('helper', 'bookings', 'satistics', 'helperUpdated', 'helperVehicle'));
     }
 
 

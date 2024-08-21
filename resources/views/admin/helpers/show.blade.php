@@ -26,8 +26,13 @@
                                     Reject
                                 </button>
                             </div>
+                        @else
+                            {{-- Show Status --}}
+                            <p class="{{ $helper->is_approved == 1 ? 'bg-success' : 'bg-danger' }} badge text-white">
+                                Helper {{ $helper->is_approved == 1 ? 'Approved' : 'Rejected' }}</p>
                         @endif
-                        {{-- Show Block or Unblock Button --}}
+
+
 
                     </div>
                 </div>
@@ -166,6 +171,16 @@
                                                             class="btn btn-primary btn-sm">Approve Vehicle</a>
                                                         <a href="{{ route('admin.helpers.vehicles.reject', $helper_vehicle->id) }}"
                                                             class="btn btn-danger btn-sm">Reject Vehicle</a>
+                                                    </div>
+                                                @else
+                                                    {{-- Show Status --}}
+
+                                                    <div class="d-flex align-items-center gap-3 justify-content-end">
+                                                        <p
+                                                            class="{{ $helper_vehicle->is_approved == 1 ? 'bg-success' : 'bg-danger' }} badge text-white">
+                                                            Vehicle
+                                                            {{ $helper_vehicle->is_approved == 1 ? 'Approved' : 'Rejected' }}
+                                                        </p>
                                                     </div>
                                                 @endif
                                             </div>

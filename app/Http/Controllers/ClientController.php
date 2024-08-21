@@ -174,9 +174,9 @@ class ClientController extends Controller
 
         $bookings = Booking::where('client_user_id', auth()->user()->id)
             ->with('client')
-            ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
+            ->whereIn('status', ['draft', 'pending', 'accepted', 'started', 'in_transit'])
             ->orderBy('bookings.updated_at', 'desc')
             ->take(10)->get();
 
