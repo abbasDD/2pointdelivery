@@ -384,8 +384,8 @@ class HelperBookingController extends Controller
         // Validate request
         $validator = Validator::make($request->all(), [
             'booking_id' => 'required|exists:bookings,id',
-            'start_booking_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,heic,heif|max:2048',
-            'signatureStart' => 'required|image|mimes:jpeg,png,jpg,gif,svg,heic,heif|max:2048',
+            'start_booking_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,heic,heif',
+            'signatureStart' => 'required|image|mimes:jpeg,png,jpg,gif,svg,heic,heif',
         ]);
 
         if ($validator->fails()) {
@@ -639,8 +639,8 @@ class HelperBookingController extends Controller
         // Validate request
         $validator = Validator::make($request->all(), [
             'booking_id' => 'required|exists:bookings,id',
-            'complete_booking_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,heic,heif|max:2048',
-            'signatureCompleted' => 'required|image|mimes:jpeg,png,jpg,gif,svg,heic,heif|max:2048',
+            'complete_booking_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,heic,heif',
+            'signatureCompleted' => 'required|image|mimes:jpeg,png,jpg,gif,svg,heic,heif',
         ]);
 
         if ($validator->fails()) {

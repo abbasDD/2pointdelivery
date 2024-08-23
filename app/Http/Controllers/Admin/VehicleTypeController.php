@@ -42,7 +42,7 @@ class VehicleTypeController extends Controller
     {
         // Validate the request
         $validatedData = $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,heic,heif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,heic,heif',
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             // 'services' => 'required|array',
