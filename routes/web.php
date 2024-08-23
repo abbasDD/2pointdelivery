@@ -93,6 +93,9 @@ Route::middleware(['app_language'])->group(function () {
     //Track Booking
     Route::post('/track-booking', [FrontendController::class, 'track_booking'])->name('trackBooking');
 
+    // testimonials
+    Route::get('/testimonials', [FrontendController::class, 'testimonials'])->name('testimonials');
+
     // Route Chat Page
     Route::get('/chat', [ChatController::class, 'redirectChat'])->name('chat');
 

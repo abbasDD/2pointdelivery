@@ -708,7 +708,7 @@ class ClientBookingController extends Controller
             'booking_time' => 'required|date_format:H:i',
             'receiver_name' => 'required|string|max:255',
             'receiver_phone' => 'required|string|max:255',
-            'delivery_note' => 'required|string|max:255',
+            'delivery_note' => 'nullable|string|max:255',
             'secureship_packages' => 'required|array|min:1',
         ]);
 
@@ -809,6 +809,10 @@ class ClientBookingController extends Controller
             'dropoff_longitude' => $request->dropoff_longitude,
             'booking_date' => $request->booking_date,
             'booking_time' => $request->booking_time,
+            'receiver_name' => $request->receiver_name,
+            'receiver_phone' => $request->receiver_phone,
+            'receiver_email' => $request->receiver_email,
+            'delivery_note' => $request->delivery_note,
             'total_price' => 0,
             'booking_at' => now(),
         ]);

@@ -100,7 +100,7 @@ class BookingController extends Controller
         }
 
         // Check if helper is_approved is 0
-        if ($helper->is_approved != 0) {
+        if ($helper->is_approved != 1) {
             return redirect()->back()->with('error', 'In order to accept booking, waiting for admin approval');
         }
 

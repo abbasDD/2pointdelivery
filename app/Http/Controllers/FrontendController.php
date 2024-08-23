@@ -8,6 +8,7 @@ use App\Models\Blog;
 use App\Models\Booking;
 use App\Models\BookingDelivery;
 use App\Models\BookingMoving;
+use App\Models\BookingReview;
 use App\Models\Client;
 use App\Models\ClientCompany;
 use App\Models\DeliveryConfig;
@@ -41,7 +42,57 @@ class FrontendController extends Controller
             // ->where('type', 'delivery')      // uncomment if you want to use only delivery
             ->get();
 
-        return view('frontend.index', compact('serviceTypes'));
+        // Testimonials 
+        $testimonials = [
+            (object) [
+                'id' => 1,
+                'client_name' => 'John Doe',
+                'client_image' => 'default.png',
+                'booking_id' => 1,
+                'rating' => 5,
+                'review' => 'This is a great service. I would recommend it to anyone.'
+            ],
+            (object) [
+                'id' => 2,
+                'client_name' => 'Jane Smith',
+                'client_image' => 'default.png',
+                'booking_id' => 2,
+                'rating' => 4,
+                'review' => 'The service was good. I would recommend it to anyone.',
+            ],
+        ];
+
+        // Get reviews
+        $reviews = BookingReview::limit(5)->get();
+        if ($reviews->count() > 0) {
+            // $testimonials empty
+            $testimonials = [];
+            // Loop through reviews
+            foreach ($reviews as $review) {
+                $booking  = Booking::where('id', $review->booking_id)->first();
+                if (!$booking) {
+                    $review->client_name  = 'John Doe';
+                    $review->client_image = 'default.png';
+                    $testimonials[] = $review;
+                    continue;
+                }
+                $client = Client::where('user_id', $booking->client_user_id)->first();
+                if (!$client) {
+                    $review->client_name  = 'John Doe';
+                    $review->client_image = 'default.png';
+                    $testimonials[] = $review;
+                    continue;
+                }
+                // Store client info
+                $review->client_name  = $client->first_name . ' ' . $client->last_name;
+                $review->client_image = $client->profile_image;
+                $testimonials[] = $review;
+            }
+        }
+
+        // dd($testimonials);
+
+        return view('frontend.index', compact('serviceTypes', 'testimonials'));
     }
 
     // getTrackingDetail
@@ -290,6 +341,12 @@ class FrontendController extends Controller
         $blog->author = $author_name;
 
         return view('frontend.blog_details', compact('blog'));
+    }
+
+    // testimonials
+    public function testimonials()
+    {
+        return view('frontend.testimonials');
     }
 
     // Terms and Conditions Page

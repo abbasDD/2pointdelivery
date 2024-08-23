@@ -523,23 +523,23 @@ w-70 {
 
 
 /* Header Section */
-#pageheader {
+#pagehero {
     color: var(--white);
     background-size: cover;
     background-position: center;
     padding: 7rem 1rem;
 }
 
-#pageheader .content {
+#pagehero .content {
     width: 550px;
 }
 
-#pageheader .content h3 {
+#pagehero .content h3 {
     font-size: 36px;
     padding-bottom: 10px;
 }
 
-#pageheader .content p {
+#pagehero .content p {
     font-size: 16px;
     padding-bottom: 20px;
 }
@@ -1829,7 +1829,7 @@ footer hr {
 @media only screen and (max-width: 768px) {
 
 
-    #pageheader .content h3 {
+    #pagehero .content h3 {
         font-size: 24px;
         padding-bottom: 10px;
     }

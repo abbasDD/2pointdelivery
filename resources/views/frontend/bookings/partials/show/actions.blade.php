@@ -310,22 +310,28 @@
         $('#startBookingModal').modal('show');
     }
 
-    // Start Booking Image JS
-    document.querySelector('#start_booking_image').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (!file.type.startsWith('image/')) {
-            alert('Please select an image file.');
-            event.target.value = null;
-            return;
-        }
+    @if (
+        $helperView &&
+            auth()->user()->helper_enabled &&
+            ($booking->helper_user_id == auth()->user()->id || $booking->helper_user_id2 == auth()->user()->id) &&
+            $booking->status == 'accepted')
+        // Start Booking Image JS
+        document.querySelector('#start_booking_image').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file.');
+                event.target.value = null;
+                return;
+            }
 
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            document.querySelector('#start_booking_image_preview').src = event.target.result;
-        }
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                document.querySelector('#start_booking_image_preview').src = event.target.result;
+            }
 
-        reader.readAsDataURL(file);
-    });
+            reader.readAsDataURL(file);
+        });
+    @endif
 
     // Show In Transit Booking Modal
     function inTransitBooking(id) {
@@ -336,23 +342,29 @@
     function completeBooking(id) {
         $('#completeBookingModal').modal('show');
     }
+    @if (
+        $helperView &&
+            auth()->user()->helper_enabled &&
+            ($booking->helper_user_id == auth()->user()->id || $booking->helper_user_id2 == auth()->user()->id) &&
+            $booking->status == 'in_transit')
 
-    // Complete Booking Image JS
-    document.querySelector('#complete_booking_image').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (!file.type.startsWith('image/')) {
-            alert('Please select an image file.');
-            event.target.value = null;
-            return;
-        }
+        // Complete Booking Image JS
+        document.querySelector('#complete_booking_image').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file.');
+                event.target.value = null;
+                return;
+            }
 
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            document.querySelector('#complete_booking_image_preview').src = event.target.result;
-        }
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                document.querySelector('#complete_booking_image_preview').src = event.target.result;
+            }
 
-        reader.readAsDataURL(file);
-    });
+            reader.readAsDataURL(file);
+        });
+    @endif
 
     // inCompleteBooking
     function inCompleteBooking(id) {
