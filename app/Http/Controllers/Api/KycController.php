@@ -161,7 +161,7 @@ class KycController extends Controller
         // Check if front_image exist or not
         if ($request->hasFile('front_image')) {
             $request->validate([
-                'front_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'front_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,heic,heif|max:2048',
             ]);
             // upload image
             $file = $request->file('front_image');
@@ -177,7 +177,7 @@ class KycController extends Controller
         // Check if back_image exist or not
         if ($request->hasFile('back_image')) {
             $request->validate([
-                'back_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'back_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,heic,heif|max:2048',
             ]);
             // upload image
             $back_image = $request->file('back_image');
@@ -328,7 +328,7 @@ class KycController extends Controller
         // Check if front_image exist or not
         if ($request->hasFile('front_image')) {
             $request->validate([
-                'front_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'front_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,heic,heif|max:2048',
             ]);
             // upload image
             $file = $request->file('front_image');
@@ -344,7 +344,7 @@ class KycController extends Controller
         // Check if back_image exist or not
         if ($request->hasFile('back_image')) {
             $request->validate([
-                'back_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'back_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,heic,heif|max:2048',
             ]);
             // upload image
             $back_image = $request->file('back_image');
