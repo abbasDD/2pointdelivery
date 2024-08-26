@@ -73,7 +73,7 @@ class HomeController extends Controller
             ->where('helpers.is_approved', 0)->get();
 
         // New Registered Users
-        $newRegisteredUsers = User::where('user_type', 'user')->where('created_at', '>=', now()->subDays(30))->get();
+        $newRegisteredUsers = User::where('user_type', 'user')->where('created_at', '>=', now()->subDays(30))->limit(5)->get();
 
 
         // Get deliveryMovingChartData

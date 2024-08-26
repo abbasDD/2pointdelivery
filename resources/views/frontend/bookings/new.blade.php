@@ -37,7 +37,7 @@
                                             <label for="pickup_address">Pickup Location</label>
                                             <input id="pickup_address" class="form-control" type="text"
                                                 name="pickup_address" placeholder="Enter pickup location"
-                                                value="{{ request()->get('pickup_address') }}" required>
+                                                value="{{ request()->get('pickupLocation') }}" required>
                                             <input type="hidden" id="pickup_latitude" name="pickup_latitude"
                                                 value="{{ request()->get('pickup_latitude') }}" required>
                                             <input type="hidden" id="pickup_longitude" name="pickup_longitude"
@@ -50,7 +50,7 @@
                                             <label for="dropoff_address">Delivery Location</label>
                                             <input id="dropoff_address" class="form-control" type="text"
                                                 name="dropoff_address" placeholder="Enter delivery location"
-                                                value="{{ request()->get('dropoff_address') }}" required>
+                                                value="{{ request()->get('deliveryLocation') }}" required>
                                             <input type="hidden" id="dropoff_latitude" name="dropoff_latitude"
                                                 value="{{ request()->get('dropoff_latitude') }}" required>
                                             <input type="hidden" id="dropoff_longitude" name="dropoff_longitude"
@@ -114,14 +114,14 @@
                                             @else
                                                 @foreach ($serviceTypes as $serviceType)
                                                     {{-- Check if service type is selected --}}
-                                                    @if ($serviceType->id == request()->get('serviceType'))
+                                                    @if ($serviceType->id == request()->get('serviceTypeID'))
                                                         <script>
                                                             selectedServiceType = '{{ $serviceType->type }}';
                                                         </script>
                                                     @endif
                                                     {{-- Select Option --}}
                                                     <option value="{{ $serviceType->id }}"
-                                                        {{ isset($serviceType) && $serviceType->id == request()->get('serviceType') ? 'selected' : '' }}>
+                                                        {{ isset($serviceType) && $serviceType->id == request()->get('serviceTypeID') ? 'selected' : '' }}>
                                                         {{ $serviceType->name }}</option>
                                                 @endforeach
                                             @endif
@@ -191,6 +191,14 @@
 
                                 {{-- Secureship Details --}}
                                 @include('frontend.bookings.partials.new.secureship')
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+
+                                {{-- Receipent Details --}}
+                                @include('frontend.bookings.partials.new.receiver')
+
                             </div>
                         </div>
 

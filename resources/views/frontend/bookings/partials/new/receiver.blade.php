@@ -1,7 +1,13 @@
 {{-- Receiver Details --}}
 <div class="row">
+    {{-- Heading --}}
+    <div class="col-md-12">
+        <div class="mb-3">
+            <h5>Receiver Details</h5>
+        </div>
+    </div>
     {{-- Receiver Name --}}
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="mb-3">
             <label for="receiver_name">Receiver Name</label>
             <input type="text" class="form-control" id="receiver_name" name="receiver_name"
@@ -9,7 +15,7 @@
         </div>
     </div>
     {{-- Receiver Email --}}
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="mb-3">
             <label for="receiver_email">Receiver Email</label>
             <input type="email" class="form-control" id="receiver_email" name="receiver_email"
@@ -17,7 +23,7 @@
         </div>
     </div>
     {{-- Receiver Phone --}}
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="mb-3">
             <label for="receiver_phone">Receiver Phone</label>
             <input type="text" class="form-control" id="receiver_phone" name="receiver_phone"

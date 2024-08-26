@@ -21,7 +21,8 @@
                 <td>{{ $addressBook->receiver_phone }}</td>
                 <td>{{ $addressBook->receiver_email }}</td>
                 <td>
-                    {{-- <a href="#" class="btn btn-sm btn-primary"><i class="fas fa-pencil"></i></a> --}}
+                    <a href="{{ route('client.addressBook.edit', $addressBook->id) }}" class="btn btn-sm btn-primary"><i
+                            class="fas fa-pencil"></i></a>
                 </td>
             </tr>
         @empty

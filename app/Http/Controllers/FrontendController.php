@@ -90,9 +90,26 @@ class FrontendController extends Controller
             }
         }
 
+
+        // Get secureship enabled or not
+        $secureshipEnabled = DeliveryConfig::where('key', 'secureship_api_enable')->where('value', '1')->first();
+        if ($secureshipEnabled) {
+            $secureshipEnabled = true;
+        } else {
+            $secureshipEnabled = false;
+        }
+
+        // secureship_fee
+        $secureship_fee = DeliveryConfig::where('key', 'secureship_fee')->first();
+        if ($secureship_fee) {
+            $secureship_fee_percentage = $secureship_fee->value;
+        } else {
+            $secureship_fee_percentage = 0;
+        }
+
         // dd($testimonials);
 
-        return view('frontend.index', compact('serviceTypes', 'testimonials'));
+        return view('frontend.index', compact('serviceTypes', 'testimonials', 'secureshipEnabled', 'secureship_fee_percentage'));
     }
 
     // getTrackingDetail
@@ -346,7 +363,43 @@ class FrontendController extends Controller
     // testimonials
     public function testimonials()
     {
-        return view('frontend.testimonials');
+        $testimonials = [];
+        // Get reviews
+        $reviews = BookingReview::limit(25)->get();
+        if ($reviews->count() > 0) {
+            // $testimonials empty
+            $testimonials = [];
+            // Loop through reviews
+            foreach ($reviews as $review) {
+                $booking  = Booking::where('id', $review->booking_id)->first();
+                if (!$booking) {
+                    $review->client_name  = 'John Doe';
+                    $review->client_image = 'default.png';
+                    $testimonials[] = $review;
+                    continue;
+                }
+                $client = Client::where('user_id', $booking->client_user_id)->first();
+                if (!$client) {
+                    $review->client_name  = 'John Doe';
+                    $review->client_image = 'default.png';
+                    $testimonials[] = $review;
+                    continue;
+                }
+                // Store client info
+                $review->client_name  = $client->first_name . ' ' . $client->last_name;
+                $review->client_image = $client->profile_image;
+                $testimonials[] = $review;
+            }
+        }
+
+        $total_reviews = BookingReview::count();
+
+        $avg_rating = 0;
+        if ($total_reviews > 0) {
+            $avg_rating = $reviews->avg('rating');
+        }
+
+        return view('frontend.testimonials', compact('testimonials', 'total_reviews', 'avg_rating'));
     }
 
     // Terms and Conditions Page
@@ -617,8 +670,25 @@ class FrontendController extends Controller
             $inusranceEnabled = false;
         }
 
+        // Get secureship enabled or not
+        $secureshipEnabled = DeliveryConfig::where('key', 'secureship_api_enable')->where('value', '1')->first();
+        if ($secureshipEnabled) {
+            $secureshipEnabled = true;
+        } else {
+            $secureshipEnabled = false;
+        }
+
+        // secureship_fee
+        $secureship_fee = DeliveryConfig::where('key', 'secureship_fee')->first();
+        if ($secureship_fee) {
+            $secureship_fee_percentage = $secureship_fee->value;
+        } else {
+            $secureship_fee_percentage = 0;
+        }
+
+
         // return view 
-        return view('frontend.bookings.new', compact('serviceTypes', 'serviceCategories', 'prioritySettings', 'draftBooking', 'addresses', 'no_of_rooms', 'floor_plans', 'floor_assess', 'job_details', 'movingDetails', 'inusranceEnabled'));
+        return view('frontend.bookings.new', compact('serviceTypes', 'serviceCategories', 'prioritySettings', 'draftBooking', 'addresses', 'no_of_rooms', 'floor_plans', 'floor_assess', 'job_details', 'movingDetails', 'inusranceEnabled', 'secureshipEnabled', 'secureship_fee_percentage'));
     }
 
     public function fetch_services_categories(Request $request)

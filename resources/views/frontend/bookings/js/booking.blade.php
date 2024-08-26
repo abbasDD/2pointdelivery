@@ -30,6 +30,9 @@
     var movingDetailsTotalWeight = 0;
     var movingDetailsTotalVolume = 0;
 
+    // $secureship_fee_percentage
+    var secureship_fee_percentage = {{ $secureship_fee_percentage ? $secureship_fee_percentage : 0 }};
+
     // Store $prioritySettings to JS array
     var prioritySettings = {!! json_encode($prioritySettings) !!};
     var selectedPriorityID = prioritySettings[0].id;
@@ -57,7 +60,7 @@
     // Check Service Type
     var selectedServiceType = 'delivery';
     var moving_price_type = 'hour';
-    var selectedServiceTypeID = {{ request()->get('serviceType') ? request()->get('serviceType') : 1 }};
+    var selectedServiceTypeID = {{ request()->get('serviceTypeID') ? request()->get('serviceTypeID') : 1 }};
 
     // Store $serviceCategories to JS array
     var selectedServiceCategoryUuid = '';
@@ -75,6 +78,10 @@
 
         // console.log('Selected category vehicle price is ' + serviceCategories[0]);
     }
+
+    // selectedServiceCategoryUuid
+    selectedServiceCategoryUuid =
+        {{ request()->get('serviceCategoryID') ? request()->get('serviceCategoryID') : $serviceCategories[0]->uuid }};
 
 
     // Update the categories as per the service type selected
@@ -186,6 +193,41 @@
     function setPriority() {
         selectedPriorityID = document.getElementById('priorityDropdown').value;
         console.log('Selected Priority: ' + selectedPriorityID);
+    }
+
+    // setAddressBook
+    function setAddressBook(id) {
+        // get the value
+        // let address_book = $('#address_book').val();
+        console.log(id);
+
+        // Get the address from address book id
+
+        for (let i = 0; i < addresses.length; i++) {
+            if (addresses[i].id == id) {
+                addressBook = addresses[i];
+                console.log(addressBook);
+            }
+        }
+
+        // Set the address values to input fields
+
+        // pickup_address
+        $('#pickup_address').val(addressBook.pickup_address);
+        $('#pickup_latitude').val(addressBook.pickup_latitude);
+        $('#pickup_longitude').val(addressBook.pickup_longitude);
+
+        // dropoff_address
+        $('#dropoff_address').val(addressBook.dropoff_address);
+        $('#dropoff_latitude').val(addressBook.dropoff_latitude);
+        $('#dropoff_longitude').val(addressBook.dropoff_longitude);
+
+        // receiver details
+        $('#receiver_name').val(addressBook.receiver_name);
+        $('#receiver_phone').val(addressBook.receiver_phone);
+        $('#receiver_email').val(addressBook.receiver_email);
+
+
     }
 
     // Update priority as per the service type selected
@@ -480,6 +522,12 @@
         var documents_only = document.getElementById('documents_only').value;
         formData.append('documents_only', documents_only);
 
+        // Receiver Details
+        formData.append('receiver_name', document.getElementById('receiver_name').value);
+        formData.append('receiver_phone', document.getElementById('receiver_phone').value);
+        formData.append('receiver_email', document.getElementById('receiver_email').value);
+        formData.append('delivery_note', document.getElementById('deliveryNote').value);
+
         return formData;
     }
 
@@ -566,8 +614,7 @@
                             <td>${value.deliveryTime.friendlyTime}</td>
                             <td>${value.billableWeight.value} ${value.billableWeight.units}</td>
                             <td>
-                                <p>CAD ${value.regularPrice}</p>
-                                <p>Reg: CAD ${value.total}</p>
+                                <p>CAD ${(value.total + (value.total * (secureship_fee_percentage/100))).toFixed(2)}</p>
                             </td>
                             <td><button type="button" class="btn btn-primary btn-sm" onclick="bookService('${value.selectedService}')">Select</button></td>
                         </tr>
@@ -578,9 +625,9 @@
                             </table>
                             {{-- Notification --}}
                             <p class="text-center">
-                                Shipment estimate was calculated by Secureship on {{ date('Y-m-d') }} at
-                                {{ date('H:i') }}
-                                Eastern Standard Time
+                                Shipment estimate was calculated by Secureship on {{ \Carbon\Carbon::now()->format('Y-m-d') }} at
+                                {{ \Carbon\Carbon::now()->format('H:i') }}
+                                {{ \Carbon\Carbon::now()->format('e') }}
                             </p>
                             `;
             document.getElementById('calculatedAmountCartBody').innerHTML = output;
@@ -632,9 +679,9 @@
                             </table>
                             {{-- Notification --}}
                             <p class="text-center">
-                                Shipment estimate was calculated by 2 Point Delivery on {{ date('Y-m-d') }} at
-                                {{ date('H:i') }}
-                                Eastern Standard Time
+                                Shipment estimate was calculated by Secureship on {{ \Carbon\Carbon::now()->format('Y-m-d') }} at
+                                {{ \Carbon\Carbon::now()->format('H:i') }}
+                                {{ \Carbon\Carbon::now()->format('e') }}
                             </p>
                             `;
             document.getElementById('calculatedAmountCartBody').innerHTML = output;

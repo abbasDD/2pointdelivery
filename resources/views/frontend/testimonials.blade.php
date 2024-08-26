@@ -26,12 +26,47 @@
     <section>
         <div class="container">
             <div class="row">
+                {{-- Testimonial Overview --}}
                 <div class="col-md-12">
-                    <div class="heading">
-                        <h2>Testimonials</h2>
-                    </div>
-                    <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h4>{{ $avg_rating }}
+                                <i class="fas fa-star {{ $avg_rating >= 1 ? 'text-warning' : '' }}"></i>
+                                <i class="fas fa-star {{ $avg_rating >= 2 ? 'text-warning' : '' }}"></i>
+                                <i class="fas fa-star {{ $avg_rating >= 3 ? 'text-warning' : '' }}"></i>
+                                <i class="fas fa-star {{ $avg_rating >= 4 ? 'text-warning' : '' }}"></i>
+                                <i class="fas fa-star {{ $avg_rating >= 5 ? 'text-warning' : '' }}"></i>
+                            </h4>
+                            <p>{{ $avg_rating }} out of 5 stars based on {{ $total_reviews }} reviews</p>
 
+                        </div>
+                    </div>
+                </div>
+                {{-- Testimonials --}}
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            @forelse ($testimonials as $item)
+                                {{-- Rating Star --}}
+                                <p>
+                                    <i class="fas fa-star {{ $item->rating >= 1 ? 'text-warning' : '' }}"></i>
+                                    <i class="fas fa-star {{ $item->rating >= 2 ? 'text-warning' : '' }}"></i>
+                                    <i class="fas fa-star {{ $item->rating >= 3 ? 'text-warning' : '' }}"></i>
+                                    <i class="fas fa-star {{ $item->rating >= 4 ? 'text-warning' : '' }}"></i>
+                                    <i class="fas fa-star {{ $item->rating >= 5 ? 'text-warning' : '' }}"></i>
+                                </p>
+                                {{-- Quotes Icon --}}
+                                <i class="fas fa-quote-left mb-2"></i>
+                                <p class="mb-3">{{ $item->review }}</p>
+
+                                {{-- Client Name  --}}
+                                <h5 class="text-capitalize"> - {{ $item->client_name }}</h5>
+
+                                <hr>
+                            @empty
+                                <p>No reviews yet</p>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
             </div>

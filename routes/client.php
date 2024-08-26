@@ -112,10 +112,7 @@ Route::middleware(['app_language'])->group(function () {
 
         //Address Book
         Route::get('/address-books', [AddressBookController::class, 'index'])->name('addressBooks');
-        Route::get('/address-book/create/', [AddressBookController::class, 'create'])->name('addressBook.create');
-        Route::post('/address-book/store/', [AddressBookController::class, 'store'])->name('addressBook.store');
         Route::get('/address-book/edit/{id}', [AddressBookController::class, 'edit'])->name('addressBook.edit');
         Route::post('/address-book/update', [AddressBookController::class, 'update'])->name('addressBook.update');
-        Route::get('/address-book/show/{id}', [AddressBookController::class, 'show'])->name('addressBook.show');
     });
 });

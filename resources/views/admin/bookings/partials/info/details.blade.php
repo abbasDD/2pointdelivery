@@ -2,17 +2,22 @@
 
 <div class="card mb-3">
     <div class="card-body">
-        {{-- Package Value: --}}
+        {{-- Service Type: --}}
         <div class="d-flex align-items-center justify-content-between mb-3">
             <p class="mb-0">Service Type:</p>
             <h6 class="mb-0">{{ $booking->serviceType->name }}</h6>
         </div>
-        {{-- Delivery Time: --}}
+        {{-- Service Category: --}}
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <p class="mb-0">Service Category:</p>
+            <h6 class="mb-0">{{ $booking->serviceCategory->name }}</h6>
+        </div>
+        {{-- Pickup Address: --}}
         <div class="d-flex align-items-center justify-content-between mb-3">
             <p class="mb-0">Pickup Address</p>
             <h6 class="mb-0">{{ $booking->pickup_address }}</h6>
         </div>
-        {{-- Receiver Details: --}}
+        {{-- Dropoff Address: --}}
         <div class="d-flex align-items-center justify-content-between mb-3">
             <p class="mb-0">Dropoff Address</p>
             <h6 class="mb-0">{{ $booking->dropoff_address }}</h6>

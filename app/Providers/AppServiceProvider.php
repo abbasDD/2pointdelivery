@@ -39,13 +39,16 @@ class AppServiceProvider extends ServiceProvider
         date_default_timezone_set('UTC');
 
         // Check if database has system settings table in it
-        if (!SystemSetting::count()) {
+        if (SystemSetting::count()) {
             // Get timezone from SystemSetting
             $timezone = SystemSetting::where('key', 'timezone')->first();
             if ($timezone) {
                 date_default_timezone_set($timezone->value);
             }
+            // Check default timezone
+            // dd(date_default_timezone_get());
         }
+
 
 
         Passport::tokensExpireIn(now()->addDays(15));

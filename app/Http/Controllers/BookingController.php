@@ -197,6 +197,10 @@ class BookingController extends Controller
             'booking_time' => $request->booking_time,
             'total_price' => 0,
             'booking_at' => now(),
+            'receiver_name' => $request->receiver_name,
+            'receiver_phone' => $request->receiver_phone,
+            'receiver_email' => $request->receiver_email,
+            'delivery_note' => $request->delivery_note,
         ]);
 
         // $distance_in_km = 5;
@@ -552,21 +556,21 @@ class BookingController extends Controller
 
         $currentTime = Carbon::now(); //Current Time
 
+        // dd($bookingTime, $currentTime);
+
         // Difference in Minutes
         // $timeDifferenceInSeconds = $currentTime->diffInMinutes($bookingTime);
         $timeDifferenceInSeconds = $bookingTime->diffInSeconds($currentTime);
-
-        // if 30 minutes passed then cancel booking
+        // dd($timeDifferenceInSeconds);
+        // if 60 minutes passed then cancel booking
         if ($timeDifferenceInSeconds > 3600) {
             $booking->update(['status' => 'expired']);
             return redirect()->back()->with('error', 'Booking already expired');
         }
 
-        // dd($timeDifferenceInSeconds);
-        // Convert timeDifferenceInSeconds to minutes
-
         // Time Left
         $bookingTimeLeft = (int)(3600 - $timeDifferenceInSeconds);
+        // dd($bookingTimeLeft);
         // Convert to minutes and seconds
         // $bookingTimeLeft = (int)($bookingTimeLeft / 60) . ' minutes ' . ($bookingTimeLeft % 60) . ' seconds';
 
@@ -637,8 +641,9 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking already expired');
         }
 
-        $bookingTimeLeft = date('H:i:s', $bookingTimeLeft);
-
+        // In seconds $bookingTimeLeft to h:i:s
+        $bookingTimeLeft = gmdate("H:i:s", $bookingTimeLeft);
+        // dd($bookingTimeLeft);
         // Get payment settings
         $cod_enabled = PaymentSetting::where('key', 'cod_enabled')->first();
         $paypal_enabled = PaymentSetting::where('key', 'paypal_enabled')->first();
@@ -696,34 +701,6 @@ class BookingController extends Controller
         return view('frontend.payment_booking', compact('booking', 'bookingData', 'paypalEnabled', 'stripeEnabled', 'codEnabled', 'stripe_publishable_key', 'bookingTimeLeft'));
     }
 
-    public function verifyBookingBeforePayment($bookingId)
-    {
-        // Get uuid of booking from id
-        $booking = Booking::where('id', $bookingId)->where('client_user_id', auth()->user()->id)->first();
-        if (!$booking) {
-            return redirect()->back()->with('error', 'Booking not found');
-        }
-        $booking_uuid = $booking->uuid;
-        // dd($booking_uuid);
-
-        // Check if booking payment time is exceeded
-        $bookingTime = Carbon::parse($booking->booking_at); //Booking Time
-
-        $currentTime = Carbon::now(); //Current Time
-
-        // Difference in Minutes
-        // $timeDifferenceInSeconds = $currentTime->diffInMinutes($bookingTime);
-        $timeDifferenceInSeconds = $bookingTime->diffInSeconds($currentTime);
-
-        // if 30 minutes passed then cancel booking
-        if ($timeDifferenceInSeconds > 30) {
-            $booking->update(['status' => 'expired']);
-            return redirect()->back()->with('error', 'Booking already expired');
-        }
-
-        return $booking;
-    }
-
     // Make Online Payment using Paypal
 
     public function createPaypalPayment(Request $request)
@@ -734,9 +711,11 @@ class BookingController extends Controller
         if (!$bookingId) {
             return redirect()->back()->with('error', 'Booking ID not found');
         }
-
-        $booking = $this->verifyBookingBeforePayment($bookingId);
-
+        // Get uuid of booking from id
+        $booking = Booking::where('id', $bookingId)->where('client_user_id', auth()->user()->id)->first();
+        if (!$booking) {
+            return redirect()->back()->with('error', 'Booking not found');
+        }
         $booking_uuid = $booking->uuid;
 
         // Get Paypal Client ID from payment settings
@@ -910,7 +889,12 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking ID not found');
         }
 
-        $booking = $this->verifyBookingBeforePayment($bookingId);
+        // Get uuid of booking from id
+        $booking = Booking::where('id', $bookingId)->where('client_user_id', auth()->user()->id)->first();
+        if (!$booking) {
+            return redirect()->back()->with('error', 'Booking not found');
+        }
+        $booking_uuid = $booking->uuid;
 
         // Get Stripe Client ID from payment settings
         $stripe_publishable_key = PaymentSetting::where('key', 'stripe_publishable_key')->first();

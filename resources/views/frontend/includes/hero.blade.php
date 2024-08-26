@@ -152,6 +152,8 @@
         updateServiceCategoryList();
     });
 
+    var secureship_fee_percentage = {{ $secureship_fee_percentage ? $secureship_fee_percentage : 0 }};
+
 
     var options = {
         componentRestrictions: {
@@ -244,6 +246,10 @@
             },
             success: function(response) {
                 console.log('Success:', response);
+                if (response.status == 'error') {
+                    document.getElementById('bookingError').innerHTML = response.message;
+                    return false;
+                }
                 // open modal bookingEstimateModalBody
                 // bookingEstimateModalBody empty it first
                 document.getElementById('bookingEstimateModalBody').innerHTML = '';
@@ -262,8 +268,29 @@
         });
     }
 
+    // Get selected data from booking form
+    function bookingFormData() {
+
+        // Create a map to store form data
+        var formData = new Map();
+        // add form data to map
+        formData.set('pickupLocation', document.getElementById('pickupLocation').value);
+        formData.set('deliveryLocation', document.getElementById('deliveryLocation').value);
+        formData.set('pickup_latitude', document.getElementById('pickup_latitude').value);
+        formData.set('pickup_longitude', document.getElementById('pickup_longitude').value);
+        formData.set('dropoff_latitude', document.getElementById('dropoff_latitude').value);
+        formData.set('dropoff_longitude', document.getElementById('dropoff_longitude').value);
+        formData.set('serviceTypeID', document.getElementById('serviceTypeID').value);
+        formData.set('serviceCategoryID', document.getElementById('serviceCategoryID').value);
+        // console.log(formData);
+        return formData;
+    }
+
     // secureshipDataLoad
     function secureshipDataLoad(data) {
+        // base_url
+        var base_url = '{{ url('/') }}';
+        var formData = bookingFormData();
         // bookingEstimateModalBody
         // bookingEstimateModalBody empty it first
         document.getElementById('bookingEstimateModalBody').innerHTML = '';
@@ -297,16 +324,15 @@
                         <tr>
                             <td>${value.carrierCode}</td>
                             <td>
-                                <p>${value.selectedSecureshipService}</p>
+                                <p>${value.selectedService}</p>
                                 <p>${value.serviceName}</p>
                             </td>
                             <td>${value.deliveryTime.friendlyTime}</td>
                             <td>${value.billableWeight.value} ${value.billableWeight.units}</td>
                             <td>
-                                <p>${value.regularPrice}</p>
-                                <p>Reg: ${value.total}</p>
+                                <p>CAD ${(value.total + (value.total * (secureship_fee_percentage/100))).toFixed(2)}</p>
                             </td>
-                            <td><a href="{{ route('newBooking') }}" class="btn btn-sm btn-primary">Select</a></td>
+                            <td><a href="${base_url}/new-booking?serviceTypeID=${formData.get('serviceTypeID')}&serviceCategoryID=${formData.get('serviceCategoryID')}&pickupLocation=${formData.get('pickupLocation')}&deliveryLocation=${formData.get('deliveryLocation')}&pickup_latitude=${formData.get('pickup_latitude')}&pickup_longitude=${formData.get('pickup_longitude')}&dropoff_latitude=${formData.get('dropoff_latitude')}&dropoff_longitude=${formData.get('dropoff_longitude')}" class="btn btn-sm btn-primary">Select</a></td>
                         </tr>
                     `;
             });
@@ -314,10 +340,10 @@
                         </tbody>
                             </table>
                             {{-- Notification --}}
-                            <p class="text-center">
-                                Shipment estimate was calculated by Secureship on {{ date('Y-m-d') }} at
-                                {{ date('H:i') }}
-                                Eastern Standard Time
+                           <p class="text-center">
+                                Shipment estimate was calculated by Secureship on {{ \Carbon\Carbon::now()->format('Y-m-d') }} at
+                                {{ \Carbon\Carbon::now()->format('H:i') }}
+                                {{ \Carbon\Carbon::now()->format('e') }}
                             </p>
                             `;
             document.getElementById('bookingEstimateModalBody').innerHTML = output;
@@ -328,7 +354,9 @@
     // bookingEstimateDataLoad
     function bookingEstimateDataLoad(data) {
         // bookingEstimateModalBody
-
+        var base_url = '{{ url('/') }}';
+        var formData = bookingFormData();
+        console.log(formData);
         // bookingEstimateModalBody empty it first
         document.getElementById('bookingEstimateModalBody').innerHTML = '';
 
@@ -361,7 +389,7 @@
                             <td>
                                 <p>${data.amountToPay ?? '-'}</p>
                             </td>
-                            <td><a href="{{ route('newBooking') }}" class="btn btn-sm btn-primary">Select</a></td>
+                            <td><a href="${base_url}/new-booking?serviceTypeID=${formData.get('serviceTypeID')}&serviceCategoryID=${formData.get('serviceCategoryID')}&pickupLocation=${formData.get('pickupLocation')}&deliveryLocation=${formData.get('deliveryLocation')}&pickup_latitude=${formData.get('pickup_latitude')}&pickup_longitude=${formData.get('pickup_longitude')}&dropoff_latitude=${formData.get('dropoff_latitude')}&dropoff_longitude=${formData.get('dropoff_longitude')}" class="btn btn-sm btn-primary">Select</a></td>
                         </tr>
                     `;
             output += `
@@ -369,9 +397,9 @@
                             </table>
                             {{-- Notification --}}
                             <p class="text-center">
-                                Shipment estimate was calculated by Secureship on {{ date('Y-m-d') }} at
-                                {{ date('H:i') }}
-                                Eastern Standard Time
+                                Shipment estimate was calculated by Secureship on {{ \Carbon\Carbon::now()->format('Y-m-d') }} at
+                                {{ \Carbon\Carbon::now()->format('H:i') }}
+                                {{ \Carbon\Carbon::now()->format('e') }}
                             </p>
                             `;
             document.getElementById('bookingEstimateModalBody').innerHTML = output;

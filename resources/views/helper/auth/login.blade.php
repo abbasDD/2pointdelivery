@@ -29,7 +29,7 @@
                                         2 Point Delivery
                                     </a>
                                 </h6>
-                                <h2 class="mb-1">{{ __('auth.login.title') }}</h2>
+                                <h2 class="mb-1">Helper Login</h2>
                                 <p>{{ __('auth.login.subtitle') }}</p>
                             </div>
                         </div>

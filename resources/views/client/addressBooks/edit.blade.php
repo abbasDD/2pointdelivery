@@ -1,6 +1,6 @@
 @extends('client.layouts.app')
 
-@section('title', 'KYC ')
+@section('title', 'Adress Book ')
 
 @section('content')
 
@@ -8,15 +8,15 @@
         <div class="container">
             <div class="section-header mb-2">
                 <div class="d-flex justify-content-between">
-                    <h4>Edit KYC</h4>
+                    <h4>Edit Address Book</h4>
                 </div>
             </div>
             <div class="section-body">
-                <form action="{{ route('client.kyc.update') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('client.addressBook.update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    {{-- Hidden filed for id of kycDetails --}}
-                    <input type="hidden" name="id" value="{{ $kycDetails->id }}">
-                    @include('client.kycDetails.form')
+                    {{-- Hidden filed for id of addressBook --}}
+                    <input type="hidden" name="id" value="{{ $addressBook->id }}">
+                    @include('client.addressBooks.form')
                 </form>
 
             </div>
