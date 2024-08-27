@@ -3,21 +3,23 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
+use App\Models\UserWallet;
 use Illuminate\Http\Request;
 
 class WalletClientController extends Controller
 {
-    // wallet index
+    // wallet index 
     public function index()
     {
-        // Get available balance
-        $balance['available'] = 100;
+        // amount_spend
+        $balance['amount_spend'] = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'client')->sum('amount');
 
-        // Total Earning
-        $balance['total'] = 110;
+        // unpaid_amount
+        $balance['unpaid_amount'] = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'client')->where('status', 'pending')->sum('amount');
 
-        // WithdrawnAmount
-        $balance['withdrawn'] = 10;
+        // amount_refunded
+        $balance['amount_refunded'] = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'client')->where('status', 'refunded')->sum('amount');
 
         return view('client.wallet.index', compact('balance'));
     }

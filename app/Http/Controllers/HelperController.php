@@ -12,6 +12,7 @@ use App\Models\BookingMoving;
 use App\Models\City;
 use App\Models\Client;
 use App\Models\Country;
+use App\Models\HelperBankAccount;
 use App\Models\HelperCompany;
 use App\Models\HelperVehicle;
 use App\Models\Industry;
@@ -19,6 +20,7 @@ use App\Models\ServiceType;
 use App\Models\SocialLink;
 use App\Models\State;
 use App\Models\User;
+use App\Models\UserWallet;
 use App\Models\VehicleType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -713,11 +715,78 @@ class HelperController extends Controller
         $balance['available'] = 100;
 
         // Total Earning
-        $balance['total'] = 110;
+        $balance['total'] = 100;
 
         // WithdrawnAmount
-        $balance['withdrawn'] = 10;
+        $balance['withdrawn'] = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'helper')->where('type', 'withdraw')->where('status', 'success')->sum('amount');
 
-        return view('helper.wallet.index', compact('balance'));
+        // Get helper bank accounts
+        $helperBankAccounts = HelperBankAccount::where('user_id', auth()->user()->id)->get();
+
+        // dd(auth()->user()->id);
+        return view('helper.wallet.index', compact('balance', 'helperBankAccounts'));
+    }
+
+    // addBankAccount
+
+    public function addBankAccount(Request $request)
+    {
+        // Validate request
+        $request->validate([
+            'account_name' => 'required|string|max:255',
+            'account_number' => 'required|string|max:255',
+            'account_type' => 'required|in:paypal,stripe',
+        ]);
+
+
+        // Check if user exist
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        if (!$helper) {
+            return redirect()->back()->with('error', 'Helper not found');
+        }
+
+
+        // Check if bank account already exist
+        $bankAccount = HelperBankAccount::where('user_id', auth()->user()->id)->where('account_type', $request->account_type)->first();
+        if ($bankAccount) {
+            return redirect()->back()->with('error', 'Bank account already exist');
+        }
+
+
+        // Save bank account
+        $bankAccount = new HelperBankAccount();
+        $bankAccount->user_id = auth()->user()->id;
+        $bankAccount->helper_id = $helper->id;
+        $bankAccount->account_name = $request->account_name;
+        $bankAccount->account_number = $request->account_number;
+        $bankAccount->account_type = $request->account_type;
+        $bankAccount->is_approved = 0;
+        $bankAccount->save();
+
+
+        return redirect()->back()->with('success', 'Bank account added successfully');
+    }
+
+    // withdrawRequest
+
+    public function withdrawRequest(Request $request)
+    {
+        // Check if helper added the accounts and approved
+        $helperBankAccounts = HelperBankAccount::where('user_id', auth()->user()->id)->where('is_approved', 1)->get();
+        if (!$helperBankAccounts) {
+            return redirect()->back()->with('error', 'Please add bank accounts first');
+        }
+
+        // Check if withdraw request already exist
+        $withdrawRequest = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'helper')->where('type', 'withdraw')->where('status', 'pending')->first();
+        if ($withdrawRequest) {
+            return redirect()->back()->with('error', 'Withdraw request already exist');
+        }
+
+
+        // Validate request
+        $request->validate([
+            'amount' => 'required|numeric',
+        ]);
     }
 }

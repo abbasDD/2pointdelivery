@@ -30,6 +30,7 @@ use App\Models\BookingSecureship;
 use App\Models\BookingSecureshipPackage;
 use App\Models\DeliveryConfig;
 use App\Models\UserNotification;
+use App\Models\UserWallet;
 
 class BookingController extends Controller
 {
@@ -633,7 +634,7 @@ class BookingController extends Controller
         }
 
         $bookingTimeLeft = $this->calculateBookingTimeDifference($booking);
-
+        // dd($bookingTimeLeft);
         // Check if booking time left is greater than 0
         if ($bookingTimeLeft <= 0) {
 
@@ -826,7 +827,7 @@ class BookingController extends Controller
             }
 
             // Update booking payment status
-            $booking->update(['status' => 'pending', 'payment_status' => 'paid', 'payment_method' => 'paypal']);
+            $booking->update(['status' => 'pending', 'booking_at' => Carbon::now()]);
 
             // Update booking payment details
             if ($booking->booking_type == 'delivery') {
@@ -838,11 +839,26 @@ class BookingController extends Controller
             }
 
             if ($booking->booking_type == 'secureship') {
+                BookingSecureship::where('booking_id', $booking->id)->update(['transaction_id' =>  $paymentDetails['id'], 'payment_status' => 'paid', 'payment_method' => 'stripe', 'payment_at' => Carbon::now()]);
+                // createSecureshipBookingUsingAPI
                 $this->createSecureshipBookingUsingAPI($booking_uuid);
             }
 
+            // Add to User Wallet as Paypal Amount
+            UserWallet::create([
+                'user_id' => auth()->user()->id,
+                'user_type' => 'client',
+                'type' => 'received',
+                'amount' => $booking->total_price,
+                'booking_id' => $booking->id,
+                'note' => 'Payment for booking ID: ' . $booking->id,
+                'payment_method' => 'paypal',
+                'transaction_id' => $paymentDetails['id'],
+                'status' => 'success',
+            ]);
+
             // Send notification to user
-            $userNofitication = UserNotification::create([
+            UserNotification::create([
                 'sender_user_id' => null,
                 'receiver_user_id' => auth()->user()->id,
                 'receiver_user_type' => 'client',
@@ -905,12 +921,11 @@ class BookingController extends Controller
         $stripe_publishable_key = $stripe_publishable_key->value;
 
         // Get stripe_secret_key from payment settings
-        $stripe_secret_key = PaymentSetting::where('key', 'stripe_secret_key')->first();
+        $stripe_secret_key = PaymentSetting::where('key', 'stripe_secret_key')->first()->value ?? null;
         if (!$stripe_secret_key) {
             return redirect()->back()->with('error', 'Stripe secret key not found');
         }
 
-        // Set your Stripe API key.
         \Stripe\Stripe::setApiKey($stripe_secret_key);
 
         // Get the payment amount and email address from the form.
@@ -930,10 +945,61 @@ class BookingController extends Controller
             'currency' => 'cad',
         ]);
 
-        dd($charge);
+        // dd($charge);
+
+        // Check if the charge was successful.
+        if ($charge->status !== 'succeeded') {
+            return 'Payment failed';
+        }
+
+        // Update booking status
+        $booking->update(['status' => 'pending', 'booking_at' => Carbon::now()]);
+
+        // Update booking payment details
+        if ($booking->booking_type == 'delivery') {
+            BookingDelivery::where('booking_id', $booking->id)->update(['transaction_id' =>  $charge->id, 'payment_status' => 'paid', 'payment_method' => 'stripe', 'payment_at' => Carbon::now()]);
+        }
+
+        if ($booking->booking_type == 'moving') {
+            BookingMoving::where('booking_id', $booking->id)->update(['transaction_id' =>  $charge->id, 'payment_status' => 'paid', 'payment_method' => 'stripe', 'payment_at' => Carbon::now()]);
+        }
+
+        if ($booking->booking_type == 'secureship') {
+            BookingSecureship::where('booking_id', $booking->id)->update(['transaction_id' =>  $charge->id, 'payment_status' => 'paid', 'payment_method' => 'stripe', 'payment_at' => Carbon::now()]);
+            // createSecureshipBookingUsingAPI
+            $this->createSecureshipBookingUsingAPI($booking_uuid);
+        }
+
+        // Add to User Wallet as Paypal Amount
+        UserWallet::create([
+            'user_id' => auth()->user()->id,
+            'user_type' => 'client',
+            'type' => 'received',
+            'amount' => $booking->total_price,
+            'booking_id' => $booking->id,
+            'note' => 'Payment for booking ID: ' . $booking->id,
+            'payment_method' => 'stripe',
+            'transaction_id' => $charge->id,
+            'status' => 'success',
+        ]);
+
+        // Send notification to user
+        UserNotification::create([
+            'sender_user_id' => null,
+            'receiver_user_id' => auth()->user()->id,
+            'receiver_user_type' => 'client',
+            'type' => 'booking',
+            'reference_id' => $booking->id,
+            'title' => 'Booking Payment',
+            'content' => 'You have successfully paid for your booking',
+            'read' => 0
+        ]);
 
         // Display a success message to the user.
-        return 'Payment successful!';
+        // return 'Payment successful!';
+        // Redirect to booking detail page
+        // return redirect()->route('client.booking.show', $booking->id);
+        return redirect()->route('client.bookings')->with('success', 'Payment successful!');
     }
 
     // Make COD Payment
@@ -996,9 +1062,21 @@ class BookingController extends Controller
             ]);
         }
 
+        // Add to User Wallet as COD
+        UserWallet::create([
+            'user_id' => auth()->user()->id,
+            'user_type' => 'client',
+            'type' => 'received',
+            'amount' => $booking->total_price,
+            'booking_id' => $booking->id,
+            'note' => 'Payment for booking ID: ' . $booking->id,
+            'payment_method' => 'cod',
+            'status' => 'pending',
+        ]);
+
         // Send notification to user
 
-        $userNofitication = UserNotification::create([
+        UserNotification::create([
             'sender_user_id' => null,
             'receiver_user_id' => auth()->user()->id,
             'receiver_user_type' => 'client',

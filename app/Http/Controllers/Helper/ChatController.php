@@ -126,8 +126,8 @@ class ChatController extends Controller
     public function adminChat()
     {
         // Check chat between user aand admin already exists
-        $chatExists = Chat::where('user1_id', 1)->where('user2_id', Auth::user()->id)->orWhere('user1_id', Auth::user()->id)->where('user2_id', 1)->first();
-        if (!$chatExists) {
+        $chat = Chat::where('user1_id', 1)->where('user2_id', Auth::user()->id)->orWhere('user1_id', Auth::user()->id)->where('user2_id', 1)->first();
+        if (!$chat) {
             // Createa
             $chat = new Chat();
             $chat->user1_id = 1;
@@ -135,6 +135,6 @@ class ChatController extends Controller
             $chat->save();
         }
 
-        return redirect('/helper/chats/' . $chatExists->id);
+        return redirect('/helper/chats/' . $chat->id);
     }
 }

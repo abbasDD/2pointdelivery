@@ -16,6 +16,9 @@
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
                         <h3 class="mb-0">$ {{ $balance['available'] }}</h3>
+                        @if ($helperBankAccounts && $balance['available'])
+                            <button class="btn btn-primary btn-sm" onclick="openWithdrawModal()">Withdraw</button>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -49,5 +52,11 @@
             </div>
         </div>
     </div>
+
+    {{-- Bank Accounts --}}
+    @include('helper.wallet.bank-accounts')
+
+    {{-- openWithdrawModal --}}
+    @include('helper.wallet.withdraw-modal')
 
 @endsection

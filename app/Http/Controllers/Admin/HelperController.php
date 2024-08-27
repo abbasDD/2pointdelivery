@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Helper;
 use App\Models\HelperVehicle;
 use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -146,6 +147,19 @@ class HelperController extends Controller
         $user = User::where('id', $helper->user_id)->first();
         if ($user) {
             $user->update(['is_active' => !$user->is_active]);
+
+            // Notification
+            UserNotification::create([
+                'sender_user_id' => auth()->user()->id,
+                'receiver_user_id' => $helper->user_id,
+                'receiver_user_type' => 'helper',
+                'type' => 'helper_status',
+                'reference_id' => $helper->user_id,
+                'title' => $user->is_active ? 'Helper Profile Activated' : 'Helper Profile Deactivated',
+                'content' => 'Your Helper profile has been' . ($user->is_active ? ' activated' : ' deactivated')  . 'by the admin.',
+                'read' => 0
+            ]);
+
             return json_encode(['status' => 'success', 'is_active' => !$user->is_active, 'message' => 'User status updated successfully!']);
         }
         // return redirect()->route('admin.taxSettings')->with('success', 'Tax Country Status updated successfully!');
@@ -177,6 +191,18 @@ class HelperController extends Controller
             $user = User::where('id', $helper->user_id)->first();
             $user->update(['is_active' => 1]);
 
+            // Notification
+            UserNotification::create([
+                'sender_user_id' => auth()->user()->id,
+                'receiver_user_id' => $helper->user_id,
+                'receiver_user_type' => 'helper',
+                'type' => 'helper_status',
+                'reference_id' => $helper->user_id,
+                'title' => 'Helper approved',
+                'content' => 'Your Helper profile has been approved by the admin.',
+                'read' => 0
+            ]);
+
             // Reuurn json with success
             return json_encode(['status' => 'success', 'message' => 'Helper approved successfully!']);
         }
@@ -191,6 +217,21 @@ class HelperController extends Controller
             ->first();
         if ($helper) {
             $helper->update(['is_approved' => 2]); // 2 is rejected
+
+
+            // Notification
+            UserNotification::create([
+                'sender_user_id' => auth()->user()->id,
+                'receiver_user_id' => $helper->user_id,
+                'receiver_user_type' => 'helper',
+                'type' => 'helper_status',
+                'reference_id' => $helper->user_id,
+                'title' => 'Helper rejected',
+                'content' => 'Your Helper profile has been rejected by the admin.',
+                'read' => 0
+            ]);
+
+
             return json_encode(['status' => 'success', 'message' => 'Helper rejected successfully!']);
         }
         // return redirect()->route('admin.taxSettings')->with('success', 'Tax Country Status updated successfully!');
@@ -205,6 +246,19 @@ class HelperController extends Controller
             ->first();
         if ($vehicle) {
             $vehicle->update(['is_approved' => 1]);
+
+            // Notification
+            UserNotification::create([
+                'sender_user_id' => auth()->user()->id,
+                'receiver_user_id' => $vehicle->user_id,
+                'receiver_user_type' => 'helper',
+                'type' => 'helper_vehicle_status',
+                'reference_id' => $vehicle->user_id,
+                'title' => 'Helper Vehicle approved',
+                'content' => 'Your Helper vehicle has been approved by the admin.',
+                'read' => 0
+            ]);
+
             return redirect()->back()->with('success', 'Helper vehicle approved successfully!');
         }
 
@@ -218,6 +272,19 @@ class HelperController extends Controller
             ->first();
         if ($vehicle) {
             $vehicle->update(['is_approved' => 2]); // 2 is rejected
+
+            // Notification
+            UserNotification::create([
+                'sender_user_id' => auth()->user()->id,
+                'receiver_user_id' => $vehicle->user_id,
+                'receiver_user_type' => 'helper',
+                'type' => 'helper_vehicle_status',
+                'reference_id' => $vehicle->user_id,
+                'title' => 'Helper Vehicle rejected',
+                'content' => 'Your Helper vehicle has been rejected by the admin.',
+                'read' => 0
+            ]);
+
             return redirect()->back()->with('success', 'Helper vehicle rejected successfully!');
         }
 

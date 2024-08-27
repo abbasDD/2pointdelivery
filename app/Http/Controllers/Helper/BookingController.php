@@ -612,8 +612,9 @@ class BookingController extends Controller
         $booking->status = 'completed';
         $booking->save();
 
+
         // Send Notification
-        $userNotification = UserNotification::create([
+        UserNotification::create([
             'sender_user_id' => auth()->user()->id,
             'receiver_user_id' => $booking->client_user_id,
             'receiver_user_type' => 'client',

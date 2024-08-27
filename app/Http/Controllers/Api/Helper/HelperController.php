@@ -21,6 +21,7 @@ use App\Models\TeamInvitation;
 use App\Models\User;
 use App\Models\UserNotification;
 use App\Models\UserSwitch;
+use App\Models\UserWallet;
 use App\Models\VehicleType;
 use App\Models\WithdrawRequest;
 use Illuminate\Http\Request;
@@ -2103,6 +2104,17 @@ class HelperController extends Controller
             ], 422);
         }
 
+        // Check if helper bank account exist 
+        $helperBankAccount = HelperBankAccount::where('user_id', auth()->user()->id)->where('id', $request->bank_id)->first();
+        if (!$helperBankAccount) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Helper bank account not found',
+                'errors' => 'Helper bank account not found'
+            ]);
+        }
+
         // Get balance of helper
         $balance = $this->getHelperWalletBalance();
 
@@ -2116,11 +2128,22 @@ class HelperController extends Controller
         }
 
         // Add withdraw request
-        $withdrawRequest = WithdrawRequest::create([
+        // $withdrawRequest = WithdrawRequest::create([
+        //     'user_id' => auth()->user()->id,
+        //     'helper_id' => $helper->id,
+        //     'amount' => $request->amount,
+        //     'reason' => $request->reason,
+        // ]);
+
+        $withdrawRequest = UserWallet::create([
             'user_id' => auth()->user()->id,
-            'helper_id' => $helper->id,
+            'user_type' => 'helper',
+            'type' => 'withdraw',
             'amount' => $request->amount,
-            'reason' => $request->reason,
+            'note' => $request->reason,
+            'payment_method' => $helperBankAccount->account_type,
+            'transaction_id' => $helperBankAccount->account_number,
+            'status' => 'pending',
         ]);
 
         if (!$withdrawRequest) {
@@ -2140,6 +2163,7 @@ class HelperController extends Controller
             'data' => []
         ], 200);
     }
+
     // getBankAccounts
     public function getBankAccounts(): JsonResponse
     {
@@ -2163,6 +2187,75 @@ class HelperController extends Controller
             'message' => 'Bank accounts retrieved successfully',
             'data' => $bankAccounts
         ], 200);
+    }
+
+    // Add Bank Account
+    public function addBankAccount(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Validate request
+        $request->validate([
+            'account_name' => 'required|string|max:255',
+            'account_number' => 'required|string|max:255',
+            'account_type' => 'required|in:paypal,stripe',
+        ]);
+
+
+        // Check if user exist
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        if (!$helper) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Helper not found',
+                'errors' => 'Helper not found'
+            ], 422);
+            // return redirect()->back()->with('error', 'Helper not found');
+        }
+
+
+        // Check if bank account already exist
+        $bankAccount = HelperBankAccount::where('user_id', auth()->user()->id)->where('account_type', $request->account_type)->first();
+        if ($bankAccount) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Bank account already exist',
+                'errors' => 'Bank account already exist'
+            ], 422);
+            // return redirect()->back()->with('error', 'Bank account already exist');
+        }
+
+
+        // Save bank account
+        $bankAccount = new HelperBankAccount();
+        $bankAccount->user_id = auth()->user()->id;
+        $bankAccount->helper_id = $helper->id;
+        $bankAccount->account_name = $request->account_name;
+        $bankAccount->account_number = $request->account_number;
+        $bankAccount->account_type = $request->account_type;
+        $bankAccount->is_approved = 0;
+        $bankAccount->save();
+
+
+        // Return a json object
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Bank account added successfully',
+            'data' => $bankAccount
+        ], 200);
+
+        // return redirect()->back()->with('success', 'Bank account added successfully');
     }
 
     // getHelperWalletBalance
@@ -2194,8 +2287,8 @@ class HelperController extends Controller
 
 
         // Total Withdraw Amount
-        $totalWithdraw = WithdrawRequest::where('user_id', auth()->user()->id)->whereIn('status', ['pending', 'approved'])->sum('amount');
-
+        // $totalWithdraw = WithdrawRequest::where('user_id', auth()->user()->id)->whereIn('status', ['pending', 'approved'])->sum('amount');
+        $totalWithdraw = UserWallet::where('user_id', auth()->user()->id)->where('type', 'withdraw')->sum('amount');
 
         // Total Balance
         $totalBalance = $totalEarning - $totalWithdraw;

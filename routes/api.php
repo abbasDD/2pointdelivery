@@ -239,6 +239,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     Route::post('wallet/withdraw/request', [HelperController::class, 'postWalletWithdrawRequest']);
     // Bank Accounts
     Route::get('wallet/bank-accounts', [HelperController::class, 'getBankAccounts']);
+    Route::post('/wallet/bank-account/add', [HelperController::class, 'addBankAccount']);
 
     // Helper Routes End
 });

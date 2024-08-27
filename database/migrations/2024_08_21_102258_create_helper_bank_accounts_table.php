@@ -16,8 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('helper_id')->nullable();
             $table->enum('payment_method', ['paypal', 'stripe']);
-            $table->string('paypal_email')->nullable();
-            $table->string('stripe_account_id')->nullable();
+            $table->string('account_name')->nullable();
+            $table->string('account_number')->nullable();
             $table->boolean('is_active')->default(true);
             $table->boolean('is_approved')->default(false);
             $table->boolean('is_deleted')->default(false);

@@ -1576,6 +1576,7 @@ footer hr {
     color: var(--black);
     cursor: pointer;
     border-radius: 0.3rem;
+    margin-bottom: 0.75rem;
 }
 
 

@@ -93,6 +93,8 @@ Route::middleware(['app_language'])->group(function () {
 
         // Wallet
         Route::get('/wallet', [HelperController::class, 'wallet'])->name('wallet');
+        Route::post('/wallet/withdraw-request', [HelperController::class, 'withdrawRequest'])->name('wallet.withdrawRequest');
+        Route::post('/wallet/bank-account', [HelperController::class, 'addBankAccount'])->name('wallet.addBankAccount');
 
         //Teams
         Route::get('/teams', [HelperController::class, 'teams'])->name('teams');
