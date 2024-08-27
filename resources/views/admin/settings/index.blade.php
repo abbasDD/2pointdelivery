@@ -42,6 +42,12 @@
                                 aria-controls="v-pills-smtpSettings" aria-selected="false">
                                 <i class="fas fa-envelope"></i> <span class="d-none d-lg-inline">SMTP</span>
                             </button>
+                            {{-- Map Key --}}
+                            <button class="nav-link" id="v-pills-mapKey-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-mapKey" type="button" role="tab"
+                                aria-controls="v-pills-mapKey" aria-selected="false">
+                                <i class="fas fa-map-marked-alt"></i> <span class="d-none d-lg-inline">Map Key</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -77,6 +83,11 @@
                         aria-labelledby="v-pills-smtpSettings-tab">
                         {{-- Load SMTP Tab --}}
                         @include('admin.settings.smtp.index')
+                    </div>
+                    {{-- Map Key --}}
+                    <div class="tab-pane fade" id="v-pills-mapKey" role="tabpanel" aria-labelledby="v-pills-mapKey-tab">
+                        {{-- Load Map Key --}}
+                        @include('admin.settings.mapKey.index')
                     </div>
                 </div>
             </div>
@@ -115,6 +126,12 @@
                                 data-bs-target="#v-pills-smtpSettings" type="button" role="tab"
                                 aria-controls="v-pills-smtpSettings" aria-selected="false">
                                 <i class="fas fa-envelope"></i> <span class="d-none d-lg-inline">SMTP</span>
+                            </button>
+                            {{-- Map Key --}}
+                            <button class="nav-link" id="v-pills-mapKey-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-mapKey" type="button" role="tab"
+                                aria-controls="v-pills-mapKey" aria-selected="false">
+                                <i class="fas fa-map"></i> <span class="d-none d-lg-inline">Map Key</span>
                             </button>
                         </div>
                     </div>

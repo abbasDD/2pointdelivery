@@ -244,6 +244,9 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
         // Route::get('/payment', [PaymentSettingController::class, 'index'])->name('paymentSettings');
         Route::post('/payment/update', [PaymentSettingController::class, 'update'])->name('paymentSetting.update');
 
+        // Map Key
+        Route::post('/map-key/update', [SystemSettingController::class, 'mapKeyUpdate'])->name('mapKeySetting.update');
+
         // Social Login
         // Route::get('/social-logins', [SocialLoginSettingController::class, 'index'])->name('socialLoginSettings');
         Route::post('/social-login/update', [SocialLoginSettingController::class, 'update'])->name('socialLoginSetting.update');

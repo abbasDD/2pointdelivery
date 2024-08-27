@@ -175,4 +175,25 @@ class SystemSettingController extends Controller
         $taxCountries = TaxSetting::paginate(10);
         return view('admin.settings.tax', compact('taxCountries'));
     }
+
+    // mapKeyUpdate
+    public function mapKeyUpdate(Request $request)
+    {
+        $request->validate([
+            'google_map_api_key' => 'required',
+        ]);
+
+        $systemSetting = SystemSetting::where('key', 'google_map_api_key')->first();
+        if ($systemSetting) {
+            $systemSetting->value = $request->google_map_api_key;
+            $systemSetting->save();
+        } else {
+            $systemSetting = new SystemSetting();
+            $systemSetting->key = 'google_map_api_key';
+            $systemSetting->value = $request->google_map_api_key;
+            $systemSetting->save();
+        }
+
+        return redirect()->back()->with('success', 'Map key updated successfully!');
+    }
 }

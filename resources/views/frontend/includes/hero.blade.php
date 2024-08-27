@@ -145,7 +145,9 @@
 
 
 {{-- Load JS of Map --}}
-<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places"></script>
+<script
+    src="https://maps.googleapis.com/maps/api/js?key={{ config('google_map_api_key') ?? 'Your API Key' }}&libraries=places">
+</script>
 <script>
     // Call updateServiceCategoryList onload
     $(document).ready(function() {

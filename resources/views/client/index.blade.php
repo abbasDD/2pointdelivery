@@ -85,8 +85,10 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header d-flex align-items-center justify-content-between">
                         <h5 class="mb-0">Recent Bookings</h5>
+                        {{-- New Booking --}}
+                        <a href="{{ route('newBooking') }}" class="btn btn-primary btn-sm float-right">New Booking</a>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">

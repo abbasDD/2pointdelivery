@@ -908,7 +908,7 @@ class GetEstimateController extends Controller
     // getAddressFromLatLong
     public function getAddressFromLatLong($latitude, $longitude)
     {
-        $url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" . $latitude . "," . $longitude . "&key=" . env('GOOGLE_MAPS_API_KEY');
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" . $latitude . "," . $longitude . "&key=" . config('google_map_api_key') ?? 'Your API Key';
         $response = Http::get($url);
         // return $response->json()['results'][0];
 
