@@ -11,6 +11,47 @@ use Firebase\JWT\JWT;
 
 class FcmController extends Controller
 {
+
+    // For sending notification
+    public function sendPushNotificationToUser($user_id, $title, $body)
+    {
+
+        $user = User::find($user_id);
+        $deviceToken = $user->fcm_token;
+
+        if (!$deviceToken) {
+            return  0;
+        }
+
+        $keyFilePath = storage_path('app/firebase/key.json'); // Path to your service account key file
+
+        $token = $this->getAccessToken($keyFilePath);
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Content-Type'  => 'application/json',
+        ])->post('https://fcm.googleapis.com/v1/projects/point-delivery-3f719/messages:send', [
+            'message' => [
+                'token' => $deviceToken,
+                'notification' => [
+                    'title' => $title,
+                    'body'  => $body,
+                ],
+                'android' => [
+                    'priority' => 'high',
+                ],
+            ],
+        ]);
+
+        // return $response->json();
+        if ($response->successful()) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    // For test api
     public function sendFcmNotification(Request $request)
     {
         $request->validate([
@@ -27,8 +68,8 @@ class FcmController extends Controller
         }
 
         // $deviceToken = 'device_token_here'; // Replace with the actual device token
-        $title = 'Notification Title';
-        $body = 'Notification Body';
+        $title = $request->title;
+        $body = $request->body;
 
 
         $keyFilePath = storage_path('app/firebase/key.json'); // Path to your service account key file
@@ -51,7 +92,12 @@ class FcmController extends Controller
             ],
         ]);
 
-        return $response->json();
+        // return $response->json();
+        if ($response->successful()) {
+            return response()->json(['message' => 'Notification sent successfully'], 200);
+        } else {
+            return response()->json(['message' => 'Failed to send notification'], 500);
+        }
     }
 
     private function getAccessToken($keyFilePath)

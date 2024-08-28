@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\FcmController;
 use App\Models\Client;
 use App\Models\Country;
 use App\Models\KycDetail;
@@ -11,6 +12,14 @@ use Illuminate\Http\Request;
 
 class KycDetailController extends Controller
 {
+    // FCM Notification Cotroller
+    private $fcm;
+
+    public function __construct(FcmController $fcm)
+    {
+        $this->fcm = $fcm;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -76,6 +85,9 @@ class KycDetailController extends Controller
             'read' => 0
         ]);
 
+        // Send push notification
+        $this->fcm->sendPushNotificationToUser($kycDetail->user_id, 'KYC details approved', 'Your KYC details has been approved');
+
         return redirect()->back()->with('success', 'KYC details approved successfully');
     }
 
@@ -100,6 +112,9 @@ class KycDetailController extends Controller
             'content' => 'Your KYC details has been rejected',
             'read' => 0
         ]);
+
+        // Send push notification
+        $this->fcm->sendPushNotificationToUser($kycDetail->user_id, 'KYC details rejected', 'Your KYC details has been rejected');
 
         return redirect()->back()->with('success', 'KYC details rejected successfully');
     }
