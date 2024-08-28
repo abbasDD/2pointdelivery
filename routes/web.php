@@ -44,7 +44,7 @@ Route::middleware(['app_language'])->group(function () {
 
     // Google URL
     Route::get('auth/{provider}', [GoogleLoginController::class, 'redirectToProvider'])->name('google.redirect');
-    Route::get('auth/{provider}/callback', [GoogleLoginController::class, 'handleProviderCallback'])->name('google.callback');
+    Route::post('auth/{provider}/callback', [GoogleLoginController::class, 'handleProviderCallback'])->name('google.callback');
 
     // Facebook URL
 
