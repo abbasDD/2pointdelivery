@@ -4,72 +4,84 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Google\Client as GoogleClient;
-use Illuminate\Support\Facades\Storage;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Http;
+use Firebase\JWT\JWT;
+
 
 class FcmController extends Controller
 {
-    public function sendFcmNotification($user_id, $title, $body)
+    public function sendFcmNotification(Request $request)
     {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'title' => 'required|string',
+            'body' => 'required|string',
+        ]);
 
-        $user = User::find($user_id);
-        $fcm = $user->fcm_token;
+        $user = User::find($request->user_id);
+        $deviceToken = $user->fcm_token;
 
-        if (!$fcm) {
+        if (!$deviceToken) {
             return response()->json(['message' => 'User does not have a device token'], 400);
         }
 
-        $title = $title;
-        $description = $body;
-        $projectId = config('pointapp-ec01e'); # INSERT COPIED PROJECT ID
+        // $deviceToken = 'device_token_here'; // Replace with the actual device token
+        $title = 'Notification Title';
+        $body = 'Notification Body';
 
-        $credentialsFilePath = Storage::path('app/json/file.json');
-        $client = new GoogleClient();
-        $client->setAuthConfig($credentialsFilePath);
-        $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
-        $client->refreshTokenWithAssertion();
-        $token = $client->getAccessToken();
 
-        $access_token = $token['access_token'];
+        $keyFilePath = storage_path('app/firebase/key.json'); // Path to your service account key file
 
-        $headers = [
-            "Authorization: Bearer $access_token",
-            'Content-Type: application/json'
-        ];
+        $token = $this->getAccessToken($keyFilePath);
 
-        $data = [
-            "message" => [
-                "token" => $fcm,
-                "notification" => [
-                    "title" => $title,
-                    "body" => $description,
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Content-Type'  => 'application/json',
+        ])->post('https://fcm.googleapis.com/v1/projects/point-delivery-3f719/messages:send', [
+            'message' => [
+                'token' => $deviceToken,
+                'notification' => [
+                    'title' => $title,
+                    'body'  => $body,
                 ],
-            ]
+                'android' => [
+                    'priority' => 'high',
+                ],
+            ],
+        ]);
+
+        return $response->json();
+    }
+
+    private function getAccessToken($keyFilePath)
+    {
+        $client = new Client();
+        $response = $client->post('https://oauth2.googleapis.com/token', [
+            'form_params' => [
+                'grant_type'    => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+                'assertion'     => $this->generateJwt($keyFilePath),
+            ],
+        ]);
+
+        $data = json_decode($response->getBody()->getContents(), true);
+        return $data['access_token'];
+    }
+
+    private function generateJwt($keyFilePath)
+    {
+        $key = json_decode(file_get_contents($keyFilePath), true);
+        $now = time();
+        $payload = [
+            'iss' => $key['client_email'], // The issuer is the client email from the service account
+            'sub' => $key['client_email'], // The subject is also the client email
+            'aud' => 'https://oauth2.googleapis.com/token', // The audience is the Google OAuth token endpoint
+            'iat' => $now,
+            'exp' => $now + 3600, // Token valid for 1 hour
+            'scope' => 'https://www.googleapis.com/auth/firebase.messaging', // Correct scope for FCM
         ];
-        $payload = json_encode($data);
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send");
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-        curl_setopt($ch, CURLOPT_VERBOSE, true); // Enable verbose output for debugging
-        $response = curl_exec($ch);
-        $err = curl_error($ch);
-        curl_close($ch);
-
-        if ($err) {
-            return response()->json([
-                'message' => 'Curl Error: ' . $err
-            ], 500);
-        } else {
-            return response()->json([
-                'message' => 'Notification has been sent',
-                'response' => json_decode($response, true)
-            ]);
-        }
+        $jwt = JWT::encode($payload, $key['private_key'], 'RS256');
+        return $jwt;
     }
 }

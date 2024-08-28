@@ -7,7 +7,7 @@ use App\Http\Controllers\Api\Helper\HelperController;
 use App\Http\Controllers\Api\KycController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PassportAuthController;
-
+use App\Http\Controllers\FcmController;
 
 // ---------------- PASSPORT AUTH ROUTES ---------------- //
 
@@ -15,11 +15,14 @@ Route::post('register', [PassportAuthController::class, 'register']);
 Route::post('login', [PassportAuthController::class, 'login']);
 Route::post('forget-password', [PassportAuthController::class, 'forgetPassword']);
 
-Route::get('auth/{provider}', [PassportAuthController::class, 'redirectToProvider']);
-Route::get('auth/{provider}/callback', [PassportAuthController::class, 'handleProviderCallback']);
+// Route::get('auth/{provider}', [PassportAuthController::class, 'redirectToProvider']);
+// Route::get('auth/{provider}/callback', [PassportAuthController::class, 'handleProviderCallback']);
 
-// Send a test notification
-Route::post('send-test-notification', [PassportAuthController::class, 'sendTestNotification']);
+Route::post('auth/google', [PassportAuthController::class, 'googleLogin']);
+
+// Send Notification using FCM
+Route::post('/send-notification', [FcmController::class, 'sendFcmNotification']);
+
 
 // Get app details
 Route::get('app-details', [PassportAuthController::class, 'appDetails']);

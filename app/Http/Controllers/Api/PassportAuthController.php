@@ -684,6 +684,68 @@ class PassportAuthController extends Controller
         }
     }
 
+    public function googleLogin(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string',
+        ]);
+
+        // Get config from SocialLoginSetting
+        $socialLoginSetting = SocialLoginSetting::where('key', 'google_client_id')->first();
+        if (!$socialLoginSetting) {
+            return new JsonResponse(['success' => false, 'statusCode' => 422, 'message' => 'Google client ID not configured.'], 422);
+        }
+
+        $socialLoginSetting = SocialLoginSetting::where('key', 'google_secret_id')->first();
+        if (!$socialLoginSetting) {
+            return new JsonResponse(['success' => false, 'statusCode' => 422, 'message' => 'Google client secret not configured.'], 422);
+        }
+
+        $socialLoginSetting = SocialLoginSetting::where('key', 'google_redirect_uri')->first();
+        if (!$socialLoginSetting) {
+            return new JsonResponse(['success' => false, 'statusCode' => 422, 'message' => 'Google redirect URL not configured.'], 422);
+        }
+
+        // Load as config
+        config(['services.google.client_id' => $socialLoginSetting->value]);
+        config(['services.google.client_secret' => $socialLoginSetting->value]);
+        config(['services.google.redirect' => $socialLoginSetting->value]);
+
+        $googleUser = Socialite::driver('google')->stateless()->userFromToken($request->input('code'));
+
+
+        // Check if the email already exists in your database
+        $user = User::where('email', $googleUser->getEmail())->first();
+        if ($user) {
+            // If user exists, update the provider information
+            $user->update([
+                'provider_name' => 'google',
+                'provider_id' => $googleUser->getId(),
+            ]);
+        } else {
+
+            // Create new user
+            $user = User::create([
+                'email' => $googleUser->getEmail(), // This might be null
+                'provider_name' => 'google',
+                'provider_id' => $googleUser->getId(),
+                'password' => null, // No password for social logins
+            ]);
+
+            // Create a Client 
+            $client = new Client();
+            $client->first_name = $googleUser->getName();
+            $client->user_id = $user->id;
+            $client->save();
+        }
+
+        // Create token
+        $tokenResult = $user->createToken('2PointDeliveryJWTAuthenticationToken');
+        $token = $tokenResult->accessToken;
+
+        return response()->json(['token' => $token]);
+    }
+
     // appDetails
 
     public function appDetails(): JsonResponse
