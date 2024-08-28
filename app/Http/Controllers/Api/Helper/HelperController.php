@@ -2041,7 +2041,7 @@ class HelperController extends Controller
         }
 
         // Get withdraw requests
-        $withdrawRequests = WithdrawRequest::where('user_id', auth()->user()->id)->get();
+        $withdrawRequests = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'helper')->get();
 
         // Return a json object
         return response()->json([
