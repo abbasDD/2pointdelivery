@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\KycDetail;
 use App\Http\Requests\StoreKycDetailRequest;
 use App\Http\Requests\UpdateKycDetailRequest;
+use App\Http\Resources\KycDetailResource;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\KycType;
@@ -21,8 +22,8 @@ class KycDetailController extends Controller
     public function index()
     {
         // Get kyc details of logged in user
-        $kycDetails = KycDetail::with('kycType')->where('user_id', auth()->user()->id)->get();
-        // dd($kycDetails->front_image);
+        $kycDetails = KycDetail::where('user_id', auth()->user()->id)->get();
+        // dd($kycDetails);
         return view('client.kycDetails.index', compact('kycDetails'));
     }
 
@@ -67,8 +68,10 @@ class KycDetailController extends Controller
             'country' => 'required|string|max:255',
             'state' => 'required|string|max:255',
             'city' => 'required|string|max:255',
-            'issue_date' => 'required|string|max:255',
-            'expiry_date' => 'required|string|max:255',
+            // 'issue_date' => 'required|date|',
+            // 'expiry_date' => 'required|string|max:255',
+            'issue_date' => 'required|date|before:expiry_date',
+            'expiry_date' => 'required|date|after:issued_date',
         ]);
 
         // Check if user exist
@@ -203,8 +206,10 @@ class KycDetailController extends Controller
             'country' => 'required|string|max:255',
             'state' => 'required|string|max:255',
             'city' => 'required|string|max:255',
-            'issue_date' => 'required|string|max:255',
-            'expiry_date' => 'required|string|max:255',
+            // 'issue_date' => 'required|string|max:255',
+            // 'expiry_date' => 'required|string|max:255',
+            'issue_date' => 'required|date|before:expiry_date',
+            'expiry_date' => 'required|date|after:issued_date',
         ]);
 
         // Check if kyc exist or not

@@ -12,6 +12,6 @@ class KycDetailSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        
     }
 }

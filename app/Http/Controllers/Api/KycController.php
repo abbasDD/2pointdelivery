@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\KycDetailResource;
 use App\Models\KycDetail;
 use App\Models\KycType;
 use App\Models\User;
@@ -31,25 +32,8 @@ class KycController extends Controller
         // Get kyc details of logged in user
         $kycDetails = KycDetail::with('kycType')->where('user_id', auth()->user()->id)->get();
 
-        $kycDetailList = [];
+        $kycDetailList = KycDetailResource::collection($kycDetails);
 
-        // Loop thorugh kyc details
-        foreach ($kycDetails as $kycDetail) {
-
-            $kycDetailList[] = [
-                'id' => $kycDetail->id,
-                'kyc_type_name' => $kycDetail->kycType->name,
-                'id_number' => $kycDetail->id_number,
-                'country' => $kycDetail->country,
-                'state' => $kycDetail->state,
-                'city' => $kycDetail->city,
-                'issue_date' => $kycDetail->issue_date,
-                'expiry_date' => $kycDetail->expiry_date,
-                'front_image' => $kycDetail->front_image ? asset('/images/kyc/' . $kycDetail->front_image) : 'assets/images/default.png',
-                'back_image' => $kycDetail->back_image ? asset('/images/kyc/' . $kycDetail->back_image) : 'assets/images/default.png',
-                'is_verified' => $kycDetail->is_verified,
-            ];
-        }
 
         // Return success
         return response()->json([

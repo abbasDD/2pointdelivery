@@ -23,6 +23,11 @@ Route::post('auth/google', [PassportAuthController::class, 'googleLogin']);
 // Send Notification using FCM
 Route::post('/send-notification', [FcmController::class, 'sendFcmNotification']);
 
+// Get terms and conditions
+Route::get('terms-and-conditions', [PassportAuthController::class, 'termsAndConditions']);
+
+// Get privacy policy
+Route::get('privacy-policy', [PassportAuthController::class, 'privacyPolicy']);
 
 // Get app details
 Route::get('app-details', [PassportAuthController::class, 'appDetails']);

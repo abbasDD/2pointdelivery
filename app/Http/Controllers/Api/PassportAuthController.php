@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\ClientCompany;
+use App\Models\FrontendSetting;
 use App\Models\Helper;
 use App\Models\HelperCompany;
 use App\Models\HelperVehicle;
@@ -823,6 +824,33 @@ class PassportAuthController extends Controller
             'statusCode' => 200,
             'message' => 'App details.',
             'data' => $data,
+        ], 200);
+    }
+
+    // termsAndConditions
+    public function termsAndConditions(): JsonResponse
+    {
+
+        $frontendSettings = FrontendSetting::where('key', 'terms-and-conditions')->first();
+
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Terms and conditions.',
+            'data' => $frontendSettings->value ?? 'Terms and conditions will be displayed here.',
+        ], 200);
+    }
+
+    // privacyPolicy
+    public function privacyPolicy(): JsonResponse
+    {
+        $frontendSettings = FrontendSetting::where('key', 'privacy-policy')->first();
+
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Privacy policy.',
+            'data' => $frontendSettings->value ?? 'Privacy policy will be displayed here.',
         ], 200);
     }
 }

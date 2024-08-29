@@ -56,8 +56,10 @@ class KycDetailController extends Controller
             'country' => 'required|string|max:255',
             'state' => 'required|string|max:255',
             'city' => 'required|string|max:255',
-            'issue_date' => 'required|string|max:255',
-            'expiry_date' => 'required|string|max:255',
+            // 'issue_date' => 'required|string|max:255',
+            // 'expiry_date' => 'required|string|max:255',
+            'issue_date' => 'required|date|before:expiry_date',
+            'expiry_date' => 'required|date|after:issued_date',
         ]);
 
         // Check if user exist
@@ -173,8 +175,10 @@ class KycDetailController extends Controller
             'country' => 'required|string|max:255',
             'state' => 'required|string|max:255',
             'city' => 'required|string|max:255',
-            'issue_date' => 'required|string|max:255',
-            'expiry_date' => 'required|string|max:255',
+            // 'issue_date' => 'required|string|max:255',
+            // 'expiry_date' => 'required|string|max:255',
+            'issue_date' => 'required|date|before:expiry_date',
+            'expiry_date' => 'required|date|after:issued_date',
         ]);
 
         // Check if kyc exist or not

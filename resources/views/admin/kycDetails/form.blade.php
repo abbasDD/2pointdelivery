@@ -59,9 +59,10 @@
 
     <div class="col-md-6 mb-3">
         <div class="form-group">
-            <label for="id_type">ID Card Type:</label>
-            <input class="form-control" type="text" id="id_type" name="id_type" placeholder="Enter ID Card Type"
-                value="{{ old('id_type', $kycDetails->id_type ?? '') }}" disabled>
+            <label for="kyc_type_name">ID Card Type:</label>
+            <input class="form-control" type="text" id="kyc_type_name" name="kyc_type_name"
+                placeholder="Enter ID Card Type" value="{{ old('kyc_type_name', $kycDetails->kyc_type_name ?? '') }}"
+                disabled>
         </div>
     </div>
 

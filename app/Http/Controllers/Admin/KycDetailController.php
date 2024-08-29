@@ -40,8 +40,9 @@ class KycDetailController extends Controller
     public function show(Request $request)
     {
         // Get kyc details of logged in user
-        $kycDetails = KycDetail::select('kyc_details.*', 'users.email as user_email')
+        $kycDetails = KycDetail::select('kyc_details.*', 'kyc_types.name as kyc_type_name', 'users.email as user_email')
             ->join('users', 'users.id', '=', 'kyc_details.user_id')
+            ->join('kyc_types', 'kyc_types.id', '=', 'kyc_details.kyc_type_id')
             ->where('kyc_details.id', $request->id)->first();
         // dd($kycDetails->front_image);
 

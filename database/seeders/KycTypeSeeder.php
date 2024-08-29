@@ -18,10 +18,12 @@ class KycTypeSeeder extends Seeder
             [
                 'uuid' => Str::random(8),
                 'name' => 'Residence ID',
+                'description' => 'ID card issued by your state government',
             ],
             [
                 'uuid' => Str::random(8),
                 'name' => 'Drivers License',
+                'description' => 'ID card issued by your state government',
             ],
         ]);
     }

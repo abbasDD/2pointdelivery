@@ -20,5 +20,6 @@ class DatabaseSeeder extends Seeder
         $this->call(FaqSeeder::class);
         $this->call(PrioritySettingSeeder::class);
         $this->call(VehicleTypeSeeder::class);
+        $this->call(KycTypeSeeder::class);
     }
 }

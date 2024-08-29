@@ -293,7 +293,6 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     // Wallet
     Route::get('/wallet', [WalletAdminController::class, 'index'])->name('wallet');
 
-
     // Send push notifications to users
     Route::get('/push-notification', [PushNotificationController::class, 'index'])->name('pushNotification');
     Route::get('/push-notification/new', [PushNotificationController::class, 'new'])->name('pushNotification.new');
