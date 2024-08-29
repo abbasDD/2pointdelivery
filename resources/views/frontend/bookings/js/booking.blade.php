@@ -643,53 +643,91 @@
         document.getElementById('calculatedAmountCartBody').innerHTML = '';
 
         if (data) {
-            // Load data in calculatedAmountCartBody using loop thorugh each object
+            // Load data in calculatedAmountCartBody
             var output = '';
-            output += `
-                        <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Service Level</th>
-                                        <th>Est Delivery Time</th>
-                                        <th>Billable Weight</th>
-                                        <th>Price</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="bookingEstimateTableBody">
-                                    <!-- Table rows will be appended here -->
-                                
-                `;
+
+            var pickupaddress = $('#pickup_address').val();
+            var dropoff_address = $('#dropoff_address').val();
+            var serviceType = $("#serviceType option:selected").text();
+            var priority = $("#priorityDropdown option:selected").text();
+            var deliveryNote = $('#deliveryNote').val();
 
             output += `
-                        <tr>
-                            <td>
-                                2 Point Delivery
-                            </td>
-                            <td>{{ date('Y-m-d') }} at {{ date('H:i') }}</td>
-                            <td>${data.billable_weight} Kgs</td>
-                            <td>
-                                <p>CAD ${data.amountToPay ?? '-'}</p>
-                            </td>
-                            <td><button type="button" class="btn btn-primary btn-sm" onclick="bookService('2 Point')">Select</button></td>
-                        </tr>
-                    `;
-            output += `
-                        </tbody>
-                            </table>
-                            {{-- Notification --}}
-                            <p class="text-center">
-                                Shipment estimate was calculated by Secureship on {{ \Carbon\Carbon::now()->format('Y-m-d') }} at
-                                {{ \Carbon\Carbon::now()->format('H:i') }}
-                                {{ \Carbon\Carbon::now()->format('e') }}
-                            </p>
-                            `;
+        <div class="row">
+            <!-- Pickup Details -->
+            <div class="col-md-6">
+                <h5 class="text-primary mb-3 border-bottom pb-2">Booking Details</h5>
+                <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">Pickup Address:</span>
+                    <span class="fw-bold" id="printPickupAddress">${pickupaddress ?? '___'}</span>
+                </div>
+                <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">Dropoff:</span>
+                    <span class="fw-bold" id="printDropoff">${dropoff_address ?? '___'}</span>
+                </div>
+                <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">Service Type:</span>
+                    <span class="fw-bold" id="serviceType">${data.serviceType ?? '___'}</span>
+                </div>
+                <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">Service Category:</span>
+                    <span class="fw-bold" id="serviceCategory">${data.serviceCategory ?? '___'}</span>
+                </div>
+                <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">Priority:</span>
+                    <span class="fw-bold" id="printPriority">${priority ?? '___'}</span>
+                </div>
+                <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">Billable Weight:</span>
+                    <span id="billable_weight" class="fw-bold">${data.billable_weight ? data.billable_weight + ' Kgs' : '___'} </span>
+                </div>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="col-md-6">
+                <h5 class="text-primary mb-3 border-bottom pb-2">Payment Details</h5>
+                <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">Base Price:</span>
+                    <span id="base-price" class="fw-bold">${data.base_price ? 'CAD ' + data.base_price : '___'}</span>
+                </div>
+                <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">Weight Price:</span>
+                    <span id="weight-price" class="fw-bold">${data.weight_price ? 'CAD ' + data.weight_price : '___'} </span>
+                </div>
+                <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">Priority Price:</span>
+                    <span id="priority-price" class="fw-bold">${data.priority_price ? 'CAD ' + data.priority_price : '___'}</span>
+                </div>
+                <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">Distance Price:</span>
+                    <span id="distance-price" class="fw-bold">${data.distance_price ? 'CAD ' + data.distance_price : '___'}</span>
+                </div>
+                <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">Subtotal:</span>
+                    <span id="sub_total" class="fw-bold">${data.sub_total ? 'CAD ' + data.sub_total : '___'}</span>
+                </div>
+                <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">Tax:</span>
+                    <span id="tax_price" class="fw-bold">${data.tax_price ? 'CAD ' + data.tax_price : '___'}</span>
+                </div>
+                <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">Total:</span>
+                    <span id="amountToPay" class="fw-bold">${data.amountToPay ? 'CAD ' + data.amountToPay : '___'}</span>
+                </div>
+            </div>
+            <div class="col-md-12 mt-3 d-flex justify-content-end">
+                <button type="button" class="btn btn-primary" onclick="bookService('2 Point')">Create Booking</button>
+            </div>
+        </div>
+    `;
+
             document.getElementById('calculatedAmountCartBody').innerHTML = output;
         } else {
             document.getElementById('calculatedAmountCartBody').innerHTML = `
-                    <p>No data found</p>
-                `;
+        <p>No data found</p>
+    `;
         }
+
     }
 
 

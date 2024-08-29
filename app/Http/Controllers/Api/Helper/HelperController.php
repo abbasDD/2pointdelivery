@@ -14,6 +14,7 @@ use App\Models\Helper;
 use App\Models\HelperBankAccount;
 use App\Models\HelperCompany;
 use App\Models\HelperVehicle;
+use App\Models\KycDetail;
 use App\Models\Message;
 use App\Models\ServiceType;
 use App\Models\SocialLink;
@@ -178,6 +179,8 @@ class HelperController extends Controller
         $data['company_details'] = false;
         $data['vehicle_details'] = false;
         $data['is_approved'] = false;
+        $data['is_kyc_approved'] = false;
+        $data['is_vehicle_approved'] = false;
 
         // Get helper details
         $helper = Helper::where('user_id', auth()->user()->id)->first();
@@ -203,11 +206,22 @@ class HelperController extends Controller
         $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
         if (isset($helperVehicle) && $helperVehicle->vehicle_number != null) {
             $data['vehicle_details'] = true;
+
+            // Check if vehicle approved
+            if ($helperVehicle->is_approved == 1) {
+                $data['is_vehicle_approved'] = true;
+            }
         }
 
         // if helper is approved
         if ($helper->is_approved == 1) {
             $data['is_approved'] = true;
+        }
+
+        // Check kyc added and approved
+        $kycDetail = KycDetail::where('user_id', auth()->user()->id)->where('is_verified', 1)->first();
+        if ($kycDetail) {
+            $data['is_kyc_approved'] = true;
         }
 
 

@@ -102,19 +102,26 @@ class GetEstimateController extends Controller
 
         // Get Base Price Value
         $data['base_price'] = $this->getBasePrice($serviceType->type, $serviceCategory->base_price, $serviceCategory->moving_price_type, $request->floor_size, $request->no_of_hours);
+        // Make it 2 decimal places
+        $data['base_price'] = number_format((float)$data['base_price'], 2, '.', '');
 
         // Distance Price
         $data['distance_price'] = $this->getDistancePrice($serviceCategory->base_distance, $serviceCategory->extra_distance_price, $distance_in_km);
+        // Make it 2 decimal places
+        $data['distance_price'] = number_format((float)$data['distance_price'], 2, '.', '');
 
         // Priority Price
         $data['priority_price'] = $prioritySettingPrice;
 
         // Vehicle Price
         $data['vehicle_price'] = $this->getVehiclePrice($serviceType->type, $serviceCategory->vehicle_type_id, $distance_in_km);
+        // Make it 2 decimal places
+        $data['vehicle_price'] = number_format((float)$data['vehicle_price'], 2, '.', '');
 
         // Weight Price
         $data['weight_price'] = $this->getWeightPrice($serviceType->type, $serviceCategory, $request->package_weight, $request->package_length, $request->package_width, $request->package_height, $request->selectedMovingDetailsID);
-
+        // Make it 2 decimal places
+        $data['weight_price'] = number_format((float)$data['weight_price'], 2, '.', '');
 
         // If service type is moving
         $data['no_of_room_price'] = 0;
@@ -125,32 +132,47 @@ class GetEstimateController extends Controller
         if ($serviceType->type == 'moving') {
             // Get Room Price
             $data['no_of_room_price'] = $this->getNoOfRoomPrice($request->selectedNoOfRoomID, $serviceCategory, $request->floor_size, $request->no_of_hours);
+            // Make it 2 decimal places
+            $data['no_of_room_price'] = number_format((float)$data['no_of_room_price'], 2, '.', '');
 
             // Get Floor Plan Price
             $data['floor_plan_price'] = $this->getFloorPlanPrice($request->selectedFloorPlanID, $serviceCategory, $request->floor_size, $request->no_of_hours);
+            // Make it 2 decimal places
+            $data['floor_plan_price'] = number_format((float)$data['floor_plan_price'], 2, '.', '');
 
             // Get Floor Access Price
             $data['floor_assess_price'] = $this->getFloorAccessPrice($request->selectedFloorAssessID, $serviceCategory, $request->floor_size, $request->no_of_hours);
+            // Make it 2 decimal places
+            $data['floor_assess_price'] = number_format((float)$data['floor_assess_price'], 2, '.', '');
 
             // Get Job Details Price
             if ($request->selectedJobDetailsID != '') {
                 $data['job_details_price'] = $this->getJobDetailsPrice($request->selectedJobDetailsID, $serviceCategory, $request->floor_size, $request->no_of_hours);
+                // Make it 2 decimal places
+                $data['job_details_price'] = number_format((float)$data['job_details_price'], 2, '.', '');
             }
         }
 
         // Sub Total
         $data['sub_total'] = $data['base_price'] + $data['distance_price'] + $data['priority_price'] + $data['vehicle_price'] + $data['weight_price'] + $data['no_of_room_price'] + $data['floor_plan_price'] + $data['floor_assess_price'] + $data['job_details_price'] + $data['insurance_value'];
 
-
         //  Tax Price
         $data['tax_price'] = $this->getTaxPrice($data['sub_total']);
-
+        // Make it 2 decimal places
+        $data['tax_price'] = number_format((float)$data['tax_price'], 2, '.', '');
 
         // Total amountToPay
         $data['amountToPay'] = number_format((float)($data['sub_total'] + $data['tax_price']), 2, '.', '');
 
+        // booking_type
+        $data['booking_type'] = $request->selectedServiceType;
 
-        // return a json object
+        // serviceType
+        $data['serviceType'] = $serviceType->name ?? '-';
+
+        // serviceCategory
+        $data['serviceCategory'] = $serviceCategory->name ?? '-';
+
         // return response()->json($data);
         return response()->json([
             'status' => 'success',
