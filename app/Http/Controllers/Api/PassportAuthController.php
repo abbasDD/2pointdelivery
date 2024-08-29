@@ -455,7 +455,14 @@ class PassportAuthController extends Controller
             ], 401);
         }
 
+        // update fcm token to null
+
+        $user = auth()->user();
+        $user->fcm_token = null;
+        $user->save();
+
         Auth::user()->tokens()->delete();
+
 
         return response()->json([
             'success' => true,

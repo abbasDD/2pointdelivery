@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\NoOfRoomController;
 use App\Http\Controllers\Admin\PaymentSettingController;
 use App\Http\Controllers\Admin\SocialLoginSettingController;
 use App\Http\Controllers\Admin\PrioritySettingController;
+use App\Http\Controllers\Admin\PushNotificationController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\ServiceTypeController;
 use App\Http\Controllers\Admin\SmtpSettingController;
@@ -292,5 +293,10 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     // Wallet
     Route::get('/wallet', [WalletAdminController::class, 'index'])->name('wallet');
 
+
+    // Send push notifications to users
+    Route::get('/push-notification', [PushNotificationController::class, 'index'])->name('pushNotification');
+    Route::get('/push-notification/new', [PushNotificationController::class, 'new'])->name('pushNotification.new');
+    Route::post('/push-notification/send', [PushNotificationController::class, 'send'])->name('pushNotification.send');
     // End of Admin Routes
 });

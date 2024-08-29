@@ -40,6 +40,19 @@ class FcmController extends Controller
                 'android' => [
                     'priority' => 'high',
                 ],
+                'apns' => [
+                    'payload' => [
+                        'aps' => [
+                            'alert' => [
+                                'title' => $title,
+                                'body'  => $body,
+                            ],
+                            'sound' => 'default',
+                            'badge' => 1,
+                            'content_available' => true,
+                        ],
+                    ],
+                ],
             ],
         ]);
 
@@ -88,6 +101,19 @@ class FcmController extends Controller
                 ],
                 'android' => [
                     'priority' => 'high',
+                ],
+                'apns' => [
+                    'payload' => [
+                        'aps' => [
+                            'alert' => [
+                                'title' => $title,
+                                'body'  => $body,
+                            ],
+                            'sound' => 'default',
+                            'badge' => 1,
+                            'content_available' => true,
+                        ],
+                    ],
                 ],
             ],
         ]);

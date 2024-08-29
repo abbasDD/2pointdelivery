@@ -78,6 +78,14 @@
                     </li>
                 </ul>
             </li>
+            {{-- Push Notification --}}
+            <li class="nav-item has-submenu">
+                <a class="nav-link" href="#"> <i class="fa fa-bell"></i> Notifications </a>
+                <ul class="submenu collapse">
+                    <li><a class="nav-link" href="{{ route('admin.pushNotification') }}">List </a></li>
+                    <li><a class="nav-link" href="{{ route('admin.pushNotification.new') }}">New </a></li>
+                </ul>
+            </li>
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.settings') }}"><i class="fa fa-cog"></i>
                     Settings</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('logout') }}"
