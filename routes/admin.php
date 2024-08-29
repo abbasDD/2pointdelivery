@@ -298,5 +298,6 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     Route::get('/push-notification', [PushNotificationController::class, 'index'])->name('pushNotification');
     Route::get('/push-notification/new', [PushNotificationController::class, 'new'])->name('pushNotification.new');
     Route::post('/push-notification/send', [PushNotificationController::class, 'send'])->name('pushNotification.send');
+    Route::get('/push-notification/resend/{id}', [PushNotificationController::class, 'resend'])->name('pushNotification.resend');
     // End of Admin Routes
 });

@@ -743,6 +743,14 @@ class ClientBookingController extends Controller
             ], 422);
         }
 
+        // Dummy response for credit card
+        return response()->json([
+            'success' => false,
+            'statusCode' => 422,
+            'message' => 'Unable to create as credit card is not yet added',
+            'errors' => 'Unable to create as credit card is not yet added',
+        ], 422);
+
         // Check if is_secureship_enabled is 1
         if (!$serviceCategory->is_secureship_enabled) {
             return response()->json([

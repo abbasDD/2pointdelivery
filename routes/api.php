@@ -36,6 +36,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     // Get the authenticated User Data
     Route::get('index', [PassportAuthController::class, 'me']);
     Route::get('address-book', [ClientController::class, 'getAddressBook']);
+    Route::post('address-book/update', [ClientController::class, 'updateAddressBook']);
 
     // Get Logged In Client Personal Details
     Route::get('profile', [ClientController::class, 'index']);
