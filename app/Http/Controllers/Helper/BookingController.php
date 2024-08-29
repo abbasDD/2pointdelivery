@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Helper;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\EmailTemplateController;
+use App\Http\Controllers\FcmController;
 use App\Http\Controllers\GetEstimateController;
 use App\Models\Booking;
 use App\Models\BookingDelivery;
@@ -23,12 +24,14 @@ class BookingController extends Controller
 {
 
     protected $getEstimateController;
+    private $fcm;
 
-    public function __construct(GetEstimateController $getEstimateController)
+    public function __construct(GetEstimateController $getEstimateController, FcmController $fcm)
     {
         $this->middleware('auth');
 
         $this->getEstimateController = $getEstimateController;
+        $this->fcm = $fcm;
     }
 
     public function index()
@@ -184,6 +187,9 @@ class BookingController extends Controller
             'content' => 'Your booking has been accepted.',
             'read' => 0
         ]);
+
+        // Send Push Notification to client
+        $this->fcm->sendPushNotificationToUser($booking->client_user_id, 'Booking Accepted', 'Your booking has been accepted.', 'booking', $booking->id, 'booking', $booking->id);
 
         return redirect()->back()->with('success', 'Booking accepted successfully!');
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Helper;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\FcmController;
 use App\Http\Controllers\GetEstimateController;
 use App\Models\Booking;
 use App\Models\BookingDelivery;
@@ -10,21 +11,21 @@ use App\Models\BookingMoving;
 use App\Models\BookingReview;
 use App\Models\Helper;
 use App\Models\HelperVehicle;
-use App\Models\MovingConfig;
-use App\Models\MovingDetail;
-use App\Models\MovingDetailCategory;
-use App\Models\PrioritySetting;
-use App\Models\ServiceCategory;
-use App\Models\ServiceType;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Str;
 use Carbon\Carbon;
 
 class HelperBookingController extends Controller
 {
+
+    private $fcm;
+
+    public function __construct(FcmController $fcm)
+    {
+        $this->fcm = $fcm;
+    }
 
 
     // showBooking
@@ -319,6 +320,13 @@ class HelperBookingController extends Controller
                 $booking->helper_user_id = auth()->user()->id;
                 $booking->status = 'accepted';
                 $booking->save();
+
+                // GEt bookingdelivery
+                $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+                if ($bookingDelivery) {
+                    $bookingDelivery->accepted_at = Carbon::now();
+                    $bookingDelivery->save();
+                }
             }
 
             // Check if booking_type is moving
@@ -348,7 +356,18 @@ class HelperBookingController extends Controller
                     $booking->status = 'accepted';
                     $booking->save();
                 }
+
+                // GEt booking moving
+                $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
+                if ($bookingMoving) {
+                    $bookingMoving->accepted_at = Carbon::now();
+                    $bookingMoving->save();
+                }
             }
+
+            // Send Push Notification to client
+            $this->fcm->sendPushNotificationToUser($booking->client_user_id, 'Booking Accepted', 'Your booking has been accepted.', 'booking', $booking->id, 'booking', $booking->id);
+
 
             // Return success
             return response()->json([
@@ -358,6 +377,8 @@ class HelperBookingController extends Controller
                 'data' => [],
             ], 200);
         }
+
+
 
         // If all else fails return error
         return response()->json([
@@ -502,6 +523,9 @@ class HelperBookingController extends Controller
         // Update booking status
         $booking->status = 'started';
         $booking->save();
+
+        // Send push notification
+        $this->fcm->sendPushNotificationToUser($booking->client_user_id, 'Booking Started', 'Your booking has been started');
 
         // Return success
         return response()->json([

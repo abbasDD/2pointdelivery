@@ -24,12 +24,12 @@ class KycDetailResource extends JsonResource
             'front_image' => $this->front_image ? asset('images/kyc/' . $this->front_image) : asset('images/default.png'),
             'back_image' => $this->back_image ? asset('images/kyc/' . $this->back_image) : asset('images/default.png'),
             'id_number' => $this->id_number,
-            'country' => Country::find($this->country_id)->name ?? '-',
-            'state' => State::find($this->state_id)->name ?? '-',
-            'city' => City::find($this->city_id)->name ?? '-',
+            'country' => Country::find($this->country)->name ?? '-',
+            'state' => State::find($this->state)->name ?? '-',
+            'city' => City::find($this->city)->name ?? '-',
             'issue_date' => $this->issue_date,
             'expiry_date' => $this->expiry_date,
-            'status' => $this->status
+            'is_verified' => $this->is_verified
         ];
     }
 }
