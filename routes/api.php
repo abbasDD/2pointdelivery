@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Client\ClientBookingController;
 use App\Http\Controllers\Api\Client\ClientController;
+use App\Http\Controllers\Api\Client\WalletClientController;
 use App\Http\Controllers\Api\Helper\HelperBookingController;
 use App\Http\Controllers\Api\Helper\HelperController;
 use App\Http\Controllers\Api\KycController;
@@ -125,6 +126,9 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     // Notifications
     Route::get('notifications', [ClientController::class, 'getNotifications']);
     Route::post('notifications/read-all', [ClientController::class, 'markAllNotificationsRead']);
+
+    // Wallet
+    Route::get('wallet', [WalletClientController::class, 'index']);
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);

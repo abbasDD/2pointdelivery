@@ -42,8 +42,7 @@ class PushNotificationController extends Controller
         $request->validate([
             'user_id' => 'required',
             'title' => 'required|string|max:255',
-            'body' => 'required',
-            'send_email' => 'required'
+            'body' => 'required'
         ]);
 
         if ($request->input('send_email')) {

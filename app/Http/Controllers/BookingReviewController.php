@@ -12,13 +12,6 @@ use Illuminate\Http\Request;
 
 class BookingReviewController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -78,37 +71,5 @@ class BookingReviewController extends Controller
 
         // Redirect back with success
         return redirect()->back()->with('success', 'Booking review added successfully');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(BookingReview $bookingReview)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(BookingReview $bookingReview)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateBookingReviewRequest $request, BookingReview $bookingReview)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(BookingReview $bookingReview)
-    {
-        //
     }
 }

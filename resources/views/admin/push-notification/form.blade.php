@@ -82,7 +82,7 @@
     {{-- Submit Button --}}
     <div class="col-md-12 text-right">
         <button type="submit" class="btn btn-primary btn-block">
-            {{ isset($pushNotification) ? 'Update' : 'Add' }}
+            Send
         </button>
     </div>
 
