@@ -104,10 +104,13 @@
 <script>
     function calculateVolume() {
         // Update volume from weight field -> 1 Kg = 0.0353 Cu Ft
-        if ($("#weight").val() == '') {
+
+        var weight = $("#weight").val();
+
+        if (weight == '') {
             $("#volume").val(0);
         }
 
-        $("#volume").val($("#weight").val() * (0.0 .0353));
+        $("#volume").val(weight * (0.0353));
     }
 </script>

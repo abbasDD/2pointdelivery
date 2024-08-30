@@ -86,6 +86,7 @@ Route::middleware(['app_language'])->group(function () {
     //Booking Routes
     Route::get('/new-booking', [FrontendController::class, 'newBooking'])->name('newBooking')->middleware('auth');
     Route::post('/estimate/index', [GetEstimateController::class, 'index'])->name('estimate.index'); //Get booking estimates
+    Route::post('/estimate/insurance', [GetEstimateController::class, 'calculateInsuranceFromPackageValue'])->name('estimate.insurance'); //Get booking estimates
     Route::get('/fetch/service-categories/{serviceType?}', [FrontendController::class, 'fetch_services_categories'])->name('fetch.service.categories');
 
     // getTrackingDetail

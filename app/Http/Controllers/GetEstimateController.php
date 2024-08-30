@@ -26,6 +26,29 @@ use Carbon\Carbon;
 
 class GetEstimateController extends Controller
 {
+    // Get insurance value
+    public function calculateInsuranceFromPackageValue(Request $request)
+    {
+        $package_value = $request->package_value;
+
+        $insuranceValue = 0;
+
+        if ($package_value > 0) {
+
+            // Check if insurance enabled
+            if (config('insurance') == 'enabled') {
+                $insuranceValue = $this->calculateInsuranceValue($package_value);
+            }
+        }
+
+        return response()->json(
+            [
+                'success' => true,
+                'data' => $insuranceValue
+            ]
+        );
+    }
+
     public function index(Request $request)
     {
 

@@ -691,7 +691,7 @@
                     <span id="base-price" class="fw-bold">${data.base_price ? 'CAD ' + data.base_price : '___'}</span>
                 </div>
                 <div class="mb-2 d-flex justify-content-between">
-                    <span class="text-muted">Weight Price:</span>
+                    <span class="text-muted">Extra Weight Price:</span>
                     <span id="weight-price" class="fw-bold">${data.weight_price ? 'CAD ' + data.weight_price : '___'} </span>
                 </div>
                 <div class="mb-2 d-flex justify-content-between">
@@ -699,7 +699,7 @@
                     <span id="priority-price" class="fw-bold">${data.priority_price ? 'CAD ' + data.priority_price : '___'}</span>
                 </div>
                 <div class="mb-2 d-flex justify-content-between">
-                    <span class="text-muted">Distance Price:</span>
+                    <span class="text-muted">Extra Distance Price:</span>
                     <span id="distance-price" class="fw-bold">${data.distance_price ? 'CAD ' + data.distance_price : '___'}</span>
                 </div>
                 <div class="mb-2 d-flex justify-content-between">
@@ -707,7 +707,7 @@
                     <span id="sub_total" class="fw-bold">${data.sub_total ? 'CAD ' + data.sub_total : '___'}</span>
                 </div>
                 <div class="mb-2 d-flex justify-content-between">
-                    <span class="text-muted">Tax:</span>
+                    <span class="text-muted">GST/PST Charges:</span>
                     <span id="tax_price" class="fw-bold">${data.tax_price ? 'CAD ' + data.tax_price : '___'}</span>
                 </div>
                 <div class="mb-2 d-flex justify-content-between">
@@ -734,8 +734,6 @@
     // bookService
     function bookService(selectedService) {
         // alert(selectedService);
-
-
 
         // Collect formData
         var formData = collectFormData();
@@ -782,5 +780,55 @@
 
 
         return false;
+    }
+
+    // toggleInsurance
+    function toggleInsurance() {
+        // get the value
+        let insurance_enabled = $('#insurance_enabled').val();
+        if (insurance_enabled == 'yes') {
+            $('#insurance_value_div').removeClass('d-none');
+        } else {
+            $('#insurance_value_div').addClass('d-none');
+        }
+
+        // calculateInsurance
+        calculateInsurance();
+
+    }
+
+    // calculateInsurance
+    function calculateInsurance() {
+        var insurance_value = 0;
+        // Get package value
+        let package_value = document.querySelector('input[name="package_value"]').value;
+        if (package_value == '' || package_value == 0) {
+            insurance_value = 0;
+            // Set to insurance value
+            document.getElementById('insurance_value').value = insurance_value;
+            return false;
+        }
+
+        // Get insurance value from ajax call
+        let base_url = '{{ url('/') }}';
+
+        $.ajax({
+            url: base_url + '/estimate/insurance',
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                package_value: package_value
+            },
+            success: function(response) {
+                console.log(response);
+                if (response.success == true) {
+                    // Set to insurance value
+                    document.getElementById('insurance_value').value = response.data;
+                }
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
     }
 </script>

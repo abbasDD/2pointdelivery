@@ -54,8 +54,9 @@
         <div class="col-md-6">
             <label for="packageValue">Package Value</label>
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Value" name="package_value"
-                    aria-describedby="package_value" pattern="\d+(\.\d{0,2})?" inputmode="decimal"
+                <input type="text" class="form-control" placeholder="Declare Value" name="package_value"
+                    onchange="calculateInsurance()" aria-describedby="package_value" pattern="\d+(\.\d{0,2})?"
+                    inputmode="decimal"
                     oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/^(\d*\.?\d{0,2}).*$/g, '$1');">
                 <span class="input-group-text text-uppercase" id="package_value">$</span>
             </div>
@@ -64,7 +65,7 @@
 
     {{-- Check if insurance is enabled --}}
     {{-- Insurance --}}
-    @if ($inusranceEnabled)
+    @if (config('insurance') == 'enabled')
         <div class="col-md-6">
             <label for="insurance_enabled">Insurance Enable</label>
             <select class="form-control mb-3" id="insurance_enabled" name="insurance_enabled"
