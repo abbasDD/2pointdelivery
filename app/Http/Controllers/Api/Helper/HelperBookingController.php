@@ -810,7 +810,7 @@ class HelperBookingController extends Controller
                 'user_id' => $booking->helper_user_id,
                 'user_type' => 'helper',
                 'type' => 'received',
-                'amount' => $bookingDelivery->helper_fee,
+                'amount' => $one_helper_fee,
                 'booking_id' => $booking->id,
                 'note' => 'Payment for booking ID: ' . $booking->id,
                 'payment_method' => 'wallet',
