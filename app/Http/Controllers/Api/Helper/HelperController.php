@@ -2149,6 +2149,18 @@ class HelperController extends Controller
         //     'reason' => $request->reason,
         // ]);
 
+        // Check if user wallet request already pending
+        $withdrawRequestExist = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'helper')->where('type', 'withdraw')->where('status', 'pending')->first();
+
+        if ($withdrawRequestExist) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Withdraw request already pending',
+                'errors' => 'Withdraw request already pending'
+            ]);
+        }
+
         $withdrawRequest = UserWallet::create([
             'user_id' => auth()->user()->id,
             'user_type' => 'helper',

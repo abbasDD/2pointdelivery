@@ -13,8 +13,9 @@
                     <a href="{{ $clientView ? route('client.bookings') : route('helper.bookings') }}"
                         class="btn btn-primary btn-sm"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
                         <span class="d-none d-md-inline"> Back to Bookings</span></a>
-                    <h3 class="mb-1">Order Detail</h3>
-                    <p>Order No : <span class="text-uppercase">{{ $booking->uuid ? $booking->uuid : '-' }}</span></p>
+                    <h3 class="mb-1">Booking Detail</h3>
+                    <p>Booking Reference : <span class="text-uppercase">{{ $booking->uuid ? $booking->uuid : '-' }}</span>
+                    </p>
                 </div>
                 {{-- Action buttons --}}
                 @include('frontend.bookings.partials.show.actions')

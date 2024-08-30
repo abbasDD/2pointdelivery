@@ -29,8 +29,12 @@ class WalletHelperController extends Controller
 
         // WithdrawnAmount
         $statistic['withdrawn'] = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'helper')->where('type', 'withdraw')->where('status', 'success')->sum('amount');
+
+        // With request pending
+        $pendingRequestAmount = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'helper')->where('type', 'withdraw')->where('status', 'pending')->sum('amount');
+
         // Get available balance
-        $statistic['available'] = $statistic['total'] - $statistic['withdrawn'];
+        $statistic['available'] = $statistic['total'] - $statistic['withdrawn'] - $pendingRequestAmount;
 
         // Get helper bank accounts
         $helperBankAccounts = HelperBankAccount::where('user_id', auth()->user()->id)->get();
