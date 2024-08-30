@@ -12,6 +12,7 @@ use App\Models\BookingReview;
 use App\Models\Helper;
 use App\Models\HelperVehicle;
 use App\Models\User;
+use App\Models\UserWallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
@@ -781,6 +782,55 @@ class HelperBookingController extends Controller
         $booking->status = 'completed';
         $booking->save();
 
+        // Add to UserWallet for Delivery
+        if ($booking->booking_type == 'delivery') {
+            // Add to wallet of helper as Delivery has one helper only
+            UserWallet::create([
+                'user_id' => $booking->helper_user_id,
+                'user_type' => 'helper',
+                'type' => 'received',
+                'amount' => $bookingDelivery->helper_fee,
+                'booking_id' => $booking->id,
+                'note' => 'Payment for booking ID: ' . $booking->id,
+                'payment_method' => 'wallet',
+                'transaction_id' => '',
+                'status' => 'success',
+            ]);
+        }
+
+        // Add to UserWallet for Moving
+        if ($booking->booking_type == 'moving') {
+            // Add to wallet of 2 helpers as Moving has 2 helpers
+            $one_helper_fee = $bookingMoving->helper_fee / 2;
+            // make it integer
+            $one_helper_fee = floor($one_helper_fee);
+
+            // Add to helper_1 wallet
+            UserWallet::create([
+                'user_id' => $booking->helper_user_id,
+                'user_type' => 'helper',
+                'type' => 'received',
+                'amount' => $bookingDelivery->helper_fee,
+                'booking_id' => $booking->id,
+                'note' => 'Payment for booking ID: ' . $booking->id,
+                'payment_method' => 'wallet',
+                'transaction_id' => '',
+                'status' => 'success',
+            ]);
+            // Add to helper_2 wallet
+            UserWallet::create([
+                'user_id' => $booking->helper_user_id2,
+                'user_type' => 'helper',
+                'type' => 'received',
+                'amount' => $one_helper_fee,
+                'booking_id' => $booking->id,
+                'note' => 'Payment for booking ID: ' . $booking->id,
+                'payment_method' => 'wallet',
+                'transaction_id' => '',
+                'status' => 'success',
+            ]);
+        }
+
         // Return success
         return response()->json([
             'success' => true,
@@ -904,7 +954,7 @@ class HelperBookingController extends Controller
     }
 
     // pendingBookings
-    public function pendingBookings(Request $request): JsonResponse
+    public function pendingBookings(): JsonResponse
     {
         // If token is not valid return error
         if (!auth()->user()) {
@@ -940,7 +990,7 @@ class HelperBookingController extends Controller
     }
 
     // activeBookings
-    public function activeBookings(Request $request): JsonResponse
+    public function activeBookings(): JsonResponse
     {
         // If token is not valid return error
         if (!auth()->user()) {
@@ -973,7 +1023,7 @@ class HelperBookingController extends Controller
     }
 
     // getBookingHistory
-    public function getBookingHistory(Request $request): JsonResponse
+    public function getBookingHistory(): JsonResponse
     {
         // If token is not valid return error
         if (!auth()->user()) {

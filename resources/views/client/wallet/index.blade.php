@@ -15,7 +15,7 @@
                         <i class="fas fa-wallet text-success"></i>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
-                        <h3 class="mb-0">C$ {{ $balance['amount_spend'] }}</h3>
+                        <h3 class="mb-0">C$ {{ $statistic['amount_spend'] }}</h3>
                     </div>
                 </div>
             </div>
@@ -29,7 +29,7 @@
                         <i class="fas fa-wallet text-primary"></i>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
-                        <h3 class="mb-0">C$ {{ $balance['unpaid_amount'] }}</h3>
+                        <h3 class="mb-0">C$ {{ $statistic['unpaid_amount'] }}</h3>
                     </div>
                 </div>
             </div>
@@ -43,11 +43,15 @@
                         <i class="fas fa-wallet text-danger"></i>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
-                        <h3 class="mb-0">C$ {{ $balance['amount_refunded'] }}</h3>
+                        <h3 class="mb-0">C$ {{ $statistic['amount_refunded'] }}</h3>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+
+    {{-- Client Wallet List --}}
+    @include('client.wallet.list')
 
 @endsection

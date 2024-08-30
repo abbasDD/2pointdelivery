@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Client\ClientController;
 use App\Http\Controllers\Api\Client\WalletClientController;
 use App\Http\Controllers\Api\Helper\HelperBookingController;
 use App\Http\Controllers\Api\Helper\HelperController;
+use App\Http\Controllers\Api\Helper\WalletHelperController;
 use App\Http\Controllers\Api\KycController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PassportAuthController;
@@ -246,10 +247,9 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     Route::post('chat/message/send', [HelperController::class, 'sendMessage']);
 
     // Wallet
-    Route::get('wallet/balance', [HelperController::class, 'getWalletBalance']);
-    Route::get('wallet/earning', [HelperController::class, 'getWalletEarning']);
-    Route::get('wallet/requests', [HelperController::class, 'getWalletWithdrawRequests']);
+    Route::get('wallet', [WalletHelperController::class, 'index']);
     Route::post('wallet/withdraw/request', [HelperController::class, 'postWalletWithdrawRequest']);
+
     // Bank Accounts
     Route::get('wallet/bank-accounts', [HelperController::class, 'getBankAccounts']);
     Route::post('/wallet/bank-account/add', [HelperController::class, 'addBankAccount']);

@@ -707,20 +707,22 @@ class HelperController extends Controller
 
     public function wallet()
     {
-        // Get available balance
-        $balance['available'] = 100;
 
         // Total Earning
-        $balance['total'] = 100;
+        $statistic['total'] = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'helper')->where('type', 'received')->where('status', 'success')->sum('amount');
 
         // WithdrawnAmount
-        $balance['withdrawn'] = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'helper')->where('type', 'withdraw')->where('status', 'success')->sum('amount');
+        $statistic['withdrawn'] = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'helper')->where('type', 'withdraw')->where('status', 'success')->sum('amount');
+        // Get available balance
+        $statistic['available'] = $statistic['total'] - $statistic['withdrawn'];
 
         // Get helper bank accounts
         $helperBankAccounts = HelperBankAccount::where('user_id', auth()->user()->id)->get();
 
+        $wallets = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'helper')->get();
+
         // dd(auth()->user()->id);
-        return view('helper.wallet.index', compact('balance', 'helperBankAccounts'));
+        return view('helper.wallet.index', compact('statistic', 'helperBankAccounts', 'wallets'));
     }
 
     // addBankAccount

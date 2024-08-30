@@ -16,6 +16,7 @@ use App\Models\HelperVehicle;
 use App\Models\ServiceCategory;
 use App\Models\User;
 use App\Models\UserNotification;
+use App\Models\UserWallet;
 use App\Models\VehicleType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -618,6 +619,54 @@ class BookingController extends Controller
         $booking->status = 'completed';
         $booking->save();
 
+        // Add to UserWallet for Delivery
+        if ($booking->booking_type == 'delivery') {
+            // Add to wallet of helper as Delivery has one helper only
+            UserWallet::create([
+                'user_id' => $booking->helper_user_id,
+                'user_type' => 'helper',
+                'type' => 'received',
+                'amount' => $bookingDelivery->helper_fee,
+                'booking_id' => $booking->id,
+                'note' => 'Payment for booking ID: ' . $booking->id,
+                'payment_method' => 'wallet',
+                'transaction_id' => '',
+                'status' => 'success',
+            ]);
+        }
+
+        // Add to UserWallet for Moving
+        if ($booking->booking_type == 'moving') {
+            // Add to wallet of 2 helpers as Moving has 2 helpers
+            $one_helper_fee = $bookingMoving->helper_fee / 2;
+            // make it integer
+            $one_helper_fee = floor($one_helper_fee);
+
+            // Add to helper_1 wallet
+            UserWallet::create([
+                'user_id' => $booking->helper_user_id,
+                'user_type' => 'helper',
+                'type' => 'received',
+                'amount' => $bookingDelivery->helper_fee,
+                'booking_id' => $booking->id,
+                'note' => 'Payment for booking ID: ' . $booking->id,
+                'payment_method' => 'wallet',
+                'transaction_id' => '',
+                'status' => 'success',
+            ]);
+            // Add to helper_2 wallet
+            UserWallet::create([
+                'user_id' => $booking->helper_user_id2,
+                'user_type' => 'helper',
+                'type' => 'received',
+                'amount' => $one_helper_fee,
+                'booking_id' => $booking->id,
+                'note' => 'Payment for booking ID: ' . $booking->id,
+                'payment_method' => 'wallet',
+                'transaction_id' => '',
+                'status' => 'success',
+            ]);
+        }
 
         // Send Notification
         UserNotification::create([

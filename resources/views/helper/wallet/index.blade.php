@@ -15,8 +15,8 @@
                         <i class="fas fa-wallet text-success"></i>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
-                        <h3 class="mb-0">$ {{ $balance['available'] }}</h3>
-                        @if ($helperBankAccounts && $balance['available'])
+                        <h3 class="mb-0">$ {{ $statistic['available'] }}</h3>
+                        @if ($helperBankAccounts && $statistic['available'])
                             <button class="btn btn-primary btn-sm" onclick="openWithdrawModal()">Withdraw</button>
                         @endif
                     </div>
@@ -32,7 +32,7 @@
                         <i class="fas fa-wallet text-primary"></i>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
-                        <h3 class="mb-0">$ {{ $balance['total'] }}</h3>
+                        <h3 class="mb-0">$ {{ $statistic['total'] }}</h3>
                     </div>
                 </div>
             </div>
@@ -46,7 +46,7 @@
                         <i class="fas fa-wallet text-danger"></i>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
-                        <h3 class="mb-0">$ {{ $balance['withdrawn'] }}</h3>
+                        <h3 class="mb-0">$ {{ $statistic['withdrawn'] }}</h3>
                     </div>
                 </div>
             </div>
@@ -58,5 +58,9 @@
 
     {{-- openWithdrawModal --}}
     @include('helper.wallet.withdraw-modal')
+
+
+    {{-- Helper Wallet List --}}
+    @include('helper.wallet.list')
 
 @endsection

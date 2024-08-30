@@ -26,7 +26,7 @@
 <script>
     function openWithdrawModal() {
         // withdrawAmount
-        $('#withdrawAmount').val({{ $balance['available'] }});
+        $('#withdrawAmount').val({{ $statistic['available'] }});
 
         $('#withdrawModal').modal('show');
     }

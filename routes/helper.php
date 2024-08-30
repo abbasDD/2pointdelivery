@@ -26,8 +26,6 @@ Route::middleware(['app_language'])->group(function () {
 
     Route::prefix('helper')->middleware(['auth', 'isHelper'])->name('helper.')->group(function () {
 
-        // Route::get('/complete-profile', [HelperController::class, 'complete_profile'])->name('complete_profile');
-        // Route::post('/update-profile', [HelperController::class, 'update_profile'])->name('update_profile');
         Route::get('/', [HelperController::class, 'index'])->name('index');
         Route::get('/index', [HelperController::class, 'index'])->name('index');
 
@@ -40,11 +38,6 @@ Route::middleware(['app_language'])->group(function () {
         // Reuqest Client Companpy
         Route::post('/company/request', [HelperController::class, 'requestCompany'])->name('company.request');
 
-        //KYC Details
-        // Route::get('/kyc-details', [HelperController::class, 'kyc_details'])->name('kyc_details');
-        //KYC Details
-        // Route::get('/kyc-details', [KycDetailController::class, 'index'])->name('kyc_details');
-        // Route::post('/kyc/update', [KycDetailController::class, 'update'])->name('kyc.update');
         //KYC Details
         Route::get('/kyc-details', [KycDetailController::class, 'index'])->name('kyc_details');
         Route::get('/kyc/create/', [KycDetailController::class, 'create'])->name('kyc.create');
