@@ -138,20 +138,32 @@
                         @enderror
                     </div>
                 </div>
+
                 {{-- Date of Birth --}}
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="date_of_birth" class="form-label">Date of Birth</label>
-                        <input type="date" class="form-control @error('date_of_birth') is-invalid @enderror"
-                            id="date_of_birth" name="date_of_birth"
-                            value="{{ old('date_of_birth', $helperData['date_of_birth'] ?? '') }}" required>
-                        @error('date_of_birth')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
+                        <div class="form-group">
+                            <label for="date_of_birth">Date of Birth</label>
+                            <input class="form-control" type="text" id="date_of_birth" name="date_of_birth"
+                                value="{{ old('date_of_birth', isset($helperData->date_of_birth) ? \Carbon\Carbon::parse($helperData->date_of_birth)->format(config('date_format', 'd-m-Y')) : '') }}"
+                                placeholder="Enter Issue Date" required>
+                            @error('date_of_birth')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                        <script>
+                            var dateFormat = convertDateFormat("<?php echo config('date_format') ?? 'd-m-Y'; ?>");
+
+                            // Initialize the date picker with the correct format
+                            $('#date_of_birth').datepicker({
+                                dateFormat: dateFormat
+                            });
+                        </script>
                     </div>
                 </div>
+
                 {{-- Service Badge ID --}}
                 <div class="col-md-6">
                     <div class="mb-3">

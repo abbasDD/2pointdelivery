@@ -72,9 +72,7 @@ Route::middleware(['app_language'])->group(function () {
         Route::get('/invitation/decline/{id}', [TeamInvitationController::class, 'declineInvitation'])->name('invitation.decline');
         Route::get('/invitation/get-accepted-list', [TeamInvitationController::class, 'getAcceptedInvites'])->name('invitation.getAcceptedList');
 
-
-        //Bookings
-        Route::get('/orders', [ClientController::class, 'orders'])->name('orders');
+        // Bookings
         Route::get('/bookings', [BookingController::class, 'index'])->name('bookings');
         Route::post('/booking/store', [BookingController::class, 'store'])->name('booking.store');
         Route::get('/booking/payment/{id}', [BookingController::class, 'payment'])->name('booking.payment');

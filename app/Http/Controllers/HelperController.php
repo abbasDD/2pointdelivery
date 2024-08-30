@@ -414,10 +414,6 @@ class HelperController extends Controller
             return redirect()->back()->with('error', 'Helper not found');
         }
 
-        // Check date of birth format
-        if (!preg_match('/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/', $request->date_of_birth)) {
-            return redirect()->back()->with('error', 'Invalid date format. Date should be in YYYY-MM-DD format');
-        }
 
         // Set default profile image to null
         $profile_image = $helper->profile_image ?? null;
@@ -440,7 +436,7 @@ class HelperController extends Controller
             'last_name' => $request->last_name,
             'gender' => $request->gender,
             'phone_no' => $request->phone_no,
-            'date_of_birth' => $request->date_of_birth,
+            'date_of_birth' => date('Y-m-d', strtotime($request->date_of_birth)),
             'service_badge_id' => $request->service_badge_id,
             'profile_image' => $profile_image,
             'company_enabled' => $request->company_enabled

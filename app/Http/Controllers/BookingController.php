@@ -150,8 +150,6 @@ class BookingController extends Controller
             $client = Client::where('user_id', auth()->user()->id)->first();
         }
 
-
-
         // Check booking type
         $booking_type = $this->checkBookingType($serviceType, $serviceCategory);
 
@@ -178,6 +176,8 @@ class BookingController extends Controller
             $secureshipData = $secureshipDataResponse['data'];
         }
 
+        // update date format to this 2024-08-20
+        $booking_date = date('Y-m-d', strtotime($request->booking_date));
 
         // Create new booking
         $booking = Booking::create([
@@ -194,7 +194,7 @@ class BookingController extends Controller
             'pickup_longitude' => $request->pickup_longitude,
             'dropoff_latitude' => $request->dropoff_latitude,
             'dropoff_longitude' => $request->dropoff_longitude,
-            'booking_date' => $request->booking_date,
+            'booking_date' => $booking_date,
             'booking_time' => $request->booking_time,
             'total_price' => 0,
             'booking_at' => now(),

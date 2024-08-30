@@ -125,14 +125,16 @@ class KycDetailController extends Controller
             $kycDetail->back_image = $updatedFilename;
         }
 
+        // Convert date to date format for DB storage - YYYY-MM-DD
+
         // Update kyc
         $kycDetail->kyc_type_id = $request->kyc_type_id;
         $kycDetail->id_number = $request->id_number;
         $kycDetail->country = $request->country;
         $kycDetail->state = $request->state;
         $kycDetail->city = $request->city;
-        $kycDetail->issue_date = $request->issue_date;
-        $kycDetail->expiry_date = $request->expiry_date;
+        $kycDetail->issue_date = date('Y-m-d', strtotime($request->issue_date));
+        $kycDetail->expiry_date = date('Y-m-d', strtotime($request->expiry_date));
 
         $kycDetail->save();
 
@@ -201,7 +203,7 @@ class KycDetailController extends Controller
     {
         // Validate the request
         $request->validate([
-            'kyc_type_id' => 'required|string|max:255',
+            // 'kyc_type_id' => 'required|string|max:255',
             'id_number' => 'required|string|max:255',
             'country' => 'required|string|max:255',
             'state' => 'required|string|max:255',
@@ -253,13 +255,13 @@ class KycDetailController extends Controller
         }
 
         // Update kyc
-        $kycDetail->kyc_type_id = $request->kyc_type_id;
+        // $kycDetail->kyc_type_id = $request->kyc_type_id;
         $kycDetail->id_number = $request->id_number;
         $kycDetail->country = $request->country;
         $kycDetail->state = $request->state;
         $kycDetail->city = $request->city;
-        $kycDetail->issue_date = $request->issue_date;
-        $kycDetail->expiry_date = $request->expiry_date;
+        $kycDetail->issue_date = date('Y-m-d', strtotime($request->issue_date));
+        $kycDetail->expiry_date = date('Y-m-d', strtotime($request->expiry_date));
         $kycDetail->is_verified = 0;
 
         $kycDetail->save();

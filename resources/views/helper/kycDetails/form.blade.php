@@ -125,21 +125,52 @@
             @enderror
         </div>
     </div>
+
+    {{-- Issue Date --}}
     <div class="col-md-6 mb-3">
         <div class="form-group">
             <label for="issue_date">Issue Date:</label>
-            <input class="form-control" type="date" id="issue_date" name="issue_date"
-                value="{{ old('issue_date', $kycDetails->issue_date ?? '') }}" required>
+            <input class="form-control" type="text" id="issue_date" name="issue_date"
+                value="{{ old('issue_date', isset($kycDetails->issue_date) ? \Carbon\Carbon::parse($kycDetails->issue_date)->format(config('date_format', 'd-m-Y')) : '') }}"
+                placeholder="Enter Issue Date" required>
+            @error('issue_date')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
         </div>
     </div>
+    <script>
+        var dateFormat = convertDateFormat("<?php echo config('date_format') ?? 'd-m-Y'; ?>");
 
+        // Initialize the date picker with the correct format
+        $('#issue_date').datepicker({
+            dateFormat: dateFormat
+        });
+    </script>
+
+    {{-- Expiry Date --}}
     <div class="col-md-6 mb-3">
         <div class="form-group">
             <label for="expiry_date">Expiry Date:</label>
-            <input class="form-control" type="date" id="expiry_date" name="expiry_date"
-                value="{{ old('expiry_date', $kycDetails->expiry_date ?? '') }}" required>
+            <input class="form-control" type="text" id="expiry_date" name="expiry_date"
+                value="{{ old('expiry_date', isset($kycDetails->expiry_date) ? \Carbon\Carbon::parse($kycDetails->expiry_date)->format(config('date_format', 'd-m-Y')) : '') }}"
+                placeholder="Enter Expiry Date" required>
+            @error('expiry_date')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
         </div>
     </div>
+    <script>
+        var dateFormat = convertDateFormat("<?php echo config('date_format') ?? 'd-m-Y'; ?>");
+
+        // Initialize the date picker with the correct format
+        $('#expiry_date').datepicker({
+            dateFormat: dateFormat
+        });
+    </script>
 
 
     <div class="col-md-12 mb-3">

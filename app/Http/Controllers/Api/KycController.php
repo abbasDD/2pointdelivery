@@ -180,8 +180,8 @@ class KycController extends Controller
         $kycDetail->country = $request->country;
         $kycDetail->state = $request->state;
         $kycDetail->city = $request->city;
-        $kycDetail->issue_date = $request->issue_date;
-        $kycDetail->expiry_date = $request->expiry_date;
+        $kycDetail->issue_date = date('Y-m-d', strtotime($request->issue_date));
+        $kycDetail->expiry_date = date('Y-m-d', strtotime($request->expiry_date));
 
         $kycDetail->save();
 
@@ -346,8 +346,8 @@ class KycController extends Controller
         $kycDetail->country = $request->country;
         $kycDetail->state = $request->state;
         $kycDetail->city = $request->city;
-        $kycDetail->issue_date = $request->issue_date;
-        $kycDetail->expiry_date = $request->expiry_date;
+        $kycDetail->issue_date = date('Y-m-d', strtotime($request->issue_date));
+        $kycDetail->expiry_date = date('Y-m-d', strtotime($request->expiry_date));
         $kycDetail->is_verified = 0;
 
         $kycDetail->save();

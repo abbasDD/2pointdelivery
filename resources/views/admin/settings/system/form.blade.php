@@ -143,6 +143,11 @@
                     {{ old('language', $systemSettings['language'] ?? '') == 'fr' ? 'selected' : '' }}>
                     French
                 </option>
+                {{-- Swedish --}}
+                <option value="sv"
+                    {{ old('language', $systemSettings['language'] ?? '') == 'sv' ? 'selected' : '' }}>
+                    Swedish
+                </option>
             </select>
             @error('language')
                 <span class="invalid-feedback" role="alert">
@@ -270,30 +275,6 @@
         </div>
     </div>
 
-    {{-- Time Format --}}
-    <div class="col-md-6">
-        <div class="form-group mb-3">
-            <label for="time_format">Time Format</label>
-            <select class="form-control @error('time_format') is-invalid @enderror" id="time_format"
-                name="time_format" required>
-                <option value="" disabled>Select Time Format</option>
-                <option value="AM/PM"
-                    {{ old('time_format', $systemSettings['time_format'] ?? '') == 'AM/PM' ? 'selected' : '' }}>
-                    AM/PM
-                </option>
-                <option value="24"
-                    {{ old('time_format', $systemSettings['time_format'] ?? '') == '24' ? 'selected' : '' }}>
-                    24
-                </option>
-            </select>
-            @error('time_format')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
-        </div>
-    </div>
-
     {{-- Date Format --}}
     <div class="col-md-6">
         <div class="form-group mb-3">
@@ -301,16 +282,44 @@
             <select class="form-control @error('date_format') is-invalid @enderror" id="date_format"
                 name="date_format" required>
                 <option value="" disabled>Select Date Format</option>
-                <option value="DD/MM/YYYY"
-                    {{ old('date_format', $systemSettings['date_format'] ?? '') == 'DD/MM/YYYY' ? 'selected' : '' }}>
-                    DD/MM/YYYY
+                <option value="Y-m-d"
+                    {{ old('date_format', $systemSettings['date_format'] ?? '') == 'Y-m-d' ? 'selected' : '' }}>
+                    YYYY-MM-DD (e.g., 2024-08-30)
                 </option>
-                <option value="MM/DD/YYYY"
-                    {{ old('date_format', $systemSettings['date_format'] ?? '') == 'MM/DD/YYYY' ? 'selected' : '' }}>
-                    MM/DD/YYYY
+                <option value="d-m-Y"
+                    {{ old('date_format', $systemSettings['date_format'] ?? '') == 'd-m-Y' ? 'selected' : '' }}>
+                    DD-MM-YYYY (e.g., 30-08-2024)
+                </option>
+                <option value="m-d-Y"
+                    {{ old('date_format', $systemSettings['date_format'] ?? '') == 'm-d-Y' ? 'selected' : '' }}>
+                    MM-DD-YYYY (e.g., 08-30-2024)
                 </option>
             </select>
             @error('date_format')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
+    {{-- Time Format --}}
+    <div class="col-md-6">
+        <div class="form-group mb-3">
+            <label for="time_format">Time Format</label>
+            <select class="form-control @error('time_format') is-invalid @enderror" id="time_format"
+                name="time_format" required>
+                <option value="" disabled>Select Time Format</option>
+                <option value="h:i A"
+                    {{ old('time_format', $systemSettings['time_format'] ?? '') == 'h:i A' ? 'selected' : '' }}>
+                    12-hour (e.g., 02:30 PM)
+                </option>
+                <option value="H:i"
+                    {{ old('time_format', $systemSettings['time_format'] ?? '') == 'H:i' ? 'selected' : '' }}>
+                    24-hour (e.g., 14:30)
+                </option>
+            </select>
+            @error('time_format')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>

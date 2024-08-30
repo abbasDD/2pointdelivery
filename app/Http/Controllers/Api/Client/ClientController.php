@@ -537,15 +537,6 @@ class ClientController extends Controller
             ], 401);
         }
 
-        // Check date of birth format
-        if (!preg_match('/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/', $request->date_of_birth)) {
-            return response()->json([
-                'success' => false,
-                'statusCode' => 422,
-                'message' => 'Invalid date format. Date should be in YYYY-MM-DD format',
-            ], 422);
-        }
-
         // If client is found, update its attributes
         $client = Client::where('user_id', $user->id)->first();
         if (!$client) {
@@ -574,7 +565,7 @@ class ClientController extends Controller
             'last_name' => $request->last_name,
             'phone_no' => $request->phone_no,
             'gender' => $request->gender,
-            'date_of_birth' => $request->date_of_birth,
+            'date_of_birth' => date('Y-m-d', strtotime($request->date_of_birth)),
             'company_enabled' => 0,
             'tax_id' => $request->state_id,
             'profile_image' => $profile_image

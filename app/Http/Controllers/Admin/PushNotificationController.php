@@ -32,7 +32,7 @@ class PushNotificationController extends Controller
     // new
     public function new()
     {
-        return view('admin.push-notification.new', compact('notification'));
+        return view('admin.push-notification.new');
     }
 
     // send

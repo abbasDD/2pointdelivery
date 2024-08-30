@@ -85,23 +85,60 @@
                                         });
                                     </script>
 
-                                    {{-- Booking Date  --}}
+                                    {{-- Booking Date --}}
                                     <div class="col-md-3">
                                         <label for="bookingDate">Booking Date</label>
                                         <div class="mb-3">
-                                            <input type="date" class="form-control" id="bookingDate" name="booking_date"
-                                                value="<?php echo date('Y-m-d'); ?>" required>
+                                            <input type="text" class="form-control" id="bookingDate" name="booking_date"
+                                                value="<?php echo date(config('date_format') ?? 'd-m-Y'); ?>" required>
                                         </div>
                                     </div>
+                                    <script>
+                                        // Convert PHP date format to jQuery UI datepicker format
+                                        function convertDateFormat(phpFormat) {
+                                            const formatMapping = {
+                                                'Y': 'yy', // 4-digit year
+                                                'm': 'mm', // 2-digit month
+                                                'd': 'dd', // 2-digit day
+                                                'j': 'd', // Day of the month without leading zeros
+                                                'n': 'm', // Month without leading zeros
+                                                'M': 'M', // Short textual representation of a month
+                                                'D': 'D' // Day of the week short textual representation
+                                            };
+                                            return phpFormat.replace(/Y|m|d|j|n|M|D/g, function(match) {
+                                                return formatMapping[match];
+                                            });
+                                        }
+
+                                        var dateFormat = convertDateFormat("<?php echo config('date_format') ?? 'd-m-Y'; ?>");
+
+                                        // Initialize the date picker with the correct format
+                                        $('#bookingDate').datepicker({
+                                            dateFormat: dateFormat
+                                        });
+                                    </script>
+
                                     {{-- Booking Time --}}
                                     <div class="col-md-3">
                                         <label for="bookingTime">Booking Time</label>
                                         <div class="mb-3">
-                                            <input type="time" class="form-control" id="bookingTime" name="booking_time"
-                                                value="<?php echo date('H:i'); ?>" required>
+                                            <input type="text" class="form-control" id="bookingTime" name="booking_time"
+                                                value="<?php echo date(config('time_format') ?? 'H:i'); ?>" required>
                                         </div>
                                     </div>
-
+                                    <script>
+                                        // Initialize the time picker with the correct format
+                                        var timeFormat = "{{ config('time_format') ?? 'H:i' }}";
+                                        $('#bookingTime').timepicker({
+                                            timeFormat: timeFormat,
+                                            interval: 30,
+                                            minTime: '00:00',
+                                            maxTime: '23:30',
+                                            dynamic: false,
+                                            dropdown: true,
+                                            scrollbar: true
+                                        });
+                                    </script>
 
                                     {{-- Service Type --}}
                                     <div class="col-md-6">

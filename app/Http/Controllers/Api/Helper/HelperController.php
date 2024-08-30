@@ -523,7 +523,7 @@ class HelperController extends Controller
             'last_name' => $request->last_name,
             'phone_no' => $request->phone_no,
             'gender' => $request->gender,
-            'date_of_birth' => $request->date_of_birth,
+            'date_of_birth' => date('Y-m-d', strtotime($request->date_of_birth)),
             'company_enabled' => 0,
             'profile_image' => $profile_image
         ];

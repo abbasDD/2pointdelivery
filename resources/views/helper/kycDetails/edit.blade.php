@@ -12,6 +12,9 @@
                 </div>
             </div>
             <div class="section-body">
+                {{-- Show Error --}}
+                <div class="text-danger">{{ $errors->first() }}</div>
+
                 <form action="{{ route('helper.kyc.update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     {{-- Hidden filed for id of kycDetails --}}

@@ -22,10 +22,38 @@
 
     <!-- Other meta tags -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.14.0/themes/smoothness/jquery-ui.css">
 
 
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    {{-- - JS Files here  --}}
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.14.0/jquery-ui.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <!-- jQuery Timepicker Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.13.18/jquery.timepicker.min.js"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.13.18/jquery.timepicker.min.css">
 
+    <script>
+        // Convert PHP date format to jQuery UI datepicker format
+        function convertDateFormat(phpFormat) {
+            const formatMapping = {
+                'Y': 'yy', // 4-digit year
+                'm': 'mm', // 2-digit month
+                'd': 'dd', // 2-digit day
+                'j': 'd', // Day of the month without leading zeros
+                'n': 'm', // Month without leading zeros
+                'M': 'M', // Short textual representation of a month
+                'D': 'D' // Day of the week short textual representation
+            };
+            return phpFormat.replace(/Y|m|d|j|n|M|D/g, function(match) {
+                return formatMapping[match];
+            });
+        }
+    </script>
 
 </head>
 
@@ -68,13 +96,6 @@
             </div>
         </div>
     </div>
-
-    {{-- JS Files here --}}
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-
 
 
     <script>

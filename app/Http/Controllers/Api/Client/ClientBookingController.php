@@ -518,6 +518,9 @@ class ClientBookingController extends Controller
             $booking = Booking::where('uuid', $uuid)->first();
         } while ($booking);
 
+        // update date format to this 2024-08-20
+        $booking_date = date('Y-m-d', strtotime($request->booking_date));
+
         // Create New Booking
         $new_booking = Booking::create([
             'uuid' => $uuid,
@@ -532,7 +535,7 @@ class ClientBookingController extends Controller
             'pickup_longitude' => $request->pickup_longitude,
             'dropoff_latitude' => $request->dropoff_latitude,
             'dropoff_longitude' => $request->dropoff_longitude,
-            'booking_date' => $request->booking_date,
+            'booking_date' => $booking_date,
             'booking_time' => $request->booking_time,
             'is_secureship_enabled' => $serviceCategory->is_secureship_enabled,
             'receiver_name' => $request->receiver_name,
