@@ -6,48 +6,65 @@
 
     {{-- Wallet Balance --}}
     <div class="row">
-        {{-- Available Balance --}}
-        <div class="col-md-4">
+        {{-- Total Earnings --}}
+        <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
-                        <p class="mb-0">Available Balance</p>
-                        <i class="fas fa-wallet text-success"></i>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between">
-                        <h3 class="mb-0">$ {{ $balance['available'] }}</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {{-- Total Balance --}}
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <p class="mb-0">Total Balance</p>
+                        <p class="mb-0">Total Earnings</p>
                         <i class="fas fa-wallet text-primary"></i>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
-                        <h3 class="mb-0">$ {{ $balance['total'] }}</h3>
+                        <h3 class="mb-0">C$ {{ $statistic['total_earnings'] }}</h3>
                     </div>
                 </div>
             </div>
         </div>
-        {{-- Withdrawn Balance --}}
-        <div class="col-md-4">
+        {{-- Total Payments --}}
+        <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
-                        <p class="mb-0">Withdrawn Balance</p>
+                        <p class="mb-0">Total Payments</p>
+                        <i class="fas fa-wallet text-success"></i>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h3 class="mb-0">C$ {{ $statistic['total_payments'] }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- Total Taxes --}}
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <p class="mb-0">Total Taxes</p>
                         <i class="fas fa-wallet text-danger"></i>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
-                        <h3 class="mb-0">$ {{ $balance['withdrawn'] }}</h3>
+                        <h3 class="mb-0">C$ {{ $statistic['total_taxes'] }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- Total Revenue --}}
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <p class="mb-0">Total Revenue</p>
+                        <i class="fas fa-wallet text-warning"></i>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h3 class="mb-0">C$ {{ $statistic['total_revenue'] }}</h3>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    {{-- Admin Wallet List --}}
+    @include('admin.wallet.list')
 
 @endsection

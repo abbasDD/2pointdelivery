@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\UserWallet;
 use Illuminate\Http\Request;
 
 class WalletAdminController extends Controller
@@ -10,15 +11,22 @@ class WalletAdminController extends Controller
     //index
     public function index()
     {
-        // Get available balance
-        $balance['available'] = 100;
+        // Get revenue
+        $statistic['total_earnings'] = 100;
+
+        // Unpaid Driver Earning
+        $statistic['total_payments'] = 110;
 
         // Total Earning
-        $balance['total'] = 110;
+        $statistic['total_taxes'] = 10;
 
-        // WithdrawnAmount
-        $balance['withdrawn'] = 10;
+        // total_revenue
+        $statistic['total_revenue'] = 120;
 
-        return view('admin.wallet.index', compact('balance'));
+        // wallets
+        $wallets = UserWallet::get();
+
+
+        return view('admin.wallet.index', compact('statistic', 'wallets'));
     }
 }

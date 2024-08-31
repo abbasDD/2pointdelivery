@@ -56,10 +56,10 @@ class PushNotificationController extends Controller
                 $users = User::where('is_active', 1)->where('fcm_token', '!=', null)->get();
                 break;
             case 'helpers':
-                $users = User::where('is_active', 1)->where('is_helper', 1)->where('fcm_token', '!=', null)->get();
+                $users = User::where('is_active', 1)->where('helper_enabled', 1)->where('fcm_token', '!=', null)->get();
                 break;
             case 'clients':
-                $users = User::where('is_active', 1)->where('is_client', 1)->where('fcm_token', '!=', null)->get();
+                $users = User::where('is_active', 1)->where('client_enabled', 1)->where('fcm_token', '!=', null)->get();
                 break;
             default:
                 $users = User::where('id', $request->input('user_id'))->get();
@@ -96,10 +96,10 @@ class PushNotificationController extends Controller
                 $users = User::where('is_active', 1)->where('fcm_token', '!=', null)->get();
                 break;
             case 'helpers':
-                $users = User::where('is_active', 1)->where('is_helper', 1)->where('fcm_token', '!=', null)->get();
+                $users = User::where('is_active', 1)->where('helper_enabled', 1)->where('fcm_token', '!=', null)->get();
                 break;
             case 'clients':
-                $users = User::where('is_active', 1)->where('is_client', 1)->where('fcm_token', '!=', null)->get();
+                $users = User::where('is_active', 1)->where('client_enabled', 1)->where('fcm_token', '!=', null)->get();
                 break;
             default:
                 $users = User::where('id', $notification->user_id)->get();

@@ -24,7 +24,7 @@ class WalletClientController extends Controller
         }
 
         // amount_spend
-        $statistic['amount_spend'] = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'client')->sum('amount');
+        $statistic['amount_spend'] = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'client')->where('status', 'success')->sum('amount');
 
         // unpaid_amount
         $statistic['unpaid_amount'] = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'client')->where('status', 'pending')->sum('amount');

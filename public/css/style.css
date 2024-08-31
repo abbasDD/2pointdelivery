@@ -1477,6 +1477,7 @@ footer hr {
     padding: 20px;
     transition: transform 0.3s ease;
     z-index: 9999;
+    overflow-y: scroll;
 }
 
 .sidebar .navbar-brand {

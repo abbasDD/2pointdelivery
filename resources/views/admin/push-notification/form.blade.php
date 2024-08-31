@@ -65,7 +65,7 @@
 
 
     {{-- Checkbox for Email --}}
-    <div class="col-md-4">
+    {{-- <div class="col-md-4">
         <label for="send_email">Would you like to send email?</label>
         <div class="form-group mb-3">
             <div class="form-check">
@@ -76,7 +76,7 @@
                 </label>
             </div>
         </div>
-    </div>
+    </div> --}}
 
 
     {{-- Submit Button --}}
