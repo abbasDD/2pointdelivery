@@ -179,6 +179,11 @@ class BookingController extends Controller
         // update date format to this 2024-08-20
         $booking_date = date('Y-m-d', strtotime($request->booking_date));
 
+        // Change booking_time to 05:39:00
+        $request->request->add([
+            'booking_time' => date('H:i:s', strtotime($request->booking_time)),
+        ]);
+
         // Create new booking
         $booking = Booking::create([
             'uuid' => $uuid,

@@ -130,6 +130,7 @@ class HelperController extends Controller
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
+            ->orderBy('bookings.updated_at', 'desc')
             ->paginate(10);
 
         // Helper Vehicle

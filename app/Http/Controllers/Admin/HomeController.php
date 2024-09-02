@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\Booking;
 use App\Models\BookingDelivery;
 use App\Models\BookingMoving;
+use App\Models\Client;
 use App\Models\Helper;
 use App\Models\User;
 use App\Models\UserWallet;
@@ -56,9 +58,9 @@ class HomeController extends Controller
             'pending_bookings' => Booking::where('status', 'pending')->count(),
             'cancelled_bookings' => Booking::where('status', 'cancelled')->count(),
             // Users Data
-            'total_admins' => User::where('user_type', 'admin')->count(),
-            'total_clients' => User::where('client_enabled', 1)->where('user_type', 'user')->count(),
-            'total_helpers' => User::where('helper_enabled', 1)->where('user_type', 'user')->count(),
+            'total_admins' => Admin::count(),
+            'total_clients' => Client::where('is_active', 1)->count(),
+            'total_helpers' => Helper::where('is_approved', 1)->count(),
             'requested_helpers' => Helper::where('is_approved', 0)->count(),
             // Earning Data
             'total_revenue' => $totalRevenue,
@@ -82,10 +84,8 @@ class HomeController extends Controller
         // New Registered Users
         $newRegisteredUsers = User::where('user_type', 'user')->where('created_at', '>=', now()->subDays(30))->limit(5)->get();
 
-
         // Get deliveryMovingChartData
         $deliveryMovingChartData = $this->getChartData();
-
 
         // Latest Bookings
         $latestBookings = Booking::with('client')

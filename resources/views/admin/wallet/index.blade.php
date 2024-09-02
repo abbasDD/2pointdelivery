@@ -4,18 +4,18 @@
 
 @section('content')
 
-    {{-- Wallet Balance --}}
+    {{-- Admin Wallet --}}
     <div class="row">
-        {{-- Total Earnings --}}
+        {{-- Total Revenue --}}
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
-                        <p class="mb-0">Total Earnings</p>
-                        <i class="fas fa-wallet text-primary"></i>
+                        <p class="mb-0">Total Revenue</p>
+                        <i class="fas fa-wallet text-warning"></i>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
-                        <h3 class="mb-0">C$ {{ $statistic['total_earnings'] }}</h3>
+                        <h3 class="mb-0">C$ {{ $statistic['total_revenue'] }}</h3>
                     </div>
                 </div>
             </div>
@@ -48,16 +48,16 @@
                 </div>
             </div>
         </div>
-        {{-- Total Revenue --}}
+        {{-- Total Earnings --}}
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
-                        <p class="mb-0">Total Revenue</p>
-                        <i class="fas fa-wallet text-warning"></i>
+                        <p class="mb-0">Total Earnings</p>
+                        <i class="fas fa-wallet text-primary"></i>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
-                        <h3 class="mb-0">C$ {{ $statistic['total_revenue'] }}</h3>
+                        <h3 class="mb-0">C$ {{ $statistic['total_earnings'] }}</h3>
                     </div>
                 </div>
             </div>
