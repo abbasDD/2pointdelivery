@@ -180,7 +180,7 @@
             width: secureship_package_width || 0.0,
             height: secureship_package_height || 0.0,
             dimUnits: secureship_dimension_unit || 'Inches',
-            'value': secureship_package_value || 0.0,
+            value: secureship_package_value || 0.0,
             insurance: 0.0,
             isAdditionalHandling: secureship_additional_handling || false,
             signatureOptions: 'None',
@@ -210,7 +210,7 @@
 
 
         console.log('New secureshipPackageItem:');
-        console.log(secureshipPackageItem);
+        // console.log(secureshipPackageItem);
 
         // Add row to table deliverySecureshipPackagesTableBody
         addSecureshipPackageToTable(secureshipPackageItem);
@@ -223,6 +223,7 @@
     function addSecureshipPackageToTable(secureshipPackageItem) {
         // get deliverySecureshipPackagesTableBody
         var deliverySecureshipPackagesTableBody = document.getElementById('deliverySecureshipPackagesTableBody');
+        console.log(secureshipPackageItem);
 
         // Add row to table deliverySecureshipPackagesTableBody
         deliverySecureshipPackagesTableBody.innerHTML += `
@@ -231,7 +232,7 @@
                 <td>${secureshipPackageItem.packageType}</td>
                 <td>${secureshipPackageItem.weight + ' ' + secureshipPackageItem.weightUnits}</td>
                 <td>${secureshipPackageItem.length + ' x ' + secureshipPackageItem.width + ' x ' + secureshipPackageItem.height + ' ' + secureshipPackageItem.dimUnits}</td>
-                <td>${secureshipPackageItem.value + ' CAD'}</td>
+                <td>${secureshipPackageItem.value + ' C$'}</td>
                 <td><a class="btn btn-sm btn-danger" onclick="removeSecureshipPackage(${secureshipPackages.length - 1})">Remove</a></td>
             </tr>
             `;

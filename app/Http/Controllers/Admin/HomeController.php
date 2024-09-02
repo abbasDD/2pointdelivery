@@ -59,7 +59,7 @@ class HomeController extends Controller
             'cancelled_bookings' => Booking::where('status', 'cancelled')->count(),
             // Users Data
             'total_admins' => Admin::count(),
-            'total_clients' => Client::where('is_active', 1)->count(),
+            'total_clients' => Client::count(),
             'total_helpers' => Helper::where('is_approved', 1)->count(),
             'requested_helpers' => Helper::where('is_approved', 0)->count(),
             // Earning Data

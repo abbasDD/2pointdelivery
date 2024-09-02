@@ -1,6 +1,7 @@
 <table class="table table-striped">
     <thead class="thead-primary">
         <tr>
+            <th>ID</th>
             <th>Reference</th>
             <th>Date Time</th>
             <th>Service Type</th>
@@ -13,9 +14,11 @@
     <tbody>
         @forelse ($bookings as $booking)
             <tr>
+                <td>{{ $booking->id }}</td>
                 <td>{{ $booking->uuid }}</td>
                 <td>
-                    <p>{{ app('dateHelper')->formatTimestamp($booking->created_at, 'Y-m-d') }} </p>
+                    <p>{{ app('dateHelper')->formatTimestamp($booking->created_at, config('date_format') ?? 'd-m-Y') }}
+                    </p>
                     <p>{{ $booking->booking_time }}</p>
                 </td>
                 <td>

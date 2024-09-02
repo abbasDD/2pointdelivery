@@ -120,10 +120,11 @@
     <div class="col-md-6" id="deliverySecureshipPackageValueDiv">
         <label for="secureship_packageValue">Declared Value</label>
         <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Value" name="secureship_package_value"
-                aria-describedby="secureship_package_value" pattern="\d+(\.\d{0,2})?" inputmode="decimal"
+            <input type="text" class="form-control" placeholder="Value" id="secureship_package_value"
+                name="secureship_package_value" aria-describedby="secureship_package_value" pattern="\d+(\.\d{0,2})?"
+                inputmode="decimal"
                 oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/^(\d*\.?\d{0,2}).*$/g, '$1');">
-            <span class="input-group-text text-uppercase" id="secureship_package_value">CAD</span>
+            <span class="input-group-text text-uppercase">CAD</span>
         </div>
     </div>
 
