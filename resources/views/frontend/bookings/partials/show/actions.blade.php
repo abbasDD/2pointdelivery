@@ -60,7 +60,10 @@
         $helperView &&
             auth()->user()->helper_enabled &&
             ($booking->helper_user_id == auth()->user()->id || $booking->helper_user_id2 == auth()->user()->id) &&
-            ($booking->status != 'completed' && $booking->status != 'incomplete'))
+            ($booking->status != 'completed' &&
+                $booking->status != 'incomplete' &&
+                $booking->status != 'cancelled' &&
+                $booking->status != 'pending'))
         <div class="">
             <a onclick="inCompleteBooking('{{ $booking->id }}')" class="btn btn-danger"><i class="fa fa-xmark"
                     aria-hidden="true"></i> <span class="d-none d-md-inline"> Incomplete</span></a>

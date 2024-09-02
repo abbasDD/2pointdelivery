@@ -52,6 +52,10 @@ class EmailTemplateController extends Controller
 
         $template = $this->emailTemplateService->getTemplate('Welcome Email', $placeholders);
 
+        if (!$template) {
+            return false;
+        }
+
         Mail::send([], [], function ($message) use ($customer, $template) {
             $message->to($customer->email)
                 ->subject($template['subject'])
@@ -110,6 +114,10 @@ class EmailTemplateController extends Controller
         ]);
 
         $template = $this->emailTemplateService->getTemplate('Booking Status Email', $placeholders);
+
+        if (!$template) {
+            return false;
+        }
 
         $useremail = $user->email;
 

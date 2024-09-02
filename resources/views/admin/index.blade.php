@@ -89,25 +89,25 @@
                             <i class="fas fa-dollar-sign fa-2x text-success"></i>
                         </div>
                         <hr>
-                        {{-- Total Earning --}}
+                        {{-- Total Revenue --}}
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <p class="mb-0 fs-14"><i class="fa fa-dollar-sign text-success"></i> Total Earning</p>
-                            <h6 class="mb-0">${{ number_format($statistics['total_earnings'], 0, '.', '') }}</h6>
+                            <p class="mb-0 fs-14"><i class="fa fa-dollar-sign text-success"></i> Total Revenue</p>
+                            <h6 class="mb-0">C${{ number_format($statistics['total_revenue'], 0, '.', '') }}</h6>
                         </div>
                         {{-- Total Payments --}}
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <p class="mb-0 fs-14"><i class="fa fa-dollar-sign text-success"></i> Total Payments</p>
-                            <h6 class="mb-0">${{ number_format($statistics['total_payments'], 0, '.', '') }}</h6>
+                            <h6 class="mb-0">C${{ number_format($statistics['total_payments'], 0, '.', '') }}</h6>
                         </div>
                         {{-- Total Taxes --}}
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <p class="mb-0 fs-14"><i class="fa fa-dollar-sign text-success"></i> Total Taxes</p>
-                            <h6 class="mb-0">${{ number_format($statistics['total_taxes'], 0, '.', '') }}</h6>
+                            <h6 class="mb-0">C${{ number_format($statistics['total_taxes'], 0, '.', '') }}</h6>
                         </div>
-                        {{-- Total Revenue --}}
+                        {{-- Total Earning --}}
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <p class="mb-0 fs-14"><i class="fa fa-dollar-sign text-success"></i> Total Revenue</p>
-                            <h6 class="mb-0">${{ number_format($statistics['total_revenue'], 0, '.', '') }}</h6>
+                            <p class="mb-0 fs-14"><i class="fa fa-dollar-sign text-success"></i> Total Earning</p>
+                            <h6 class="mb-0">C${{ number_format($statistics['total_earnings'], 0, '.', '') }}</h6>
                         </div>
                     </div>
 

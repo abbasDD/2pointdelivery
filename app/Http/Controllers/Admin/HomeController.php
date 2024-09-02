@@ -8,6 +8,7 @@ use App\Models\BookingDelivery;
 use App\Models\BookingMoving;
 use App\Models\Helper;
 use App\Models\User;
+use App\Models\UserWallet;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -41,6 +42,12 @@ class HomeController extends Controller
         // $total_earnings_moving = (BookingMoving::where('payment_status', 'paid')->sum('sub_total') - BookingMoving::where('payment_status', 'paid')->sum('helper_fee'));
         $total_earnings_moving = $total_revenue_moving - $total_taxes_moving - $total_payments_moving;
 
+        // Get Userwallet Statistics
+        $totalRevenue =  UserWallet::where('type', 'received')->where('status', 'success')->sum('amount');
+        $totalPayments = UserWallet::whereIn('type', ['refund', 'withdraw'])->where('status', 'success')->sum('amount');
+        $totalTaxes = 0;
+        $totalEarnings = $totalRevenue - $totalPayments - $totalTaxes;
+
         // Statistics
         $statistics = [
             // Bookings Data
@@ -54,10 +61,10 @@ class HomeController extends Controller
             'total_helpers' => User::where('helper_enabled', 1)->where('user_type', 'user')->count(),
             'requested_helpers' => Helper::where('is_approved', 0)->count(),
             // Earning Data
-            'total_earnings' => ($total_earnings_delivery + $total_earnings_moving),
-            'total_payments' => ($total_payments_delivery + $total_payments_moving),
-            'total_taxes' => ($total_taxes_delivery + $total_taxes_moving),
-            'total_revenue' => ($total_revenue_delivery + $total_revenue_moving),
+            'total_revenue' => $totalRevenue,
+            'total_payments' => $totalPayments,
+            'total_taxes' => $totalTaxes,
+            'total_earnings' => $totalEarnings,
             // Old Data
             'delivery_successful' => Booking::where('status', 'completed')->where('booking_type', 'delivery')->count(),
             'delivery_cancelled' => Booking::where('status', 'cancelled')->where('booking_type', 'delivery')->count(),

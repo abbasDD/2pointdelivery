@@ -139,10 +139,7 @@ class HelperController extends Controller
         $helper_id = $helper->id;
 
         // Calculate helper earnings
-        $helper_earnings = Booking::where('bookings.helper_user_id', auth()->user()->id)
-            ->join('booking_deliveries', 'bookings.id', '=', 'booking_deliveries.booking_id')
-            ->where('bookings.status', 'completed')
-            ->sum('booking_deliveries.helper_fee');
+        $helper_earnings = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'helper')->where('type', 'received')->sum('amount');
 
         // Statistics
         $satistics = [
@@ -155,43 +152,43 @@ class HelperController extends Controller
         $bookings = [];
 
         // Check if helper is_approved is 1
-        if ($helper->is_approved == 1) {
+        // if ($helper->is_approved == 1) {
 
-            // Get helperServices list
-            $helperServices = $helper->service_types();
+        // Get helperServices list
+        $helperServices = $helper->service_types();
 
-            // pluck the service type ids
-            $helperServiceIds = $helperServices->pluck('id')->toArray();
-            // dd($helperServiceIds);
+        // pluck the service type ids
+        $helperServiceIds = $helperServices->pluck('id')->toArray();
+        // dd($helperServiceIds);
 
-            $bookings = Booking::with('prioritySetting')
-                ->with('serviceType')
-                ->with('serviceCategory')
-                ->where('status', 'pending')
-                ->where('client_user_id', '!=', auth()->user()->id)
-                ->whereIn('service_type_id', $helperServiceIds)
-                ->orderBy('bookings.updated_at', 'desc')->get();
+        $bookings = Booking::with('prioritySetting')
+            ->with('serviceType')
+            ->with('serviceCategory')
+            ->where('status', 'pending')
+            ->where('client_user_id', '!=', auth()->user()->id)
+            ->whereIn('service_type_id', $helperServiceIds)
+            ->orderBy('bookings.updated_at', 'desc')->get();
 
-            // dd($bookings);
+        // dd($bookings);
 
-            foreach ($bookings as $booking) {
-                if ($booking->helper_user_id != NULL) {
-                    $booking->helper = Helper::where('user_id', $booking->helper_user_id)->first();
-                }
+        foreach ($bookings as $booking) {
+            if ($booking->helper_user_id != NULL) {
+                $booking->helper = Helper::where('user_id', $booking->helper_user_id)->first();
+            }
 
-                $booking->client = Client::where('user_id', $booking->client_user_id)->first();
+            $booking->client = Client::where('user_id', $booking->client_user_id)->first();
 
-                $booking->payment = null;
+            $booking->payment = null;
 
-                if ($booking->booking_type == 'delivery') {
-                    $booking->payment = BookingDelivery::where('booking_id', $booking->id)->first();
-                }
+            if ($booking->booking_type == 'delivery') {
+                $booking->payment = BookingDelivery::where('booking_id', $booking->id)->first();
+            }
 
-                if ($booking->booking_type == 'moving') {
-                    $booking->payment = BookingMoving::where('booking_id', $booking->id)->first();
-                }
+            if ($booking->booking_type == 'moving') {
+                $booking->payment = BookingMoving::where('booking_id', $booking->id)->first();
             }
         }
+        // }
 
         // Booking Client Detail
         // $bookingClient = Client::where('user_id', auth()->user()->id)->first();

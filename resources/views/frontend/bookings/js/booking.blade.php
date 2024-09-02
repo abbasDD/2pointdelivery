@@ -352,7 +352,7 @@
 
         // Show or Hide deliveryPackageDimensions based on volume_enabled
         console.log('Volume enabled:' + volume_enabled);
-        if (volume_enabled == 1) {
+        if (volume_enabled == 1 && selectedServiceType == 'delivery') {
             document.getElementById('deliveryPackageDimensions').style.display = 'flex';
             // Add required fields to package_length, package_width, package_height
             document.querySelector('input[name="package_length"]').setAttribute('required', 'required');
@@ -614,7 +614,7 @@
                             <td>${value.deliveryTime.friendlyTime}</td>
                             <td>${value.billableWeight.value} ${value.billableWeight.units}</td>
                             <td>
-                                <p>CAD ${(value.total + (value.total * (secureship_fee_percentage/100))).toFixed(2)}</p>
+                                <p>C$ ${(value.total + (value.total * (secureship_fee_percentage/100))).toFixed(2)}</p>
                             </td>
                             <td><button type="button" class="btn btn-primary btn-sm" onclick="bookService('${value.selectedService}')">Select</button></td>
                         </tr>
@@ -688,31 +688,54 @@
                 <h5 class="text-primary mb-3 border-bottom pb-2">Payment Details</h5>
                 <div class="mb-2 d-flex justify-content-between">
                     <span class="text-muted">Base Price:</span>
-                    <span id="base-price" class="fw-bold">${data.base_price ? 'CAD ' + data.base_price : '___'}</span>
+                    <span id="base-price" class="fw-bold">${data.base_price ? 'C$ ' + data.base_price : '___'}</span>
                 </div>
                 <div class="mb-2 d-flex justify-content-between">
                     <span class="text-muted">Extra Weight Price:</span>
-                    <span id="weight-price" class="fw-bold">${data.weight_price ? 'CAD ' + data.weight_price : '___'} </span>
+                    <span id="weight-price" class="fw-bold">${data.weight_price ? 'C$ ' + data.weight_price : '___'} </span>
                 </div>
                 <div class="mb-2 d-flex justify-content-between">
                     <span class="text-muted">Priority Price:</span>
-                    <span id="priority-price" class="fw-bold">${data.priority_price ? 'CAD ' + data.priority_price : '___'}</span>
+                    <span id="priority-price" class="fw-bold">${data.priority_price ? 'C$ ' + data.priority_price : '___'}</span>
+                </div>
+                `;
+            // Check if serviceType is moving 
+            if (data.serviceType == 'Moving') {
+                output += `
+                <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">Floor Plan Price:</span>
+                    <span id="distance-price" class="fw-bold">${data.floor_plan_price ? 'C$ ' + data.floor_plan_price : '___'}</span>
                 </div>
                 <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">Floor Assess Price:</span>
+                    <span id="distance-price" class="fw-bold">${data.floor_assess_price ? 'C$ ' + data.floor_assess_price : '___'}</span>
+                </div>
+                <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">Job Details Price:</span>
+                    <span id="distance-price" class="fw-bold">${data.job_details_price ? 'C$ ' + data.job_details_price : '___'}</span>
+                </div>
+                <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">No of Room Price:</span>
+                    <span id="distance-price" class="fw-bold">${data.no_of_room_price ? 'C$ ' + data.no_of_room_price : '___'}</span>
+                </div>
+                `;
+            }
+            output += `  
+                <div class="mb-2 d-flex justify-content-between">
                     <span class="text-muted">Extra Distance Price:</span>
-                    <span id="distance-price" class="fw-bold">${data.distance_price ? 'CAD ' + data.distance_price : '___'}</span>
+                    <span id="distance-price" class="fw-bold">${data.distance_price ? 'C$ ' + data.distance_price : '___'}</span>
                 </div>
                 <div class="mb-2 d-flex justify-content-between">
                     <span class="text-muted">Subtotal:</span>
-                    <span id="sub_total" class="fw-bold">${data.sub_total ? 'CAD ' + data.sub_total : '___'}</span>
+                    <span id="sub_total" class="fw-bold">${data.sub_total ? 'C$ ' + data.sub_total : '___'}</span>
                 </div>
                 <div class="mb-2 d-flex justify-content-between">
                     <span class="text-muted">GST/PST Charges:</span>
-                    <span id="tax_price" class="fw-bold">${data.tax_price ? 'CAD ' + data.tax_price : '___'}</span>
+                    <span id="tax_price" class="fw-bold">${data.tax_price ? 'C$ ' + data.tax_price : '___'}</span>
                 </div>
                 <div class="mb-2 d-flex justify-content-between">
                     <span class="text-muted">Total:</span>
-                    <span id="amountToPay" class="fw-bold">${data.amountToPay ? 'CAD ' + data.amountToPay : '___'}</span>
+                    <span id="amountToPay" class="fw-bold">${data.amountToPay ? 'C$ ' + data.amountToPay : '___'}</span>
                 </div>
             </div>
             <div class="col-md-12 mt-3 d-flex justify-content-end">

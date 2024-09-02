@@ -11,7 +11,8 @@ class EmailTemplateService
         $template = EmailTemplate::where('name', $name)->first();
 
         if (!$template) {
-            throw new \Exception("Email template not found.");
+            // throw new \Exception("Email template not found.");
+            return 0;
         }
 
         $subject = $this->replacePlaceholders($template->subject, $placeholders);
