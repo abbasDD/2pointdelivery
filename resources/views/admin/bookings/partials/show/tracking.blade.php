@@ -33,7 +33,7 @@
                                 src="https://raw.githubusercontent.com/shajo/portfolio/a02c5579c3ebe185bb1fc085909c582bf5fad802/delivery.svg"
                                 class="img-responsive" alt="order-placed" /></div>
                         <div class="tracking-content">Order Placed
-                            <span>{{ $bookingData->created_at ? app('dateHelper')->formatTimestamp($bookingData->created_at, 'd M Y H:i') : 'Expected' }}</span>
+                            <span>{{ $bookingData->booking_date . ' ' . $bookingData->booking_time }}</span>
                         </div>
                     </div>
                     {{-- Accepted --}}

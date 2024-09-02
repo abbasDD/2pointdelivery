@@ -201,14 +201,19 @@ class BookingController extends Controller
     public function show(Request $request)
     {
         $booking = Booking::where('id', $request->id)
-            ->where('helper_user_id', auth()->user()->id)
-            ->orWhere('helper_user_id2', auth()->user()->id)
+            // ->where('helper_user_id', auth()->user()->id)
+            // ->orWhere('helper_user_id2', auth()->user()->id)
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
             ->first();
 
         if (!$booking) {
+            return redirect()->back()->with('error', 'Booking not found');
+        }
+
+        // Check if helper_user_id && helper_user_id is equal to auth()->user()->id
+        if ($booking->helper_user_id != auth()->user()->id && $booking->helper_user_id2 != auth()->user()->id) {
             return redirect()->back()->with('error', 'Booking not found');
         }
 
