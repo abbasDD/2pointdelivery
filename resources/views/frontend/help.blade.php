@@ -45,7 +45,7 @@
         </div>
         <div class="row topic-list">
             @forelse ($helpTopics as $helpTopic)
-                <div class="col-md-6 p-2 item">
+                <div class="col-md-4 p-2 item">
                     <div class="card">
                         <div class="card-body">
                             <a href="{{ route('topicQuestionList', $helpTopic->id) }}">
@@ -66,7 +66,7 @@
                     </div>
                 </div>
             @empty
-                <div class="col-md-6 p-2">
+                <div class="col-md-4 p-2">
                     <div class="bg-light-gray p-4">
                         <h5 class="mb-0">No Topic Found</h5>
                         <p>We are still working on it</p>

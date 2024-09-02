@@ -13,9 +13,15 @@
                     <h3 class="mb-1">Order Detail</h3>
                     <p>Order No : <span class="text-uppercase">{{ $booking->uuid ? $booking->uuid : '-' }}</span></p>
                 </div>
-                <p class="btn btn-primary">
-                    {{ $booking->status }}
-                </p>
+
+                @if ($booking->status == 'draft' || $booking->status == 'pending')
+                    <p class="badge bg-warning">{{ $booking->status }}</p>
+                @elseif ($booking->status == 'accepted' || $booking->status == 'in_transit' || $booking->status == 'completed')
+                    <p class="badge bg-success">{{ $booking->status }}</p>
+                @else
+                    <p class="badge bg-danger">{{ $booking->status }}</p>
+                @endif
+
             </div>
     </section>
 

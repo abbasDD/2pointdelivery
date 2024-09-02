@@ -28,7 +28,7 @@ class CheckIfHelperCreated
         // Check if helper is enabled in user table
         $user = User::where('id', auth()->user()->id)->first();
         if (!$user->helper_enabled) {
-            return redirect()->back()->with('error', 'No helper profile found');
+            return redirect()->back()->with('error', 'You need to be a Helper in order to access this page');
         }
 
 

@@ -1,7 +1,7 @@
 <table class="table table-striped">
     <thead class="thead-primary">
         <tr>
-            <th>Order#</th>
+            <th>Reference</th>
             <th>Date Time</th>
             <th>Service Type</th>
             <th>Address</th>

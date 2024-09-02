@@ -15,7 +15,13 @@
                     <span class="d-none d-md-inline">Download Shipping Label</span></a>
             @endif
             {{-- Show booking status --}}
-            <p class="mb-0 badge bg-primary">{{ $booking->status }}</p>
+            @if ($booking->status == 'draft' || $booking->status == 'pending')
+                <p class="badge bg-warning">{{ $booking->status }}</p>
+            @elseif ($booking->status == 'accepted' || $booking->status == 'in_transit' || $booking->status == 'completed')
+                <p class="badge bg-success">{{ $booking->status }}</p>
+            @else
+                <p class="badge bg-danger">{{ $booking->status }}</p>
+            @endif
         </div>
     </div>
     <div class="card-body" style="height: 400px">

@@ -47,6 +47,10 @@
                 <a class="nav-link" href="{{ route('admin.bookings') }}"><i class="fa fa-dolly"></i>
                     Bookings</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.reviews') }}"><i class="fa fa-dolly"></i>
+                    Reviews</a>
+            </li>
 
             {{-- Wallet --}}
             <li class="nav-item">

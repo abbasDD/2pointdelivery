@@ -1,5 +1,5 @@
 <section class="py-5 bg-light-gray">
-    <div class="container mt-5">
+    <div class="container">
         <div class="row">
             <div class="col-lg-12 text-center">
                 <div class="heading">

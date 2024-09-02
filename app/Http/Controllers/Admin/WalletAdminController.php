@@ -11,20 +11,14 @@ class WalletAdminController extends Controller
     //index
     public function index()
     {
-        // Get revenue
-        $statistic['total_earnings'] = 100;
-
-        // Unpaid Driver Earning
-        $statistic['total_payments'] = 110;
-
-        // Total Earning
-        $statistic['total_taxes'] = 10;
-
-        // total_revenue
-        $statistic['total_revenue'] = 120;
+        // Get Userwallet Statistics
+        $statistic['total_revenue'] =  UserWallet::where('type', 'received')->where('status', 'success')->sum('amount');
+        $statistic['total_payments'] = UserWallet::whereIn('type', ['refund', 'withdraw'])->where('status', 'success')->sum('amount');
+        $statistic['total_taxes'] = 0;
+        $statistic['total_earnings'] = $statistic['total_revenue'] - $statistic['total_payments'] - $statistic['total_taxes'];
 
         // wallets
-        $wallets = UserWallet::get();
+        $wallets = UserWallet::latest()->paginate(10);
 
 
         return view('admin.wallet.index', compact('statistic', 'wallets'));

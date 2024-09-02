@@ -22,7 +22,7 @@
                 <div class="col-sm-4">
                     <div class="text-center">
                         <img src="{{ $clientData->profile_image ? asset('images/users/' . $clientData->profile_image) : asset('images/users/default.png') }}"
-                            alt="Truck" height="150">
+                            alt="Truck" class="w-100">
                     </div>
                 </div>
             </div>

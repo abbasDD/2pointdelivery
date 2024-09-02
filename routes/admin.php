@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminReviewController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\ChatController;
@@ -298,5 +299,10 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     Route::get('/push-notification/new', [PushNotificationController::class, 'new'])->name('pushNotification.new');
     Route::post('/push-notification/send', [PushNotificationController::class, 'send'])->name('pushNotification.send');
     Route::get('/push-notification/resend/{id}', [PushNotificationController::class, 'resend'])->name('pushNotification.resend');
+
+    // Reviews of Bookings
+    Route::get('/reviews', [AdminReviewController::class, 'index'])->name('reviews');
+    Route::post('/review/update-status', [AdminReviewController::class, 'updateStatus'])->name('review.updateStatus');
+
     // End of Admin Routes
 });

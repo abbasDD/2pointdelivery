@@ -1,7 +1,7 @@
 <table class="table table-striped">
     <thead class="thead-primary">
         <tr>
-            <th>Order#</th>
+            <th>Reference</th>
             <th>Date Time</th>
             <th>Service Type</th>
             <th>Address</th>
@@ -42,9 +42,13 @@
                     </p>
                 </td>
                 <td>
-                    <p class="badge {{ $booking->status == 'completed' ? 'bg-primary' : 'bg-danger' }}">
-                        {{ $booking->status }}
-                    </p>
+                    @if ($booking->status == 'draft' || $booking->status == 'pending')
+                        <p class="badge bg-warning">{{ $booking->status }}</p>
+                    @elseif ($booking->status == 'accepted' || $booking->status == 'in_transit' || $booking->status == 'completed')
+                        <p class="badge bg-success">{{ $booking->status }}</p>
+                    @else
+                        <p class="badge bg-danger">{{ $booking->status }}</p>
+                    @endif
                 </td>
                 <td>
                     {{-- If booking status is draft then ask client to payment --}}

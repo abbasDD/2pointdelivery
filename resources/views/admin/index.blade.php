@@ -208,7 +208,6 @@
 
     {{-- Latest Bookings --}}
     <div class="row">
-        {{-- Latest Bookings --}}
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
@@ -222,6 +221,7 @@
                                 <th>ID</th>
                                 <th>Date</th>
                                 <th>Service Type</th>
+                                <th>Client</th>
                                 <th>Address</th>
                                 <th>Price</th>
                                 <th>Status</th>
@@ -239,6 +239,7 @@
                                         {{-- Service Category --}}
                                         <p>{{ $booking->serviceCategory->name }}</p>
                                     </td>
+                                    <td>{{ $booking->client->email }}</td>
                                     <td>
                                         {{-- Pickup Address --}}
                                         <p>Pickup: {{ $booking->pickup_address }}</p>
@@ -247,10 +248,13 @@
                                     </td>
                                     <td>{{ $booking->total_price }}</td>
                                     <td>
-                                        <p
-                                            class="badge {{ $booking->status == 'completed' ? 'bg-primary' : 'bg-danger' }}">
-                                            {{ $booking->status }}
-                                        </p>
+                                        @if ($booking->status == 'draft' || $booking->status == 'pending')
+                                            <p class="badge bg-warning">{{ $booking->status }}</p>
+                                        @elseif ($booking->status == 'accepted' || $booking->status == 'in_transit' || $booking->status == 'completed')
+                                            <p class="badge bg-success">{{ $booking->status }}</p>
+                                        @else
+                                            <p class="badge bg-danger">{{ $booking->status }}</p>
+                                        @endif
                                     </td>
                                     <td><a href="{{ route('admin.booking.show', $booking->id) }}"
                                             class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a></td>

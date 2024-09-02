@@ -19,8 +19,8 @@ class UsersTableSeeder extends Seeder
         // Admin authentication created
         $user = User::factory()->create([
             'user_type' => 'admin',
-            'client_enabled' => true,
-            'helper_enabled' => true,
+            'client_enabled' => false,
+            'helper_enabled' => false,
             'email' => 'admin@gmail.com',
             'email_verified_at' => now(),
             'password' => Hash::make('admin@123'),

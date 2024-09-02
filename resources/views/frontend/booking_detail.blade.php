@@ -6,7 +6,7 @@
 
     {{-- Header Section  --}}
     <section class="py-3">
-        <div class="container mt-5">
+        <div class="container">
             <div class="d-flex align-items-center justify-content-between">
                 <div class="">
                     <h3 class="mb-1">Order Detail</h3>

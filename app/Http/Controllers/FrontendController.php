@@ -63,7 +63,7 @@ class FrontendController extends Controller
         ];
 
         // Get reviews
-        $reviews = BookingReview::limit(5)->get();
+        $reviews = BookingReview::where('is_approved', 1)->get();
         if ($reviews->count() > 0) {
             // $testimonials empty
             $testimonials = [];
@@ -365,7 +365,7 @@ class FrontendController extends Controller
     {
         $testimonials = [];
         // Get reviews
-        $reviews = BookingReview::limit(25)->get();
+        $reviews = BookingReview::where('is_approved', 1)->get();
         if ($reviews->count() > 0) {
             // $testimonials empty
             $testimonials = [];
@@ -392,9 +392,9 @@ class FrontendController extends Controller
             }
         }
 
-        $total_reviews = BookingReview::count();
+        $total_reviews = BookingReview::where('is_approved', 1)->count();
 
-        $avg_rating = 0;
+        $avg_rating = 5;
         if ($total_reviews > 0) {
             $avg_rating = $reviews->avg('rating');
         }

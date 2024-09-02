@@ -20,9 +20,18 @@
                     @forelse ($wallets as $wallet)
                         <tr>
                             <td>{{ $wallet->created_at->format('Y-m-d') }}</td>
-                            <td>{{ $wallet->booking_id ?? '-' }}</td>
+                            <td>
+                                <p>{{ $wallet->booking_id ?? '-' }}</p>
+                                <p>{{ $wallet->transaction_id ? $wallet->transaction_id : 'wallet' }}</p>
+                            </td>
                             <td>{{ $wallet->type }}</td>
-                            <td>{{ $wallet->amount }}</td>
+                            <td>
+                                @if ($wallet->type == 'received')
+                                    <p class="text-success"> +{{ $wallet->amount }}</p>
+                                @else
+                                    <p class="text-danger"> -{{ $wallet->amount }}</p>
+                                @endif
+                            </td>
                             <td>{{ $wallet->payment_method }}</td>
                             <td>{{ $wallet->status }}</td>
 
