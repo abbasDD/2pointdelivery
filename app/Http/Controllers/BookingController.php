@@ -1298,6 +1298,9 @@ class BookingController extends Controller
             case 'pending':
                 $booking->currentStatus = 0;
                 break;
+            case 'cancelled':
+                $booking->currentStatus = 1;
+                break;
             case 'accepted':
                 $booking->currentStatus = 1;
                 break;
@@ -1311,10 +1314,10 @@ class BookingController extends Controller
                 $booking->currentStatus = 4;
                 break;
             case 'incomplete':
-                $booking->currentStatus = 5;
+                $booking->currentStatus = 4;
                 break;
             case 'expired':
-                $booking->currentStatus = 6;
+                $booking->currentStatus = 5;
                 break;
             default:
                 $booking->currentStatus = 1;
@@ -1341,10 +1344,11 @@ class BookingController extends Controller
         }
 
         // Get helper2 Data
-        $helper2Data = null;
+        $helperData2 = null;
         if ($booking->helper_user_id2) {
-            $helper2Data = Helper::where('user_id', $booking->helper_user_id2)->first();
+            $helperData2 = Helper::where('user_id', $booking->helper_user_id2)->first();
         }
+
 
         // Get client data
         $clientData = null;
@@ -1383,7 +1387,7 @@ class BookingController extends Controller
 
         // dd($vehicleTypeData);
 
-        return view('frontend.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'helper2Data', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'helper2VehicleData', 'clientView', 'helperView'));
+        return view('client.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'helperData2', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'helper2VehicleData', 'clientView', 'helperView'));
     }
 
     // Generate Booking Invoice

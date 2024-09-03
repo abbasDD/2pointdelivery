@@ -39,7 +39,7 @@
                 <div class="modal-body">
                     {{-- Search Input Field --}}
                     <div class="d-flex">
-                        <input id="searchInput" type="text" class="form-control" placeholder="Search...">
+                        <input id="searchInput" type="text" class="form-control" placeholder="Search User to chat">
                     </div>
                     {{-- Search Results --}}
                     <div id="searchResults" class="searchResults mt-3"></div>

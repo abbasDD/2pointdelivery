@@ -15,8 +15,8 @@
             <tr>
                 <td>{{ $booking->uuid }}</td>
                 <td>
-                    <p>{{ app('dateHelper')->formatTimestamp($booking->created_at, 'Y-m-d') }} </p>
-                    <p>{{ $booking->booking_time }}</p>
+                    <p>{{ date(config('date_format') ?: 'Y-m-d', strtotime($booking->booking_date)) }}</p>
+                    <p>{{ date(config('time_format') ?: 'H:i A', strtotime($booking->booking_time)) }}</p>
                 </td>
                 <td>
                     {{-- Service Type --}}

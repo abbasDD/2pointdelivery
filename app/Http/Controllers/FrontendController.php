@@ -133,6 +133,9 @@ class FrontendController extends Controller
             case 'pending':
                 $booking->currentStatus = 0;
                 break;
+            case 'cancelled':
+                $booking->currentStatus = 1;
+                break;
             case 'accepted':
                 $booking->currentStatus = 1;
                 break;
@@ -145,7 +148,10 @@ class FrontendController extends Controller
             case 'completed':
                 $booking->currentStatus = 4;
                 break;
-            case 'incompleted':
+            case 'incomplete':
+                $booking->currentStatus = 4;
+                break;
+            case 'expired':
                 $booking->currentStatus = 5;
                 break;
             default:

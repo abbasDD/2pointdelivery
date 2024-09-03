@@ -26,8 +26,8 @@
                 <td>{{ app('addressHelper')->getCityName($kycDetail->city) }}</td>
                 <td>{{ app('addressHelper')->getStateName($kycDetail->state) }}</td>
                 <td>{{ app('addressHelper')->getCountryName($kycDetail->country) }}</td>
-                <td>{{ $kycDetail->issue_date }}</td>
-                <td>{{ $kycDetail->expiry_date }}</td>
+                <td>{{ date(config('date_format') ?: 'Y-m-d', strtotime($kycDetail->issue_date)) }}</td>
+                <td>{{ date(config('date_format') ?: 'Y-m-d', strtotime($kycDetail->expiry_date)) }}</td>
                 <td>
                     @if ($kycDetail->is_verified == 1)
                         <p class="badge bg-success">Verified</p>

@@ -65,6 +65,11 @@
     </div>
 
     {{-- Admin Wallet List --}}
-    @include('admin.wallet.list')
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Wallet History</h5>
+        </div>
+        @include('admin.wallet.list')
+    </div>
 
 @endsection

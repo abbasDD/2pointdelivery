@@ -23,4 +23,31 @@ class WalletAdminController extends Controller
 
         return view('admin.wallet.index', compact('statistic', 'wallets'));
     }
+
+    // receivedTransaction
+    public function receivedTransaction()
+    {
+        // refundRequest
+        $wallets = UserWallet::where('type', 'received')->get();
+
+        return view('admin.wallet.received', compact('wallets'));
+    }
+
+    // refundRequest
+    public function refundRequest()
+    {
+        // refundRequest
+        $wallets = UserWallet::where('type', 'refund')->get();
+
+        return view('admin.wallet.refund', compact('wallets'));
+    }
+
+    // withdrawRequest
+    public function withdrawRequest()
+    {
+        // withdrawRequest
+        $wallets = UserWallet::where('type', 'withdraw')->get();
+
+        return view('admin.wallet.withdraw', compact('wallets'));
+    }
 }

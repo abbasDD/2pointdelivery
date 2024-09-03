@@ -7,11 +7,11 @@
 
     {{-- Header Section  --}}
     <section class="py-3">
-        <div class="container mt-5">
+        <div class="container">
             <div class="d-flex align-items-center justify-content-between">
                 <div class="">
-                    <h3 class="mb-1">Order Detail</h3>
-                    <p>Order No : <span class="text-uppercase">{{ $booking->uuid ? $booking->uuid : '-' }}</span></p>
+                    <h3 class="mb-1">Booking Detail</h3>
+                    <p>Reference No : <span class="text-uppercase">{{ $booking->uuid ? $booking->uuid : '-' }}</span></p>
                 </div>
 
                 @if ($booking->status == 'draft' || $booking->status == 'pending')

@@ -53,9 +53,33 @@
             </li>
 
             {{-- Wallet --}}
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.wallet') }}"><i class="fa fa-wallet"></i>
-                    Wallet</a>
+            <li class="nav-item has-submenu">
+                <a class="nav-link" href="#"> <i class="fa-solid fa-wallet"></i> Wallet </a>
+                <ul class="submenu collapse">
+                    <li>
+                        <a class="nav-link" href="{{ route('admin.wallet') }}">
+                            Statistics
+                        </a>
+                    </li>
+                    {{-- Received --}}
+                    <li>
+                        <a class="nav-link" href="{{ route('admin.wallet.received') }}">
+                            Received
+                        </a>
+                    </li>
+                    {{-- Refund --}}
+                    <li>
+                        <a class="nav-link" href="{{ route('admin.wallet.refund') }}">
+                            Refund
+                        </a>
+                    </li>
+                    {{-- Withdraw --}}
+                    <li>
+                        <a class="nav-link" href="{{ route('admin.wallet.withdraw') }}">
+                            Withdraw
+                        </a>
+                    </li>
+                </ul>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.chats') }}"><i class="fa-solid fa-inbox"></i>

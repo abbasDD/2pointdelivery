@@ -2057,6 +2057,15 @@ body {
     min-height: 5rem;
 }
 
+.tracking .tracking-item-cancelled {
+    border-left: 4px solid red;
+    position: relative;
+    padding: 2rem 1.5rem 0.5rem 1.5rem;
+    font-size: 0.9rem;
+    margin-left: 3rem;
+    min-height: 5rem;
+}
+
 .tracking .tracking-item-pending:last-child {
     padding-bottom: 4rem;
 }
@@ -2104,6 +2113,11 @@ body {
     width: 1.9rem;
     /* height: 1.9rem; */
     left: -1.1rem;
+}
+
+.tracking .tracking-item .tracking-icon.status-cancelled {
+    color: red !important;
+    font-size: 0.6rem;
 }
 
 .tracking .tracking-item .tracking-icon.status-intransit {

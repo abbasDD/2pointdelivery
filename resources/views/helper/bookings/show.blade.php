@@ -1,4 +1,4 @@
-@extends('client.layouts.app')
+@extends('helper.layouts.app')
 
 @section('title', 'Booking Detail')
 

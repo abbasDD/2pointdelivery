@@ -37,5 +37,13 @@
             <p class="mb-0">Payment Method:</p>
             <h6 class="mb-0">{{ $bookingData->payment_method }}</h6>
         </div>
+
+        {{-- Incomplete Reason --}}
+        @if ($booking->status == 'incomplete')
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <p class="mb-0">Incomplete Reason:</p>
+                <h6 class="mb-0">{{ $bookingPayment->incomplete_reason ?? 'N/A' }}</h6>
+            </div>
+        @endif
     </div>
 </div>

@@ -293,6 +293,9 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
 
     // Wallet
     Route::get('/wallet', [WalletAdminController::class, 'index'])->name('wallet');
+    Route::get('/wallet/received', [WalletAdminController::class, 'receivedTransaction'])->name('wallet.received');
+    Route::get('/wallet/refund', [WalletAdminController::class, 'refundRequest'])->name('wallet.refund');
+    Route::get('/wallet/withdraw', [WalletAdminController::class, 'withdrawRequest'])->name('wallet.withdraw');
 
     // Send push notifications to users
     Route::get('/push-notification', [PushNotificationController::class, 'index'])->name('pushNotification');

@@ -129,4 +129,44 @@ class EmailTemplateController extends Controller
 
         return true;
     }
+
+
+    // Send push notification Email
+    public function pushNotificationEmail($user_id, $title, $body)
+    {
+        $user = User::find($user_id);
+        $email = $user->email;
+
+        $smtpSettings = SmtpSetting::get();
+        if ($smtpSettings->isEmpty()) {
+            return false;
+        }
+
+        $smtpSettingEnabled = $smtpSettings->where('key', 'smtp_enabled')->first();
+        if ($smtpSettingEnabled->value == 'no') {
+            return false;
+        }
+
+        // Configure mailer with the SMTP settings
+        config([
+            'mail.mailers.smtp.transport' => 'smtp',
+            'mail.mailers.smtp.host' => $smtpSettings->where('key', 'smtp_host')->first()->value,
+            'mail.mailers.smtp.port' => $smtpSettings->where('key', 'smtp_port')->first()->value,
+            'mail.mailers.smtp.encryption' => $smtpSettings->where('key', 'smtp_encryption')->first()->value,
+            'mail.mailers.smtp.username' => $smtpSettings->where('key', 'smtp_username')->first()->value,
+            'mail.mailers.smtp.password' => $smtpSettings->where('key', 'smtp_password')->first()->value,
+            'mail.from.address' => $smtpSettings->where('key', 'smtp_from_email')->first()->value,
+            'mail.from.name' => $smtpSettings->where('key', 'smtp_from_name')->first()->value,
+        ]);
+
+
+
+        Mail::send([], [], function ($message) use ($user, $title, $body) {
+            $message->to($user->email)
+                ->subject($title)
+                ->html($body, 'text/html');
+        });
+
+        return true;
+    }
 }

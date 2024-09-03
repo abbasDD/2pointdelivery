@@ -90,7 +90,7 @@
                                         <label for="bookingDate">Booking Date</label>
                                         <div class="mb-3">
                                             <input type="text" class="form-control" id="bookingDate" name="booking_date"
-                                                value="<?php echo date(config('date_format') ?? 'd-m-Y'); ?>" required>
+                                                value="<?php echo date(config('date_format') ?: 'd-m-Y'); ?>" required>
                                         </div>
                                     </div>
                                     <script>

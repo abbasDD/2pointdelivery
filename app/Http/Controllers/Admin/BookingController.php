@@ -85,6 +85,9 @@ class BookingController extends Controller
             case 'pending':
                 $booking->currentStatus = 0;
                 break;
+            case 'cancelled':
+                $booking->currentStatus = 1;
+                break;
             case 'accepted':
                 $booking->currentStatus = 1;
                 break;
@@ -98,6 +101,9 @@ class BookingController extends Controller
                 $booking->currentStatus = 4;
                 break;
             case 'incomplete':
+                $booking->currentStatus = 4;
+                break;
+            case 'expired':
                 $booking->currentStatus = 5;
                 break;
             default:
@@ -160,7 +166,7 @@ class BookingController extends Controller
         }
 
 
-        // dd($booking->helper_user_id);
+        // dd($bookingData);
 
         return view('admin.bookings.show', compact('booking', 'bookingData', 'helperData', 'helperData2', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'helper2VehicleData'));
     }

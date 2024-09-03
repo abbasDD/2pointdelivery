@@ -232,7 +232,12 @@
                             @forelse ($latestBookings as $booking)
                                 <tr>
                                     <td>{{ $loop->index + 1 }}</td>
-                                    <td>{{ app('dateHelper')->formatTimestamp($booking->created_at, 'Y-m-d') }}</td>
+                                    <td>
+                                        <p>{{ date(config('date_format') ?: 'Y-m-d', strtotime($booking->booking_date)) }}
+                                        </p>
+                                        <p>{{ date(config('time_format') ?: 'H:i A', strtotime($booking->booking_time)) }}
+                                        </p>
+                                    </td>
                                     <td>
                                         {{-- Service Type --}}
                                         <p>{{ $booking->serviceType->name }}</p>

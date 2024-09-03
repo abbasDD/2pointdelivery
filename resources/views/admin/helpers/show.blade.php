@@ -65,6 +65,13 @@
                                         <h6 class="mb-0">Gender</h6>
                                         <p class="mb-0">{{ $helper->gender ?: '-' }}</p>
                                     </div>
+                                    {{-- Date of Birth --}}
+                                    <div class="d-flex align-items-center justify-content-between mb-3">
+                                        <h6 class="mb-0">Date of Birth</h6>
+                                        <p class="mb-0">
+                                            {{ date(config('date_format') ?: 'Y-m-d', strtotime($helper->date_of_birth)) ?: '-' }}
+                                        </p>
+                                    </div>
                                     {{-- Account Type --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">Account</h6>

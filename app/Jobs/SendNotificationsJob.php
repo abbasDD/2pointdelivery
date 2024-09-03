@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Http\Controllers\EmailTemplateController;
 use App\Http\Controllers\FcmController;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -10,6 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Services\FcmService;
+use Mews\Purifier\Facades\Purifier;
 
 class SendNotificationsJob implements ShouldQueue
 {
@@ -39,7 +41,11 @@ class SendNotificationsJob implements ShouldQueue
     public function handle(FcmController $fcm)
     {
         foreach ($this->users as $user) {
-            $fcm->sendPushNotificationToUser($user->id, $this->title, $this->body);
+            $fcm->sendPushNotificationToUser($user->id, $this->title, Purifier::clean($this->body));
+
+            // Send email pushNotificationEmail
+            $emailTemplateController = app(EmailTemplateController::class);
+            $emailTemplateController->pushNotificationEmail($user->id, $this->title, Purifier::clean($this->body));
         }
     }
 }

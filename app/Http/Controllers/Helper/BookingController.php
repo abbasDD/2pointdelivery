@@ -223,6 +223,9 @@ class BookingController extends Controller
             case 'pending':
                 $booking->currentStatus = 0;
                 break;
+            case 'cancelled':
+                $booking->currentStatus = 1;
+                break;
             case 'accepted':
                 $booking->currentStatus = 1;
                 break;
@@ -236,6 +239,9 @@ class BookingController extends Controller
                 $booking->currentStatus = 4;
                 break;
             case 'incomplete':
+                $booking->currentStatus = 4;
+                break;
+            case 'expired':
                 $booking->currentStatus = 5;
                 break;
             default:
@@ -277,9 +283,9 @@ class BookingController extends Controller
             $helperData = Helper::where('user_id', $booking->helper_user_id)->first();
         }
 
-        $helper2Data = null;
+        $helperData2 = null;
         if ($booking->helper_user_id2) {
-            $helper2Data = Helper::where('user_id', $booking->helper_user_id2)->first();
+            $helperData2 = Helper::where('user_id', $booking->helper_user_id2)->first();
         }
 
         // Get client data
@@ -320,7 +326,7 @@ class BookingController extends Controller
         //         // Update booking
         //         Booking::where('id', $booking->id)->update([
         //             'invoice_file' => $booking_invoice
-        //         ]);
+        //         ]);t
         //     }
         // }
 
@@ -339,7 +345,7 @@ class BookingController extends Controller
 
         // dd($booking);
 
-        return view('frontend.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'helper2Data', 'clientData', 'vehicleTypeData', 'helper2VehicleData', 'helperVehicleData', 'clientView', 'helperView'));
+        return view('helper.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'helperData2', 'clientData', 'vehicleTypeData', 'helper2VehicleData', 'helperVehicleData', 'clientView', 'helperView'));
     }
 
 

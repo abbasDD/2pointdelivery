@@ -18,7 +18,7 @@
     {{-- If pending and helper then ask client to accept --}}
     @if ($helperView && auth()->user()->helper_enabled && $booking->status == 'pending')
         <div class="">
-            <a href="{{ route('helper.booking.accept', $booking->id) }}" class="btn btn-success"><i class="fa fa-dollar"
+            <a href="{{ route('helper.booking.accept', $booking->id) }}" class="btn btn-success"><i class="fa fa-check"
                     aria-hidden="true"></i> <span class="d-none d-md-inline"> Accept</span></a>
         </div>
     @endif

@@ -17,7 +17,7 @@
         @if ($booking->booking_type == 'moving')
             {{-- Movers --}}
             <button class="nav-link" id="nav-movers-tab" data-bs-toggle="tab" data-bs-target="#nav-movers"
-                type="button" role="tab" aria-controls="nav-movers" aria-selected="false">Movers
+                type="button" role="tab" aria-controls="nav-movers" aria-selected="false">Drivers
                 ({{ $booking->moverCount }})
             </button>
         @endif
