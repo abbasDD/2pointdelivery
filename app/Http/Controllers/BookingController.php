@@ -704,6 +704,10 @@ class BookingController extends Controller
         }
         // dd($bookingDelivery);
 
+        // $distance_in_km = 5;
+        $booking->distance_in_km = $this->getEstimateController->getDistanceInKM($booking->pickup_latitude, $booking->pickup_longitude, $booking->dropoff_latitude, $booking->dropoff_longitude, 'K');
+
+
         return view('frontend.payment_booking', compact('booking', 'bookingData', 'paypalEnabled', 'stripeEnabled', 'codEnabled', 'stripe_publishable_key', 'bookingTimeLeft'));
     }
 

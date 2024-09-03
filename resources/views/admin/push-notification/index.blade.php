@@ -30,7 +30,7 @@
                                     <td>{!! $notification->body !!}</td>
                                     <td>
                                         <a href="{{ route('admin.pushNotification.resend', $notification->id) }}"
-                                            class="btn btn-sm btn-primary">Send</a>
+                                            class="btn btn-sm btn-primary">Resend</a>
                                         <i class="fa fa-send"></i>
                                     </td>
                                 </tr>

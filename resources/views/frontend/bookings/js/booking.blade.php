@@ -681,6 +681,10 @@
                     <span class="text-muted">Billable Weight:</span>
                     <span id="billable_weight" class="fw-bold">${data.billable_weight ? data.billable_weight + ' Kgs' : '___'} </span>
                 </div>
+                <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">Distance:</span>
+                    <span id="distance" class="fw-bold">${data.distance ? data.distance + ' Kms' : '___'}</span>
+                </div>
             </div>
 
             <!-- Payment Details -->

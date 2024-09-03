@@ -110,6 +110,9 @@ class GetEstimateController extends Controller
         // $distance_in_km = 5;
         $distance_in_km = $this->getDistanceInKM($request->pickup_latitude, $request->pickup_longitude, $request->dropoff_latitude, $request->dropoff_longitude, 'K');
 
+        // Store in data
+        $data['distance'] = $distance_in_km;
+
         // base_weight from service category
         $data['base_weight'] = $serviceCategory->base_weight;
 
@@ -218,11 +221,11 @@ class GetEstimateController extends Controller
         $unit = strtoupper($unit);
 
         if ($unit == "K") {
-            return ($miles * 1.609344);
+            return number_format((float)($miles * 1.609344), 2, '.', '');
         } elseif ($unit == "N") {
-            return ($miles * 0.8684);
+            return number_format((float)($miles * 0.8684), 2, '.', '');
         } else {
-            return $miles;
+            return number_format((float)$miles, 2, '.', '');
         }
     }
 

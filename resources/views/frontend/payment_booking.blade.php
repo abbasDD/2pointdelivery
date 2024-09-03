@@ -55,6 +55,11 @@
                             <h6>Secureship API Enabled:</h6>
                             <p>{{ $booking->booking_type == 'secureship' ? 'Yes' : 'No' }}</p>
                         </div>
+                        {{-- $booking->distance_in_km  --}}
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h6>Distance:</h6>
+                            <p>{{ $booking->distance_in_km }} km</p>
+                        </div>
                     </div>
                 </div>
             </div>
