@@ -16,7 +16,7 @@
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
                         <h3 class="mb-0">$ {{ $statistic['available'] }}</h3>
-                        @if ($helperBankAccounts && $statistic['available'])
+                        @if ($helperBankAccounts->count() && $statistic['available'])
                             <button class="btn btn-primary btn-sm" onclick="openWithdrawModal()">Withdraw</button>
                         @endif
                     </div>

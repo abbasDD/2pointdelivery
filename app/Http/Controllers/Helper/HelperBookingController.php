@@ -37,12 +37,15 @@ class HelperBookingController extends Controller
 
     public function index()
     {
+        $userId = auth()->user()->id;
 
         $bookings = Booking::with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
-            ->where('helper_user_id', auth()->user()->id)
-            ->orWhere('helper_user_id2', auth()->user()->id)
+            ->where(function ($query) use ($userId) {
+                $query->where('helper_user_id', $userId)
+                    ->orWhere('helper_user_id2', $userId);
+            })
             ->orderBy('bookings.updated_at', 'desc')->get();
 
         // dd($bookings);
@@ -167,9 +170,13 @@ class HelperBookingController extends Controller
      */
     public function show(Request $request)
     {
+        $userId = auth()->user()->id;
+
         $booking = Booking::where('id', $request->id)
-            // ->where('helper_user_id', auth()->user()->id)
-            // ->orWhere('helper_user_id2', auth()->user()->id)
+            ->where(function ($query) use ($userId) {
+                $query->where('helper_user_id', $userId)
+                    ->orWhere('helper_user_id2', $userId);
+            })
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
@@ -297,117 +304,121 @@ class HelperBookingController extends Controller
     public function start(Request $request)
     {
 
-        // return redirect()->back()->with('error', 'Booking not found');
+        $userId = auth()->user()->id;
 
         $booking = Booking::where('id', $request->id)
-            ->where('helper_user_id', auth()->user()->id)
-            ->orWhere('helper_user_id2', auth()->user()->id)
+            ->where(function ($query) use ($userId) {
+                $query->where('helper_user_id', $userId)
+                    ->orWhere('helper_user_id2', $userId);
+            })
             ->first();
 
         if (!$booking) {
             return redirect()->back()->with('error', 'Booking not found');
         }
 
-        if ($booking->status != 'accepted') {
-            return redirect()->back()->with('error', 'Booking not accepted');
+        if ($booking->booking_type == 'secureship') {
+            return redirect()->back()->with('error', 'Unable to start secure ship booking');
         }
 
-        // Check if booking->booking_type is delivery
-        if ($booking->booking_type == 'delivery') {
-            // Get booking delivery data
-            $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
-            if (!$bookingDelivery) {
-                return redirect()->back()->with('error', 'Booking delivery not found');
+        if ($booking->status == 'accepted') {
+
+
+            // Check if booking->booking_type is delivery
+            if ($booking->booking_type == 'delivery') {
+                // Get booking delivery data
+                $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+                if (!$bookingDelivery) {
+                    return redirect()->back()->with('error', 'Booking delivery not found');
+                }
             }
-        }
 
-        // Check if booking->booking_type is moving
-        if ($booking->booking_type == 'moving') {
-            // Get booking moving data
-            $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
-            if (!$bookingMoving) {
-                return redirect()->back()->with('error', 'Booking moving not found');
+            // Check if booking->booking_type is moving
+            if ($booking->booking_type == 'moving') {
+                // Get booking moving data
+                $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
+                if (!$bookingMoving) {
+                    return redirect()->back()->with('error', 'Booking moving not found');
+                }
             }
+
+
+            // if start_booking_image is not set then back with error
+            if (!$request->hasFile('start_booking_image')) {
+                return redirect()->back()->with('error', 'Please select start booking image');
+            }
+
+            // if start_booking_image is not set then back with error
+            if (!$request->hasFile('signatureStart')) {
+                return redirect()->back()->with('error', 'Please select start booking image');
+            }
+
+            $start_booking_image = null;
+
+            $signatureStart = null;
+
+
+            // Upload booking image
+            if ($request->hasFile('start_booking_image')) {
+                $file = $request->file('start_booking_image');
+                $updatedBookingFilename = time() . '.' . $file->getClientOriginalExtension();
+                $destinationPath = public_path('images/bookings/');
+                $file->move($destinationPath, $updatedBookingFilename);
+
+                // Set the profile image attribute to the new file name
+                $start_booking_image = $updatedBookingFilename;
+            }
+
+            // Upload signature start image
+            if ($request->hasFile('signatureStart')) {
+                $file = $request->file('signatureStart');
+                $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+                $destinationPath = public_path('images/bookings/');
+                $file->move($destinationPath, $updatedFilename);
+
+                // Set the profile image attribute to the new file name
+                $signatureStart = $updatedFilename;
+            }
+
+
+            // Update Booking for delivery
+            if ($booking->booking_type == 'delivery') {
+                $bookingDelivery->signatureStart = $signatureStart;
+                $bookingDelivery->start_booking_image = $start_booking_image;
+                $bookingDelivery->start_booking_at = Carbon::now();
+                $bookingDelivery->save();
+            }
+
+            // Update Booking for moving
+            if ($booking->booking_type == 'moving') {
+                $bookingMoving->signatureStart = $signatureStart;
+                $bookingMoving->start_booking_image = $start_booking_image;
+                $bookingMoving->start_booking_at = Carbon::now();
+                $bookingMoving->save();
+            }
+
+
+            $booking->status = 'started';
+            $booking->save();
+
+            // Send Notification
+            $userNotification = UserNotification::create([
+                'sender_user_id' => auth()->user()->id,
+                'receiver_user_id' => $booking->client_user_id,
+                'receiver_user_type' => 'client',
+                'reference_id' => $booking->id,
+                'type' => 'booking',
+                'title' => 'Booking Started',
+                'content' => 'Your booking has been started.',
+                'read' => 0
+            ]);
+
+            // dd($booking);
+
+            return redirect()->back()->with('success', 'Booking started successfully!');
         }
 
-
-        // if start_booking_image is not set then back with error
-        if (!$request->hasFile('start_booking_image')) {
-            return redirect()->back()->with('error', 'Please select start booking image');
-        }
-
-        // if start_booking_image is not set then back with error
-        if (!$request->hasFile('signatureStart')) {
-            return redirect()->back()->with('error', 'Please select start booking image');
-        }
-
-        $start_booking_image = null;
-
-        $signatureStart = null;
-
-
-        // Upload booking image
-        if ($request->hasFile('start_booking_image')) {
-            $file = $request->file('start_booking_image');
-            $updatedBookingFilename = time() . '.' . $file->getClientOriginalExtension();
-            $destinationPath = public_path('images/bookings/');
-            $file->move($destinationPath, $updatedBookingFilename);
-
-            // Set the profile image attribute to the new file name
-            $start_booking_image = $updatedBookingFilename;
-        }
-
-        // Upload signature start image
-        if ($request->hasFile('signatureStart')) {
-            $file = $request->file('signatureStart');
-            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
-            $destinationPath = public_path('images/bookings/');
-            $file->move($destinationPath, $updatedFilename);
-
-            // Set the profile image attribute to the new file name
-            $signatureStart = $updatedFilename;
-        }
-
-
-        // Update Booking for delivery
-        if ($booking->booking_type == 'delivery') {
-            $bookingDelivery->signatureStart = $signatureStart;
-            $bookingDelivery->start_booking_image = $start_booking_image;
-            $bookingDelivery->start_booking_at = Carbon::now();
-            $bookingDelivery->save();
-        }
-
-        // Update Booking for moving
-        if ($booking->booking_type == 'moving') {
-            $bookingMoving->signatureStart = $signatureStart;
-            $bookingMoving->start_booking_image = $start_booking_image;
-            $bookingMoving->start_booking_at = Carbon::now();
-            $bookingMoving->save();
-        }
-
-
-        $booking->status = 'started';
-        $booking->save();
-
-        // Send Notification
-        $userNotification = UserNotification::create([
-            'sender_user_id' => auth()->user()->id,
-            'receiver_user_id' => $booking->client_user_id,
-            'receiver_user_type' => 'client',
-            'reference_id' => $booking->id,
-            'type' => 'booking',
-            'title' => 'Booking Started',
-            'content' => 'Your booking has been started.',
-            'read' => 0
-        ]);
-
-        // Send email
-        $emailTemplateController = app(EmailTemplateController::class);
-        $emailTemplateController->bookingStatusEmail($booking);
-
-        // dd($booking);
-
-        return redirect()->back()->with('success', 'Booking started successfully!');
+        return redirect()->back()->with('error', 'Booking not accepted');
 
         // return view('frontend.bookings.show', compact('booking', 'bookingDelivery', 'helperData', 'clientData'));
     }
@@ -415,77 +426,86 @@ class HelperBookingController extends Controller
     // inTransit Booking
     public function inTransit(Request $request)
     {
+        $userId = auth()->user()->id;
+
         $booking = Booking::where('id', $request->id)
-            ->where('helper_user_id', auth()->user()->id)
-            ->orWhere('helper_user_id2', auth()->user()->id)
+            ->where(function ($query) use ($userId) {
+                $query->where('helper_user_id', $userId)
+                    ->orWhere('helper_user_id2', $userId);
+            })
             ->first();
 
         if (!$booking) {
             return redirect()->back()->with('error', 'Booking not found');
         }
 
-        if ($booking->status != 'started') {
-            return redirect()->back()->with('error', 'Booking not started');
+        if ($booking->booking_type == 'secureship') {
+            return redirect()->back()->with('error', 'Unable to start secure ship booking');
         }
 
-        // Check if booking->booking_type is delivery
-        if ($booking->booking_type == 'delivery') {
-            // Get booking delivery data
-            $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
-            if (!$bookingDelivery) {
-                return redirect()->back()->with('error', 'Booking delivery not found');
+        if ($booking->status == 'started') {
+
+            // Check if booking->booking_type is delivery
+            if ($booking->booking_type == 'delivery') {
+                // Get booking delivery data
+                $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+                if (!$bookingDelivery) {
+                    return redirect()->back()->with('error', 'Booking delivery not found');
+                }
+
+                // Update booking delivery
+                $bookingDelivery->start_intransit_at = Carbon::now();
+                $bookingDelivery->save();
             }
 
-            // Update booking delivery
-            $bookingDelivery->start_intransit_at = Carbon::now();
-            $bookingDelivery->save();
-        }
 
+            // Check if booking->booking_type is moving
+            if ($booking->booking_type == 'moving') {
+                // Get booking moving data
+                $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
+                if (!$bookingMoving) {
+                    return redirect()->back()->with('error', 'Booking moving not found');
+                }
 
-        // Check if booking->booking_type is moving
-        if ($booking->booking_type == 'moving') {
-            // Get booking moving data
-            $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
-            if (!$bookingMoving) {
-                return redirect()->back()->with('error', 'Booking moving not found');
+                // Update booking moving
+                $bookingMoving->start_intransit_at = Carbon::now();
+                $bookingMoving->save();
             }
 
-            // Update booking moving
-            $bookingMoving->start_intransit_at = Carbon::now();
-            $bookingMoving->save();
+
+            // Update Booking
+            $booking->status = 'in_transit';
+            $booking->save();
+
+            // Send Notification
+            UserNotification::create([
+                'sender_user_id' => auth()->user()->id,
+                'receiver_user_id' => $booking->client_user_id,
+                'receiver_user_type' => 'client',
+                'reference_id' => $booking->id,
+                'type' => 'booking',
+                'title' => 'Booking In Transit',
+                'content' => 'Your booking is in transit.',
+                'read' => 0
+            ]);
+
+            return redirect()->back()->with('success', 'Booking in transit successfully!');
         }
 
-
-        // Update Booking
-        $booking->status = 'in_transit';
-        $booking->save();
-
-        // Send Notification
-        $userNotification = UserNotification::create([
-            'sender_user_id' => auth()->user()->id,
-            'receiver_user_id' => $booking->client_user_id,
-            'receiver_user_type' => 'client',
-            'reference_id' => $booking->id,
-            'type' => 'booking',
-            'title' => 'Booking In Transit',
-            'content' => 'Your booking is in transit.',
-            'read' => 0
-        ]);
-
-        // Send email
-        $emailTemplateController = app(EmailTemplateController::class);
-        $emailTemplateController->bookingStatusEmail($booking);
-
-        return redirect()->back()->with('success', 'Booking in transit successfully!');
+        return redirect()->back()->with('error', 'Booking not started');
     }
 
     // Start Booking
     public function complete(Request $request)
     {
+
+        $userId = auth()->user()->id;
+
         $booking = Booking::where('id', $request->id)
-            ->where('helper_user_id', auth()->user()->id)
-            ->orWhere('helper_user_id2', auth()->user()->id)
-            ->first();
+            ->where(function ($query) use ($userId) {
+                $query->where('helper_user_id', $userId)
+                    ->orWhere('helper_user_id2', $userId);
+            })->first();
 
         if (!$booking) {
             return redirect()->back()->with('error', 'Booking not found');
@@ -651,9 +671,13 @@ class HelperBookingController extends Controller
             return redirect()->back()->with('error', 'Please provide incomplete reason');
         }
 
+        $userId = auth()->user()->id;
+
         $booking = Booking::where('id', $request->id)
-            ->where('helper_user_id', auth()->user()->id)
-            ->orWhere('helper_user_id2', auth()->user()->id)
+            ->where(function ($query) use ($userId) {
+                $query->where('helper_user_id', $userId)
+                    ->orWhere('helper_user_id2', $userId);
+            })
             ->first();
 
         if (!$booking) {

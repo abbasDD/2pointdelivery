@@ -11,19 +11,25 @@
                 <div class="col-md-6">
                     {{-- Account Type --}}
                     <p class="mb-0"><span class="text-primary">Account Type:</span>
-                        {{ $helperBankAccount->account_type }}
-                    </p>
-                    {{-- Account Number --}}
-                    <p class="mb-0"><span class="text-primary">Account Number:</span>
-                        {{ $helperBankAccount->account_number }}
+                        {{ $helperBankAccount->payment_method }}
                     </p>
                     {{-- Account Name --}}
                     <p class="mb-0"><span class="text-primary">Account Name:</span>
                         {{ $helperBankAccount->account_name }}
                     </p>
+                    {{-- Account Number --}}
+                    <p class="mb-0"><span class="text-primary">Account Number:</span>
+                        {{ $helperBankAccount->account_number }}
+                    </p>
                     {{-- Status --}}
                     <p class="mb-0"><span class="text-primary">Status:</span>
-                        {{ $helperBankAccount->is_approved == 1 ? 'Approved' : 'Pending' }}
+                        @if ($helperBankAccount->is_approved == 1)
+                            <span class="badge bg-success">Approved</span>
+                        @elseif($helperBankAccount->is_approved == 2)
+                            <span class="badge bg-danger">Rejected</span>
+                        @else
+                            <span class="badge bg-warning">Pending</span>
+                        @endif
                     </p>
                 </div>
             @empty
@@ -50,7 +56,7 @@
                     @csrf
 
                     <div class="form-group mb-3">
-                        <select class="form-control" id="accountType" name="account_type" required>
+                        <select class="form-control" id="accountType" name="payment_method" required>
                             <option value="" selected disabled>Select Account Type</option>
                             <option value="paypal">Paypal</option>
                             <option value="stripe">Stripe</option>

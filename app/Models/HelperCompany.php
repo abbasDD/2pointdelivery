@@ -14,6 +14,7 @@ class HelperCompany extends Model
         'user_id',
         'helper_id',
         'company_logo',
+        'thumbnail',
         'company_alias',
         'legal_name',
         'industry',

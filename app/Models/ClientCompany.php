@@ -14,6 +14,7 @@ class ClientCompany extends Model
         'user_id',
         'client_id',
         'company_logo',
+        'thumbnail',
         'company_alias',
         'legal_name',
         'industry',

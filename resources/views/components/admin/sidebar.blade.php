@@ -61,6 +61,11 @@
                             Statistics
                         </a>
                     </li>
+                    <li>
+                        <a class="nav-link" href="{{ route('admin.helper.BankAccounts') }}">
+                            Bank Accounts
+                        </a>
+                    </li>
                     {{-- Received --}}
                     <li>
                         <a class="nav-link" href="{{ route('admin.wallet.received') }}">

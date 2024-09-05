@@ -104,7 +104,7 @@
         // Update priority as per the service type selected
         updatePriority(selectedServiceType);
 
-        // console.log('Selected Service Type: ' + selectedServiceType);
+        console.log('Selected Service Type: ' + selectedServiceType);
 
         var url =
             '{{ route('fetch.service.categories') }}' +
@@ -244,16 +244,17 @@
                 newUpdatedPriority.push(prioritySettings[i]);
             }
         }
-        // console.log(newUpdatedPriority);
+        console.log(newUpdatedPriority);
         if (newUpdatedPriority.length > 0) {
             selectedPriorityID = newUpdatedPriority[0].id;
         }
 
+        var priorityDropdown = document.getElementById('priorityDropdown');
+        // Empty the dropdown
+        priorityDropdown.innerHTML = '';
+
         // Populate the priority dropdown
         if (newUpdatedPriority.length > 0) {
-            var priorityDropdown = document.getElementById('priorityDropdown');
-            // Empty the dropdown
-            priorityDropdown.innerHTML = '';
             newUpdatedPriority.forEach(priority => {
                 var option = document.createElement('option');
                 option.value = priority.id;
@@ -703,6 +704,19 @@
                     <span id="priority-price" class="fw-bold">${data.priority_price ? 'C$ ' + data.priority_price : '___'}</span>
                 </div>
                 `;
+
+            // Check if serviceType is delivery 
+            if (data.serviceType == 'Delivery') {
+                output += `
+                <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">Vehicle Price:</span>
+                    <span id="priority-price" class="fw-bold">${data.vehicle_price ? 'C$ ' + data.vehicle_price : '___'}</span>
+                </div>
+                <div class="mb-2 d-flex justify-content-between">
+                    <span class="text-muted">Insurance Price:</span>
+                    <span id="priority-price" class="fw-bold">${data.insurance_price ? 'C$ ' + data.insurance_price : '___'}</span>
+                </div>`;
+            }
             // Check if serviceType is moving 
             if (data.serviceType == 'Moving') {
                 output += `

@@ -25,6 +25,7 @@ use App\Models\VehicleType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class HelperController extends Controller
 {
@@ -165,6 +166,7 @@ class HelperController extends Controller
             ->with('serviceType')
             ->with('serviceCategory')
             ->where('status', 'pending')
+            ->whereIn('booking_type', ['delivery', 'moving'])
             ->where('client_user_id', '!=', auth()->user()->id)
             ->whereIn('service_type_id', $helperServiceIds)
             ->orderBy('bookings.updated_at', 'desc')->get();
@@ -730,7 +732,7 @@ class HelperController extends Controller
         $request->validate([
             'account_name' => 'required|string|max:255',
             'account_number' => 'required|string|max:255',
-            'account_type' => 'required|in:paypal,stripe',
+            'payment_method' => 'required|in:paypal,stripe',
         ]);
 
 
@@ -742,7 +744,7 @@ class HelperController extends Controller
 
 
         // Check if bank account already exist
-        $bankAccount = HelperBankAccount::where('user_id', auth()->user()->id)->where('account_type', $request->account_type)->first();
+        $bankAccount = HelperBankAccount::where('user_id', auth()->user()->id)->where('payment_method', $request->payment_method)->first();
         if ($bankAccount) {
             return redirect()->back()->with('error', 'Bank account already exist');
         }
@@ -754,7 +756,7 @@ class HelperController extends Controller
         $bankAccount->helper_id = $helper->id;
         $bankAccount->account_name = $request->account_name;
         $bankAccount->account_number = $request->account_number;
-        $bankAccount->account_type = $request->account_type;
+        $bankAccount->payment_method = $request->payment_method;
         $bankAccount->is_approved = 0;
         $bankAccount->save();
 
@@ -766,10 +768,32 @@ class HelperController extends Controller
 
     public function withdrawRequest(Request $request)
     {
+
+        // Validate request
+        $request->validate([]);
+        $validator = Validator::make($request->all(), [
+            'withdraw_amount' => 'required|numeric|min:0',
+            'bank_account_id' => 'required|exists:helper_bank_accounts,id',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', $validator->errors()->first());
+        }
+
         // Check if helper added the accounts and approved
         $helperBankAccounts = HelperBankAccount::where('user_id', auth()->user()->id)->where('is_approved', 1)->get();
         if (!$helperBankAccounts) {
             return redirect()->back()->with('error', 'Please add bank accounts first');
+        }
+
+        // Get bank account
+        $bankAccount = HelperBankAccount::where('id', $request->bank_account_id)->where('user_id', auth()->user()->id)->first();
+        if (!$bankAccount) {
+            return redirect()->back()->with('error', 'Bank account not found');
+        }
+
+        if ($bankAccount->is_approved == 0) {
+            return redirect()->back()->with('error', 'Bank account not approved');
         }
 
         // Check if withdraw request already exist
@@ -779,9 +803,18 @@ class HelperController extends Controller
         }
 
 
-        // Validate request
-        $request->validate([
-            'amount' => 'required|numeric',
-        ]);
+        // Save withdraw request
+        $withdrawRequest = new UserWallet();
+        $withdrawRequest->user_id = auth()->user()->id;
+        $withdrawRequest->user_type = 'helper';
+        $withdrawRequest->type = 'withdraw';
+        $withdrawRequest->amount = $request->withdraw_amount;
+        $withdrawRequest->status = 'pending';
+        $withdrawRequest->payment_method = $bankAccount->payment_method;
+        $withdrawRequest->transaction_id = $bankAccount->id;
+        $withdrawRequest->save();
+
+
+        return redirect()->back()->with('success', 'Withdraw request added successfully');
     }
 }

@@ -1035,12 +1035,6 @@ class HelperBookingController extends Controller
             ], 401);
         }
 
-        // $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
-        //     ->where('helper_user_id', auth()->user()->id)
-        //     ->orWhere('helper_user_id2', auth()->user()->id)
-        //     ->whereIn('status', ['completed', 'cancelled'])
-        //     ->get();
-
         $userId = auth()->user()->id;
 
         $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status')

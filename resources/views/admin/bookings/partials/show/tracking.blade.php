@@ -35,7 +35,8 @@
                                 src="https://raw.githubusercontent.com/shajo/portfolio/a02c5579c3ebe185bb1fc085909c582bf5fad802/delivery.svg"
                                 class="img-responsive" alt="order-placed" /></div>
                         <div class="tracking-content">Order Placed
-                            <span>{{ $bookingData->created_at ? app('dateHelper')->formatTimestamp($bookingData->created_at, config('date_format') ?: 'Y-m-d') . ' at ' . app('dateHelper')->formatTimestamp($bookingData->created_at, config('time_format') ?: 'H:i A') : 'N/A' }}</span>
+                            <span>{{ $bookingData->created_at ? app('dateHelper')->formatTimestamp($bookingData->created_at, config('date_format') ?: 'Y-m-d') : 'N/A' }}</span>
+                            <span>{{ $bookingData->created_at ? app('dateHelper')->formatTimestamp($bookingData->created_at, config('time_format') ?: 'H:i A') : 'N/A' }}</span>
                         </div>
                     </div>
                     {{-- Cancelled --}}
@@ -55,7 +56,8 @@
                                     src="https://raw.githubusercontent.com/shajo/portfolio/a02c5579c3ebe185bb1fc085909c582bf5fad802/delivery.svg"
                                     class="img-responsive" alt="order-placed" /></div>
                             <div class="tracking-content">Order Cancelled
-                                <span>{{ $bookingData->updated_at ? app('dateHelper')->formatTimestamp($bookingData->updated_at, config('date_format') ?: 'Y-m-d') . ' at ' . app('dateHelper')->formatTimestamp($bookingData->updated_at, config('time_format') ?: 'H:i A') : 'N/A' }}</span>
+                                <span>{{ $bookingData->updated_at ? app('dateHelper')->formatTimestamp($bookingData->updated_at, config('date_format') ?: 'Y-m-d') : 'N/A' }}</span>
+                                <span>{{ $bookingData->updated_at ? app('dateHelper')->formatTimestamp($bookingData->updated_at, config('time_format') ?: 'H:i A') : 'N/A' }}</span>
                             </div>
                         </div>
                     @else
@@ -75,7 +77,8 @@
                                     src="https://raw.githubusercontent.com/shajo/portfolio/a02c5579c3ebe185bb1fc085909c582bf5fad802/delivery.svg"
                                     class="img-responsive" alt="order-placed" /></div>
                             <div class="tracking-content">Order Assigned
-                                <span>{{ $bookingData->accepted_at ? app('dateHelper')->formatTimestamp($bookingData->accepted_at, config('date_format') ?: 'Y-m-d') . ' at ' . app('dateHelper')->formatTimestamp($bookingData->accepted_at, config('time_format') ?: 'H:i A') : 'N/A' }}</span>
+                                <span>{{ $bookingData->accepted_at ? app('dateHelper')->formatTimestamp($bookingData->accepted_at, config('date_format') ?: 'Y-m-d') : 'N/A' }}</span>
+                                <span>{{ $bookingData->accepted_at ? app('dateHelper')->formatTimestamp($bookingData->accepted_at, config('time_format') ?: 'H:i A') : 'N/A' }}</span>
                             </div>
                         </div>
                     @endif
@@ -97,7 +100,8 @@
                                 class="img-responsive" alt="order-placed" /></div>
                         <div class="tracking-content">
                             {{ $booking->booking_type == 'delivery' ? 'Package Received' : 'Movers in-transit' }}
-                            <span>{{ $bookingData->start_booking_at ? app('dateHelper')->formatTimestamp($bookingData->start_booking_at, config('date_format') ?: 'Y-m-d') . ' at ' . app('dateHelper')->formatTimestamp($bookingData->start_booking_at, config('time_format') ?: 'H:i A') : 'N/A' }}</span>
+                            <span>{{ $bookingData->start_booking_at ? app('dateHelper')->formatTimestamp($bookingData->start_booking_at, config('date_format') ?: 'Y-m-d') : 'N/A' }}</span>
+                            <span>{{ $bookingData->start_booking_at ? app('dateHelper')->formatTimestamp($bookingData->start_booking_at, config('time_format') ?: 'H:i A') : 'N/A' }}</span>
                         </div>
                     </div>
                     {{-- In Transit --}}
@@ -116,7 +120,8 @@
                                 class="img-responsive" alt="order-placed" /></div>
                         <div class="tracking-content">
                             {{ $booking->booking_type == 'delivery' ? 'Delivering' : 'Moving Started' }}
-                            <span>{{ $bookingData->start_intransit_at ? app('dateHelper')->formatTimestamp($bookingData->start_intransit_at, config('date_format') ?: 'Y-m-d') . ' at ' . app('dateHelper')->formatTimestamp($bookingData->start_intransit_at, config('time_format') ?: 'H:i A') : 'N/A' }}</span>
+                            <span>{{ $bookingData->start_intransit_at ? app('dateHelper')->formatTimestamp($bookingData->start_intransit_at, config('date_format') ?: 'Y-m-d') : 'N/A' }}</span>
+                            <span>{{ $bookingData->start_intransit_at ? app('dateHelper')->formatTimestamp($bookingData->start_intransit_at, config('time_format') ?: 'H:i A') : 'N/A' }}</span>
                         </div>
                     </div>
                     {{-- Completed --}}
@@ -134,12 +139,13 @@
                                 src="https://raw.githubusercontent.com/shajo/portfolio/a02c5579c3ebe185bb1fc085909c582bf5fad802/delivery.svg"
                                 class="img-responsive" alt="order-placed" /></div>
                         <div class="tracking-content">
-                            @if ($booking->status == 'completed')
-                                {{ $booking->booking_type == 'delivery' ? 'Receipent Received' : 'Moving Completed' }}
-                            @else
+                            @if ($booking->status == 'incomplete')
                                 <p class="text-warning">Incomplete</p>
+                            @else
+                                {{ $booking->booking_type == 'delivery' ? 'Receipent Received' : 'Moving Completed' }}
                             @endif
-                            <span>{{ $bookingData->complete_booking_at ? app('dateHelper')->formatTimestamp($bookingData->complete_booking_at, config('date_format') ?: 'Y-m-d') . ' at ' . app('dateHelper')->formatTimestamp($bookingData->complete_booking_at, config('time_format') ?: 'H:i A') : 'N/A' }}</span>
+                            <span>{{ $bookingData->complete_booking_at ? app('dateHelper')->formatTimestamp($bookingData->complete_booking_at, config('date_format') ?: 'Y-m-d') : 'N/A' }}</span>
+                            <span>{{ $bookingData->complete_booking_at ? app('dateHelper')->formatTimestamp($bookingData->complete_booking_at, config('time_format') ?: 'H:i A') : 'N/A' }}</span>
                         </div>
                     </div>
 

@@ -22,11 +22,13 @@
             <p class="mb-0">Dropoff Address</p>
             <h6 class="mb-0">{{ $booking->dropoff_address }}</h6>
         </div>
-        {{-- Helper Fee: --}}
-        <div class="d-flex align-items-center justify-content-between mb-3">
-            <p class="mb-0">Helper Fee:</p>
-            <h6 class="mb-0">${{ $bookingData->helper_fee }}</h6>
-        </div>
+        @if ($booking->booking_type != 'secureship')
+            {{-- Helper Fee: --}}
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <p class="mb-0">Helper Fee:</p>
+                <h6 class="mb-0">${{ $bookingData->helper_fee }}</h6>
+            </div>
+        @endif
         {{-- Amount to Pay --}}
         <div class="d-flex align-items-center justify-content-between mb-3">
             <p class="mb-0">Amount to Pay:</p>
@@ -35,7 +37,7 @@
         {{-- Payment Method --}}
         <div class="d-flex align-items-center justify-content-between mb-3">
             <p class="mb-0">Payment Method:</p>
-            <h6 class="mb-0">{{ $bookingData->payment_method }}</h6>
+            <h6 class="mb-0">{{ $bookingData->payment_method ?? 'N/A' }}</h6>
         </div>
 
         {{-- Incomplete Reason --}}

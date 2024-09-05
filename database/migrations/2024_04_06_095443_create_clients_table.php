@@ -23,7 +23,8 @@ return new class extends Migration
             $table->string('tax_id')->nullable();
             $table->string('phone_no')->nullable();
             $table->timestamp('phone_verified_at')->nullable();
-            $table->text('profile_image')->nullable();
+            $table->string('profile_image')->nullable();
+            $table->string('thumbnail')->nullable();
             $table->string('suite')->nullable();
             $table->string('street')->nullable();
             $table->string('city')->nullable();

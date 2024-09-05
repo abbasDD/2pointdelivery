@@ -10,6 +10,16 @@
                 <p>Withdraw Amount</p>
                 <form action="{{ route('helper.wallet.withdrawRequest') }}" method="POST">
                     @csrf
+                    {{-- Select Bank from Bank Accounts --}}
+                    <div class="form-group mb-3">
+                        <select class="form-control" id="bank_account_id" name="bank_account_id" required>
+                            <option value="" selected disabled>Select Account Type</option>
+                            @foreach ($helperBankAccounts as $helperBankAccount)
+                                <option value="{{ $helperBankAccount->id }}">{{ $helperBankAccount->payment_method }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="form-group mb-3">
                         <input id="withdrawAmount" name="withdraw_amount" type="number" class="form-control"
                             placeholder="Enter amount" required>

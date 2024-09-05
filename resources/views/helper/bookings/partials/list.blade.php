@@ -30,11 +30,15 @@
                     {{-- Dropoff Address --}}
                     <p><span class="fw-bold">Dropoff:</span> {{ $booking->dropoff_address }}</p>
                 </td>
-                <td>${{ $booking->payment->helper_fee }}</td>
+                <td>${{ $booking->payment->helper_fee ?? 0 }}</td>
                 <td>
-                    <p class="badge {{ $booking->status == 'completed' ? 'bg-primary' : 'bg-warning' }}">
-                        {{ ucfirst($booking->status) }}
-                    </p>
+                    @if ($booking->status == 'draft' || $booking->status == 'pending')
+                        <p class="badge bg-warning">{{ $booking->status }}</p>
+                    @elseif ($booking->status == 'accepted' || $booking->status == 'in_transit' || $booking->status == 'completed')
+                        <p class="badge bg-success">{{ $booking->status }}</p>
+                    @else
+                        <p class="badge bg-danger">{{ $booking->status }}</p>
+                    @endif
                 </td>
                 @if ($booking->status == 'pending')
                     {{-- CHeck if user already accepted this booking --}}

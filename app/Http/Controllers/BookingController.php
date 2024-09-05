@@ -573,7 +573,7 @@ class BookingController extends Controller
         // if 60 minutes passed then cancel booking
         if ($timeDifferenceInSeconds > 3600) {
             $booking->update(['status' => 'expired']);
-            return redirect()->back()->with('error', 'Booking already expired');
+            return 0;
         }
 
         // Time Left
@@ -1579,6 +1579,11 @@ class BookingController extends Controller
         // get booking moving
         if ($booking_type == 'moving') {
             $bookingData = BookingMoving::where('booking_id', $booking_id)->first();
+        }
+
+        // get booking secureship
+        if ($booking_type == 'secureship') {
+            $bookingData = BookingSecureship::where('booking_id', $booking_id)->first();
         }
 
         return $bookingData;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Helper;
+use App\Models\HelperBankAccount;
 use App\Models\HelperVehicle;
 use App\Models\User;
 use App\Models\UserNotification;
@@ -290,5 +291,67 @@ class HelperController extends Controller
         }
 
         return redirect()->back()->with('error', 'Helper vehicle not found');
+    }
+
+    // helperBankAccounts
+
+    public function helperBankAccounts(Request $request)
+    {
+
+        $helperBankAccounts = HelperBankAccount::with('helper')->get();
+
+        return view('admin.helpers.bankAccounts.index', compact('helperBankAccounts'));
+    }
+
+    // Accept Helper Bank Accounts
+    public function approveHelperBankAccounts(Request $request)
+    {
+        $helperBankAccount = HelperBankAccount::where('id', $request->id)
+            ->first();
+        if ($helperBankAccount) {
+            $helperBankAccount->update(['is_approved' => 1]);
+
+            // Notification
+            UserNotification::create([
+                'sender_user_id' => auth()->user()->id,
+                'receiver_user_id' => $helperBankAccount->user_id,
+                'receiver_user_type' => 'helper',
+                'type' => 'helper_bank_account_status',
+                'reference_id' => $helperBankAccount->user_id,
+                'title' => 'Helper Bank Account approved',
+                'content' => 'Your Helper Bank Account has been approved by the admin.',
+                'read' => 0
+            ]);
+
+            return redirect()->back()->with('success', 'Helper Bank Account approved successfully!');
+        }
+
+        return redirect()->back()->with('error', 'Helper Bank Account not found');
+    }
+
+    // Reject Helper Bank Accounts
+    public function rejectHelperBankAccounts(Request $request)
+    {
+        $helperBankAccount = HelperBankAccount::where('id', $request->id)
+            ->first();
+        if ($helperBankAccount) {
+            $helperBankAccount->update(['is_approved' => 2]); // 2 is rejected
+
+            // Notification
+            UserNotification::create([
+                'sender_user_id' => auth()->user()->id,
+                'receiver_user_id' => $helperBankAccount->user_id,
+                'receiver_user_type' => 'helper',
+                'type' => 'helper_bank_account_status',
+                'reference_id' => $helperBankAccount->user_id,
+                'title' => 'Helper Bank Account rejected',
+                'content' => 'Your Helper Bank Account has been rejected by the admin.',
+                'read' => 0
+            ]);
+
+            return redirect()->back()->with('success', 'Helper Bank Account rejected successfully!');
+        }
+
+        return redirect()->back()->with('error', 'Helper Bank Account not found');
     }
 }

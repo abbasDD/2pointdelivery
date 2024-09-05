@@ -26,6 +26,7 @@ class Helper extends Model
         'phone_no',
         'phone_verified_at',
         'profile_image',
+        'thumbnail',
         'suite',
         'street',
         'city',

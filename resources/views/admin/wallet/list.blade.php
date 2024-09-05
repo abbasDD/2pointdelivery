@@ -18,7 +18,8 @@
                     <tr>
                         <td>{{ $wallet->created_at->format(config('date_format') ?: 'Y-m-d') }}</td>
                         <td>
-                            <p>{{ $wallet->booking_id ?? '-' }}</p>
+                            <p>{{ $wallet->booking_id ? \App\Models\Booking::find($wallet->booking_id)->uuid : '-' }}
+                            </p>
                             <p>{{ $wallet->transaction_id ? $wallet->transaction_id : 'wallet' }}</p>
                         </td>
                         <td>{{ $wallet->type }}</td>
@@ -30,7 +31,11 @@
                             @endif
                         </td>
                         <td>{{ $wallet->payment_method }}</td>
-                        <td>{{ $wallet->status }}</td>
+                        <td>
+                            <span class="badge bg-{{ $wallet->status == 'pending' ? 'warning' : 'success' }}">
+                                {{ $wallet->status }}
+                            </span>
+                        </td>
 
                     </tr>
                 @empty

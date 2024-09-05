@@ -128,6 +128,13 @@ class UserNotificationController extends Controller
                 }
                 return redirect()->route('client.chats');
                 break;
+            case 'helper_bank_account_status':
+                // helper_bank_account_status
+                if (session('login_type') == 'helper') {
+                    return redirect()->route('helper.wallet');
+                }
+                return redirect()->back()->with('error', 'Unable to redirect notification');
+                break;
             default:
                 // default
                 return redirect()->back()->with('error', 'Unable to redirect notification');

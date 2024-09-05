@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('profile_image')->nullable();
+            $table->string('thumbnail')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

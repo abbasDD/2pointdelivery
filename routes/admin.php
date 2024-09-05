@@ -107,6 +107,11 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     Route::get('/helper/vehicles/approve/{id}', [HelperController::class, 'approveHelperVehicles'])->name('helpers.vehicles.approve');
     Route::get('/helper/vehicles/reject/{id}', [HelperController::class, 'rejectHelperVehicles'])->name('helpers.vehicles.reject');
 
+    // Helper Bank Accounts
+    Route::get('/helper/bank-accounts', [HelperController::class, 'helperBankAccounts'])->name('helper.BankAccounts');
+    Route::get('/helper/bank-accounts/approve/{id}', [HelperController::class, 'approveHelperBankAccounts'])->name('helper.BankAccount.approve');
+    Route::get('/helper/bank-accounts/reject/{id}', [HelperController::class, 'rejectHelperBankAccounts'])->name('helper.BankAccount.reject');
+
     // Service Types Page Routes
     Route::get('/service-types', [ServiceTypeController::class, 'index'])->name('serviceTypes');
     Route::get('/service-type/create', [ServiceTypeController::class, 'create'])->name('serviceType.create');

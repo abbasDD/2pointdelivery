@@ -30,14 +30,19 @@
     <section class="py-3">
         <div class="container">
             <div class="row">
-                <div class="col-md-4">
-                    {{-- Load Tracking Status --}}
-                    @include('admin.bookings.partials.show.tracking')
+                @if ($booking->booking_type == 'secureship')
+                    {{-- @include('admin.bookings.partials.show.secureship') --}}
+                @else
+                    <div class="col-md-4">
+                        {{-- Load Tracking Status --}}
+                        @include('admin.bookings.partials.show.tracking')
 
-                    {{-- Load Images --}}
-                    @include('admin.bookings.partials.show.images')
-                </div>
-                <div class="col-md-8">
+
+                        {{-- Load Images --}}
+                        @include('admin.bookings.partials.show.images')
+                    </div>
+                @endif
+                <div class="{{ $booking->booking_type == 'secureship' ? 'col-md-12' : 'col-md-8' }}">
                     {{-- Map Tracking --}}
                     @include('admin.bookings.partials.show.map')
 
