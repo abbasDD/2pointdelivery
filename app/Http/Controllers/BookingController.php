@@ -29,6 +29,8 @@ use App\Models\BookingReview;
 use App\Models\BookingSecureship;
 use App\Models\BookingSecureshipPackage;
 use App\Models\DeliveryConfig;
+use App\Models\HelperCompany;
+use App\Models\User;
 use App\Models\UserNotification;
 use App\Models\UserWallet;
 
@@ -1512,5 +1514,132 @@ class BookingController extends Controller
         }
 
         return $taxPercentage;
+    }
+
+
+    // Get Booking Current Status
+    public function getBookingCurrentStatus($booking_status)
+    {
+
+        if (!isset($booking_status)) {
+            return -1;
+        }
+
+        // Set default to -1
+        $currentStatus = -1;
+
+        switch ($booking_status) {
+            case 'pending':
+                $currentStatus = 0;
+                break;
+            case 'cancelled':
+                $currentStatus = 1;
+                break;
+            case 'accepted':
+                $currentStatus = 1;
+                break;
+            case 'started':
+                $currentStatus = 2;
+                break;
+            case 'in_transit':
+                $currentStatus = 3;
+                break;
+            case 'completed':
+                $currentStatus = 4;
+                break;
+            case 'incomplete':
+                $currentStatus = 4;
+                break;
+            case 'expired':
+                $currentStatus = 5;
+                break;
+            default:
+                $currentStatus = 1;
+                break;
+        }
+
+        return $currentStatus;
+    }
+
+    // Get boooking data as per the booking type
+    public function getBookingTypeData($booking_type, $booking_id)
+    {
+        if (!isset($booking_type)) {
+            return -1;
+        }
+
+        // default to null
+        $bookingData = null;
+
+        // Getting booking delivery data
+        if ($booking_type == 'delivery') {
+            $bookingData = BookingDelivery::where('booking_id', $booking_id)->first();
+        }
+
+        // get booking moving
+        if ($booking_type == 'moving') {
+            $bookingData = BookingMoving::where('booking_id', $booking_id)->first();
+        }
+
+        return $bookingData;
+    }
+
+    // Check if all helper requirements are met
+    public function checkHelperRequirements()
+    {
+        // Check if user has helper_enabled
+        $user = User::where('id', auth()->user()->id)->first();
+        if (!$user->helper_enabled) {
+            return redirect()->route('helper.profile')->with('error', 'In order to accept booking please enable your profile');
+        }
+
+        // Check if helper completed its profile
+        $helper = Helper::where('user_id', auth()->user()->id)->first();
+
+        if (!$helper) {
+            return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
+        }
+
+        // Check if personal detail completed
+        if ($helper->first_name == null || $helper->last_name == null) {
+            return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
+        }
+
+        // Check if address detail completed
+        if ($helper->city == null || $helper->state == null || $helper->country == null) {
+            return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
+        }
+
+        // Check if vehicle detail completed
+        $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
+        if (!$helperVehicle) {
+            return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
+        }
+
+        // Check if helper is_approved is 0
+        if ($helper->is_approved != 1) {
+            return redirect()->back()->with('error', 'In order to accept booking, waiting for admin approval');
+        }
+
+        // Check if vehicle detail approved
+        if ($helperVehicle->is_approved != 1) {
+            return redirect()->back()->with('error', 'In order to accept booking, waiting for admin approval');
+        }
+
+        // Check if profile is company profile
+        if ($helper->company_enabled == 1) {
+            // Check if company detail completed
+            $companyData = HelperCompany::where('user_id', auth()->user()->id)->first();
+
+            if (!$companyData) {
+                return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
+            }
+
+            // Check if company detail completed
+
+            if ($companyData->company_alias == null || $companyData->city == null) {
+                return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
+            }
+        }
     }
 }

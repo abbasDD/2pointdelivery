@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Helper;
 
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\EmailTemplateController;
 use App\Http\Controllers\FcmController;
@@ -21,16 +22,15 @@ use App\Models\VehicleType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class BookingController extends Controller
+class HelperBookingController extends Controller
 {
-
+    protected $getBookingController;
     protected $getEstimateController;
     private $fcm;
 
-    public function __construct(GetEstimateController $getEstimateController, FcmController $fcm)
+    public function __construct(BookingController $getBookingController, GetEstimateController $getEstimateController, FcmController $fcm)
     {
-        $this->middleware('auth');
-
+        $this->getBookingController = $getBookingController;
         $this->getEstimateController = $getEstimateController;
         $this->fcm = $fcm;
     }
@@ -74,61 +74,9 @@ class BookingController extends Controller
 
     public function acceptBooking(Request $request)
     {
-        // Check if user has helper_enabled
-        $user = User::where('id', auth()->user()->id)->first();
-        if (!$user->helper_enabled) {
-            return redirect()->route('helper.profile')->with('error', 'In order to accept booking please enable your profile');
-        }
 
-        // Check if helper completed its profile
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
-
-        if (!$helper) {
-            return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
-        }
-
-        // Check if personal detail completed
-        if ($helper->first_name == null || $helper->last_name == null) {
-            return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
-        }
-
-        // Check if address detail completed
-        if ($helper->city == null || $helper->state == null || $helper->country == null) {
-            return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
-        }
-
-        // Check if vehicle detail completed
-        $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
-        if (!$helperVehicle) {
-            return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
-        }
-
-        // Check if helper is_approved is 0
-        if ($helper->is_approved != 1) {
-            return redirect()->back()->with('error', 'In order to accept booking, waiting for admin approval');
-        }
-
-        // Check if vehicle detail approved
-        if ($helperVehicle->is_approved != 1) {
-            return redirect()->back()->with('error', 'In order to accept booking, waiting for admin approval');
-        }
-
-        // Check if profile is company profile
-        if ($helper->company_enabled == 1) {
-            // Check if company detail completed
-            $companyData = HelperCompany::where('user_id', auth()->user()->id)->first();
-
-            if (!$companyData) {
-                return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
-            }
-
-            // Check if company detail completed
-
-            if ($companyData->company_alias == null || $companyData->city == null) {
-                return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
-            }
-        }
-
+        // checkHelperRequirements
+        $this->getBookingController->checkHelperRequirements();
 
         $booking = Booking::find($request->id);
 
@@ -140,59 +88,78 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'You can not accept your own booking');
         }
 
+        // Check if booking status is pending
+        if ($booking->status == 'pending') {
 
-        if ($booking->status != 'pending') {
-            return redirect()->back()->with('error', 'Booking already accepted');
-        }
+            switch ($booking->booking_type) {
+                case 'delivery':
+                    // Get booking delivery data
+                    $bookingPayment = BookingDelivery::where('booking_id', $booking->id)->first();
+                    if (!$bookingPayment) {
+                        return redirect()->back()->with('error', 'Booking payment not found');
+                    }
 
-        if ($booking->booking_type == 'moving') {
-            $bookingPayment = BookingMoving::where('booking_id', $booking->id)->first();
+                    $booking->status = 'accepted';
+                    $booking->helper_user_id = auth()->user()->id;
+                    $booking->save();
+                    break;
+                case 'moving':
+                    $bookingPayment = BookingMoving::where('booking_id', $booking->id)->first();
+                    if (!$bookingPayment) {
+                        return redirect()->back()->with('error', 'Booking payment not found');
+                    }
 
-            // Check if helper_user_id is null
-            if ($booking->helper_user_id == null) {
-                // $booking->status = 'accepted';
-                $booking->helper_user_id = auth()->user()->id;
-                $booking->save();
-            } else {
-                // Check if same user_id is in helper_user_id
-                if ($booking->helper_user_id == auth()->user()->id) {
-                    return redirect()->back()->with('error', 'You have already accepted this booking');
-                }
-                $booking->status = 'accepted';
-                $booking->helper_user_id2 = auth()->user()->id;
-                $booking->save();
+                    // Check if helper_user_id is null
+                    if ($booking->helper_user_id == null) {
+                        // $booking->status = 'accepted';
+                        $booking->helper_user_id = auth()->user()->id;
+                        $booking->save();
+                    } else {
+                        // Check if same user_id is in helper_user_id
+                        if ($booking->helper_user_id == auth()->user()->id) {
+                            return redirect()->back()->with('error', 'You have already accepted this booking');
+                        }
+                        $booking->status = 'accepted';
+                        $booking->helper_user_id2 = auth()->user()->id;
+                        $booking->save();
+                    }
+                    break;
+                case 'secureship':
+                    return redirect()->back()->with('error', 'Unsupported booking type');
+                    break;
+                default:
+                    return redirect()->back()->with('error', 'Booking type not found');
+                    break;
             }
-        } else {
-            $bookingPayment = BookingDelivery::where('booking_id', $booking->id)->first();
 
-            $booking->status = 'accepted';
-            $booking->helper_user_id = auth()->user()->id;
-            $booking->save();
+
+            $bookingPayment->accepted_at = Carbon::now();
+            $bookingPayment->save();
+
+            // Send email
+            $emailTemplateController = app(EmailTemplateController::class);
+            $emailTemplateController->bookingStatusEmail($booking);
+
+            // Send Notification
+            UserNotification::create([
+                'sender_user_id' => auth()->user()->id,
+                'receiver_user_id' => $booking->client_user_id,
+                'receiver_user_type' => 'client',
+                'reference_id' => $booking->id,
+                'type' => 'booking',
+                'title' => 'Booking Accepted',
+                'content' => 'Your booking has been accepted.',
+                'read' => 0
+            ]);
+
+            // Send Push Notification to client
+            $this->fcm->sendPushNotificationToUser($booking->client_user_id, 'Booking Accepted', 'Your booking has been accepted.', 'booking', $booking->id, 'booking', $booking->id);
+
+            return redirect()->back()->with('success', 'Booking accepted successfully!');
         }
 
-        $bookingPayment->accepted_at = Carbon::now();
-        $bookingPayment->save();
 
-        // Send email
-        $emailTemplateController = app(EmailTemplateController::class);
-        $emailTemplateController->bookingStatusEmail($booking);
-
-        // Send Notification
-        UserNotification::create([
-            'sender_user_id' => auth()->user()->id,
-            'receiver_user_id' => $booking->client_user_id,
-            'receiver_user_type' => 'client',
-            'reference_id' => $booking->id,
-            'type' => 'booking',
-            'title' => 'Booking Accepted',
-            'content' => 'Your booking has been accepted.',
-            'read' => 0
-        ]);
-
-        // Send Push Notification to client
-        $this->fcm->sendPushNotificationToUser($booking->client_user_id, 'Booking Accepted', 'Your booking has been accepted.', 'booking', $booking->id, 'booking', $booking->id);
-
-        return redirect()->back()->with('success', 'Booking accepted successfully!');
+        return redirect()->back()->with('error', 'Booking already accepted');
     }
 
     /**
@@ -212,42 +179,18 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking not found');
         }
 
+        // Check if booking_type is secureship
+        if ($booking->booking_type == 'secureship') {
+            return redirect()->back()->with('error', 'Unsupported booking type');
+        }
+
         // Check if helper_user_id && helper_user_id is equal to auth()->user()->id
         if ($booking->helper_user_id != auth()->user()->id && $booking->helper_user_id2 != auth()->user()->id) {
             return redirect()->back()->with('error', 'Booking not found');
         }
 
-        $booking->currentStatus = 1;
-        // switch to manage booking status
-        switch ($booking->status) {
-            case 'pending':
-                $booking->currentStatus = 0;
-                break;
-            case 'cancelled':
-                $booking->currentStatus = 1;
-                break;
-            case 'accepted':
-                $booking->currentStatus = 1;
-                break;
-            case 'started':
-                $booking->currentStatus = 2;
-                break;
-            case 'in_transit':
-                $booking->currentStatus = 3;
-                break;
-            case 'completed':
-                $booking->currentStatus = 4;
-                break;
-            case 'incomplete':
-                $booking->currentStatus = 4;
-                break;
-            case 'expired':
-                $booking->currentStatus = 5;
-                break;
-            default:
-                $booking->currentStatus = 1;
-                break;
-        }
+        // Conveert booking status to current
+        $booking->currentStatus = $this->getBookingController->getBookingCurrentStatus($booking->status);
 
         $booking->moverCount = 0;
 

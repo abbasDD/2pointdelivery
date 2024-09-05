@@ -163,6 +163,9 @@ class ClientController extends Controller
             }
         }
 
+        // Unread notification count for user
+        $responseData['unreadNotificationCount'] = UserNotification::where('user_id', auth()->user()->id)->where('receiver_user_type', 'client')->where('is_read', 0)->count() ?? 0;
+
         return response()->json([
             'success' => true,
             'message' => 'Home Data fetched successfully',

@@ -224,6 +224,9 @@ class HelperController extends Controller
             $data['is_kyc_approved'] = true;
         }
 
+        // Unread notification count for user
+        $data['unreadNotificationCount'] = UserNotification::where('user_id', auth()->user()->id)->where('receiver_user_type', 'helper')->where('is_read', 0)->count() ?? 0;
+
 
         return response()->json([
             'success' => true,

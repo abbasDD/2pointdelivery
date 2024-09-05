@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminBookingController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminReviewController;
 use App\Http\Controllers\Admin\BlogController;
@@ -201,9 +202,9 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     Route::post('/moving-detail/update-status', [MovingDetailController::class, 'updateStatus'])->name('movingDetail.updateStatus');
 
     // Bookings Page Routes
-    Route::get('/bookings', [BookingController::class, 'index'])->name('bookings');
-    Route::get('/bookings/view/{id}', [BookingController::class, 'show'])->name('booking.show');
-    Route::get('/bookings/cancel/{id}', [BookingController::class, 'cancel'])->name('booking.cancel');
+    Route::get('/bookings', [AdminBookingController::class, 'index'])->name('bookings');
+    Route::get('/bookings/view/{id}', [AdminBookingController::class, 'show'])->name('booking.show');
+    Route::get('/bookings/cancel/{id}', [AdminBookingController::class, 'cancel'])->name('booking.cancel');
 
     // Chat Page Routes
     Route::get('/chats', [ChatController::class, 'index'])->name('chats');

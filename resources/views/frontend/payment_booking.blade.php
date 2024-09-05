@@ -115,61 +115,65 @@
                         <hr>
 
                         @if ($booking->status == 'draft')
-                            <div id="paymentMethodDiv">
-                                {{-- Payment Method --}}
-                                <h5>Payment Now Using:</h5>
-                                <div class=" d-flex align-items-center justify-content-center">
-                                    {{-- Paypal --}}
-                                    @if ($paypalEnabled)
-                                        <div class="paypal">
-                                            <form id="paypal-form" class="p-0 m-0"
-                                                action="{{ route('client.booking.payment.paypal.create') }}"
-                                                method="post">
-                                                @csrf
-                                                <input type="hidden" name="booking_id" value="{{ $booking->id }}">
-                                                <!-- Assuming $booking is available with the booking details -->
-                                                @if ($booking->booking_type == 'secureship')
-                                                    <input type="hidden" name="total_price"
-                                                        value="{{ $bookingData->grandTotal }}">
-                                                @else
-                                                    <input type="hidden" name="total_price"
-                                                        value="{{ $bookingData->total_price }}">
-                                                @endif
+                            @if ($booking->booking_type == 'secureship')
+                                <p class="text-danger"> Unable to process payment for Secureship </p>
+                            @else
+                                <div id="paymentMethodDiv">
+                                    {{-- Payment Method --}}
+                                    <h5>Payment Now Using:</h5>
+                                    <div class=" d-flex align-items-center justify-content-center">
+                                        {{-- Paypal --}}
+                                        @if ($paypalEnabled)
+                                            <div class="paypal">
+                                                <form id="paypal-form" class="p-0 m-0"
+                                                    action="{{ route('client.booking.payment.paypal.create') }}"
+                                                    method="post">
+                                                    @csrf
+                                                    <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+                                                    <!-- Assuming $booking is available with the booking details -->
+                                                    @if ($booking->booking_type == 'secureship')
+                                                        <input type="hidden" name="total_price"
+                                                            value="{{ $bookingData->grandTotal }}">
+                                                    @else
+                                                        <input type="hidden" name="total_price"
+                                                            value="{{ $bookingData->total_price }}">
+                                                    @endif
 
-                                                <!-- Assuming the total_price is fixed -->
-                                                <button type="submit" class="btn btn-paypal d-flex align-items-center">
-                                                    <i class="fab fa-paypal"></i>
-                                                    <span class="d-none d-md-block ml-2">PayPal</span>
+                                                    <!-- Assuming the total_price is fixed -->
+                                                    <button type="submit" class="btn btn-paypal d-flex align-items-center">
+                                                        <i class="fab fa-paypal"></i>
+                                                        <span class="d-none d-md-block ml-2">PayPal</span>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        @endif
+                                        {{-- Stripe --}}
+                                        @if ($stripeEnabled && $stripe_publishable_key != null)
+                                            <div class="stripe ml-2">
+                                                <button class="btn btn-stripe d-flex align-items-center"
+                                                    onclick="openStripePaymentModal()">
+                                                    <i class="fa-brands fa-stripe"></i>
+                                                    <span class="d-none d-md-block ml-2">Stripe</span>
                                                 </button>
-                                            </form>
-                                        </div>
-                                    @endif
-                                    {{-- Stripe --}}
-                                    @if ($stripeEnabled && $stripe_publishable_key != null)
-                                        <div class="stripe ml-2">
-                                            <button class="btn btn-stripe d-flex align-items-center"
-                                                onclick="openStripePaymentModal()">
-                                                <i class="fa-brands fa-stripe"></i>
-                                                <span class="d-none d-md-block ml-2">Stripe</span>
-                                            </button>
-                                        </div>
-                                    @endif
-                                    {{-- Cash On Delivery --}}
-                                    @if ($codEnabled)
-                                        <div class="cod ml-2">
-                                            <button class="btn btn-primary d-flex align-items-center"
-                                                onclick="paymentMethodSelection('cod')">
-                                                <i class="fa-solid fa-money-bill-1"></i>
-                                                <span class="d-none d-md-block ml-2">COD</span>
-                                            </button>
-                                        </div>
-                                    @endif
-                                    {{-- <div class="ml-2">
+                                            </div>
+                                        @endif
+                                        {{-- Cash On Delivery --}}
+                                        @if ($codEnabled)
+                                            <div class="cod ml-2">
+                                                <button class="btn btn-primary d-flex align-items-center"
+                                                    onclick="paymentMethodSelection('cod')">
+                                                    <i class="fa-solid fa-money-bill-1"></i>
+                                                    <span class="d-none d-md-block ml-2">COD</span>
+                                                </button>
+                                            </div>
+                                        @endif
+                                        {{-- <div class="ml-2">
                                         <button class="btn btn-primary d-flex align-items-center"
                                             onclick="openCODModal()">Open</button>
                                     </div> --}}
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
                         @else
                             <h6 class="text-center">Payment Successful</h6>
                             {{-- Link to Booking Show --}}

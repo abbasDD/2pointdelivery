@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\BookingDelivery;
@@ -13,8 +14,17 @@ use App\Models\ServiceCategory;
 use App\Models\VehicleType;
 use Illuminate\Http\Request;
 
-class BookingController extends Controller
+class AdminBookingController extends Controller
 {
+
+    protected $getBookingController;
+
+    public function __construct(BookingController $getBookingController)
+    {
+        $this->getBookingController = $getBookingController;
+    }
+
+
     public function index(Request $request)
     {
         $bookings = Booking::with('client')
@@ -66,50 +76,11 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking not found');
         }
 
+        // Get booking detail as per booking type
+        $bookingData = $this->getBookingController->getBookingTypeData($booking->booking_type, $booking->id);
 
-        $bookingData = null;
-
-        // Getting booking delivery data
-        if ($booking->booking_type == 'delivery') {
-            $bookingData = BookingDelivery::where('booking_id', $booking->id)->first();
-        }
-
-        // get booking moving
-        if ($booking->booking_type == 'moving') {
-            $bookingData = BookingMoving::where('booking_id', $booking->id)->first();
-        }
-
-        $booking->currentStatus = 1;
-        // switch to manage booking status
-        switch ($booking->status) {
-            case 'pending':
-                $booking->currentStatus = 0;
-                break;
-            case 'cancelled':
-                $booking->currentStatus = 1;
-                break;
-            case 'accepted':
-                $booking->currentStatus = 1;
-                break;
-            case 'started':
-                $booking->currentStatus = 2;
-                break;
-            case 'in_transit':
-                $booking->currentStatus = 3;
-                break;
-            case 'completed':
-                $booking->currentStatus = 4;
-                break;
-            case 'incomplete':
-                $booking->currentStatus = 4;
-                break;
-            case 'expired':
-                $booking->currentStatus = 5;
-                break;
-            default:
-                $booking->currentStatus = 1;
-                break;
-        }
+        // Convert booking status to current
+        $booking->currentStatus = $this->getBookingController->getBookingCurrentStatus($booking->status);
 
         $booking->moverCount = 0;
 
