@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Helper\BookingController;
 use App\Http\Controllers\Helper\ChatController;
+use App\Http\Controllers\Helper\HelperBookingController;
 use App\Http\Controllers\Helper\KycDetailController;
 use App\Http\Controllers\Helper\MessageController;
 use App\Http\Controllers\Helper\TeamInvitationController;
@@ -47,13 +48,13 @@ Route::middleware(['app_language'])->group(function () {
         Route::get('/kyc/show/{id}', [KycDetailController::class, 'show'])->name('kyc.show');
 
         //Bookings
-        Route::get('/bookings', [BookingController::class, 'index'])->name('bookings');
-        Route::get('/booking/accept/{id}', [BookingController::class, 'acceptBooking'])->name('booking.accept');
-        Route::get('/booking/show/{id}', [BookingController::class, 'show'])->name('booking.show');
-        Route::post('/booking/start/', [BookingController::class, 'start'])->name('booking.start');
-        Route::post('/booking/in-transit/', [BookingController::class, 'inTransit'])->name('booking.inTransit');
-        Route::post('/booking/complete/', [BookingController::class, 'complete'])->name('booking.complete');
-        Route::post('/booking/incomplete/', [BookingController::class, 'incomplete'])->name('booking.incomplete');
+        Route::get('/bookings', [HelperBookingController::class, 'index'])->name('bookings');
+        Route::get('/booking/accept/{id}', [HelperBookingController::class, 'acceptBooking'])->name('booking.accept');
+        Route::get('/booking/show/{id}', [HelperBookingController::class, 'show'])->name('booking.show');
+        Route::post('/booking/start/', [HelperBookingController::class, 'start'])->name('booking.start');
+        Route::post('/booking/in-transit/', [HelperBookingController::class, 'inTransit'])->name('booking.inTransit');
+        Route::post('/booking/complete/', [HelperBookingController::class, 'complete'])->name('booking.complete');
+        Route::post('/booking/incomplete/', [HelperBookingController::class, 'incomplete'])->name('booking.incomplete');
 
         // Team 
         Route::get('team/index', [TeamInvitationController::class, 'getInvitedUsers'])->name('team.index');

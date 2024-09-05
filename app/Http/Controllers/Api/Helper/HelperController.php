@@ -225,7 +225,7 @@ class HelperController extends Controller
         }
 
         // Unread notification count for user
-        $data['unreadNotificationCount'] = UserNotification::where('user_id', auth()->user()->id)->where('receiver_user_type', 'helper')->where('is_read', 0)->count() ?? 0;
+        $data['unreadNotificationCount'] = UserNotification::where('receiver_user_id', auth()->user()->id)->where('receiver_user_type', 'helper')->where('read', 0)->count() ?? 0;
 
 
         return response()->json([
