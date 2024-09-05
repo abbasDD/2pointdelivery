@@ -445,6 +445,7 @@ class HelperController extends Controller
             'phone_no' => $helper->phone_no,
             'gender' => $helper->gender,
             'date_of_birth' => $helper->date_of_birth,
+            'is_approved' => $helper->is_approved ?? 0,
             'email' => $user->email,
             'profile_image' => $helper->profile_image ? asset('images/users/' . $helper->profile_image) : asset('images/users/default.png'),
             'service_badge_id' => $helper->service_badge_id,
@@ -856,7 +857,8 @@ class HelperController extends Controller
             'vehicle_make' => '',
             'vehicle_model' => '',
             'vehicle_color' => '',
-            'vehicle_year' => ''
+            'vehicle_year' => '',
+            'is_approved' => 0
         ];
 
         $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
@@ -868,7 +870,8 @@ class HelperController extends Controller
                 'vehicle_make' => $helperVehicle->vehicle_make,
                 'vehicle_model' => $helperVehicle->vehicle_model,
                 'vehicle_color' => $helperVehicle->vehicle_color,
-                'vehicle_year' => $helperVehicle->vehicle_year
+                'vehicle_year' => $helperVehicle->vehicle_year,
+                'is_approved' => $helperVehicle->is_approved
             ];
         }
 
@@ -1162,6 +1165,34 @@ class HelperController extends Controller
 
         // Mark all notifications as read
         UserNotification::where('receiver_user_id', auth()->user()->id)->where('receiver_user_type', 'helper')->update(['read' => 1]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Notifications marked as read successfully',
+            'data' => []
+        ], 200);
+    }
+
+    // markNotificationsRead
+    public function markNotificationsRead(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+
+        // Mark all notifications as read
+        UserNotification::where('receiver_user_id', auth()->user()->id)
+            ->where('id', $request->id)
+            ->where('receiver_user_type', 'helper')
+            ->update(['read' => 1]);
 
         return response()->json([
             'success' => true,

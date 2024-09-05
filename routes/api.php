@@ -127,6 +127,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     // Notifications
     Route::get('notifications', [ClientController::class, 'getNotifications']);
     Route::post('notifications/read-all', [ClientController::class, 'markAllNotificationsRead']);
+    Route::post('notification/read', [ClientController::class, 'markNotificationsRead']);
 
     // Wallet
     Route::get('wallet', [WalletClientController::class, 'index']);
@@ -233,6 +234,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     // Notifications
     Route::get('notifications', [HelperController::class, 'getNotifications']);
     Route::post('notifications/read-all', [HelperController::class, 'markAllNotificationsRead']);
+    Route::post('notification/read', [HelperController::class, 'markNotificationsRead']);
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);

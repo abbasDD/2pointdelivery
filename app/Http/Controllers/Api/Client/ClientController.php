@@ -1132,6 +1132,33 @@ class ClientController extends Controller
         ], 200);
     }
 
+    // markNotificationsRead
+    public function markNotificationsRead(Request $request): JsonResponse
+    {
+        // If token is not valid return error
+
+        if (!auth()->user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Mark all notifications as read
+        UserNotification::where('receiver_user_id', auth()->user()->id)
+            ->where('id', $request->id)
+            ->where('receiver_user_type', 'client')
+            ->update(['read' => 1]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Notification marked as read successfully',
+            'data' => []
+        ], 200);
+    }
+
 
     // Teams
 
