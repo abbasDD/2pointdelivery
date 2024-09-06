@@ -20,7 +20,7 @@ class ClientWalletResource extends JsonResource
             'user_id' => $this->user_id,
             'user_type' => $this->user_type,
             'type' => $this->type,
-            'booking_id' => Booking::find($this->booking_id)->booking_uuid ?? 0,
+            'booking_id' => Booking::find($this->booking_id)->booking_uuid ?? '-',
             'amount' => $this->amount,
             'note' => $this->note,
             'payment_method' => $this->payment_method,
