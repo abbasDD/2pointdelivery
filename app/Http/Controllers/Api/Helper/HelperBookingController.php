@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class HelperBookingController extends Controller
 {
@@ -33,7 +34,7 @@ class HelperBookingController extends Controller
     public function getBookingDetails(Request $request): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -52,7 +53,7 @@ class HelperBookingController extends Controller
         }
 
         // return response()->json([
-        //     'booking_id' => auth()->user()->id
+        //     'booking_id' => Auth::user()->id
         // ]);
 
         $booking_id = $request->id;
@@ -235,7 +236,7 @@ class HelperBookingController extends Controller
     public function acceptBooking(Request $request): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -258,7 +259,7 @@ class HelperBookingController extends Controller
         }
 
         // Check if user has helper_enabled
-        $user = User::where('id', auth()->user()->id)->first();
+        $user = User::where('id', Auth::user()->id)->first();
         if (!$user->helper_enabled) {
             return response()->json([
                 'success' => false,
@@ -280,7 +281,7 @@ class HelperBookingController extends Controller
         }
 
         // Check is client_user_id is same as auth id
-        if ($booking->client_user_id == auth()->user()->id) {
+        if ($booking->client_user_id == Auth::user()->id) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 422,
@@ -290,7 +291,7 @@ class HelperBookingController extends Controller
         }
 
         // Check if helper is_approved is 1
-        $helper = Helper::where('user_id', auth()->user()->id)->where('is_approved', 1)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->where('is_approved', 1)->first();
         if (!$helper) {
             return response()->json([
                 'success' => false,
@@ -301,7 +302,7 @@ class HelperBookingController extends Controller
         }
 
         // Check for vehicleData
-        $vehicleData = HelperVehicle::where('user_id', auth()->user()->id)->where('is_approved', 1)->first();
+        $vehicleData = HelperVehicle::where('user_id', Auth::user()->id)->where('is_approved', 1)->first();
 
         if (!$vehicleData) {
             return response()->json([
@@ -318,7 +319,7 @@ class HelperBookingController extends Controller
             // Check if booking_type is delivery
             if ($booking->booking_type == 'delivery') {
                 // Update booking status
-                $booking->helper_user_id = auth()->user()->id;
+                $booking->helper_user_id = Auth::user()->id;
                 $booking->status = 'accepted';
                 $booking->save();
 
@@ -338,13 +339,13 @@ class HelperBookingController extends Controller
                 // Check if helper_user_id is null then only update user_id of mover1
                 if ($booking->helper_user_id == null) {
                     // Update booking status
-                    $booking->helper_user_id = auth()->user()->id;
+                    $booking->helper_user_id = Auth::user()->id;
                     $booking->save();
                 }
                 // if it is not null then store in helper_user_id2 and update booking status
                 else {
                     // Check if same user already accepted for user1
-                    if ($booking->helper_user_id == auth()->user()->id) {
+                    if ($booking->helper_user_id == Auth::user()->id) {
                         return response()->json([
                             'success' => false,
                             'statusCode' => 422,
@@ -353,7 +354,7 @@ class HelperBookingController extends Controller
                         ], 422);
                     }
                     // Update booking status
-                    $booking->helper_user_id2 = auth()->user()->id;
+                    $booking->helper_user_id2 = Auth::user()->id;
                     $booking->status = 'accepted';
                     $booking->save();
                 }
@@ -394,7 +395,7 @@ class HelperBookingController extends Controller
     public function startBooking(Request $request): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -431,7 +432,7 @@ class HelperBookingController extends Controller
 
 
         // Check if auth user is helper
-        if ($booking->helper_user_id != auth()->user()->id && $booking->helper_user_id2 != auth()->user()->id) {
+        if ($booking->helper_user_id != Auth::user()->id && $booking->helper_user_id2 != Auth::user()->id) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 422,
@@ -542,7 +543,7 @@ class HelperBookingController extends Controller
     public function inTransitBooking(Request $request): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -576,7 +577,7 @@ class HelperBookingController extends Controller
         }
 
         // Check if auth user is helper
-        if ($booking->helper_user_id != auth()->user()->id && $booking->helper_user_id2 != auth()->user()->id) {
+        if ($booking->helper_user_id != Auth::user()->id && $booking->helper_user_id2 != Auth::user()->id) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 422,
@@ -652,7 +653,7 @@ class HelperBookingController extends Controller
     public function completeBooking(Request $request): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -688,7 +689,7 @@ class HelperBookingController extends Controller
         }
 
         // Check if auth user is helper
-        if ($booking->helper_user_id != auth()->user()->id && $booking->helper_user_id2 != auth()->user()->id) {
+        if ($booking->helper_user_id != Auth::user()->id && $booking->helper_user_id2 != Auth::user()->id) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 422,
@@ -845,7 +846,7 @@ class HelperBookingController extends Controller
     public function incompleteBooking(Request $request): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -880,7 +881,7 @@ class HelperBookingController extends Controller
         }
 
         // Check if auth user is helper
-        if ($booking->helper_user_id != auth()->user()->id && $booking->helper_user_id2 != auth()->user()->id) {
+        if ($booking->helper_user_id != Auth::user()->id && $booking->helper_user_id2 != Auth::user()->id) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -957,7 +958,7 @@ class HelperBookingController extends Controller
     public function pendingBookings(): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -966,7 +967,7 @@ class HelperBookingController extends Controller
             ], 401);
         }
 
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
 
         // Get helperServices list
         $helperServices = $helper->service_types();
@@ -978,7 +979,7 @@ class HelperBookingController extends Controller
         $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status')
             ->where('status', 'pending')
             ->whereIn('service_type_id', $helperServiceIds)
-            ->where('client_user_id', '!=', auth()->user()->id)
+            ->where('client_user_id', '!=', Auth::user()->id)
             ->orderBy('bookings.updated_at', 'desc')->get();
 
         return response()->json([
@@ -993,7 +994,7 @@ class HelperBookingController extends Controller
     public function activeBookings(): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1002,7 +1003,7 @@ class HelperBookingController extends Controller
             ], 401);
         }
 
-        $userId = auth()->user()->id;
+        $userId = Auth::user()->id;
 
         $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status')
             ->where(function ($query) use ($userId) {
@@ -1026,7 +1027,7 @@ class HelperBookingController extends Controller
     public function getBookingHistory(): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1035,7 +1036,7 @@ class HelperBookingController extends Controller
             ], 401);
         }
 
-        $userId = auth()->user()->id;
+        $userId = Auth::user()->id;
 
         $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status')
             ->where(function ($query) use ($userId) {
@@ -1129,7 +1130,7 @@ class HelperBookingController extends Controller
     {
         // Check if helper_user_id is not equal to auth id
         if ($booking_type == 'moving') {
-            if ($helper_user_id != auth()->user()->id) {
+            if ($helper_user_id != Auth::user()->id) {
                 return response()->json([
                     'success' => false,
                     'statusCode' => 422,
@@ -1140,7 +1141,7 @@ class HelperBookingController extends Controller
         }
 
         if ($booking_type == 'moving') {
-            if ($helper_user_id != auth()->user()->id) {
+            if ($helper_user_id != Auth::user()->id) {
                 return response()->json([
                     'success' => false,
                     'statusCode' => 422,

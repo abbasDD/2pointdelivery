@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Client;
 use App\Http\Controllers\Controller;
 use App\Models\UserWallet;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class WalletClientController extends Controller
 {
@@ -14,7 +15,7 @@ class WalletClientController extends Controller
 
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -24,13 +25,13 @@ class WalletClientController extends Controller
         }
 
         // amount_spend
-        $statistic['amount_spend'] = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'client')->where('status', 'success')->sum('amount');
+        $statistic['amount_spend'] = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'client')->where('status', 'success')->sum('amount');
 
         // unpaid_amount
-        $statistic['unpaid_amount'] = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'client')->where('status', 'pending')->sum('amount');
+        $statistic['unpaid_amount'] = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'client')->where('status', 'pending')->sum('amount');
 
         // amount_refunded
-        $statistic['amount_refunded'] = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'client')->where('status', 'refunded')->sum('amount');
+        $statistic['amount_refunded'] = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'client')->where('status', 'refunded')->sum('amount');
 
         // return json response
         return response()->json([
@@ -38,7 +39,7 @@ class WalletClientController extends Controller
             'message' => 'Client Profile updated successfully',
             'data' => [
                 'statistic' => $statistic,
-                'wallet' => UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'client')->get(),
+                'wallet' => UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'client')->get(),
             ]
         ], 200);
     }

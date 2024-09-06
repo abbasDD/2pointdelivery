@@ -13,12 +13,12 @@ class ClientController extends Controller
 {
     public function index(Request $request)
     {
-        $clients = Client::select('clients.*', 'users.email', 'users.is_active')
-            ->join('users', 'clients.user_id', '=', 'users.id')
+        $clients = Client::with('user')
             ->paginate(10); // 10 items per page
         if (request()->ajax()) {
             return response()->json(view('clients.partials.client_list', compact('clients'))->render());
         }
+
         return view('admin.clients.index', compact('clients'));
     }
 
@@ -67,8 +67,7 @@ class ClientController extends Controller
 
     public function edit(Request $request)
     {
-        $client = Client::select('clients.*', 'users.email', 'users.is_active')
-            ->join('users', 'clients.user_id', '=', 'users.id')
+        $client = Client::with('user')
             ->where('clients.id', $request->id)
             ->first();
 
@@ -131,8 +130,7 @@ class ClientController extends Controller
 
     public function show(Request $request)
     {
-        $client = Client::select('clients.*', 'users.email', 'users.is_active')
-            ->join('users', 'clients.user_id', '=', 'users.id')
+        $client = Client::with('user')
             ->where('clients.id', $request->id)
             ->first();
 

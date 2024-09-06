@@ -51,7 +51,7 @@ class BookingController extends Controller
      */
     public function index()
     {
-        $bookings = Booking::where('client_user_id', auth()->user()->id)
+        $bookings = Booking::where('client_user_id', Auth::user()->id)
             ->with('client')
             ->with('prioritySetting')
             ->with('serviceType')
@@ -142,14 +142,14 @@ class BookingController extends Controller
         ]);
 
         // Add client_user_id
-        $client = Client::where('user_id', auth()->user()->id)->first();
+        $client = Client::where('user_id', Auth::user()->id)->first();
 
         // if not found then create
         if (!$client) {
             $newClient = Client::create([
-                'user_id' => auth()->user()->id,
+                'user_id' => Auth::user()->id,
             ]);
-            $client = Client::where('user_id', auth()->user()->id)->first();
+            $client = Client::where('user_id', Auth::user()->id)->first();
         }
 
         // Check booking type
@@ -189,7 +189,7 @@ class BookingController extends Controller
         // Create new booking
         $booking = Booking::create([
             'uuid' => $uuid,
-            'client_user_id' => auth()->user()->id,
+            'client_user_id' => Auth::user()->id,
             'service_type_id' => $request->selectedServiceTypeID,
             'service_category_id' => $serviceCategory->id,
             'priority_setting_id' => $request->priorityID,
@@ -257,7 +257,7 @@ class BookingController extends Controller
         // After successful booking. Store address book for later use
         // Data to store
         $addressBookData = [
-            'user_id' => auth()->user()->id,
+            'user_id' => Auth::user()->id,
             'client_id' => $client->id,
             'pickup_address' => $booking->pickup_address ?? null,
             'dropoff_address' => $booking->dropoff_address ?? null,
@@ -279,7 +279,7 @@ class BookingController extends Controller
         // User Notification
         UserNotification::create([
             'sender_user_id' => null,
-            'receiver_user_id' => auth()->user()->id,
+            'receiver_user_id' => Auth::user()->id,
             'receiver_user_type' => 'client',
             'type' => 'booking',
             'reference_id' => $booking->id,
@@ -589,7 +589,7 @@ class BookingController extends Controller
     {
 
         // Check if client completed its profile
-        $client = Client::where('user_id', auth()->user()->id)->first();
+        $client = Client::where('user_id', Auth::user()->id)->first();
 
         if (!$client) {
             return redirect()->route('client.profile')->with('error', 'In order to complete booking please complete your profile');
@@ -608,7 +608,7 @@ class BookingController extends Controller
         // Check if profile is company profile
         if ($client->company_enabled == 1) {
             // Check if company detail completed
-            $companyData = ClientCompany::where('user_id', auth()->user()->id)->first();
+            $companyData = ClientCompany::where('user_id', Auth::user()->id)->first();
 
             if (!$companyData) {
                 return redirect()->route('client.profile')->with('error', 'In order to complete booking please complete your profile');
@@ -624,7 +624,7 @@ class BookingController extends Controller
         // dd($request->id);
 
         $booking = Booking::where('id', $request->id)
-            ->where('client_user_id', auth()->user()->id)
+            ->where('client_user_id', Auth::user()->id)
             ->with('client')
             ->with('prioritySetting')
             ->with('serviceType')
@@ -724,7 +724,7 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Booking ID not found');
         }
         // Get uuid of booking from id
-        $booking = Booking::where('id', $bookingId)->where('client_user_id', auth()->user()->id)->first();
+        $booking = Booking::where('id', $bookingId)->where('client_user_id', Auth::user()->id)->first();
         if (!$booking) {
             return redirect()->back()->with('error', 'Booking not found');
         }
@@ -857,7 +857,7 @@ class BookingController extends Controller
 
             // Add to User Wallet as Paypal Amount
             UserWallet::create([
-                'user_id' => auth()->user()->id,
+                'user_id' => Auth::user()->id,
                 'user_type' => 'client',
                 'type' => 'received',
                 'amount' => $booking->total_price,
@@ -871,7 +871,7 @@ class BookingController extends Controller
             // Send notification to user
             UserNotification::create([
                 'sender_user_id' => null,
-                'receiver_user_id' => auth()->user()->id,
+                'receiver_user_id' => Auth::user()->id,
                 'receiver_user_type' => 'client',
                 'type' => 'booking',
                 'reference_id' => $booking->id,
@@ -917,7 +917,7 @@ class BookingController extends Controller
         }
 
         // Get uuid of booking from id
-        $booking = Booking::where('id', $bookingId)->where('client_user_id', auth()->user()->id)->first();
+        $booking = Booking::where('id', $bookingId)->where('client_user_id', Auth::user()->id)->first();
         if (!$booking) {
             return redirect()->back()->with('error', 'Booking not found');
         }
@@ -941,7 +941,7 @@ class BookingController extends Controller
 
         // Get the payment amount and email address from the form.
         $amount = $booking->total_price * 100;
-        $email = auth()->user()->email;
+        $email = Auth::user()->email;
 
         // Create a new Stripe customer.
         $customer = \Stripe\Customer::create([
@@ -983,7 +983,7 @@ class BookingController extends Controller
 
         // Add to User Wallet as Paypal Amount
         UserWallet::create([
-            'user_id' => auth()->user()->id,
+            'user_id' => Auth::user()->id,
             'user_type' => 'client',
             'type' => 'received',
             'amount' => $booking->total_price,
@@ -997,7 +997,7 @@ class BookingController extends Controller
         // Send notification to user
         UserNotification::create([
             'sender_user_id' => null,
-            'receiver_user_id' => auth()->user()->id,
+            'receiver_user_id' => Auth::user()->id,
             'receiver_user_type' => 'client',
             'type' => 'booking',
             'reference_id' => $booking->id,
@@ -1025,7 +1025,7 @@ class BookingController extends Controller
         }
 
         // Check if current user is booked by this booking
-        if ($booking->client_user_id != auth()->user()->id) {
+        if ($booking->client_user_id != Auth::user()->id) {
             return response()->json(['success' => false, 'data' => 'Unable to find booking']);
         }
 
@@ -1075,7 +1075,7 @@ class BookingController extends Controller
 
         // Add to User Wallet as COD
         UserWallet::create([
-            'user_id' => auth()->user()->id,
+            'user_id' => Auth::user()->id,
             'user_type' => 'client',
             'type' => 'received',
             'amount' => $booking->total_price,
@@ -1089,7 +1089,7 @@ class BookingController extends Controller
 
         UserNotification::create([
             'sender_user_id' => null,
-            'receiver_user_id' => auth()->user()->id,
+            'receiver_user_id' => Auth::user()->id,
             'receiver_user_type' => 'client',
             'type' => 'booking',
             'reference_id' => $booking->id,
@@ -1160,7 +1160,7 @@ class BookingController extends Controller
                 'province' => $bookingSecureship->fromAddress_province,
                 'residential' => filter_var($bookingSecureship->fromAddress_residential, FILTER_VALIDATE_BOOLEAN),
                 'taxId' => $bookingSecureship->fromAddress_taxId,
-                'emails' => ['2pointdelivery@gmail.com', auth()->user()->email],
+                'emails' => ['2pointdelivery@gmail.com', Auth::user()->email],
                 'isInside' => filter_var($bookingSecureship->fromAddress_isInside, FILTER_VALIDATE_BOOLEAN),
                 'isTailGate' => filter_var($bookingSecureship->fromAddress_isTailGate, FILTER_VALIDATE_BOOLEAN),
                 'isTradeShow' => filter_var($bookingSecureship->fromAddress_isTradeShow, FILTER_VALIDATE_BOOLEAN),
@@ -1186,7 +1186,7 @@ class BookingController extends Controller
                 'province' => $bookingSecureship->toAddress_province,
                 'residential' => filter_var($bookingSecureship->toAddress_residential, FILTER_VALIDATE_BOOLEAN),
                 'taxId' => $bookingSecureship->toAddress_taxId,
-                'emails' => ['2pointdelivery@gmail.com', auth()->user()->email],
+                'emails' => ['2pointdelivery@gmail.com', Auth::user()->email],
                 'isInside' => filter_var($bookingSecureship->toAddress_isInside, FILTER_VALIDATE_BOOLEAN),
                 'isTailGate' => filter_var($bookingSecureship->toAddress_isTailGate, FILTER_VALIDATE_BOOLEAN),
                 'isTradeShow' => filter_var($bookingSecureship->toAddress_isTradeShow, FILTER_VALIDATE_BOOLEAN),
@@ -1201,7 +1201,7 @@ class BookingController extends Controller
             ],
             'packages' => $packages,
             'shipDateTime' => Carbon::now()->toIso8601String(),
-            'deliveryEmails' => ['2pointdelivery@gmail.com', auth()->user()->email],
+            'deliveryEmails' => ['2pointdelivery@gmail.com', Auth::user()->email],
             'commercialInvoice' => null,  // Add the commercial invoice if necessary
             'billingOption' => 'Prepaid',
             'billingAccountNumber' => 'AB12345XYZ',
@@ -1252,7 +1252,7 @@ class BookingController extends Controller
     public function show(Request $request)
     {
         $booking = Booking::where('id', $request->id)
-            ->where('client_user_id', auth()->user()->id)
+            ->where('client_user_id', Auth::user()->id)
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
@@ -1593,13 +1593,13 @@ class BookingController extends Controller
     public function checkHelperRequirements()
     {
         // Check if user has helper_enabled
-        $user = User::where('id', auth()->user()->id)->first();
+        $user = User::where('id', Auth::user()->id)->first();
         if (!$user->helper_enabled) {
             return redirect()->route('helper.profile')->with('error', 'In order to accept booking please enable your profile');
         }
 
         // Check if helper completed its profile
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
 
         if (!$helper) {
             return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
@@ -1616,7 +1616,7 @@ class BookingController extends Controller
         }
 
         // Check if vehicle detail completed
-        $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
+        $helperVehicle = HelperVehicle::where('user_id', Auth::user()->id)->first();
         if (!$helperVehicle) {
             return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');
         }
@@ -1634,7 +1634,7 @@ class BookingController extends Controller
         // Check if profile is company profile
         if ($helper->company_enabled == 1) {
             // Check if company detail completed
-            $companyData = HelperCompany::where('user_id', auth()->user()->id)->first();
+            $companyData = HelperCompany::where('user_id', Auth::user()->id)->first();
 
             if (!$companyData) {
                 return redirect()->route('helper.profile')->with('error', 'In order to accept booking please complete your profile');

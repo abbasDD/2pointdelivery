@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class KycController extends Controller
 {
@@ -20,7 +21,7 @@ class KycController extends Controller
     {
 
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -30,7 +31,7 @@ class KycController extends Controller
         }
 
         // Get kyc details of logged in user
-        $kycDetails = KycDetail::with('kycType')->where('user_id', auth()->user()->id)->get();
+        $kycDetails = KycDetail::with('kycType')->where('user_id', Auth::user()->id)->get();
 
         $kycDetailList = KycDetailResource::collection($kycDetails);
 
@@ -49,7 +50,7 @@ class KycController extends Controller
     {
 
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -59,7 +60,7 @@ class KycController extends Controller
         }
 
         // Get kyc types // Get already added Kyc Types
-        $existedKycTypes = KycDetail::where('user_id', auth()->user()->id)->pluck('kyc_type_id')->toArray();
+        $existedKycTypes = KycDetail::where('user_id', Auth::user()->id)->pluck('kyc_type_id')->toArray();
 
 
         // Get KYC Types not present in the existedKycTypes array
@@ -79,7 +80,7 @@ class KycController extends Controller
     {
 
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -109,7 +110,7 @@ class KycController extends Controller
         }
 
         // Check if user exist
-        $user = User::where('id', auth()->user()->id)->first();
+        $user = User::where('id', Auth::user()->id)->first();
         if (!$user) {
             return response()->json([
                 'success' => false,
@@ -120,7 +121,7 @@ class KycController extends Controller
         }
 
         // Check if kyc exist or not
-        $kycDetail = KycDetail::where('user_id', auth()->user()->id)->where('kyc_type_id', $request->kyc_type_id)->first();
+        $kycDetail = KycDetail::where('user_id', Auth::user()->id)->where('kyc_type_id', $request->kyc_type_id)->first();
 
         if ($kycDetail) {
             // return redirect()->back()->with('error', 'You have already added this KYC');
@@ -134,7 +135,7 @@ class KycController extends Controller
 
         // Create new kyc
         $kycDetail = KycDetail::create([
-            'user_id' => auth()->user()->id
+            'user_id' => Auth::user()->id
         ]);
 
         // Check if api route has helper in url
@@ -198,7 +199,7 @@ class KycController extends Controller
     public function show(Request $request): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -208,7 +209,7 @@ class KycController extends Controller
         }
 
         // Get kyc details from id only if it is not yet accepted
-        $kycDetail = KycDetail::with('kycType')->where('user_id', auth()->user()->id)->where('is_verified', '!=', 1)->where('id', $request->id)->first();
+        $kycDetail = KycDetail::with('kycType')->where('user_id', Auth::user()->id)->where('is_verified', '!=', 1)->where('id', $request->id)->first();
 
         if (!$kycDetail) {
             return response()->json([
@@ -248,7 +249,7 @@ class KycController extends Controller
     {
 
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -278,7 +279,7 @@ class KycController extends Controller
         }
 
         // Check if user exist
-        $user = User::where('id', auth()->user()->id)->first();
+        $user = User::where('id', Auth::user()->id)->first();
         if (!$user) {
             return response()->json([
                 'success' => false,
@@ -289,7 +290,7 @@ class KycController extends Controller
         }
 
         // Check if kyc is already submitted to admin
-        $kycDetail = KycDetail::where('id', $request->id)->where('user_id', auth()->user()->id)->first();
+        $kycDetail = KycDetail::where('id', $request->id)->where('user_id', Auth::user()->id)->first();
 
         if (!$kycDetail) {
             return response()->json([

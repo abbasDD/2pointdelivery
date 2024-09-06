@@ -14,27 +14,19 @@
         @forelse ($clients as $client)
             <tr>
                 <td>{{ $loop->index + 1 }}</td>
-                <td><img src="{{ $client->profile_image ? asset('images/users/' . $client->profile_image) : asset('images/users/default.png') }}"
+                <td><img src="{{ $client->thumbnail ? asset('images/users/thumbnail/' . $client->thumbnail) : asset('images/users/default.png') }}"
                         alt="Profile Image" width="50">
                 </td>
-                <td>{{ $client->email }}</td>
+                <td>{{ $client->user->email }}</td>
                 <td>{{ $client->first_name . ' ' . $client->last_name }}</td>
                 <td>{{ $client->company_enabled ? 'Company' : 'Individual' }}</td>
                 <td>
                     <button type="button" id="statusButton_{{ $client->id }}"
-                        class="btn  {{ $client->is_active ? 'btn-primary' : 'btn-danger' }} btn-sm"
-                        onclick="showStatusDialog({{ $client->id }}, '{{ $client->is_active }}')">
-                        {{ $client->is_active == 1 ? 'Active' : 'Inactive' }}
+                        class="btn  {{ $client->user->is_active ? 'btn-primary' : 'btn-danger' }} btn-sm"
+                        onclick="showStatusDialog({{ $client->id }}, '{{ $client->user->is_active }}')">
+                        {{ $client->user->is_active == 1 ? 'Active' : 'Inactive' }}
                     </button>
                 </td>
-                {{-- <td>
-                    <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="statusButton_{{ $client->id }}"
-                            onclick="showStatusDialog({{ $client->id }}, {{ $client->is_active }})"
-                            {{ $client->is_active ? 'checked' : '' }}>
-                        <label class="custom-control-label" for="statusButton_{{ $client->id }}"></label>
-                    </div>
-                </td> --}}
                 <td class="gap-1">
                     {{-- View Route --}}
                     <a class="btn btn-sm btn-primary" href="{{ route('admin.client.show', $client->id) }}"><i

@@ -28,10 +28,10 @@
                             <div class="card">
                                 <div class="card-body text-center">
                                     <img class="mb-3"
-                                        src="{{ $client->profile_image ? asset('/images/users/' . $client->profile_image) : asset('images/users/default.png') }}"
+                                        src="{{ $client->thumbnail ? asset('/images/users/thumbnail/' . $client->thumbnail) : asset('images/users/default.png') }}"
                                         alt="Profile Image" width="50">
                                     <h4 class="mb-0">{{ $client->first_name . ' ' . $client->last_name }}</h4>
-                                    <p>{{ $client->email }}</p>
+                                    <p>{{ $client->user->email }}</p>
 
                                     {{-- Sepration Line --}}
                                     <hr>
@@ -39,7 +39,7 @@
                                     {{-- Email Verfied  --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="mb-0">Email Verified</h6>
-                                        <p class="mb-0">{{ $client->email_verified_at ? 'Yes' : 'No' }}</p>
+                                        <p class="mb-0">{{ $client->user->email_verified_at ? 'Yes' : 'No' }}</p>
                                     </div>
                                     {{-- Show Phone Number --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">

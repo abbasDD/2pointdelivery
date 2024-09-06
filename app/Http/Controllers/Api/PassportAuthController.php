@@ -7,9 +7,7 @@ use App\Models\Client;
 use App\Models\ClientCompany;
 use App\Models\FrontendSetting;
 use App\Models\Helper;
-use App\Models\HelperCompany;
 use App\Models\HelperVehicle;
-use App\Models\PaymentSetting;
 use App\Models\Referral;
 use App\Models\SmtpSetting;
 use App\Models\SocialLoginSetting;
@@ -336,7 +334,7 @@ class PassportAuthController extends Controller
                 if ($client->company_enabled == 1) {
                     // Get client company details
                     $userData['company_details'] = true;
-                    $clientCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
+                    $clientCompany = ClientCompany::where('user_id', Auth::user()->id)->first();
                     if (isset($clientCompany) && $clientCompany->legal_name != null) {
                         $userData['company_details'] = true;
                     }
@@ -377,14 +375,14 @@ class PassportAuthController extends Controller
 
                 if ($helper->company_enabled == 1) {
                     // Get helper company details
-                    $helperCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
+                    $helperCompany = ClientCompany::where('user_id', Auth::user()->id)->first();
                     if (isset($helperCompany) && $helperCompany->legal_name != null) {
                         $userData['company_details'] = true;
                     }
                 }
 
                 // Check if helpervehicle details exist
-                $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
+                $helperVehicle = HelperVehicle::where('user_id', Auth::user()->id)->first();
                 if (isset($helperVehicle) && $helperVehicle->vehicle_number != null) {
                     $userData['vehicle_details'] = true;
                 }
@@ -419,7 +417,7 @@ class PassportAuthController extends Controller
 
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -428,7 +426,7 @@ class PassportAuthController extends Controller
             ], 401);
         }
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         return response()->json([
             'success' => true,
@@ -447,7 +445,7 @@ class PassportAuthController extends Controller
 
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -458,7 +456,7 @@ class PassportAuthController extends Controller
 
         // update fcm token to null
 
-        $user = auth()->user();
+        $user = User::find(Auth::user()->id);
         $user->fcm_token = null;
         $user->save();
 

@@ -26,6 +26,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Laravel\Facades\Image;
 
 class HelperController extends Controller
 {
@@ -419,13 +420,20 @@ class HelperController extends Controller
 
         // Upload the profile image if provided
         if ($request->hasFile('profile_image')) {
-            $file = $request->file('profile_image');
-            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
-            $destinationPath = public_path('images/users/');
-            $file->move($destinationPath, $updatedFilename);
+            $image = Image::read($request->file('profile_image'));
 
-            // Set the profile image attribute to the new file name
-            $profile_image = $updatedFilename;
+            // Main Image Upload on Folder Code
+            $imageName = time() . rand(0, 999) . '.' . $request->file('profile_image')->getClientOriginalExtension();
+            $destinationPath = public_path('images/users/');
+            $image->save($destinationPath . $imageName);
+
+            // Generate Thumbnail Image Upload on Folder Code
+            $destinationPathThumbnail = public_path('images/users/thumbnail/');
+            $image->resize(100, 100);
+            $image->save($destinationPathThumbnail . $imageName);
+
+            $profile_image = $imageName;
+            $thumbnail = $imageName;
         }
 
         // Update the helper data
@@ -438,6 +446,7 @@ class HelperController extends Controller
             'date_of_birth' => date('Y-m-d', strtotime($request->date_of_birth)),
             'service_badge_id' => $request->service_badge_id,
             'profile_image' => $profile_image,
+            'thumbnail' => $thumbnail,
             'company_enabled' => $request->company_enabled
         ]);
         // dd($request->all());

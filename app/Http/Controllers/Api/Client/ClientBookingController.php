@@ -16,7 +16,7 @@ use App\Models\DeliveryConfig;
 use App\Models\Helper;
 use App\Models\HelperVehicle;
 use App\Models\MovingConfig;
-use App\Models\MovingDetail;
+use Illuminate\Support\Facades\Auth;
 use App\Models\MovingDetailCategory;
 use App\Models\PaymentSetting;
 use App\Models\PrioritySetting;
@@ -46,7 +46,7 @@ class ClientBookingController extends Controller
     public function newBookingPage1(): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -84,7 +84,7 @@ class ClientBookingController extends Controller
     {
 
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -139,7 +139,7 @@ class ClientBookingController extends Controller
     public function estimateBooking(Request $request): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -254,7 +254,7 @@ class ClientBookingController extends Controller
     {
 
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -289,7 +289,7 @@ class ClientBookingController extends Controller
     {
 
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -354,7 +354,7 @@ class ClientBookingController extends Controller
     public function createBooking(Request $request): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -364,11 +364,11 @@ class ClientBookingController extends Controller
         }
 
         // Check if client have completed its profile
-        $client = Client::where('user_id', auth()->user()->id)->first();
+        $client = Client::where('user_id', Auth::user()->id)->first();
         if (!$client) {
             // Create a new client
             $client = new Client();
-            $client->user_id = auth()->user()->id;
+            $client->user_id = Auth::user()->id;
             $client->save();
         }
 
@@ -524,7 +524,7 @@ class ClientBookingController extends Controller
         // Create New Booking
         $new_booking = Booking::create([
             'uuid' => $uuid,
-            'client_user_id' => auth()->user()->id,
+            'client_user_id' => Auth::user()->id,
             'service_type_id' => $serviceType->id,
             'priority_setting_id' => $prioritySetting->id,
             'service_category_id' => $serviceCategory->id,
@@ -612,7 +612,7 @@ class ClientBookingController extends Controller
         // After successful booking. Store address book for later use
         // Data to store
         $addressBookData = [
-            'user_id' => auth()->user()->id,
+            'user_id' => Auth::user()->id,
             'client_id' => $client->id,
             'pickup_address' => $bookingDetails->pickup_address ?? null,
             'dropoff_address' => $bookingDetails->dropoff_address ?? null,
@@ -634,7 +634,7 @@ class ClientBookingController extends Controller
         // User Notification
         UserNotification::create([
             'sender_user_id' => null,
-            'receiver_user_id' => auth()->user()->id,
+            'receiver_user_id' => Auth::user()->id,
             'receiver_user_type' => 'client',
             'type' => 'booking',
             'reference_id' => $bookingDetails->id,
@@ -657,7 +657,7 @@ class ClientBookingController extends Controller
     {
 
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -667,11 +667,11 @@ class ClientBookingController extends Controller
         }
 
         // Check if client have completed its profile
-        $client = Client::where('user_id', auth()->user()->id)->first();
+        $client = Client::where('user_id', Auth::user()->id)->first();
         if (!$client) {
             // Create a new client
             $client = new Client();
-            $client->user_id = auth()->user()->id;
+            $client->user_id = Auth::user()->id;
             $client->save();
         }
 
@@ -806,7 +806,7 @@ class ClientBookingController extends Controller
         // Create new booking
         $booking = Booking::create([
             'uuid' => $uuid,
-            'client_user_id' => auth()->user()->id,
+            'client_user_id' => Auth::user()->id,
             'service_type_id' => $request->selectedServiceTypeID,
             'service_category_id' => $serviceCategory->id,
             'priority_setting_id' => $request->priorityID,
@@ -862,7 +862,7 @@ class ClientBookingController extends Controller
     {
 
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -881,13 +881,13 @@ class ClientBookingController extends Controller
         }
 
         // return response()->json([
-        //     'booking_id' => auth()->user()->id
+        //     'booking_id' => Auth::user()->id
         // ]);
 
         $booking_id = $request->id;
 
         // Get booking
-        $booking = Booking::where('id', $booking_id)->where('client_user_id', auth()->user()->id)->where('status', 'draft')->first();
+        $booking = Booking::where('id', $booking_id)->where('client_user_id', Auth::user()->id)->where('status', 'draft')->first();
         if (!$booking) {
             return response()->json([
                 'success' => false,
@@ -985,7 +985,7 @@ class ClientBookingController extends Controller
     public function codPaymentBooking(Request $request): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -995,7 +995,7 @@ class ClientBookingController extends Controller
         }
 
         // Check if booking exist on booking_id
-        $booking = Booking::where('id', $request->booking_id)->where('client_user_id', auth()->user()->id)->where('status', 'draft')->first();
+        $booking = Booking::where('id', $request->booking_id)->where('client_user_id', Auth::user()->id)->where('status', 'draft')->first();
 
         if (!$booking) {
             return response()->json([
@@ -1007,7 +1007,7 @@ class ClientBookingController extends Controller
         }
 
         // Check if current user is booked by this booking
-        if ($booking->client_user_id != auth()->user()->id) {
+        if ($booking->client_user_id != Auth::user()->id) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 422,
@@ -1068,7 +1068,7 @@ class ClientBookingController extends Controller
 
         $userNofitication = UserNotification::create([
             'sender_user_id' => null,
-            'receiver_user_id' => auth()->user()->id,
+            'receiver_user_id' => Auth::user()->id,
             'receiver_user_type' => 'client',
             'type' => 'booking',
             'reference_id' => $booking->id,
@@ -1089,7 +1089,7 @@ class ClientBookingController extends Controller
     public function paypalPaymentBooking(Request $request): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1113,7 +1113,7 @@ class ClientBookingController extends Controller
         }
 
         // Check if booking exist on booking_id
-        $booking = Booking::where('id', $request->booking_id)->where('client_user_id', auth()->user()->id)->where('status', 'draft')->first();
+        $booking = Booking::where('id', $request->booking_id)->where('client_user_id', Auth::user()->id)->where('status', 'draft')->first();
 
         if (!$booking) {
             return response()->json([
@@ -1125,7 +1125,7 @@ class ClientBookingController extends Controller
         }
 
         // Check if current user is booked by this booking
-        if ($booking->client_user_id != auth()->user()->id) {
+        if ($booking->client_user_id != Auth::user()->id) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 422,
@@ -1179,7 +1179,7 @@ class ClientBookingController extends Controller
 
         UserNotification::create([
             'sender_user_id' => null,
-            'receiver_user_id' => auth()->user()->id,
+            'receiver_user_id' => Auth::user()->id,
             'receiver_user_type' => 'client',
             'type' => 'booking',
             'reference_id' => $booking->id,
@@ -1202,7 +1202,7 @@ class ClientBookingController extends Controller
     {
 
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1226,7 +1226,7 @@ class ClientBookingController extends Controller
         }
 
         // Check if booking exist on booking_id
-        $booking = Booking::where('id', $request->booking_id)->where('client_user_id', auth()->user()->id)->where('status', 'draft')->first();
+        $booking = Booking::where('id', $request->booking_id)->where('client_user_id', Auth::user()->id)->where('status', 'draft')->first();
 
         if (!$booking) {
             return response()->json([
@@ -1238,7 +1238,7 @@ class ClientBookingController extends Controller
         }
 
         // Check if current user is booked by this booking
-        if ($booking->client_user_id != auth()->user()->id) {
+        if ($booking->client_user_id != Auth::user()->id) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 422,
@@ -1292,7 +1292,7 @@ class ClientBookingController extends Controller
 
         UserNotification::create([
             'sender_user_id' => null,
-            'receiver_user_id' => auth()->user()->id,
+            'receiver_user_id' => Auth::user()->id,
             'receiver_user_type' => 'client',
             'type' => 'booking',
             'reference_id' => $booking->id,
@@ -1315,7 +1315,7 @@ class ClientBookingController extends Controller
     public function getBookingDetails(Request $request): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1337,7 +1337,7 @@ class ClientBookingController extends Controller
 
         $booking = Booking::select('bookings.id', 'bookings.uuid', 'bookings.client_user_id', 'bookings.helper_user_id', 'bookings.helper_user_id2', 'service_types.name as service_type', 'service_categories.name as service_category', 'priority_settings.name as priority_setting', 'bookings.booking_type', 'bookings.pickup_address', 'bookings.dropoff_address', 'bookings.pickup_latitude', 'bookings.pickup_longitude', 'bookings.dropoff_latitude', 'bookings.dropoff_longitude', 'bookings.booking_date', 'bookings.booking_time', 'bookings.status', 'bookings.total_price', 'bookings.receiver_name', 'bookings.receiver_phone', 'bookings.receiver_email', 'bookings.delivery_note', 'bookings.booking_at')
             ->where('bookings.id', $request->id)
-            ->where('bookings.client_user_id', auth()->user()->id)
+            ->where('bookings.client_user_id', Auth::user()->id)
             ->join('service_types', 'bookings.service_type_id', '=', 'service_types.id')
             ->join('service_categories', 'bookings.service_category_id', '=', 'service_categories.id')
             ->join('priority_settings', 'bookings.priority_setting_id', '=', 'priority_settings.id')
@@ -1522,7 +1522,7 @@ class ClientBookingController extends Controller
     public function cancelBooking(Request $request)
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1590,7 +1590,7 @@ class ClientBookingController extends Controller
     public function expireBooking(Request $request)
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1648,7 +1648,7 @@ class ClientBookingController extends Controller
     // Track Booking
     public function trackBooking(Request $request): JsonResponse
     { // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1708,7 +1708,7 @@ class ClientBookingController extends Controller
     public function reviewBooking(Request $request): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1734,7 +1734,7 @@ class ClientBookingController extends Controller
         }
 
         // Check if booking exist on id
-        $booking = Booking::where('id', $request->id)->where('client_user_id', auth()->user()->id)->where('status', 'completed')->first();
+        $booking = Booking::where('id', $request->id)->where('client_user_id', Auth::user()->id)->where('status', 'completed')->first();
 
         if (!$booking) {
             return response()->json([
@@ -1790,7 +1790,7 @@ class ClientBookingController extends Controller
     public function getBookingHistory(Request $request): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1800,7 +1800,7 @@ class ClientBookingController extends Controller
         }
 
         $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
-            ->where('client_user_id', auth()->user()->id)
+            ->where('client_user_id', Auth::user()->id)
             ->whereIn('status', ['completed', 'cancelled'])
             ->orderBy('bookings.updated_at', 'desc')
             ->get();
@@ -1817,7 +1817,7 @@ class ClientBookingController extends Controller
     public function activeBookings(Request $request): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1827,7 +1827,7 @@ class ClientBookingController extends Controller
         }
 
         $bookings = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
-            ->where('client_user_id', auth()->user()->id)
+            ->where('client_user_id', Auth::user()->id)
             ->whereIn('status', ['pending', 'started', 'in_transit'])
             ->orderBy('bookings.updated_at', 'desc')
             ->get();

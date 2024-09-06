@@ -411,13 +411,16 @@ class FrontendController extends Controller
     // Terms and Conditions Page
     public function terms_and_conditions()
     {
+        // Default
+        $terms_and_conditions = 'No Terms and Conditions found';
+
         // Get Terms and Conditions from frontend settings
         $frontendSettings = FrontendSetting::where('key', 'terms-and-conditions')->first();
 
-        if (!$frontendSettings) {
-            return redirect()->back()->with('error', 'Terms and Conditions not found');
+        if ($frontendSettings) {
+            $terms_and_conditions =  $frontendSettings->value;
         }
-        $terms_and_conditions =  $frontendSettings->value;
+
 
         return view('frontend.terms_and_conditions', compact('terms_and_conditions'));
     }
@@ -425,13 +428,15 @@ class FrontendController extends Controller
     // privacy_policy
     public function privacy_policy()
     {
+        // Default
+        $privacy_policy = 'No Privacy Policy found';
+
         // Get Privacy Policy from frontend settings
         $frontendSettings = FrontendSetting::where('key', 'privacy-policy')->first();
 
-        if (!$frontendSettings) {
-            return redirect()->back()->with('error', 'Privacy Policy not found');
+        if ($frontendSettings) {
+            $privacy_policy =  $frontendSettings->value;
         }
-        $privacy_policy =  $frontendSettings->value;
 
         return view('frontend.privacy_policy', compact('privacy_policy'));
     }
@@ -439,13 +444,15 @@ class FrontendController extends Controller
     // cancellation_policy
     public function cancellation_policy()
     {
+        // Default
+        $cancellation_policy = 'No Cancellation Policy found';
+
         // Get Cancellation Policy from frontend settings
         $frontendSettings = FrontendSetting::where('key', 'cancellation-policy')->first();
 
-        if (!$frontendSettings) {
-            return redirect()->back()->with('error', 'Cancellation Policy not found');
+        if ($frontendSettings) {
+            $cancellation_policy =  $frontendSettings->value;
         }
-        $cancellation_policy =  $frontendSettings->value;
 
         return view('frontend.cancellation_policy', compact('cancellation_policy'));
     }

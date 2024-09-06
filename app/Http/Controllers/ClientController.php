@@ -22,6 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Intervention\Image\Laravel\Facades\Image;
 
 class ClientController extends Controller
 {
@@ -55,19 +56,19 @@ class ClientController extends Controller
     {
 
         // Get user data
-        $user = User::where('id', auth()->user()->id)->first();
+        $user = User::where('id', Auth::user()->id)->first();
         if (!$user) {
             return redirect()->route('index')->with('error', 'User not found');
         }
 
 
         // Get Helper data from DB
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
 
         // If helper not found
         if (!$helper) {
             // Check if Client is created with same id
-            $client = Client::where('user_id', auth()->user()->id)->first();
+            $client = Client::where('user_id', Auth::user()->id)->first();
 
             // If client is found then duplicate data to helper
             if ($client) {
@@ -78,7 +79,7 @@ class ClientController extends Controller
                 }
 
                 $helper = Helper::create([
-                    'user_id' => auth()->user()->id,
+                    'user_id' => Auth::user()->id,
                     'company_enabled' => 0,
                     'first_name' => $client->first_name ?? '',
                     'middle_name' => $client->middle_name ?? '',
@@ -98,7 +99,7 @@ class ClientController extends Controller
             // If not then create a simple helper
             else {
                 $helper = Helper::create([
-                    'user_id' => auth()->user()->id,
+                    'user_id' => Auth::user()->id,
                 ]);
             }
         }
@@ -107,7 +108,7 @@ class ClientController extends Controller
         session(['login_type' => 'helper']);
 
         // Get helper first name and last name
-        $helperInfo = Helper::where('user_id', auth()->user()->id)->first();
+        $helperInfo = Helper::where('user_id', Auth::user()->id)->first();
         if ($helperInfo) {
             session(['full_name' => $helperInfo->first_name . ' ' . $helperInfo->last_name]);
             // set profile_image
@@ -126,13 +127,13 @@ class ClientController extends Controller
     public function requestCompany(Request $request)
     {
         // Check if user exist
-        $client = Client::where('user_id', auth()->user()->id)->first();
+        $client = Client::where('user_id', Auth::user()->id)->first();
         if (!$client) {
             return redirect()->back()->with('error', 'Client not found');
         }
 
         // Check if client company already exist  
-        $clientCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
+        $clientCompany = ClientCompany::where('user_id', Auth::user()->id)->first();
         if ($clientCompany) {
             // update the company_enabled to 1
             $client->company_enabled = 1;
@@ -143,7 +144,7 @@ class ClientController extends Controller
 
         // Create a new client company
         $clientCompany = new ClientCompany();
-        $clientCompany->user_id = auth()->user()->id;
+        $clientCompany->user_id = Auth::user()->id;
         $clientCompany->client_id = $client->id;
         $clientCompany->company_alias = $request->company_alias;
         $clientCompany->legal_name = $request->legal_name;
@@ -166,13 +167,13 @@ class ClientController extends Controller
 
         // Statistics
         $satistics = [
-            'total_bookings' => Booking::where('client_user_id', auth()->user()->id)->count(),
-            'pending_bookings' => Booking::where('client_user_id', auth()->user()->id)->where('status', 'pending')->count(),
-            'cancelled_bookings' => Booking::where('client_user_id', auth()->user()->id)->where('status', 'cancelled')->count(),
-            'unpaid_bookings' => Booking::where('client_user_id', auth()->user()->id)->where('status', 'draft')->count(),
+            'total_bookings' => Booking::where('client_user_id', Auth::user()->id)->count(),
+            'pending_bookings' => Booking::where('client_user_id', Auth::user()->id)->where('status', 'pending')->count(),
+            'cancelled_bookings' => Booking::where('client_user_id', Auth::user()->id)->where('status', 'cancelled')->count(),
+            'unpaid_bookings' => Booking::where('client_user_id', Auth::user()->id)->where('status', 'draft')->count(),
         ];
 
-        $bookings = Booking::where('client_user_id', auth()->user()->id)
+        $bookings = Booking::where('client_user_id', Auth::user()->id)
             ->with('client')
             ->with('serviceType')
             ->with('serviceCategory')
@@ -184,7 +185,7 @@ class ClientController extends Controller
 
         // Check if user completed profile
         $client_updated = false;  //Set default value
-        $client = Client::where('user_id', auth()->user()->id)->first();
+        $client = Client::where('user_id', Auth::user()->id)->first();
 
         if (isset($client) && $client->first_name != null && $client->zip_code != null) {
             $client_updated = true;
@@ -197,19 +198,19 @@ class ClientController extends Controller
     public function edit_profile()
     {
         // Get client data
-        $clientData = Client::where('user_id', auth()->user()->id)->first();
+        $clientData = Client::where('user_id', Auth::user()->id)->first();
 
         // Create a new client if not found
         if (!$clientData) {
             $clientData = new Client();
-            $clientData->user_id = auth()->user()->id;
+            $clientData->user_id = Auth::user()->id;
             $clientData->save();
 
-            $clientData = Client::where('user_id', auth()->user()->id)->first();
+            $clientData = Client::where('user_id', Auth::user()->id)->first();
         }
 
         // Get all social links
-        $socialLinks = SocialLink::where('user_id', auth()->user()->id)->where('user_type', 'client')->get();
+        $socialLinks = SocialLink::where('user_id', Auth::user()->id)->where('user_type', 'client')->get();
 
         $social_links = [];
 
@@ -221,10 +222,10 @@ class ClientController extends Controller
         // dd($social_links);
 
         // Get client company data
-        $clientCompanyData = ClientCompany::where('user_id', auth()->user()->id)->first();
+        $clientCompanyData = ClientCompany::where('user_id', Auth::user()->id)->first();
         if (!$clientCompanyData) {
             $clientCompanyData = new ClientCompany();
-            $clientCompanyData->user_id = auth()->user()->id;
+            $clientCompanyData->user_id = Auth::user()->id;
             $clientCompanyData->client_id = $clientData->id;
             $clientCompanyData->save();
         }
@@ -274,7 +275,7 @@ class ClientController extends Controller
         ]);
 
         // Check if user exist
-        $client = Client::where('user_id', auth()->user()->id)->first();
+        $client = Client::where('user_id', Auth::user()->id)->first();
 
         if (!$client) {
             return redirect()->back()->with('error', 'Client not found');
@@ -285,13 +286,20 @@ class ClientController extends Controller
 
         // Upload the profile image if provided
         if ($request->hasFile('profile_image')) {
-            $file = $request->file('profile_image');
-            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
-            $destinationPath = public_path('images/users/');
-            $file->move($destinationPath, $updatedFilename);
+            $image = Image::read($request->file('profile_image'));
 
-            // Set the profile image attribute to the new file name
-            $profile_image = $updatedFilename;
+            // Main Image Upload on Folder Code
+            $imageName = time() . rand(0, 999) . '.' . $request->file('profile_image')->getClientOriginalExtension();
+            $destinationPath = public_path('images/users/');
+            $image->save($destinationPath . $imageName);
+
+            // Generate Thumbnail Image Upload on Folder Code
+            $destinationPathThumbnail = public_path('images/users/thumbnail/');
+            $image->resize(100, 100);
+            $image->save($destinationPathThumbnail . $imageName);
+
+            $profile_image = $imageName;
+            $thumbnail = $imageName;
         }
 
         // Update the client data
@@ -304,6 +312,7 @@ class ClientController extends Controller
             'date_of_birth' => date('Y-m-d', strtotime($request->date_of_birth)),
             'tax_id' => $request->tax_id,
             'profile_image' => $profile_image,
+            'thumbnail' => $thumbnail,
             'company_enabled' => $request->company_enabled,
         ]);
         // dd($request->all());
@@ -335,7 +344,7 @@ class ClientController extends Controller
         ]);
 
         // Check if user exist
-        $client = Client::where('user_id', auth()->user()->id)->first();
+        $client = Client::where('user_id', Auth::user()->id)->first();
 
         if (!$client) {
             return redirect()->back()->with('error', 'Client not found');
@@ -366,7 +375,7 @@ class ClientController extends Controller
         ]);
 
         // Check if user exist
-        $clientCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
+        $clientCompany = ClientCompany::where('user_id', Auth::user()->id)->first();
 
         if (!$clientCompany) {
             return redirect()->back()->with('error', 'Client Company not found');
@@ -400,7 +409,7 @@ class ClientController extends Controller
     {
 
         // Check if user exist
-        $client = Client::where('user_id', auth()->user()->id)->first();
+        $client = Client::where('user_id', Auth::user()->id)->first();
 
         if (!$client) {
             return redirect()->back()->with('error', 'Client not found');
@@ -408,7 +417,7 @@ class ClientController extends Controller
 
         foreach ($request->all() as $key => $link) {
             $socialLink = SocialLink::where('key', $key)
-                ->where('user_id', auth()->user()->id)
+                ->where('user_id', Auth::user()->id)
                 ->where('user_type', 'client')
                 ->first();
             if ($socialLink) {
@@ -416,7 +425,7 @@ class ClientController extends Controller
                 $socialLink->save();
             } else {
                 $socialLink = new SocialLink();
-                $socialLink->user_id = auth()->user()->id;
+                $socialLink->user_id = Auth::user()->id;
                 $socialLink->user_type = 'client';
                 $socialLink->key = $key;
                 $socialLink->link = $link;
@@ -440,7 +449,7 @@ class ClientController extends Controller
             'confirm_password' => 'required|string|max:255',
         ]);
 
-        if (!Hash::check($request->current_password, auth()->user()->password)) {
+        if (!Hash::check($request->current_password, Auth::user()->password)) {
             return redirect()->back()->with('error', 'Current password does not match');
         }
 
@@ -449,7 +458,7 @@ class ClientController extends Controller
         }
 
         // Check if user exist
-        $user = User::where('id', auth()->user()->id)->first();
+        $user = User::where('id', Auth::user()->id)->first();
 
         if (!$user) {
             return redirect()->back()->with('error', 'Client not found');
@@ -468,7 +477,7 @@ class ClientController extends Controller
         // Get all referred list
         $referrals = Referral::select('referrals.*', 'users.email', 'users.user_type')
             ->join('users', 'users.id', '=', 'referrals.referrer_id')
-            ->where('referred_user_id', auth()->user()->id)->get();
+            ->where('referred_user_id', Auth::user()->id)->get();
 
         return view('client.referrals', compact('referrals'));
     }
@@ -482,7 +491,7 @@ class ClientController extends Controller
 
         if (isset($request->id)) {
             $booking = Booking::where('uuid', $request->id)
-                ->where('client_user_id', auth()->user()->id)
+                ->where('client_user_id', Auth::user()->id)
                 ->with('prioritySetting')
                 ->with('serviceType')
                 ->with('serviceCategory')
@@ -542,7 +551,7 @@ class ClientController extends Controller
     public function searchUsers(Request $request)
     {
         $search = $request->input('search');
-        $currentUserId = auth()->id(); // Get the ID of the current authenticated user
+        $currentUserId = Auth::user()->id; // Get the ID of the current authenticated user
 
         // Get list of all admins, excluding the current user
         $admins = DB::table('admins')

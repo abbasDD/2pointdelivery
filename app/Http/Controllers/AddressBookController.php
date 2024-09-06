@@ -6,6 +6,7 @@ use App\Models\AddressBook;
 use App\Http\Requests\StoreAddressBookRequest;
 use App\Http\Requests\UpdateAddressBookRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AddressBookController extends Controller
 {
@@ -15,7 +16,7 @@ class AddressBookController extends Controller
     public function index()
     {
         // Get kyc details of logged in user
-        $addressBooks = AddressBook::where('user_id', auth()->user()->id)->get();
+        $addressBooks = AddressBook::where('user_id', Auth::user()->id)->get();
         // dd($kycDetails->front_image);
         return view('client.addressBooks.index', compact('addressBooks'));
     }
@@ -26,7 +27,7 @@ class AddressBookController extends Controller
     public function edit(Request $request)
     {
 
-        $addressBook = AddressBook::where('user_id', auth()->user()->id)->where('id', $request->id)->first();
+        $addressBook = AddressBook::where('user_id', Auth::user()->id)->where('id', $request->id)->first();
         if (!$addressBook) {
             return redirect()->back()->with('error', 'AddressBook not found');
         }
@@ -40,7 +41,7 @@ class AddressBookController extends Controller
     public function update(Request $request)
     {
 
-        $addressBook = AddressBook::where('user_id', auth()->user()->id)->where('id', $request->id)->first();
+        $addressBook = AddressBook::where('user_id', Auth::user()->id)->where('id', $request->id)->first();
         if (!$addressBook) {
             return redirect()->back()->with('error', 'AddressBook not found');
         }

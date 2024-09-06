@@ -38,7 +38,7 @@ class HelperController extends Controller
     public function index(): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -47,7 +47,7 @@ class HelperController extends Controller
             ], 401);
         }
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         $userData = [
             'user_id' => $user->id,
@@ -68,11 +68,11 @@ class HelperController extends Controller
         ];
 
 
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
         if (!$helper) {
             // Create a new helper
             $helper = new Helper();
-            $helper->user_id = auth()->user()->id;
+            $helper->user_id = Auth::user()->id;
             $helper->save();
         }
         $userData['company_enabled'] = $helper->company_enabled;
@@ -97,14 +97,14 @@ class HelperController extends Controller
 
         if ($helper->company_enabled == 1) {
             // Get helper company details
-            $helperCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
+            $helperCompany = ClientCompany::where('user_id', Auth::user()->id)->first();
             if (isset($helperCompany) && $helperCompany->legal_name != null) {
                 $userData['company_details'] = true;
             }
         }
 
         // Check if helpervehicle details exist
-        $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
+        $helperVehicle = HelperVehicle::where('user_id', Auth::user()->id)->first();
         if (isset($helperVehicle) && $helperVehicle->vehicle_number != null) {
             $userData['vehicle_details'] = true;
         }
@@ -122,7 +122,7 @@ class HelperController extends Controller
     public function home(): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -131,15 +131,15 @@ class HelperController extends Controller
             ], 401);
         }
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         // Calculate helper delivery earnings
-        $helper_earnings = Booking::where('bookings.helper_user_id', auth()->user()->id)
+        $helper_earnings = Booking::where('bookings.helper_user_id', Auth::user()->id)
             ->join('booking_deliveries', 'bookings.id', '=', 'booking_deliveries.booking_id')
             ->where('bookings.status', 'completed')
             ->sum('booking_deliveries.helper_fee');
 
-        $userId = auth()->user()->id;
+        $userId = Auth::user()->id;
 
         // Calculate helper moving earnings
         $helper_earnings += Booking::where('bookings.status', 'completed')
@@ -152,13 +152,13 @@ class HelperController extends Controller
 
         // Statistics
         $data = [
-            'total_bookings' => Booking::where('helper_user_id', auth()->user()->id)->count(),
-            'accepted_bookings' => Booking::where('helper_user_id', auth()->user()->id)->where('status', 'accepted')->count(),
-            'cancelled_bookings' => Booking::where('helper_user_id', auth()->user()->id)->where('status', 'cancelled')->count(),
+            'total_bookings' => Booking::where('helper_user_id', Auth::user()->id)->count(),
+            'accepted_bookings' => Booking::where('helper_user_id', Auth::user()->id)->where('status', 'accepted')->count(),
+            'cancelled_bookings' => Booking::where('helper_user_id', Auth::user()->id)->where('status', 'cancelled')->count(),
             'total_earnings' => $helper_earnings,
         ];
 
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
 
         // Get helperServices list
         $helperServices = $helper->service_types();
@@ -169,7 +169,7 @@ class HelperController extends Controller
 
         $data['bookings'] = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status')
             ->where('status', 'pending')
-            ->where('client_user_id', '!=', auth()->user()->id)
+            ->where('client_user_id', '!=', Auth::user()->id)
             ->whereIn('service_type_id', $helperServiceIds)
             ->orderBy('bookings.updated_at', 'desc')
             ->get();
@@ -183,7 +183,7 @@ class HelperController extends Controller
         $data['is_vehicle_approved'] = false;
 
         // Get helper details
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
         // Check if helper completed its personal details
         if (isset($helper) && $helper->first_name != null) {
             $data['personal_details'] = true;
@@ -196,14 +196,14 @@ class HelperController extends Controller
 
         if ($helper->company_enabled == 1) {
             // Get helper company details
-            $helperCompany = HelperCompany::where('user_id', auth()->user()->id)->first();
+            $helperCompany = HelperCompany::where('user_id', Auth::user()->id)->first();
             if (isset($helperCompany) && $helperCompany->legal_name != null) {
                 $data['company_details'] = true;
             }
         }
 
         // Check if helpervehicle details exist
-        $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
+        $helperVehicle = HelperVehicle::where('user_id', Auth::user()->id)->first();
         if (isset($helperVehicle) && $helperVehicle->vehicle_number != null) {
             $data['vehicle_details'] = true;
 
@@ -219,13 +219,13 @@ class HelperController extends Controller
         }
 
         // Check kyc added and approved
-        $kycDetail = KycDetail::where('user_id', auth()->user()->id)->where('is_verified', 1)->first();
+        $kycDetail = KycDetail::where('user_id', Auth::user()->id)->where('is_verified', 1)->first();
         if ($kycDetail) {
             $data['is_kyc_approved'] = true;
         }
 
         // Unread notification count for user
-        $data['unreadNotificationCount'] = UserNotification::where('receiver_user_id', auth()->user()->id)->where('receiver_user_type', 'helper')->where('read', 0)->count() ?? 0;
+        $data['unreadNotificationCount'] = UserNotification::where('receiver_user_id', Auth::user()->id)->where('receiver_user_type', 'helper')->where('read', 0)->count() ?? 0;
 
 
         return response()->json([
@@ -239,7 +239,7 @@ class HelperController extends Controller
     public function switchToClient(): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -248,7 +248,7 @@ class HelperController extends Controller
             ], 401);
         }
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         $userData = [
             'user_id' => $user->id,
@@ -269,12 +269,12 @@ class HelperController extends Controller
         ];
 
         // Get Client data from DB
-        $client = Client::where('user_id', auth()->user()->id)->first();
+        $client = Client::where('user_id', Auth::user()->id)->first();
 
         // If client not found
         if (!$client) {
             // Check if Helper is created with same id
-            $helper = Helper::where('user_id', auth()->user()->id)->first();
+            $helper = Helper::where('user_id', Auth::user()->id)->first();
 
             // If helper is found then duplicate data to client
             if ($helper) {
@@ -290,7 +290,7 @@ class HelperController extends Controller
                 }
 
                 $client = Client::create([
-                    'user_id' => auth()->user()->id,
+                    'user_id' => Auth::user()->id,
                     'company_enabled' => $helper->company_enabled ?? 0,
                     'first_name' => $helper->first_name ?? '',
                     'middle_name' => $helper->middle_name ?? '',
@@ -298,6 +298,7 @@ class HelperController extends Controller
                     'gender' => $helper->gender ?? '',
                     'date_of_birth' => $helper->date_of_birth ?? '',
                     'profile_image' => $helper->profile_image ?? '',
+                    'thumbnail' => $helper->thumbnail ?? '',
                     'tax_id' => $helper->tax_id ?? '',
                     'phone_no' => $helper->phone_no ?? '',
                     'suite' => $helper->suite ?? '',
@@ -311,23 +312,23 @@ class HelperController extends Controller
             // If not then create a simple client
             else {
                 $client = Client::create([
-                    'user_id' => auth()->user()->id,
+                    'user_id' => Auth::user()->id,
                 ]);
             }
         }
 
-        $client = Client::where('user_id', auth()->user()->id)->first();
+        $client = Client::where('user_id', Auth::user()->id)->first();
         if (!$client) {
             // Create a new client
             $client = new Client();
-            $client->user_id = auth()->user()->id;
+            $client->user_id = Auth::user()->id;
             $client->save();
         }
         $userData['company_enabled'] = $client->company_enabled;
         $userData['first_name'] = $client->first_name;
         $userData['middle_name'] = $client->middle_name;
         $userData['last_name'] = $client->last_name;
-        $userData['profile_image'] = $client->profile_image == null ? asset('images/users/default.png') : asset('images/users/' . $client->profile_image);
+        $userData['profile_image'] = $client->thumbnail == null ? asset('images/users/default.png') : asset('images/users/thumbnail/' . $client->thumbnail);
         $userData['personal_details'] = false;
         $userData['address_details'] = false;
         $userData['company_details'] = false;
@@ -345,7 +346,7 @@ class HelperController extends Controller
 
         if ($client->company_enabled == 1) {
             // Get client company details
-            $clientCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
+            $clientCompany = ClientCompany::where('user_id', Auth::user()->id)->first();
             if (isset($clientCompany) && $clientCompany->legal_name != null) {
                 $userData['company_details'] = true;
             }
@@ -369,7 +370,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -379,7 +380,7 @@ class HelperController extends Controller
         }
 
         // Get helper
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
 
 
         if (!$helper) {
@@ -411,7 +412,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -421,13 +422,13 @@ class HelperController extends Controller
         }
 
 
-        $user = auth()->user();
+        $user = Auth::user();
 
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
         if (!$helper) {
             // Create a new helper
             $helper = new Helper();
-            $helper->user_id = auth()->user()->id;
+            $helper->user_id = Auth::user()->id;
             $helper->save();
         }
 
@@ -447,7 +448,7 @@ class HelperController extends Controller
             'date_of_birth' => $helper->date_of_birth,
             'is_approved' => $helper->is_approved ?? 0,
             'email' => $user->email,
-            'profile_image' => $helper->profile_image ? asset('images/users/' . $helper->profile_image) : asset('images/users/default.png'),
+            'profile_image' => $helper->thumbnail ? asset('images/users/thumbnail/' . $helper->thumbnail) : asset('images/users/default.png'),
             'service_badge_id' => $helper->service_badge_id,
             'helperServiceIds' => $helperServiceIds
         ];
@@ -468,7 +469,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -499,11 +500,11 @@ class HelperController extends Controller
 
 
         // If helper is found, update its attributes
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
         if (!$helper) {
             // Create a new helper
             $helper = new Helper();
-            $helper->user_id = auth()->user()->id;
+            $helper->user_id = Auth::user()->id;
             $helper->save();
         }
 
@@ -572,7 +573,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -581,21 +582,21 @@ class HelperController extends Controller
             ], 401);
         }
 
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
         if (!$helper) {
             // Create a new helper
             $helper = new Helper();
-            $helper->user_id = auth()->user()->id;
+            $helper->user_id = Auth::user()->id;
             $helper->save();
         }
 
         // Get helper company
-        $helperCompany = HelperCompany::where('user_id', auth()->user()->id)->first();
+        $helperCompany = HelperCompany::where('user_id', Auth::user()->id)->first();
 
         if (!$helperCompany) {
             // Create
             $helperCompany = new HelperCompany();
-            $helperCompany->user_id = auth()->user()->id;
+            $helperCompany->user_id = Auth::user()->id;
             $helperCompany->helper_id = $helper->id;
             $helperCompany->save();
         }
@@ -631,7 +632,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -667,21 +668,21 @@ class HelperController extends Controller
 
 
         // If helper is found, update its attributes
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
         if (!$helper) {
             // Create a new helper
             $helper = new Helper();
-            $helper->user_id = auth()->user()->id;
+            $helper->user_id = Auth::user()->id;
             $helper->save();
         }
 
         // Get helper company
-        $helperCompany = HelperCompany::where('user_id', auth()->user()->id)->first();
+        $helperCompany = HelperCompany::where('user_id', Auth::user()->id)->first();
 
         if (!$helperCompany) {
             // Create
             $helperCompany = new HelperCompany();
-            $helperCompany->user_id = auth()->user()->id;
+            $helperCompany->user_id = Auth::user()->id;
             $helperCompany->helper_id = $helper->id;
             $helperCompany->save();
         }
@@ -737,7 +738,7 @@ class HelperController extends Controller
 
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -746,11 +747,11 @@ class HelperController extends Controller
             ], 401);
         }
 
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
         if (!$helper) {
             // Create a new helper
             $helper = new Helper();
-            $helper->user_id = auth()->user()->id;
+            $helper->user_id = Auth::user()->id;
             $helper->save();
         }
 
@@ -778,7 +779,7 @@ class HelperController extends Controller
 
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -805,14 +806,14 @@ class HelperController extends Controller
         }
 
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         // If helper is found, update its attributes
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
         if (!$helper) {
             // Create a new helper
             $helper = new Helper();
-            $helper->user_id = auth()->user()->id;
+            $helper->user_id = Auth::user()->id;
             $helper->save();
         }
 
@@ -842,7 +843,7 @@ class HelperController extends Controller
 
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -861,7 +862,7 @@ class HelperController extends Controller
             'is_approved' => 0
         ];
 
-        $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
+        $helperVehicle = HelperVehicle::where('user_id', Auth::user()->id)->first();
         if ($helperVehicle) {
             // Create a new helper vehicle
             $helperVehicleData = [
@@ -894,7 +895,7 @@ class HelperController extends Controller
 
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -921,12 +922,12 @@ class HelperController extends Controller
         }
 
         // If helperVehicle is found, update its attributes
-        $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
+        $helperVehicle = HelperVehicle::where('user_id', Auth::user()->id)->first();
         if (!$helperVehicle) {
             // Create a new helperVehicle
             $helperVehicle = new HelperVehicle();
-            $helperVehicle->user_id = auth()->user()->id;
-            $helperVehicle->helper_id = Helper::where('user_id', auth()->user()->id)->first()->id;
+            $helperVehicle->user_id = Auth::user()->id;
+            $helperVehicle->helper_id = Helper::where('user_id', Auth::user()->id)->first()->id;
             $helperVehicle->vehicle_type_id = $request->vehicle_type_id;
             $helperVehicle->save();
         }
@@ -955,7 +956,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -980,7 +981,7 @@ class HelperController extends Controller
 
 
         // Get the user and update its password
-        $user = User::find(auth()->user()->id);
+        $user = User::find(Auth::user()->id);
 
         // Check if old password is correct
         if (!Hash::check($request->old_password, $user->password)) {
@@ -1006,7 +1007,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1016,7 +1017,7 @@ class HelperController extends Controller
         }
 
         // Get social links
-        $socialLinks = SocialLink::where('user_id', auth()->user()->id)->get()->pluck('link', 'key')->toArray();
+        $socialLinks = SocialLink::where('user_id', Auth::user()->id)->get()->pluck('link', 'key')->toArray();
 
 
         return response()->json([
@@ -1036,7 +1037,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1048,13 +1049,13 @@ class HelperController extends Controller
         // Update social links
 
         // Get facebook
-        $facebookLink = SocialLink::where('user_id', auth()->user()->id)->where('key', 'facebook')->first();
+        $facebookLink = SocialLink::where('user_id', Auth::user()->id)->where('key', 'facebook')->first();
         if ($facebookLink) {
             $facebookLink->link = $request->facebook ?? $facebookLink->link;
             $facebookLink->save();
         } else {
             $facebookLink = new SocialLink();
-            $facebookLink->user_id = auth()->user()->id;
+            $facebookLink->user_id = Auth::user()->id;
             $facebookLink->user_type = 'helper';
             $facebookLink->key = 'facebook';
             $facebookLink->link = $request->facebook ?? $facebookLink->link;
@@ -1062,13 +1063,13 @@ class HelperController extends Controller
         }
 
         // Get linkedin
-        $linkedinLink = SocialLink::where('user_id', auth()->user()->id)->where('key', 'linkedin')->first();
+        $linkedinLink = SocialLink::where('user_id', Auth::user()->id)->where('key', 'linkedin')->first();
         if ($linkedinLink) {
             $linkedinLink->link = $request->linkedin ?? $linkedinLink->link;
             $linkedinLink->save();
         } else {
             $linkedinLink = new SocialLink();
-            $linkedinLink->user_id = auth()->user()->id;
+            $linkedinLink->user_id = Auth::user()->id;
             $linkedinLink->user_type = 'helper';
             $linkedinLink->key = 'linkedin';
             $linkedinLink->link = $request->linkedin ?? $linkedinLink->link;
@@ -1076,13 +1077,13 @@ class HelperController extends Controller
         }
 
         // Get instagram
-        $instagramLink = SocialLink::where('user_id', auth()->user()->id)->where('key', 'instagram')->first();
+        $instagramLink = SocialLink::where('user_id', Auth::user()->id)->where('key', 'instagram')->first();
         if ($instagramLink) {
             $instagramLink->link = $request->instagram ?? $instagramLink->link;
             $instagramLink->save();
         } else {
             $instagramLink = new SocialLink();
-            $instagramLink->user_id = auth()->user()->id;
+            $instagramLink->user_id = Auth::user()->id;
             $instagramLink->user_type = 'helper';
             $instagramLink->key = 'instagram';
             $instagramLink->link = $request->instagram ?? $instagramLink->link;
@@ -1091,13 +1092,13 @@ class HelperController extends Controller
 
 
         // Get tiktok
-        $tiktokLink = SocialLink::where('user_id', auth()->user()->id)->where('key', 'tiktok')->first();
+        $tiktokLink = SocialLink::where('user_id', Auth::user()->id)->where('key', 'tiktok')->first();
         if ($tiktokLink) {
             $tiktokLink->link = $request->tiktok ?? $tiktokLink->link;
             $tiktokLink->save();
         } else {
             $tiktokLink = new SocialLink();
-            $tiktokLink->user_id = auth()->user()->id;
+            $tiktokLink->user_id = Auth::user()->id;
             $tiktokLink->user_type = 'helper';
             $tiktokLink->key = 'tiktok';
             $tiktokLink->link = $request->tiktok ?? $tiktokLink->link;
@@ -1118,7 +1119,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1128,10 +1129,10 @@ class HelperController extends Controller
         }
 
         // Get only 10
-        $notifications = UserNotification::where('receiver_user_id', auth()->user()->id)
+        $notifications = UserNotification::where('receiver_user_id', Auth::user()->id)
             ->where('receiver_user_type', 'helper')
             ->orderBy('created_at', 'asc')->take(10)->get();
-        $unread_notification = UserNotification::where('receiver_user_id', auth()->user()->id)
+        $unread_notification = UserNotification::where('receiver_user_id', Auth::user()->id)
             ->where('receiver_user_type', 'helper')
             ->where('read', 0)->count();
 
@@ -1154,7 +1155,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1164,7 +1165,7 @@ class HelperController extends Controller
         }
 
         // Mark all notifications as read
-        UserNotification::where('receiver_user_id', auth()->user()->id)->where('receiver_user_type', 'helper')->update(['read' => 1]);
+        UserNotification::where('receiver_user_id', Auth::user()->id)->where('receiver_user_type', 'helper')->update(['read' => 1]);
 
         return response()->json([
             'success' => true,
@@ -1178,7 +1179,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1189,7 +1190,7 @@ class HelperController extends Controller
 
 
         // Mark all notifications as read
-        UserNotification::where('receiver_user_id', auth()->user()->id)
+        UserNotification::where('receiver_user_id', Auth::user()->id)
             ->where('id', $request->id)
             ->where('receiver_user_type', 'helper')
             ->update(['read' => 1]);
@@ -1209,7 +1210,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1218,9 +1219,9 @@ class HelperController extends Controller
             ], 401);
         }
 
-        $user = auth()->user();
+        $user = Auth::user();
 
-        $acceptedInvites = TeamInvitation::where('inviter_id', auth()->user()->id)->get();
+        $acceptedInvites = TeamInvitation::where('inviter_id', Auth::user()->id)->get();
         return response()->json([
             'success' => true,
             'message' => 'Teams fetched successfully',
@@ -1232,7 +1233,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1303,7 +1304,7 @@ class HelperController extends Controller
 
         // Send Notification
         UserNotification::create([
-            'sender_user_id' => auth()->user()->id,
+            'sender_user_id' => Auth::user()->id,
             'receiver_user_id' => $invitee->id,
             'receiver_user_type' => 'client',
             'reference_id' => $teamInvitation->id,
@@ -1331,7 +1332,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1379,7 +1380,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1402,7 +1403,7 @@ class HelperController extends Controller
 
         $userId = $request->user_id;
 
-        $currentUser = auth()->user();
+        $currentUser = Auth::user();
 
         $invitation = TeamInvitation::where('invitee_id', $currentUser->id)
             ->where('inviter_id', $userId)
@@ -1462,7 +1463,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1472,7 +1473,7 @@ class HelperController extends Controller
         }
 
         // Find the switch record
-        $switchRecord = UserSwitch::where('switched_user_id', auth()->user()->id)->first();
+        $switchRecord = UserSwitch::where('switched_user_id', Auth::user()->id)->first();
 
         if (!$switchRecord) {
             return response()->json([
@@ -1484,7 +1485,7 @@ class HelperController extends Controller
         }
 
         // Revoke the current token
-        auth()->user()->token()->revoke();
+        Auth::user()->token()->revoke();
 
         // Log in using the original user ID
         $originalUser = User::find($switchRecord->original_user_id);
@@ -1520,7 +1521,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1532,7 +1533,7 @@ class HelperController extends Controller
         $user = Auth::user();
         $invitations = TeamInvitation::select('invitee_id', 'inviter_id', 'users.email as inviter_email', 'team_invitations.*')
             ->join('users', 'team_invitations.inviter_id', '=', 'users.id')
-            ->where('invitee_id', auth()->user()->id)
+            ->where('invitee_id', Auth::user()->id)
             ->get();
 
 
@@ -1550,7 +1551,7 @@ class HelperController extends Controller
 
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1601,7 +1602,7 @@ class HelperController extends Controller
 
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1655,7 +1656,7 @@ class HelperController extends Controller
 
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1726,7 +1727,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1804,7 +1805,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1889,7 +1890,7 @@ class HelperController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1967,7 +1968,7 @@ class HelperController extends Controller
     public function getWalletBalance(): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1978,7 +1979,7 @@ class HelperController extends Controller
 
         // Check if user is helper
 
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
         if (!$helper) {
             return response()->json([
                 'success' => true,
@@ -2010,7 +2011,7 @@ class HelperController extends Controller
     public function getWalletEarning(): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -2021,7 +2022,7 @@ class HelperController extends Controller
 
         // Check if user is helper
 
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
         if (!$helper) {
             return response()->json([
                 'success' => true,
@@ -2031,7 +2032,7 @@ class HelperController extends Controller
             ], 200);
         }
 
-        $userId = auth()->user()->id;
+        $userId = Auth::user()->id;
 
         // Get all completed bookings for the helper with only necessary columns and eager loading
         $completedBookings = Booking::select('id', 'uuid', 'booking_type')
@@ -2079,7 +2080,7 @@ class HelperController extends Controller
     public function getWalletWithdrawRequests(): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -2089,7 +2090,7 @@ class HelperController extends Controller
         }
 
         // Get withdraw requests
-        $withdrawRequests = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'helper')->get();
+        $withdrawRequests = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'helper')->get();
 
         // Return a json object
         return response()->json([
@@ -2104,7 +2105,7 @@ class HelperController extends Controller
     public function postWalletWithdrawRequest(Request $request): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -2142,7 +2143,7 @@ class HelperController extends Controller
 
         // Check if helper exist
 
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
         if (!$helper) {
             return response()->json([
                 'success' => false,
@@ -2153,7 +2154,7 @@ class HelperController extends Controller
         }
 
         // Check if helper bank account exist 
-        $helperBankAccount = HelperBankAccount::where('user_id', auth()->user()->id)->where('id', $request->bank_id)->first();
+        $helperBankAccount = HelperBankAccount::where('user_id', Auth::user()->id)->where('id', $request->bank_id)->first();
         if (!$helperBankAccount) {
             return response()->json([
                 'success' => false,
@@ -2177,14 +2178,14 @@ class HelperController extends Controller
 
         // Add withdraw request
         // $withdrawRequest = WithdrawRequest::create([
-        //     'user_id' => auth()->user()->id,
+        //     'user_id' => Auth::user()->id,
         //     'helper_id' => $helper->id,
         //     'amount' => $request->amount,
         //     'reason' => $request->reason,
         // ]);
 
         // Check if user wallet request already pending
-        $withdrawRequestExist = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'helper')->where('type', 'withdraw')->where('status', 'pending')->first();
+        $withdrawRequestExist = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'helper')->where('type', 'withdraw')->where('status', 'pending')->first();
 
         if ($withdrawRequestExist) {
             return response()->json([
@@ -2196,7 +2197,7 @@ class HelperController extends Controller
         }
 
         $withdrawRequest = UserWallet::create([
-            'user_id' => auth()->user()->id,
+            'user_id' => Auth::user()->id,
             'user_type' => 'helper',
             'type' => 'withdraw',
             'amount' => $request->amount,
@@ -2228,7 +2229,7 @@ class HelperController extends Controller
     public function getBankAccounts(): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -2238,7 +2239,7 @@ class HelperController extends Controller
         }
 
         // Get bank accounts
-        $bankAccounts = HelperBankAccount::where('user_id', auth()->user()->id)->get();
+        $bankAccounts = HelperBankAccount::where('user_id', Auth::user()->id)->get();
 
         // Return a json object
         return response()->json([
@@ -2253,7 +2254,7 @@ class HelperController extends Controller
     public function addBankAccount(Request $request): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -2271,7 +2272,7 @@ class HelperController extends Controller
 
 
         // Check if user exist
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
         if (!$helper) {
             return response()->json([
                 'success' => false,
@@ -2284,7 +2285,7 @@ class HelperController extends Controller
 
 
         // Check if bank account already exist
-        $bankAccount = HelperBankAccount::where('user_id', auth()->user()->id)->where('account_type', $request->account_type)->first();
+        $bankAccount = HelperBankAccount::where('user_id', Auth::user()->id)->where('account_type', $request->account_type)->first();
         if ($bankAccount) {
             return response()->json([
                 'success' => false,
@@ -2298,7 +2299,7 @@ class HelperController extends Controller
 
         // Save bank account
         $bankAccount = new HelperBankAccount();
-        $bankAccount->user_id = auth()->user()->id;
+        $bankAccount->user_id = Auth::user()->id;
         $bankAccount->helper_id = $helper->id;
         $bankAccount->account_name = $request->account_name;
         $bankAccount->account_number = $request->account_number;
@@ -2322,7 +2323,7 @@ class HelperController extends Controller
     private function getHelperWalletBalance()
     {
 
-        $userId = auth()->user()->id;
+        $userId = Auth::user()->id;
 
         // Get all for completed bookings
         $completedBookings = Booking::where('status', 'completed')
@@ -2347,8 +2348,8 @@ class HelperController extends Controller
 
 
         // Total Withdraw Amount
-        // $totalWithdraw = WithdrawRequest::where('user_id', auth()->user()->id)->whereIn('status', ['pending', 'approved'])->sum('amount');
-        $totalWithdraw = UserWallet::where('user_id', auth()->user()->id)->where('type', 'withdraw')->sum('amount');
+        // $totalWithdraw = WithdrawRequest::where('user_id', Auth::user()->id)->whereIn('status', ['pending', 'approved'])->sum('amount');
+        $totalWithdraw = UserWallet::where('user_id', Auth::user()->id)->where('type', 'withdraw')->sum('amount');
 
         // Total Balance
         $totalBalance = $totalEarning - $totalWithdraw;
@@ -2362,7 +2363,7 @@ class HelperController extends Controller
 
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,

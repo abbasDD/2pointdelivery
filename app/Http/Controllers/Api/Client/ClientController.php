@@ -30,7 +30,7 @@ class ClientController extends Controller
     public function index(): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -39,7 +39,7 @@ class ClientController extends Controller
             ], 401);
         }
 
-        $user = auth()->user();
+        $user = Auth::user();
         $userData = [
             'user_id' => $user->id,
             'email' => $user->email,
@@ -88,7 +88,7 @@ class ClientController extends Controller
         if ($client->company_enabled == 1) {
             // Get client company details
             $userData['company_details'] = true;
-            $clientCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
+            $clientCompany = ClientCompany::where('user_id', Auth::user()->id)->first();
             if (isset($clientCompany) && $clientCompany->legal_name != null) {
                 $userData['company_details'] = true;
             }
@@ -108,7 +108,7 @@ class ClientController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -134,7 +134,7 @@ class ClientController extends Controller
 
         // Get latest booking of this user
         $responseData['bookings'] = Booking::select('id', 'uuid', 'booking_type', 'pickup_address', 'dropoff_address', 'booking_date', 'booking_time', 'status', 'total_price')
-            ->where('client_user_id', auth()->user()->id)
+            ->where('client_user_id', Auth::user()->id)
             ->whereIn('status', ['draft', 'pending'])
             ->orderBy('bookings.updated_at', 'desc')
             ->take(10)->get();
@@ -144,7 +144,7 @@ class ClientController extends Controller
         $responseData['company_details'] = false;
 
         // Get client details
-        $client = Client::where('user_id', auth()->user()->id)->first();
+        $client = Client::where('user_id', Auth::user()->id)->first();
         // Check if client completed its personal details
         if (isset($client) && $client->first_name != null) {
             $responseData['personal_details'] = true;
@@ -157,14 +157,14 @@ class ClientController extends Controller
 
         if ($client->company_enabled == 1) {
             // Get client company details
-            $clientCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
+            $clientCompany = ClientCompany::where('user_id', Auth::user()->id)->first();
             if (isset($clientCompany) && $clientCompany->legal_name != null) {
                 $responseData['company_details'] = true;
             }
         }
 
         // Unread notification count for user
-        $responseData['unreadNotificationCount'] = UserNotification::where('receiver_user_id', auth()->user()->id)->where('receiver_user_type', 'client')->where('read', 0)->count() ?? 0;
+        $responseData['unreadNotificationCount'] = UserNotification::where('receiver_user_id', Auth::user()->id)->where('receiver_user_type', 'client')->where('read', 0)->count() ?? 0;
 
         return response()->json([
             'success' => true,
@@ -177,7 +177,7 @@ class ClientController extends Controller
     public function getAddressBook(): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -187,7 +187,7 @@ class ClientController extends Controller
         }
 
         // Get kyc details of logged in user
-        $addressBooks = AddressBook::where('user_id', auth()->user()->id)->get();
+        $addressBooks = AddressBook::where('user_id', Auth::user()->id)->get();
 
 
         return response()->json([
@@ -201,7 +201,7 @@ class ClientController extends Controller
     public function updateAddressBook(Request $request): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -234,7 +234,7 @@ class ClientController extends Controller
         }
 
         // Update address book
-        $addressBook = AddressBook::where('user_id', auth()->user()->id)->where('id', $request->id)->first();
+        $addressBook = AddressBook::where('user_id', Auth::user()->id)->where('id', $request->id)->first();
         if (!$addressBook) {
             return response()->json([
                 'success' => false,
@@ -267,7 +267,7 @@ class ClientController extends Controller
     public function switchToHelper(): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -276,7 +276,7 @@ class ClientController extends Controller
             ], 401);
         }
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         $userData = [
             'user_id' => $user->id,
@@ -298,12 +298,12 @@ class ClientController extends Controller
         ];
 
         // Get Helper data from DB
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
 
         // If helper not found
         if (!$helper) {
             // Check if Client is created with same id
-            $client = Client::where('user_id', auth()->user()->id)->first();
+            $client = Client::where('user_id', Auth::user()->id)->first();
 
             // If client is found then duplicate data to helper
             if ($client) {
@@ -320,7 +320,7 @@ class ClientController extends Controller
                 }
 
                 $helper = Helper::create([
-                    'user_id' => auth()->user()->id,
+                    'user_id' => Auth::user()->id,
                     'company_enabled' => $client->company_enabled ?? 0,
                     'first_name' => $client->first_name ?? '',
                     'middle_name' => $client->middle_name ?? '',
@@ -341,7 +341,7 @@ class ClientController extends Controller
             // If not then create a simple helper
             else {
                 $helper = Helper::create([
-                    'user_id' => auth()->user()->id,
+                    'user_id' => Auth::user()->id,
                 ]);
             }
         }
@@ -377,14 +377,14 @@ class ClientController extends Controller
 
         if ($helper->company_enabled == 1) {
             // Get helper company details
-            $helperCompany = ClientCompany::where('user_id', auth()->user()->id)->first();
+            $helperCompany = ClientCompany::where('user_id', Auth::user()->id)->first();
             if (isset($helperCompany) && $helperCompany->legal_name != null) {
                 $userData['company_details'] = true;
             }
         }
 
         // Check if helpervehicle details exist
-        $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
+        $helperVehicle = HelperVehicle::where('user_id', Auth::user()->id)->first();
         if (isset($helperVehicle) && $helperVehicle->vehicle_number != null) {
             $userData['vehicle_details'] = true;
         }
@@ -406,7 +406,7 @@ class ClientController extends Controller
     public function toggleNotification(Request $request): JsonResponse
     {
         // If token is not valid return error
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -415,7 +415,7 @@ class ClientController extends Controller
             ], 401);
         }
 
-        $client = Client::where('user_id', auth()->user()->id)->first();
+        $client = Client::where('user_id', Auth::user()->id)->first();
 
         if (!$client) {
             return response()->json([
@@ -444,7 +444,7 @@ class ClientController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -454,7 +454,7 @@ class ClientController extends Controller
         }
 
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         if (!$user) {
             return response()->json([
@@ -501,7 +501,7 @@ class ClientController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -529,7 +529,7 @@ class ClientController extends Controller
         }
 
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         if (!$user) {
             return response()->json([
@@ -599,7 +599,7 @@ class ClientController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -609,7 +609,7 @@ class ClientController extends Controller
         }
 
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         if (!$user) {
             return response()->json([
@@ -671,7 +671,7 @@ class ClientController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -706,7 +706,7 @@ class ClientController extends Controller
         }
 
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         if (!$user) {
             return response()->json([
@@ -788,7 +788,7 @@ class ClientController extends Controller
 
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -798,7 +798,7 @@ class ClientController extends Controller
         }
 
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         if (!$user) {
             return response()->json([
@@ -841,7 +841,7 @@ class ClientController extends Controller
 
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -868,7 +868,7 @@ class ClientController extends Controller
         }
 
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         if (!$user) {
             return response()->json([
@@ -914,7 +914,7 @@ class ClientController extends Controller
 
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -937,7 +937,7 @@ class ClientController extends Controller
             ], 422);
         }
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         // Check if old password is correct
         if (!Hash::check($request->old_password, $user->password)) {
@@ -949,7 +949,7 @@ class ClientController extends Controller
         }
 
         // Get the user and update its password
-        $user = User::find(auth()->user()->id);
+        $user = User::find(Auth::user()->id);
 
         $user->password = Hash::make($request->new_password);
         $user->save();
@@ -966,7 +966,7 @@ class ClientController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -976,7 +976,7 @@ class ClientController extends Controller
         }
 
         // Get social links
-        $socialLinks = SocialLink::where('user_id', auth()->user()->id)->get()->pluck('link', 'key')->toArray();
+        $socialLinks = SocialLink::where('user_id', Auth::user()->id)->get()->pluck('link', 'key')->toArray();
 
         // return response()->json($socialLinks['facebook']);
 
@@ -997,7 +997,7 @@ class ClientController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1008,13 +1008,13 @@ class ClientController extends Controller
 
         // Update social links
         // Get facebook
-        $facebookLink = SocialLink::where('user_id', auth()->user()->id)->where('key', 'facebook')->first();
+        $facebookLink = SocialLink::where('user_id', Auth::user()->id)->where('key', 'facebook')->first();
         if ($facebookLink) {
             $facebookLink->link = $request->facebook ?? 'https://facebook.com/';
             $facebookLink->save();
         } else {
             $facebookLink = new SocialLink();
-            $facebookLink->user_id = auth()->user()->id;
+            $facebookLink->user_id = Auth::user()->id;
             $facebookLink->user_type = 'client';
             $facebookLink->key = 'facebook';
             $facebookLink->link = $request->facebook ?? 'https://facebook.com/';
@@ -1022,13 +1022,13 @@ class ClientController extends Controller
         }
 
         // Get linkedin
-        $linkedinLink = SocialLink::where('user_id', auth()->user()->id)->where('key', 'linkedin')->first();
+        $linkedinLink = SocialLink::where('user_id', Auth::user()->id)->where('key', 'linkedin')->first();
         if ($linkedinLink) {
             $linkedinLink->link = $request->linkedin ?? 'https://linkedin.com/';
             $linkedinLink->save();
         } else {
             $linkedinLink = new SocialLink();
-            $linkedinLink->user_id = auth()->user()->id;
+            $linkedinLink->user_id = Auth::user()->id;
             $linkedinLink->user_type = 'client';
             $linkedinLink->key = 'linkedin';
             $linkedinLink->link = $request->linkedin ?? 'https://linkedin.com/';
@@ -1036,13 +1036,13 @@ class ClientController extends Controller
         }
 
         // Get instagram
-        $instagramLink = SocialLink::where('user_id', auth()->user()->id)->where('key', 'instagram')->first();
+        $instagramLink = SocialLink::where('user_id', Auth::user()->id)->where('key', 'instagram')->first();
         if ($instagramLink) {
             $instagramLink->link = $request->instagram ?? 'https://instagram.com/';
             $instagramLink->save();
         } else {
             $instagramLink = new SocialLink();
-            $instagramLink->user_id = auth()->user()->id;
+            $instagramLink->user_id = Auth::user()->id;
             $instagramLink->user_type = 'client';
             $instagramLink->key = 'instagram';
             $instagramLink->link = $request->instagram ?? 'https://instagram.com/';
@@ -1051,13 +1051,13 @@ class ClientController extends Controller
 
 
         // Get tiktok
-        $tiktokLink = SocialLink::where('user_id', auth()->user()->id)->where('key', 'tiktok')->first();
+        $tiktokLink = SocialLink::where('user_id', Auth::user()->id)->where('key', 'tiktok')->first();
         if ($tiktokLink) {
             $tiktokLink->link = $request->tiktok ?? 'https://tiktok.com/';
             $tiktokLink->save();
         } else {
             $tiktokLink = new SocialLink();
-            $tiktokLink->user_id = auth()->user()->id;
+            $tiktokLink->user_id = Auth::user()->id;
             $tiktokLink->user_type = 'client';
             $tiktokLink->key = 'tiktok';
             $tiktokLink->link = $request->tiktok ?? 'https://tiktok.com/';
@@ -1077,7 +1077,7 @@ class ClientController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1087,10 +1087,10 @@ class ClientController extends Controller
         }
 
         // Get only 10
-        $notifications = UserNotification::where('receiver_user_id', auth()->user()->id)
+        $notifications = UserNotification::where('receiver_user_id', Auth::user()->id)
             ->where('receiver_user_type', 'client')
             ->orderBy('created_at', 'asc')->take(10)->get();
-        $unread_notification = UserNotification::where('receiver_user_id', auth()->user()->id)
+        $unread_notification = UserNotification::where('receiver_user_id', Auth::user()->id)
             ->where('receiver_user_type', 'client')
             ->where('read', 0)->count();
 
@@ -1113,7 +1113,7 @@ class ClientController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1123,7 +1123,7 @@ class ClientController extends Controller
         }
 
         // Mark all notifications as read
-        UserNotification::where('receiver_user_id', auth()->user()->id)->where('receiver_user_type', 'client')->update(['read' => 1]);
+        UserNotification::where('receiver_user_id', Auth::user()->id)->where('receiver_user_type', 'client')->update(['read' => 1]);
 
         return response()->json([
             'success' => true,
@@ -1137,7 +1137,7 @@ class ClientController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1147,7 +1147,7 @@ class ClientController extends Controller
         }
 
         // Mark all notifications as read
-        UserNotification::where('receiver_user_id', auth()->user()->id)
+        UserNotification::where('receiver_user_id', Auth::user()->id)
             ->where('id', $request->id)
             ->where('receiver_user_type', 'client')
             ->update(['read' => 1]);
@@ -1167,7 +1167,7 @@ class ClientController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1176,7 +1176,7 @@ class ClientController extends Controller
             ], 401);
         }
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         $acceptedInvites = TeamInvitation::where('inviter_id', $user->id)->get();
         return response()->json([
@@ -1190,7 +1190,7 @@ class ClientController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1261,7 +1261,7 @@ class ClientController extends Controller
 
         // Send Notification
         UserNotification::create([
-            'sender_user_id' => auth()->user()->id,
+            'sender_user_id' => Auth::user()->id,
             'receiver_user_id' => $invitee->id,
             'receiver_user_type' => 'client',
             'reference_id' => $teamInvitation->id,
@@ -1288,7 +1288,7 @@ class ClientController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1337,7 +1337,7 @@ class ClientController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1360,7 +1360,7 @@ class ClientController extends Controller
 
         $userId = $request->user_id;
 
-        $currentUser = auth()->user();
+        $currentUser = Auth::user();
 
         $invitation = TeamInvitation::where('invitee_id', $currentUser->id)
             ->where('inviter_id', $userId)
@@ -1420,7 +1420,7 @@ class ClientController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1430,7 +1430,7 @@ class ClientController extends Controller
         }
 
         // Find the switch record
-        $switchRecord = UserSwitch::where('switched_user_id', auth()->user()->id)->first();
+        $switchRecord = UserSwitch::where('switched_user_id', Auth::user()->id)->first();
 
         if (!$switchRecord) {
             return response()->json([
@@ -1442,7 +1442,7 @@ class ClientController extends Controller
         }
 
         // Revoke the current token
-        auth()->user()->token()->revoke();
+        Auth::user()->token()->revoke();
 
         // Log in using the original user ID
         $originalUser = User::find($switchRecord->original_user_id);
@@ -1478,7 +1478,7 @@ class ClientController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1508,7 +1508,7 @@ class ClientController extends Controller
 
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1559,7 +1559,7 @@ class ClientController extends Controller
 
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1613,7 +1613,7 @@ class ClientController extends Controller
 
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1642,31 +1642,31 @@ class ClientController extends Controller
             if ($chat->user1_id == Auth::user()->id) {
                 $otherUser = User::findOrFail($chat->user2_id);
                 if ($otherUser->client_enabled) {
-                    $chat->otherUserInfo = Client::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
+                    $chat->otherUserInfo = Client::select('first_name', 'last_name', 'thumbnail')->where('user_id', $otherUser->id)->first();
                     // profile_image
-                    $chat->otherUserInfo->profile_image = asset('images/users/' . $chat->otherUserInfo->profile_image);
+                    $chat->otherUserInfo->profile_image = asset('images/users/thumbnail/' . $chat->otherUserInfo->thumbnail);
                 } else {
-                    $chat->otherUserInfo = Helper::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
-                    $chat->otherUserInfo->profile_image = asset('images/users/' . $chat->otherUserInfo->profile_image);
+                    $chat->otherUserInfo = Helper::select('first_name', 'last_name', 'thumbnail')->where('user_id', $otherUser->id)->first();
+                    $chat->otherUserInfo->profile_image = asset('images/users/thumbnail/' . $chat->otherUserInfo->thumbnail);
                 }
                 // Check if user is admin
                 if ($otherUser->user_type == 'admin') {
-                    $chat->otherUserInfo = Admin::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
-                    $chat->otherUserInfo->profile_image = asset('images/users/' . $chat->otherUserInfo->profile_image);
+                    $chat->otherUserInfo = Admin::select('first_name', 'last_name', 'thumbnail')->where('user_id', $otherUser->id)->first();
+                    $chat->otherUserInfo->profile_image = asset('images/users/thumbnail/' . $chat->otherUserInfo->thumbnail);
                 }
             } else {
                 $otherUser = User::findOrFail($chat->user1_id);
                 if ($otherUser->client_enabled) {
-                    $chat->otherUserInfo = Client::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
-                    $chat->otherUserInfo->profile_image = asset('images/users/' . $chat->otherUserInfo->profile_image);
+                    $chat->otherUserInfo = Client::select('first_name', 'last_name', 'thumbnail')->where('user_id', $otherUser->id)->first();
+                    $chat->otherUserInfo->profile_image = asset('images/users/thumbnail/' . $chat->otherUserInfo->thumbnail);
                 } else {
-                    $chat->otherUserInfo = Helper::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
-                    $chat->otherUserInfo->profile_image = asset('images/users/' . $chat->otherUserInfo->profile_image);
+                    $chat->otherUserInfo = Helper::select('first_name', 'last_name', 'thumbnail')->where('user_id', $otherUser->id)->first();
+                    $chat->otherUserInfo->profile_image = asset('images/users/thumbnail/' . $chat->otherUserInfo->thumbnail);
                 }
                 // Check if user is admin
                 if ($otherUser->user_type == 'admin') {
-                    $chat->otherUserInfo = Admin::select('first_name', 'last_name', 'profile_image')->where('user_id', $otherUser->id)->first();
-                    $chat->otherUserInfo->profile_image = asset('images/users/' . $chat->otherUserInfo->profile_image);
+                    $chat->otherUserInfo = Admin::select('first_name', 'last_name', 'thumbnail')->where('user_id', $otherUser->id)->first();
+                    $chat->otherUserInfo->profile_image = asset('images/users/thumbnail/' . $chat->otherUserInfo->thumbnail);
                 }
             }
         }
@@ -1684,7 +1684,7 @@ class ClientController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1707,22 +1707,22 @@ class ClientController extends Controller
 
 
         if ($user->user_type == 'admin') {
-            $userInfo = Admin::select('first_name', 'last_name', 'profile_image')->where('user_id', $user->id)->first();
+            $userInfo = Admin::select('first_name', 'last_name', 'thumbnail')->where('user_id', $user->id)->first();
             // profile_image
-            $userInfo->profile_image = asset('images/users/' . $userInfo->profile_image);
+            $userInfo->profile_image = asset('images/users/thumbnail/' . $userInfo->thumbnail);
         }
 
         // Get User detail as per user type
         if ($user->client_enabled == 1) {
-            $userInfo = Client::select('first_name', 'last_name', 'profile_image')->where('user_id', $user->id)->first();
+            $userInfo = Client::select('first_name', 'last_name', 'thumbnail')->where('user_id', $user->id)->first();
             // profile_image
-            $userInfo->profile_image = asset('images/users/' . $userInfo->profile_image);
+            $userInfo->profile_image = asset('images/users/thumbnail/' . $userInfo->thumbnail);
         }
 
         if ($user->helper_enabled == 1) {
-            $userInfo = Helper::select('first_name', 'last_name', 'profile_image')->where('user_id', $user->id)->first();
+            $userInfo = Helper::select('first_name', 'last_name', 'thumbnail')->where('user_id', $user->id)->first();
             // profile_image
-            $userInfo->profile_image = asset('images/users/' . $userInfo->profile_image);
+            $userInfo->profile_image = asset('images/users/thumbnail/' . $userInfo->thumbnail);
         }
 
         // Check chat between users already exists
@@ -1762,7 +1762,7 @@ class ClientController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1847,7 +1847,7 @@ class ClientController extends Controller
     {
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
@@ -1911,8 +1911,8 @@ class ClientController extends Controller
 
         // Send notification
         UserNotification::create([
-            'sender_user_id' => auth()->user()->id,
-            'receiver_user_id' => $chat->user1_id == auth()->user()->id ? $chat->user2_id : $chat->user1_id,
+            'sender_user_id' => Auth::user()->id,
+            'receiver_user_id' => $chat->user1_id == Auth::user()->id ? $chat->user2_id : $chat->user1_id,
             'receiver_user_type' => 'client',
             'reference_id' => $request->chat_id,
             'type' => 'chat',
@@ -1938,7 +1938,7 @@ class ClientController extends Controller
 
         // If token is not valid return error
 
-        if (!auth()->user()) {
+        if (!Auth::user()) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 401,
