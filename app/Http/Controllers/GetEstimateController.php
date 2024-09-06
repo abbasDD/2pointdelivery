@@ -124,7 +124,10 @@ class GetEstimateController extends Controller
         }
 
         // Get package value and calculate insurance
-        $data['insurance_value'] = $this->getInsuranceValue($request->selectedServiceType, $request->package_value);
+        $data['insurance_value'] = 0;
+        if ($request->insurance_enabled == 1) {
+            $data['insurance_value'] = $this->getInsuranceValue($request->selectedServiceType, $request->package_value);
+        }
 
         // Get Base Price Value
         $data['base_price'] = $this->getBasePrice($serviceType->type, $serviceCategory->base_price, $serviceCategory->moving_price_type, $request->floor_size, $request->no_of_hours);

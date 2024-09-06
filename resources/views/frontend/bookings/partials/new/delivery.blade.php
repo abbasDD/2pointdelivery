@@ -70,8 +70,8 @@
             <label for="insurance_enabled">Insurance Enable</label>
             <select class="form-control mb-3" id="insurance_enabled" name="insurance_enabled"
                 onchange="toggleInsurance()">
-                <option value="yes">Yes</option>
-                <option value="no" selected>No</option>
+                <option value="1">Yes</option>
+                <option value="0" selected>No</option>
             </select>
 
         </div>

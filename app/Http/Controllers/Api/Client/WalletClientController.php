@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\Client;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\HelperWalletResource;
+use App\Models\Booking;
 use App\Models\UserWallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,13 +32,16 @@ class WalletClientController extends Controller
         // unpaid_amount
         $statistic['unpaid_amount'] = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'client')->where('status', 'pending')->sum('amount');
 
+        // Cancelled amount
+        $statistic['cancelled_amount'] = Booking::where('user_id', Auth::user()->id)->where('status', 'cancelled')->sum('total_price');
+
         // amount_refunded
         $statistic['amount_refunded'] = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'client')->where('status', 'refunded')->sum('amount');
 
         // return json response
         return response()->json([
             'success' => true,
-            'message' => 'Client Profile updated successfully',
+            'message' => 'Client wallet fetched successfully',
             'data' => [
                 'statistic' => $statistic,
                 'wallet' => UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'client')->get(),

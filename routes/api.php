@@ -145,8 +145,6 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::get('chat/user/{chat_id}', [ClientController::class, 'getUserChat']);
     Route::post('chat/message/send', [ClientController::class, 'sendMessage']);
 
-
-
     // Client Routes End
 });
 
@@ -200,6 +198,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     // Bookings APIs
     Route::get('booking/details/{id}', [HelperBookingController::class, 'getBookingDetails']);
     Route::post('booking/accept', [HelperBookingController::class, 'acceptBooking']);
+    Route::get('booking/cancel/{id}', [HelperBookingController::class, 'cancelBooking']);
     Route::post('booking/start', [HelperBookingController::class, 'startBooking']);
     Route::post('booking/in-transit', [HelperBookingController::class, 'inTransitBooking']);
     Route::post('booking/complete', [HelperBookingController::class, 'completeBooking']);

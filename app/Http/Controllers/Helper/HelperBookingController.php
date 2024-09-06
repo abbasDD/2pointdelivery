@@ -158,7 +158,7 @@ class HelperBookingController extends Controller
             // Send Push Notification to client
             $this->fcm->sendPushNotificationToUser($booking->client_user_id, 'Booking Accepted', 'Your booking has been accepted.', 'booking', $booking->id, 'booking', $booking->id);
 
-            return redirect()->back()->with('success', 'Booking accepted successfully!');
+            return redirect()->route('helper.booking.show', ['id' => $booking->id])->with('success', 'Booking accepted successfully!');
         }
 
 
@@ -729,8 +729,55 @@ class HelperBookingController extends Controller
             $bookingMoving->save();
         }
 
+        // Add to UserWallet for Delivery
+        if ($booking->booking_type == 'delivery') {
+            // Add to wallet of helper as Delivery has one helper only
+            UserWallet::create([
+                'user_id' => $booking->helper_user_id,
+                'user_type' => 'helper',
+                'type' => 'earned',
+                'amount' => $bookingDelivery->helper_fee,
+                'booking_id' => $booking->id,
+                'note' => 'Payment for booking ID: ' . $booking->id,
+                'payment_method' => 'wallet',
+                'transaction_id' => '',
+                'status' => 'success',
+            ]);
+        }
+
+        // Add to UserWallet for Moving
+        if ($booking->booking_type == 'moving') {
+            // Add to wallet of 2 helpers as Moving has 2 helpers
+            $one_helper_fee = $bookingMoving->helper_fee;
+
+            // Add to helper_1 wallet
+            UserWallet::create([
+                'user_id' => $booking->helper_user_id,
+                'user_type' => 'helper',
+                'type' => 'earned',
+                'amount' => $one_helper_fee,
+                'booking_id' => $booking->id,
+                'note' => 'Payment for booking ID: ' . $booking->id,
+                'payment_method' => 'wallet',
+                'transaction_id' => '',
+                'status' => 'success',
+            ]);
+            // Add to helper_2 wallet
+            UserWallet::create([
+                'user_id' => $booking->helper_user_id2,
+                'user_type' => 'helper',
+                'type' => 'earned',
+                'amount' => $one_helper_fee,
+                'booking_id' => $booking->id,
+                'note' => 'Payment for booking ID: ' . $booking->id,
+                'payment_method' => 'wallet',
+                'transaction_id' => '',
+                'status' => 'success',
+            ]);
+        }
+
         // Send Notification
-        $userNotification = UserNotification::create([
+        UserNotification::create([
             'sender_user_id' => auth()->user()->id,
             'receiver_user_id' => $booking->client_user_id,
             'receiver_user_type' => 'client',

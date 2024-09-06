@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Helper;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\HelperWalletResource;
 use App\Models\HelperBankAccount;
 use App\Models\UserWallet;
 use Illuminate\Http\Request;
@@ -43,10 +44,10 @@ class WalletHelperController extends Controller
         // return json response
         return response()->json([
             'success' => true,
-            'message' => 'Client Profile updated successfully',
+            'message' => 'Helper wallet fetched successfully',
             'data' => [
                 'statistic' => $statistic,
-                'wallet' => UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'helper')->get(),
+                'wallet' => HelperWalletResource::collection(UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'helper')->get()),
                 'helperBankAccounts' => $helperBankAccounts
             ]
         ], 200);

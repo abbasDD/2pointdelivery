@@ -7,7 +7,7 @@
     {{-- Client Wallet --}}
     <div class="row">
         {{-- Amount Spend --}}
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
@@ -21,7 +21,7 @@
             </div>
         </div>
         {{-- Unpaid Amount --}}
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
@@ -34,8 +34,22 @@
                 </div>
             </div>
         </div>
+        {{-- Cancelled Amount --}}
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <p class="mb-0">Cancelled Amount</p>
+                        <i class="fas fa-wallet text-danger"></i>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h3 class="mb-0">C$ {{ $statistic['cancelled_amount'] }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
         {{-- Amount Refunded --}}
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">

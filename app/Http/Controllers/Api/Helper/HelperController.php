@@ -929,7 +929,7 @@ class HelperController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'vehicle_type_id ' => 'required',
+            'vehicle_type_id' => 'required',
             'vehicle_number' => 'required|string',
             'vehicle_make' => 'required|string',
             'vehicle_model' => 'required|string',

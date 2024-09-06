@@ -391,6 +391,74 @@ class HelperBookingController extends Controller
         ], 422);
     }
 
+    // cancelBooking
+    public function cancelBooking(Request $request)
+    {
+        // If token is not valid return error
+        if (!Auth::user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        if (!isset($request->id)) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Booking ID is required.',
+                'errors' => 'Booking ID is required.',
+            ], 422);
+        }
+
+        $booking = Booking::where('id', $request->id)
+            ->where('helper_user_id', Auth::user()->id)
+            ->first();
+
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Unable to get booking.',
+                'errors' => 'Unable to get booking.',
+            ], 422);
+        }
+
+        if ($booking->status == 'cancelled') {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 422,
+                'message' => 'Booking already cancelled.',
+                'errors' => 'Booking already cancelled.',
+            ]);
+        }
+
+        if ($booking->status == 'accepted') {
+
+            // Update booking status to cancelled
+            $booking->status = 'cancelled';
+            $booking->save();
+
+            // Return response
+            return response()->json([
+                'success' => true,
+                'statusCode' => 200,
+                'message' => 'Booking cancelled successfully.',
+                'data' => [],
+            ], 200);
+        }
+
+
+        return response()->json([
+            'success' => false,
+            'statusCode' => 422,
+            'message' => 'Unable to cancel booking.',
+            'errors' => 'Unable to cancel booking.',
+        ]);
+    }
+
     // Start Booking
     public function startBooking(Request $request): JsonResponse
     {
@@ -700,143 +768,144 @@ class HelperBookingController extends Controller
 
         // Check if booking is still in in_transit status
         if ($booking->status != 'in_transit') {
-            return response()->json([
-                'success' => false,
-                'statusCode' => 422,
-                'message' => 'Booking already started.',
-                'errors' => 'Booking already started.',
-            ], 422);
-        }
 
-        $complete_booking_image = null;
+            $complete_booking_image = null;
 
-        $signatureCompleted = null;
+            $signatureCompleted = null;
 
-        // Upload booking image
-        if ($request->hasFile('complete_booking_image')) {
-            $file = $request->file('complete_booking_image');
-            $updatedBookingFilename = time() . '.' . $file->getClientOriginalExtension();
-            $destinationPath = public_path('images/bookings/');
-            $file->move($destinationPath, $updatedBookingFilename);
+            // Upload booking image
+            if ($request->hasFile('complete_booking_image')) {
+                $file = $request->file('complete_booking_image');
+                $updatedBookingFilename = time() . '.' . $file->getClientOriginalExtension();
+                $destinationPath = public_path('images/bookings/');
+                $file->move($destinationPath, $updatedBookingFilename);
 
-            // Set the profile image attribute to the new file name
-            $complete_booking_image = $updatedBookingFilename;
-        }
+                // Set the profile image attribute to the new file name
+                $complete_booking_image = $updatedBookingFilename;
+            }
 
-        // Upload signature start image
-        if ($request->hasFile('signatureCompleted')) {
-            $file = $request->file('signatureCompleted');
-            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
-            $destinationPath = public_path('images/bookings/');
-            $file->move($destinationPath, $updatedFilename);
+            // Upload signature start image
+            if ($request->hasFile('signatureCompleted')) {
+                $file = $request->file('signatureCompleted');
+                $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
+                $destinationPath = public_path('images/bookings/');
+                $file->move($destinationPath, $updatedFilename);
 
-            // Set the profile image attribute to the new file name
-            $signatureCompleted = $updatedFilename;
-        }
+                // Set the profile image attribute to the new file name
+                $signatureCompleted = $updatedFilename;
+            }
 
-        if (!$complete_booking_image || !$signatureCompleted) {
-            return response()->json([
-                'success' => false,
-                'statusCode' => 422,
-                'message' => 'Error in processing image.',
-                'errors' => 'Error in processing image.',
-            ], 422);
-        }
-
-        // Check if booking_type is delivery
-        if ($booking->booking_type == 'delivery') {
-            $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
-            if (!$bookingDelivery) {
+            if (!$complete_booking_image || !$signatureCompleted) {
                 return response()->json([
                     'success' => false,
                     'statusCode' => 422,
-                    'message' => 'Unable to find Booking Delivery.',
-                    'errors' => 'Unable to find Booking Delivery.',
+                    'message' => 'Error in processing image.',
+                    'errors' => 'Error in processing image.',
                 ], 422);
             }
 
-            $bookingDelivery->complete_booking_image = $complete_booking_image;
-            $bookingDelivery->signatureCompleted = $signatureCompleted;
-            $bookingDelivery->start_booking_at = Carbon::now();
-            $bookingDelivery->save();
-        }
+            // Check if booking_type is delivery
+            if ($booking->booking_type == 'delivery') {
+                $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+                if (!$bookingDelivery) {
+                    return response()->json([
+                        'success' => false,
+                        'statusCode' => 422,
+                        'message' => 'Unable to find Booking Delivery.',
+                        'errors' => 'Unable to find Booking Delivery.',
+                    ], 422);
+                }
 
-
-        // Check if booking_type is moving
-        if ($booking->booking_type == 'moving') {
-            $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
-            if (!$bookingMoving) {
-                return response()->json([
-                    'success' => false,
-                    'statusCode' => 422,
-                    'message' => 'Unable to find Booking Moving.',
-                    'errors' => 'Unable to find Booking Moving.',
-                ], 422);
+                $bookingDelivery->complete_booking_image = $complete_booking_image;
+                $bookingDelivery->signatureCompleted = $signatureCompleted;
+                $bookingDelivery->start_booking_at = Carbon::now();
+                $bookingDelivery->save();
             }
-            $bookingMoving->complete_booking_image = $complete_booking_image;
-            $bookingMoving->signatureCompleted = $signatureCompleted;
-            $bookingMoving->start_booking_at = Carbon::now();
-            $bookingMoving->save();
-        }
 
-        // Update booking status
-        $booking->status = 'completed';
-        $booking->save();
 
-        // Add to UserWallet for Delivery
-        if ($booking->booking_type == 'delivery') {
-            // Add to wallet of helper as Delivery has one helper only
-            UserWallet::create([
-                'user_id' => $booking->helper_user_id,
-                'user_type' => 'helper',
-                'type' => 'earned',
-                'amount' => $bookingDelivery->helper_fee,
-                'booking_id' => $booking->id,
-                'note' => 'Payment for booking ID: ' . $booking->id,
-                'payment_method' => 'wallet',
-                'transaction_id' => '',
-                'status' => 'success',
+            // Check if booking_type is moving
+            if ($booking->booking_type == 'moving') {
+                $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
+                if (!$bookingMoving) {
+                    return response()->json([
+                        'success' => false,
+                        'statusCode' => 422,
+                        'message' => 'Unable to find Booking Moving.',
+                        'errors' => 'Unable to find Booking Moving.',
+                    ], 422);
+                }
+                $bookingMoving->complete_booking_image = $complete_booking_image;
+                $bookingMoving->signatureCompleted = $signatureCompleted;
+                $bookingMoving->start_booking_at = Carbon::now();
+                $bookingMoving->save();
+            }
+
+            // Update booking status
+            $booking->status = 'completed';
+            $booking->save();
+
+            // Add to UserWallet for Delivery
+            if ($booking->booking_type == 'delivery') {
+                // Add to wallet of helper as Delivery has one helper only
+                UserWallet::create([
+                    'user_id' => $booking->helper_user_id,
+                    'user_type' => 'helper',
+                    'type' => 'earned',
+                    'amount' => $bookingDelivery->helper_fee,
+                    'booking_id' => $booking->id,
+                    'note' => 'Payment for booking ID: ' . $booking->id,
+                    'payment_method' => 'wallet',
+                    'transaction_id' => '',
+                    'status' => 'success',
+                ]);
+            }
+
+            // Add to UserWallet for Moving
+            if ($booking->booking_type == 'moving') {
+                // Add to wallet of 2 helpers as Moving has 2 helpers
+                $one_helper_fee = $bookingMoving->helper_fee;
+
+                // Add to helper_1 wallet
+                UserWallet::create([
+                    'user_id' => $booking->helper_user_id,
+                    'user_type' => 'helper',
+                    'type' => 'earned',
+                    'amount' => $one_helper_fee,
+                    'booking_id' => $booking->id,
+                    'note' => 'Payment for booking ID: ' . $booking->id,
+                    'payment_method' => 'wallet',
+                    'transaction_id' => '',
+                    'status' => 'success',
+                ]);
+                // Add to helper_2 wallet
+                UserWallet::create([
+                    'user_id' => $booking->helper_user_id2,
+                    'user_type' => 'helper',
+                    'type' => 'earned',
+                    'amount' => $one_helper_fee,
+                    'booking_id' => $booking->id,
+                    'note' => 'Payment for booking ID: ' . $booking->id,
+                    'payment_method' => 'wallet',
+                    'transaction_id' => '',
+                    'status' => 'success',
+                ]);
+            }
+
+            // Return success
+            return response()->json([
+                'success' => true,
+                'statusCode' => 200,
+                'message' => 'Booking completed successfully',
+                'data' => [],
             ]);
         }
 
-        // Add to UserWallet for Moving
-        if ($booking->booking_type == 'moving') {
-            // Add to wallet of 2 helpers as Moving has 2 helpers
-            $one_helper_fee = $bookingMoving->helper_fee;
-
-            // Add to helper_1 wallet
-            UserWallet::create([
-                'user_id' => $booking->helper_user_id,
-                'user_type' => 'helper',
-                'type' => 'earned',
-                'amount' => $one_helper_fee,
-                'booking_id' => $booking->id,
-                'note' => 'Payment for booking ID: ' . $booking->id,
-                'payment_method' => 'wallet',
-                'transaction_id' => '',
-                'status' => 'success',
-            ]);
-            // Add to helper_2 wallet
-            UserWallet::create([
-                'user_id' => $booking->helper_user_id2,
-                'user_type' => 'helper',
-                'type' => 'earned',
-                'amount' => $one_helper_fee,
-                'booking_id' => $booking->id,
-                'note' => 'Payment for booking ID: ' . $booking->id,
-                'payment_method' => 'wallet',
-                'transaction_id' => '',
-                'status' => 'success',
-            ]);
-        }
-
-        // Return success
         return response()->json([
-            'success' => true,
-            'statusCode' => 200,
-            'message' => 'Booking completed successfully',
-            'data' => [],
-        ]);
+            'success' => false,
+            'statusCode' => 422,
+            'message' => 'Booking already started.',
+            'errors' => 'Booking already started.',
+        ], 422);
     }
 
     // In complete Booking
@@ -889,7 +958,7 @@ class HelperBookingController extends Controller
         }
 
         // Check booking status
-        if ($booking->status == 'started' || $booking->status == 'in_transit' || $booking->status == 'completed') {
+        if ($booking->status == 'in_transit') {
             // Check if booking->booking_type is delivery
             if ($booking->booking_type == 'delivery') {
                 // Get booking delivery data
@@ -934,6 +1003,54 @@ class HelperBookingController extends Controller
             $booking->status = 'incomplete';
             $booking->save();
 
+
+            // Add to UserWallet for Delivery
+            if ($booking->booking_type == 'delivery') {
+                // Add to wallet of helper as Delivery has one helper only
+                UserWallet::create([
+                    'user_id' => $booking->helper_user_id,
+                    'user_type' => 'helper',
+                    'type' => 'earned',
+                    'amount' => $bookingDelivery->helper_fee,
+                    'booking_id' => $booking->id,
+                    'note' => 'Payment for booking ID: ' . $booking->id,
+                    'payment_method' => 'wallet',
+                    'transaction_id' => '',
+                    'status' => 'success',
+                ]);
+            }
+
+            // Add to UserWallet for Moving
+            if ($booking->booking_type == 'moving') {
+                // Add to wallet of 2 helpers as Moving has 2 helpers
+                $one_helper_fee = $bookingMoving->helper_fee;
+
+                // Add to helper_1 wallet
+                UserWallet::create([
+                    'user_id' => $booking->helper_user_id,
+                    'user_type' => 'helper',
+                    'type' => 'earned',
+                    'amount' => $one_helper_fee,
+                    'booking_id' => $booking->id,
+                    'note' => 'Payment for booking ID: ' . $booking->id,
+                    'payment_method' => 'wallet',
+                    'transaction_id' => '',
+                    'status' => 'success',
+                ]);
+                // Add to helper_2 wallet
+                UserWallet::create([
+                    'user_id' => $booking->helper_user_id2,
+                    'user_type' => 'helper',
+                    'type' => 'earned',
+                    'amount' => $one_helper_fee,
+                    'booking_id' => $booking->id,
+                    'note' => 'Payment for booking ID: ' . $booking->id,
+                    'payment_method' => 'wallet',
+                    'transaction_id' => '',
+                    'status' => 'success',
+                ]);
+            }
+
             // Return success
             return response()->json([
                 'success' => true,
@@ -947,8 +1064,8 @@ class HelperBookingController extends Controller
         return response()->json([
             'success' => false,
             'statusCode' => 422,
-            'message' => 'Booking already marked as incomplete.',
-            'errors' => 'Booking already marked as incomplete.',
+            'message' => 'Unable to mark booking as incomplete.',
+            'errors' => 'Unable to mark booking as incomplete.',
         ], 422);
     }
 

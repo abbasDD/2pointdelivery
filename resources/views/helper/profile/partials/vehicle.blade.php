@@ -120,9 +120,15 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="vehicle_year" class="form-label">Vehicle Year</label>
-                            <input type="text" class="form-control" id="vehicle_year" name="vehicle_year"
-                                value="{{ old('vehicle_year', $vehicleData['vehicle_year'] ?? '') }}"
-                                placeholder="Vehicle Year" required>
+                            <select class="form-control" id="vehicle_year" name="vehicle_year" required>
+                                <option value="" selected disabled>Choose Vehicle Year</option>
+                                @for ($year = 1990; $year <= 2024; $year++)
+                                    <option value="{{ $year }}"
+                                        {{ old('vehicle_year', $vehicleData['vehicle_year'] ?? '') == $year ? 'selected' : '' }}>
+                                        {{ $year }}
+                                    </option>
+                                @endfor
+                            </select>
                             @error('vehicle_year')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>

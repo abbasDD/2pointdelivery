@@ -523,6 +523,10 @@
         var documents_only = document.getElementById('documents_only').value;
         formData.append('documents_only', documents_only);
 
+        // add insurance
+        formData.append('insurance_enabled', document.getElementById('insurance_enabled').value);
+        // $('#insurance_enabled').val();
+
         // Receiver Details
         formData.append('receiver_name', document.getElementById('receiver_name').value);
         formData.append('receiver_phone', document.getElementById('receiver_phone').value);
@@ -714,7 +718,7 @@
                 </div>
                 <div class="mb-2 d-flex justify-content-between">
                     <span class="text-muted">Insurance Price:</span>
-                    <span id="priority-price" class="fw-bold">${data.insurance_price ? 'C$ ' + data.insurance_price : '___'}</span>
+                    <span id="priority-price" class="fw-bold">${data.insurance_value ? 'C$ ' + data.insurance_value : '___'}</span>
                 </div>`;
             }
             // Check if serviceType is moving 
@@ -818,16 +822,14 @@
             }
         });
 
-
-
         return false;
     }
 
     // toggleInsurance
     function toggleInsurance() {
         // get the value
-        let insurance_enabled = $('#insurance_enabled').val();
-        if (insurance_enabled == 'yes') {
+        insurance_enabled = $('#insurance_enabled').val();
+        if (insurance_enabled == 1) {
             $('#insurance_value_div').removeClass('d-none');
         } else {
             $('#insurance_value_div').addClass('d-none');
@@ -840,6 +842,13 @@
 
     // calculateInsurance
     function calculateInsurance() {
+
+        // Check if insurance_enabled  is no
+        if ($('#insurance_enabled').val() == 0) {
+            document.getElementById('insurance_value').value = 0;
+            return false;
+        }
+
         var insurance_value = 0;
         // Get package value
         let package_value = document.querySelector('input[name="package_value"]').value;

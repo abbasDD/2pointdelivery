@@ -1543,10 +1543,7 @@ class ClientBookingController extends Controller
         }
 
         $booking = Booking::where('id', $request->id)
-            ->with('client')
-            ->with('prioritySetting')
-            ->with('serviceType')
-            ->with('serviceCategory')
+            ->where('client_user_id', Auth::user()->id)
             ->first();
 
         if (!$booking) {
@@ -1567,25 +1564,28 @@ class ClientBookingController extends Controller
             ]);
         }
 
-        if ($booking->status != 'pending') {
+        if ($booking->status == 'pending') {
+
+            // Update booking status to cancelled
+            $booking->status = 'cancelled';
+            $booking->save();
+
+            // Return response
             return response()->json([
-                'success' => false,
-                'statusCode' => 422,
-                'message' => 'Unable to cancel booking.',
-                'errors' => 'Unable to cancel booking.',
-            ]);
+                'success' => true,
+                'statusCode' => 200,
+                'message' => 'Booking cancelled successfully.',
+                'data' => [],
+            ], 200);
         }
 
-        $booking->status = 'cancelled';
-        $booking->save();
 
-        // Return response
         return response()->json([
-            'success' => true,
-            'statusCode' => 200,
-            'message' => 'Booking cancelled successfully.',
-            'data' => $booking,
-        ], 200);
+            'success' => false,
+            'statusCode' => 422,
+            'message' => 'Unable to cancel booking.',
+            'errors' => 'Unable to cancel booking.',
+        ]);
     }
 
     // expired Booking

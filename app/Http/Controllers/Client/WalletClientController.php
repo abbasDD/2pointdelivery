@@ -21,6 +21,9 @@ class WalletClientController extends Controller
         // amount_refunded
         $statistic['amount_refunded'] = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'client')->where('status', 'refunded')->sum('amount');
 
+        // cancelled_amount
+        $statistic['cancelled_amount'] = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'client')->where('status', 'cancelled')->sum('amount');
+
         // wallets
         $wallets = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'client')->get();
 
