@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\UserNotification;
-use App\Http\Requests\StoreUserNotificationRequest;
-use App\Http\Requests\UpdateUserNotificationRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class UserNotificationController extends Controller
 {
@@ -20,10 +19,10 @@ class UserNotificationController extends Controller
 
 
         // Get only 10
-        $notifications = UserNotification::where('receiver_user_id', auth()->user()->id)
+        $notifications = UserNotification::where('receiver_user_id', Auth::user()->id)
             ->where('receiver_user_type', session('login_type') ?? 'client')
             ->orderBy('created_at', 'asc')->take(10)->get();
-        $unread_notification = UserNotification::where('receiver_user_id', auth()->user()->id)
+        $unread_notification = UserNotification::where('receiver_user_id', Auth::user()->id)
             ->where('receiver_user_type', session('login_type') ?? 'client')
             ->where('read', 0)->count();
         $data = [
@@ -41,7 +40,7 @@ class UserNotificationController extends Controller
         }
 
         // Mark all as read
-        UserNotification::where('receiver_user_id', auth()->user()->id)->where('receiver_user_type', session('login_type') ?? 'client')->update(['read' => 1]);
+        UserNotification::where('receiver_user_id', Auth::user()->id)->where('receiver_user_type', session('login_type') ?? 'client')->update(['read' => 1]);
         // return response()->json($notifications);
         return redirect()->back()->with('success', 'All notifications marked as read');
     }

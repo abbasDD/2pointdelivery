@@ -857,6 +857,7 @@ class HelperBookingController extends Controller
                     'payment_method' => 'wallet',
                     'transaction_id' => '',
                     'status' => 'success',
+                    'paid_at' => Carbon::now()
                 ]);
             }
 
@@ -876,6 +877,7 @@ class HelperBookingController extends Controller
                     'payment_method' => 'wallet',
                     'transaction_id' => '',
                     'status' => 'success',
+                    'paid_at' => Carbon::now()
                 ]);
                 // Add to helper_2 wallet
                 UserWallet::create([
@@ -888,6 +890,7 @@ class HelperBookingController extends Controller
                     'payment_method' => 'wallet',
                     'transaction_id' => '',
                     'status' => 'success',
+                    'paid_at' => Carbon::now()
                 ]);
             }
 
@@ -1017,6 +1020,7 @@ class HelperBookingController extends Controller
                     'payment_method' => 'wallet',
                     'transaction_id' => '',
                     'status' => 'success',
+                    'paid_at' => Carbon::now()
                 ]);
             }
 
@@ -1036,6 +1040,7 @@ class HelperBookingController extends Controller
                     'payment_method' => 'wallet',
                     'transaction_id' => '',
                     'status' => 'success',
+                    'paid_at' => Carbon::now()
                 ]);
                 // Add to helper_2 wallet
                 UserWallet::create([
@@ -1048,6 +1053,7 @@ class HelperBookingController extends Controller
                     'payment_method' => 'wallet',
                     'transaction_id' => '',
                     'status' => 'success',
+                    'paid_at' => Carbon::now()
                 ]);
             }
 

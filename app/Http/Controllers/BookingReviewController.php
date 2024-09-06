@@ -9,6 +9,8 @@ use App\Models\Booking;
 use App\Models\Helper;
 use App\Models\UserNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class BookingReviewController extends Controller
 {
@@ -59,7 +61,7 @@ class BookingReviewController extends Controller
         // Notification
         // Notification
         UserNotification::create([
-            'sender_user_id' => auth()->user()->id,
+            'sender_user_id' => Auth::user()->id,
             'receiver_user_id' => $review->helper_user_id,
             'receiver_user_type' => 'helper',
             'type' => 'booking',

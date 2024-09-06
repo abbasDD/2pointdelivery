@@ -653,14 +653,14 @@ class FrontendController extends Controller
 
         if (Auth::check()) {
             // Check if draft biooking exist
-            $draftBooking = Booking::where('client_user_id', auth()->user()->id)->where('status', 'draft')->first();
+            $draftBooking = Booking::where('client_user_id', Auth::user()->id)->where('status', 'draft')->first();
         }
 
         // Get addresses of user
         $addresses = [];
 
         if (Auth::check()) {
-            $addresses = AddressBook::where('user_id', auth()->user()->id)->get();
+            $addresses = AddressBook::where('user_id', Auth::user()->id)->get();
         }
 
 

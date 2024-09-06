@@ -6,7 +6,7 @@ use App\Models\Booking;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class HelperWalletResource extends JsonResource
+class ClientWalletResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

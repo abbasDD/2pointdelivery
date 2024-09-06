@@ -866,6 +866,7 @@ class BookingController extends Controller
                 'payment_method' => 'paypal',
                 'transaction_id' => $paymentDetails['id'],
                 'status' => 'success',
+                'paid_at' => Carbon::now()
             ]);
 
             // Send notification to user
@@ -992,6 +993,7 @@ class BookingController extends Controller
             'payment_method' => 'stripe',
             'transaction_id' => $charge->id,
             'status' => 'success',
+            'paid_at' => Carbon::now()
         ]);
 
         // Send notification to user

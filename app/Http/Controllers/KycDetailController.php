@@ -13,6 +13,7 @@ use App\Models\State;
 use App\Models\User;
 use App\Models\UserNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class KycDetailController extends Controller
 {
@@ -22,7 +23,7 @@ class KycDetailController extends Controller
     public function index()
     {
         // Get kyc details of logged in user
-        $kycDetails = KycDetail::where('user_id', auth()->user()->id)->get();
+        $kycDetails = KycDetail::where('user_id', Auth::user()->id)->get();
         // dd($kycDetails);
         return view('client.kycDetails.index', compact('kycDetails'));
     }
@@ -45,7 +46,7 @@ class KycDetailController extends Controller
         }
 
         // Get already added Kyc Types
-        $existedKycTypes = KycDetail::where('user_id', auth()->user()->id)->get();
+        $existedKycTypes = KycDetail::where('user_id', Auth::user()->id)->get();
         if ($existedKycTypes) {
             $existedKycTypes = $existedKycTypes->pluck('kyc_type_id')->toArray();
         }
@@ -75,20 +76,20 @@ class KycDetailController extends Controller
         ]);
 
         // Check if user exist
-        $user = User::where('id', auth()->user()->id)->first();
+        $user = User::where('id', Auth::user()->id)->first();
         if (!$user) {
             return redirect()->back()->with('error', 'User not found');
         }
 
         // Check if kyc exist or not
-        $kycDetail = KycDetail::where('user_id', auth()->user()->id)->where('kyc_type_id', $request->kyc_type_id)->first();
+        $kycDetail = KycDetail::where('user_id', Auth::user()->id)->where('kyc_type_id', $request->kyc_type_id)->first();
 
         if ($kycDetail) {
             return redirect()->back()->with('error', 'You have already added this KYC');
         }
 
         $kycDetail = KycDetail::create([
-            'user_id' => auth()->user()->id,
+            'user_id' => Auth::user()->id,
             'type' => 'client',
             'kyc_type_id' => $request->kyc_type_id,
         ]);
@@ -140,13 +141,13 @@ class KycDetailController extends Controller
 
         // Send Notification to Admin
         UserNotification::create([
-            'sender_user_id' => auth()->user()->id,
+            'sender_user_id' => Auth::user()->id,
             'receiver_user_id' => 1,
             'receiver_user_type' => 'admin',
             'reference_id' => $kycDetail->id,
             'type' => 'kyc_detail',
             'title' => 'KYC details added',
-            'content' => 'KYC is submitted by ' . auth()->user()->name . ' for ' . $kycDetail->kycType->name . ' KYC',
+            'content' => 'KYC is submitted by ' . Auth::user()->name . ' for ' . $kycDetail->kycType->name . ' KYC',
             'read' => 0
         ]);
 
@@ -159,7 +160,7 @@ class KycDetailController extends Controller
     public function edit(Request $request)
     {
         // Get kyc details of logged in user
-        $kycDetails = KycDetail::where('id', $request->id)->where('user_id', auth()->user()->id)->first();
+        $kycDetails = KycDetail::where('id', $request->id)->where('user_id', Auth::user()->id)->first();
         // dd($kycDetails->front_image);
 
         // Get countries
@@ -179,7 +180,7 @@ class KycDetailController extends Controller
         $kycTypes = KycType::where('id', $kycDetails->kyc_type_id)->first();
 
         // Get already added Kyc Types
-        $ExistedKycTypes = KycDetail::where('user_id', auth()->user()->id)->where('kyc_type_id', '!=', $kycDetails->kyc_type_id)->pluck('kyc_type_id')->toArray();
+        $ExistedKycTypes = KycDetail::where('user_id', Auth::user()->id)->where('kyc_type_id', '!=', $kycDetails->kyc_type_id)->pluck('kyc_type_id')->toArray();
 
         return view('client.kycDetails.edit', compact('kycDetails', 'addressData', 'ExistedKycTypes', 'kycTypes'));
     }
@@ -188,7 +189,7 @@ class KycDetailController extends Controller
     public function show(Request $request)
     {
         // Get kyc details of logged in user
-        $kycDetails = KycDetail::where('id', $request->id)->where('user_id', auth()->user()->id)->first();
+        $kycDetails = KycDetail::where('id', $request->id)->where('user_id', Auth::user()->id)->first();
         // dd($kycDetails->front_image);
 
         // Get countries
@@ -215,7 +216,7 @@ class KycDetailController extends Controller
         ]);
 
         // Check if kyc exist or not
-        $kycDetail = KycDetail::where('user_id', auth()->user()->id)->where('id', $request->id)->first();
+        $kycDetail = KycDetail::where('user_id', Auth::user()->id)->where('id', $request->id)->first();
 
         if (!$kycDetail) {
             // Return with error

@@ -9,6 +9,7 @@ use App\Models\Country;
 use App\Models\KycDetail;
 use App\Models\UserNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class KycDetailController extends Controller
 {
@@ -76,7 +77,7 @@ class KycDetailController extends Controller
 
         // Send Notification
         UserNotification::create([
-            'sender_user_id' => auth()->user()->id,
+            'sender_user_id' => Auth::user()->id,
             'receiver_user_id' => $kycDetail->user_id,
             'receiver_user_type' => $kycDetail->type,
             'reference_id' => $kycDetail->id,
@@ -104,7 +105,7 @@ class KycDetailController extends Controller
 
         // Send Notification
         UserNotification::create([
-            'sender_user_id' => auth()->user()->id,
+            'sender_user_id' => Auth::user()->id,
             'receiver_user_id' => $kycDetail->user_id,
             'receiver_user_type' => $kycDetail->type,
             'reference_id' => $kycDetail->id,

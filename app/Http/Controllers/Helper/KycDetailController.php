@@ -10,6 +10,7 @@ use App\Models\KycType;
 use App\Models\State;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class KycDetailController extends Controller
 {
@@ -19,7 +20,7 @@ class KycDetailController extends Controller
     public function index()
     {
         // Get kyc details of logged in user
-        $kycDetails = KycDetail::with('kycType')->where('user_id', auth()->user()->id)->get();
+        $kycDetails = KycDetail::with('kycType')->where('user_id', Auth::user()->id)->get();
         // dd($kycDetails->front_image);
         return view('helper.kycDetails.index', compact('kycDetails'));
     }
@@ -36,7 +37,7 @@ class KycDetailController extends Controller
         ];
 
         // Get already added Kyc Types
-        $existedKycTypes = KycDetail::where('user_id', auth()->user()->id)->pluck('kyc_type_id')->toArray();
+        $existedKycTypes = KycDetail::where('user_id', Auth::user()->id)->pluck('kyc_type_id')->toArray();
 
 
         // Get KYC Types not present in the existedKycTypes array
@@ -63,13 +64,13 @@ class KycDetailController extends Controller
         ]);
 
         // Check if user exist
-        $user = User::where('id', auth()->user()->id)->first();
+        $user = User::where('id', Auth::user()->id)->first();
         if (!$user) {
             return redirect()->back()->with('error', 'User not found');
         }
 
         $kycDetail = KycDetail::create([
-            'user_id' => auth()->user()->id,
+            'user_id' => Auth::user()->id,
             'type' => 'helper',
             'kyc_type_id' => $request->kyc_type_id,
         ]);
@@ -125,7 +126,7 @@ class KycDetailController extends Controller
     public function edit(Request $request)
     {
         // Get kyc details of logged in user
-        $kycDetails = KycDetail::where('id', $request->id)->where('user_id', auth()->user()->id)->first();
+        $kycDetails = KycDetail::where('id', $request->id)->where('user_id', Auth::user()->id)->first();
         // dd($kycDetails->front_image);
 
         // Get countries
@@ -146,7 +147,7 @@ class KycDetailController extends Controller
         $kycTypes = KycType::where('id', $kycDetails->kyc_type_id)->first();
 
         // Get already added kycdetails
-        $ExistedKycTypes = KycDetail::where('user_id', auth()->user()->id)->where('kyc_type_id', '!=', $kycDetails->kyc_type_id)->pluck('kyc_type_id')->toArray();
+        $ExistedKycTypes = KycDetail::where('user_id', Auth::user()->id)->where('kyc_type_id', '!=', $kycDetails->kyc_type_id)->pluck('kyc_type_id')->toArray();
 
 
         return view('helper.kycDetails.edit', compact('kycDetails', 'addressData', 'ExistedKycTypes', 'kycTypes'));
@@ -156,7 +157,7 @@ class KycDetailController extends Controller
     public function show(Request $request)
     {
         // Get kyc details of logged in user
-        $kycDetails = KycDetail::where('id', $request->id)->where('user_id', auth()->user()->id)->first();
+        $kycDetails = KycDetail::where('id', $request->id)->where('user_id', Auth::user()->id)->first();
         // dd($kycDetails->front_image);
 
         // Get countries
@@ -180,7 +181,7 @@ class KycDetailController extends Controller
         ]);
 
         // Check if kyc exist or not
-        $kycDetail = KycDetail::where('user_id', auth()->user()->id)->where('id', $request->id)->first();
+        $kycDetail = KycDetail::where('user_id', Auth::user()->id)->where('id', $request->id)->first();
 
         if (!$kycDetail) {
             // Return with error

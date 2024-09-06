@@ -8,6 +8,7 @@ use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
 class CheckIfHelperCreated
 {
@@ -19,14 +20,14 @@ class CheckIfHelperCreated
     public function handle(Request $request, Closure $next): Response
     {
 
-        // dd(auth()->user()->id);
+        // dd(Auth::user()->id);
         // Redirect to login if not logged in
-        if (auth()->user()->id == null) {
+        if (Auth::user()->id == null) {
             return redirect()->route('helper.login');
         }
 
         // Check if helper is enabled in user table
-        $user = User::where('id', auth()->user()->id)->first();
+        $user = User::where('id', Auth::user()->id)->first();
         if (!$user->helper_enabled) {
             return redirect()->back()->with('error', 'You need to be a Helper in order to access this page');
         }

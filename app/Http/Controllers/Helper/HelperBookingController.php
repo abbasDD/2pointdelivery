@@ -21,6 +21,7 @@ use App\Models\UserWallet;
 use App\Models\VehicleType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HelperBookingController extends Controller
 {
@@ -37,7 +38,7 @@ class HelperBookingController extends Controller
 
     public function index()
     {
-        $userId = auth()->user()->id;
+        $userId = Auth::user()->id;
 
         $bookings = Booking::with('prioritySetting')
             ->with('serviceType')
@@ -87,7 +88,7 @@ class HelperBookingController extends Controller
             return redirect()->back()->with('error', 'Booking not found');
         }
 
-        if ($booking->client_user_id == auth()->user()->id) {
+        if ($booking->client_user_id == Auth::user()->id) {
             return redirect()->back()->with('error', 'You can not accept your own booking');
         }
 
@@ -103,7 +104,7 @@ class HelperBookingController extends Controller
                     }
 
                     $booking->status = 'accepted';
-                    $booking->helper_user_id = auth()->user()->id;
+                    $booking->helper_user_id = Auth::user()->id;
                     $booking->save();
                     break;
                 case 'moving':
@@ -115,15 +116,15 @@ class HelperBookingController extends Controller
                     // Check if helper_user_id is null
                     if ($booking->helper_user_id == null) {
                         // $booking->status = 'accepted';
-                        $booking->helper_user_id = auth()->user()->id;
+                        $booking->helper_user_id = Auth::user()->id;
                         $booking->save();
                     } else {
                         // Check if same user_id is in helper_user_id
-                        if ($booking->helper_user_id == auth()->user()->id) {
+                        if ($booking->helper_user_id == Auth::user()->id) {
                             return redirect()->back()->with('error', 'You have already accepted this booking');
                         }
                         $booking->status = 'accepted';
-                        $booking->helper_user_id2 = auth()->user()->id;
+                        $booking->helper_user_id2 = Auth::user()->id;
                         $booking->save();
                     }
                     break;
@@ -145,7 +146,7 @@ class HelperBookingController extends Controller
 
             // Send Notification
             UserNotification::create([
-                'sender_user_id' => auth()->user()->id,
+                'sender_user_id' => Auth::user()->id,
                 'receiver_user_id' => $booking->client_user_id,
                 'receiver_user_type' => 'client',
                 'reference_id' => $booking->id,
@@ -170,7 +171,7 @@ class HelperBookingController extends Controller
      */
     public function show(Request $request)
     {
-        $userId = auth()->user()->id;
+        $userId = Auth::user()->id;
 
         $booking = Booking::where('id', $request->id)
             ->where(function ($query) use ($userId) {
@@ -191,8 +192,8 @@ class HelperBookingController extends Controller
             return redirect()->back()->with('error', 'Unsupported booking type');
         }
 
-        // Check if helper_user_id && helper_user_id is equal to auth()->user()->id
-        if ($booking->helper_user_id != auth()->user()->id && $booking->helper_user_id2 != auth()->user()->id) {
+        // Check if helper_user_id && helper_user_id is equal to Auth::user()->id
+        if ($booking->helper_user_id != Auth::user()->id && $booking->helper_user_id2 != Auth::user()->id) {
             return redirect()->back()->with('error', 'Booking not found');
         }
 
@@ -304,7 +305,7 @@ class HelperBookingController extends Controller
     public function start(Request $request)
     {
 
-        $userId = auth()->user()->id;
+        $userId = Auth::user()->id;
 
         $booking = Booking::where('id', $request->id)
             ->where(function ($query) use ($userId) {
@@ -403,7 +404,7 @@ class HelperBookingController extends Controller
 
             // Send Notification
             $userNotification = UserNotification::create([
-                'sender_user_id' => auth()->user()->id,
+                'sender_user_id' => Auth::user()->id,
                 'receiver_user_id' => $booking->client_user_id,
                 'receiver_user_type' => 'client',
                 'reference_id' => $booking->id,
@@ -426,7 +427,7 @@ class HelperBookingController extends Controller
     // inTransit Booking
     public function inTransit(Request $request)
     {
-        $userId = auth()->user()->id;
+        $userId = Auth::user()->id;
 
         $booking = Booking::where('id', $request->id)
             ->where(function ($query) use ($userId) {
@@ -479,7 +480,7 @@ class HelperBookingController extends Controller
 
             // Send Notification
             UserNotification::create([
-                'sender_user_id' => auth()->user()->id,
+                'sender_user_id' => Auth::user()->id,
                 'receiver_user_id' => $booking->client_user_id,
                 'receiver_user_type' => 'client',
                 'reference_id' => $booking->id,
@@ -499,7 +500,7 @@ class HelperBookingController extends Controller
     public function complete(Request $request)
     {
 
-        $userId = auth()->user()->id;
+        $userId = Auth::user()->id;
 
         $booking = Booking::where('id', $request->id)
             ->where(function ($query) use ($userId) {
@@ -606,6 +607,7 @@ class HelperBookingController extends Controller
                 'payment_method' => 'wallet',
                 'transaction_id' => '',
                 'status' => 'success',
+                'paid_at' => Carbon::now()
             ]);
         }
 
@@ -625,6 +627,7 @@ class HelperBookingController extends Controller
                 'payment_method' => 'wallet',
                 'transaction_id' => '',
                 'status' => 'success',
+                'paid_at' => Carbon::now()
             ]);
             // Add to helper_2 wallet
             UserWallet::create([
@@ -637,12 +640,13 @@ class HelperBookingController extends Controller
                 'payment_method' => 'wallet',
                 'transaction_id' => '',
                 'status' => 'success',
+                'paid_at' => Carbon::now()
             ]);
         }
 
         // Send Notification
         UserNotification::create([
-            'sender_user_id' => auth()->user()->id,
+            'sender_user_id' => Auth::user()->id,
             'receiver_user_id' => $booking->client_user_id,
             'receiver_user_type' => 'client',
             'reference_id' => $booking->id,
@@ -669,7 +673,7 @@ class HelperBookingController extends Controller
             return redirect()->back()->with('error', 'Please provide incomplete reason');
         }
 
-        $userId = auth()->user()->id;
+        $userId = Auth::user()->id;
 
         $booking = Booking::where('id', $request->id)
             ->where(function ($query) use ($userId) {
@@ -742,6 +746,7 @@ class HelperBookingController extends Controller
                 'payment_method' => 'wallet',
                 'transaction_id' => '',
                 'status' => 'success',
+                'paid_at' => Carbon::now()
             ]);
         }
 
@@ -761,6 +766,7 @@ class HelperBookingController extends Controller
                 'payment_method' => 'wallet',
                 'transaction_id' => '',
                 'status' => 'success',
+                'paid_at' => Carbon::now()
             ]);
             // Add to helper_2 wallet
             UserWallet::create([
@@ -773,12 +779,13 @@ class HelperBookingController extends Controller
                 'payment_method' => 'wallet',
                 'transaction_id' => '',
                 'status' => 'success',
+                'paid_at' => Carbon::now()
             ]);
         }
 
         // Send Notification
         UserNotification::create([
-            'sender_user_id' => auth()->user()->id,
+            'sender_user_id' => Auth::user()->id,
             'receiver_user_id' => $booking->client_user_id,
             'receiver_user_type' => 'client',
             'reference_id' => $booking->id,

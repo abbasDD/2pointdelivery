@@ -50,7 +50,7 @@ class TeamInvitationController extends Controller
 
         // Send Notification
         UserNotification::create([
-            'sender_user_id' => auth()->user()->id,
+            'sender_user_id' => Auth::user()->id,
             'receiver_user_id' => $invitee->id,
             'receiver_user_type' => 'client',
             'reference_id' => $teamInvitation->id,

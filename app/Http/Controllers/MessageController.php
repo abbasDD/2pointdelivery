@@ -74,8 +74,8 @@ class MessageController extends Controller
 
         // Send notification
         UserNotification::create([
-            'sender_user_id' => auth()->user()->id,
-            'receiver_user_id' => $chat->user1_id == auth()->user()->id ? $chat->user2_id : $chat->user1_id,
+            'sender_user_id' => Auth::user()->id,
+            'receiver_user_id' => $chat->user1_id == Auth::user()->id ? $chat->user2_id : $chat->user1_id,
             'receiver_user_type' => 'client',
             'reference_id' => $request->chat_id,
             'type' => 'chat',

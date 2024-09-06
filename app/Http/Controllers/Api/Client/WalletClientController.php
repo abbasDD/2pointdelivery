@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Client;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ClientWalletResource;
 use App\Http\Resources\HelperWalletResource;
 use App\Models\Booking;
 use App\Models\UserWallet;
@@ -44,7 +45,7 @@ class WalletClientController extends Controller
             'message' => 'Client wallet fetched successfully',
             'data' => [
                 'statistic' => $statistic,
-                'wallet' => UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'client')->get(),
+                'wallet' => ClientWalletResource::collection(UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'client')->get()),
             ]
         ], 200);
     }

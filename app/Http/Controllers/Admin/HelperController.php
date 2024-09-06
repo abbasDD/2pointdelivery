@@ -11,6 +11,8 @@ use App\Models\User;
 use App\Models\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+
 
 class HelperController extends Controller
 {
@@ -150,7 +152,7 @@ class HelperController extends Controller
 
             // Notification
             UserNotification::create([
-                'sender_user_id' => auth()->user()->id,
+                'sender_user_id' => Auth::user()->id,
                 'receiver_user_id' => $helper->user_id,
                 'receiver_user_type' => 'helper',
                 'type' => 'helper_status',
@@ -193,7 +195,7 @@ class HelperController extends Controller
 
             // Notification
             UserNotification::create([
-                'sender_user_id' => auth()->user()->id,
+                'sender_user_id' => Auth::user()->id,
                 'receiver_user_id' => $helper->user_id,
                 'receiver_user_type' => 'helper',
                 'type' => 'helper_status',
@@ -221,7 +223,7 @@ class HelperController extends Controller
 
             // Notification
             UserNotification::create([
-                'sender_user_id' => auth()->user()->id,
+                'sender_user_id' => Auth::user()->id,
                 'receiver_user_id' => $helper->user_id,
                 'receiver_user_type' => 'helper',
                 'type' => 'helper_status',
@@ -249,7 +251,7 @@ class HelperController extends Controller
 
             // Notification
             UserNotification::create([
-                'sender_user_id' => auth()->user()->id,
+                'sender_user_id' => Auth::user()->id,
                 'receiver_user_id' => $vehicle->user_id,
                 'receiver_user_type' => 'helper',
                 'type' => 'helper_vehicle_status',
@@ -275,7 +277,7 @@ class HelperController extends Controller
 
             // Notification
             UserNotification::create([
-                'sender_user_id' => auth()->user()->id,
+                'sender_user_id' => Auth::user()->id,
                 'receiver_user_id' => $vehicle->user_id,
                 'receiver_user_type' => 'helper',
                 'type' => 'helper_vehicle_status',
@@ -311,7 +313,7 @@ class HelperController extends Controller
 
             // Notification
             UserNotification::create([
-                'sender_user_id' => auth()->user()->id,
+                'sender_user_id' => Auth::user()->id,
                 'receiver_user_id' => $helperBankAccount->user_id,
                 'receiver_user_type' => 'helper',
                 'type' => 'helper_bank_account_status',
@@ -337,7 +339,7 @@ class HelperController extends Controller
 
             // Notification
             UserNotification::create([
-                'sender_user_id' => auth()->user()->id,
+                'sender_user_id' => Auth::user()->id,
                 'receiver_user_id' => $helperBankAccount->user_id,
                 'receiver_user_type' => 'helper',
                 'type' => 'helper_bank_account_status',
