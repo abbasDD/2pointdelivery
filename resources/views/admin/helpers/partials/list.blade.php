@@ -14,27 +14,19 @@
         @forelse ($helpers as $helper)
             <tr>
                 <td>{{ $loop->index + 1 }}</td>
-                <td><img src="{{ $helper->profile_image ? asset('images/users/' . $helper->profile_image) : asset('images/users/default.png') }}"
+                <td><img src="{{ $helper->thumbnail ? asset('images/users/thumbnail/' . $helper->thumbnail) : asset('images/users/default.png') }}"
                         alt="Profile Image" width="50">
                 </td>
-                <td>{{ $helper->email }}</td>
+                <td>{{ $helper->user->email }}</td>
                 <td>{{ $helper->first_name . ' ' . $helper->last_name }}</td>
                 <td>{{ $helper->company_enabled ? 'Company' : 'Individual' }}</td>
                 <td>
                     <button type="button" id="statusButton_{{ $helper->id }}"
-                        class="btn  {{ $helper->is_active ? 'btn-primary' : 'btn-danger' }} btn-sm"
-                        onclick="showStatusDialog({{ $helper->id }}, '{{ $helper->is_active }}')">
-                        {{ $helper->is_active == 1 ? 'Active' : 'Inactive' }}
+                        class="btn  {{ $helper->user->is_active ? 'btn-primary' : 'btn-danger' }} btn-sm"
+                        onclick="showStatusDialog({{ $helper->id }}, '{{ $helper->user->is_active }}')">
+                        {{ $helper->user->is_active == 1 ? 'Active' : 'Inactive' }}
                     </button>
                 </td>
-                {{-- <td>
-                    <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="statusButton_{{ $helper->id }}"
-                            onclick="showStatusDialog({{ $helper->id }}, {{ $helper->is_active }})"
-                            {{ $helper->is_active ? 'checked' : '' }}>
-                        <label class="custom-control-label" for="statusButton_{{ $helper->id }}"></label>
-                    </div>
-                </td> --}}
                 <td class="gap-">
                     {{-- View Route --}}
                     <a class="btn btn-sm btn-primary" href="{{ route('admin.helper.show', $helper->id) }}"><i

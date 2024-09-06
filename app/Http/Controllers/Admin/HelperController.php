@@ -16,24 +16,22 @@ class HelperController extends Controller
 {
     public function index(Request $request)
     {
-        $helpers = Helper::select('helpers.*', 'users.email', 'users.is_active')
-            ->join('users', 'helpers.user_id', '=', 'users.id')
+        $helpers = Helper::with('user')
             ->where('helpers.is_approved', 1)
             ->paginate(10); // 10 items per page
         if (request()->ajax()) {
-            return response()->json(view('helpers.partials.list', compact('helpers'))->render());
+            return response()->json(view('admin.helpers.partials.list', compact('helpers'))->render());
         }
         return view('admin.helpers.index', compact('helpers'));
     }
 
     public function newHelpers(Request $request)
     {
-        $helpers = Helper::select('helpers.*', 'users.email', 'users.is_active')
-            ->join('users', 'helpers.user_id', '=', 'users.id')
+        $helpers = Helper::with('user')
             ->where('helpers.is_approved', 0)
             ->paginate(10); // 10 items per page
         if (request()->ajax()) {
-            return response()->json(view('helpers.partials.list', compact('helpers'))->render());
+            return response()->json(view('admin.helpers.partials.requested_list', compact('helpers'))->render());
         }
         return view('admin.helpers.requested', compact('helpers'));
     }

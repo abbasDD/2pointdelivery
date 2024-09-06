@@ -35,24 +35,6 @@ class AdminBookingController extends Controller
             ->orderBy('updated_at', 'desc')
             ->paginate(10);
 
-        foreach ($bookings as $booking) {
-            if ($booking->helper_user_id != NULL) {
-                $booking->helper = Helper::where('user_id', $booking->helper_user_id)->first();
-            }
-
-            $booking->client = Client::where('user_id', $booking->client_user_id)->first();
-
-            $booking->moving = null;
-
-            if ($booking->booking_type == 'delivery') {
-                $booking->delivery = BookingDelivery::where('booking_id', $booking->id)->first();
-            }
-
-            if ($booking->booking_type == 'moving') {
-                $booking->moving = BookingMoving::where('booking_id', $booking->id)->first();
-            }
-        }
-
         // dd($bookings);
 
 
@@ -159,13 +141,14 @@ class AdminBookingController extends Controller
             return redirect()->back()->with('error', 'Booking already cancelled');
         }
 
-        if ($booking->status != 'pending') {
-            return redirect()->back()->with('error', 'Booking already in progress');
+        if ($booking->status == 'pending') {
+            // cancel only if booking is pending
+            $booking->status = 'cancelled';
+            $booking->save();
+
+            return redirect()->back()->with('success', 'Booking cancelled successfully');
         }
 
-        $booking->status = 'cancelled';
-        $booking->save();
-
-        return redirect()->back()->with('success', 'Booking cancelled successfully');
+        return redirect()->back()->with('error', 'Booking already in progress');
     }
 }

@@ -8,16 +8,18 @@ use App\Models\Client;
 use App\Models\Helper;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Intervention\Image\Laravel\Facades\Image;
+
 
 class AdminController extends Controller
 {
     public function index()
     {
         // Get list of all admins
-        $admins = Admin::select('admins.*', 'users.email', 'users.is_active')
-            ->join('users', 'admins.user_id', '=', 'users.id')
+        $admins = Admin::with('user')
             ->get();
 
         return view('admin.admins.index', compact('admins'));
@@ -41,16 +43,24 @@ class AdminController extends Controller
 
         // Set default profile image to null
         $profile_image = null;
+        $thumbnail = null;
 
         // Upload the profile image if provided
         if ($request->hasFile('profile_image')) {
-            $file = $request->file('profile_image');
-            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
-            $destinationPath = public_path('images/users/');
-            $file->move($destinationPath, $updatedFilename);
+            $image = Image::read($request->file('profile_image'));
 
-            // Set the profile image attribute to the new file name
-            $profile_image = $updatedFilename;
+            // Main Image Upload on Folder Code
+            $imageName = time() . rand(0, 999) . '.' . $request->file('profile_image')->getClientOriginalExtension();
+            $destinationPath = public_path('images/users/');
+            $image->save($destinationPath . $imageName);
+
+            // Generate Thumbnail Image Upload on Folder Code
+            $destinationPathThumbnail = public_path('images/users/thumbnail/');
+            $image->resize(100, 100);
+            $image->save($destinationPathThumbnail . $imageName);
+
+            $profile_image = $imageName;
+            $thumbnail = $imageName;
         }
 
         // Create the user
@@ -61,12 +71,13 @@ class AdminController extends Controller
         ]);
 
         // Create the admin
-        $admin = Admin::create([
+        Admin::create([
             'user_id' => $user->id,
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'admin_type' => $request->admin_type,
             'profile_image' => $profile_image,
+            'thumbnail' => $thumbnail
         ]);
 
         // Redirect with a success message
@@ -95,16 +106,28 @@ class AdminController extends Controller
         // Find the admin
         $admin = Admin::find($request->id);
 
+
         if ($admin) {
+
+            $profile_image = $admin->profile_image;
+            $thumbnail = $admin->thumbnail;
+
             // Upload the profile image if provided
             if ($request->hasFile('profile_image')) {
-                $file = $request->file('profile_image');
-                $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
-                $destinationPath = public_path('images/users/');
-                $file->move($destinationPath, $updatedFilename);
+                $image = Image::read($request->file('profile_image'));
 
-                // Set the profile image attribute to the new file name
-                $admin->profile_image = $updatedFilename;
+                // Main Image Upload on Folder Code
+                $imageName = time() . rand(0, 999) . '.' . $request->file('profile_image')->getClientOriginalExtension();
+                $destinationPath = public_path('images/users/');
+                $image->save($destinationPath . $imageName);
+
+                // Generate Thumbnail Image Upload on Folder Code
+                $destinationPathThumbnail = public_path('images/users/thumbnail/');
+                $image->resize(100, 100);
+                $image->save($destinationPathThumbnail . $imageName);
+
+                $profile_image = $imageName;
+                $thumbnail = $imageName;
             }
 
             // Update the admin's attributes
@@ -112,8 +135,15 @@ class AdminController extends Controller
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'admin_type' => $request->admin_type,
-                // Add any other fields you need to update
+                'profile_image' => $profile_image,
+                'thumbnail' => $thumbnail
             ]);
+
+            // If admin is the auth user
+            if (Auth::user()->id == $admin->user_id) {
+                // set thumbnail to session
+                session(['profile_image' => asset('images/users/thumbnail/' . $thumbnail)]);
+            }
 
             // Optionally, return a success response or do other actions
             return redirect()->route('admin.admins')->with('success', 'Admin updated successfully!');

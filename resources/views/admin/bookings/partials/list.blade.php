@@ -32,14 +32,6 @@
                 </td>
                 <td>
                     <p>${{ $booking->total_price }}</p>
-                    <p>
-                        <span class="fw-bold">Tax:</span>
-                        @if ($booking->booking_type == 'delivery' && $booking->delivery != null)
-                            ${{ $booking->delivery->tax_price }}
-                        @else
-                            $0
-                        @endif
-                    </p>
                 </td>
                 <td>
                     @if ($booking->status == 'draft' || $booking->status == 'pending')
@@ -72,7 +64,3 @@
 </table>
 
 {{ $bookings->links() }}
-
-
-
-{{-- Cancel Booking Modal --}}

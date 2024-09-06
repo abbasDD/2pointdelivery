@@ -23,6 +23,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Laravel\Facades\Image;
 
 class ClientController extends Controller
 {
@@ -551,16 +552,24 @@ class ClientController extends Controller
 
         // Set default profile image to null
         $profile_image = $client->profile_image ?? null;
+        $thumbnail = $client->thumbnail ?? null;
 
         // Upload the profile image if provided
         if ($request->hasFile('profile_image')) {
-            $file = $request->file('profile_image');
-            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
-            $destinationPath = public_path('images/users/');
-            $file->move($destinationPath, $updatedFilename);
+            $image = Image::read($request->file('profile_image'));
 
-            // Set the profile image attribute to the new file name
-            $profile_image = $updatedFilename;
+            // Main Image Upload on Folder Code
+            $imageName = time() . rand(0, 999) . '.' . $request->file('profile_image')->getClientOriginalExtension();
+            $destinationPath = public_path('images/users/');
+            $image->save($destinationPath . $imageName);
+
+            // Generate Thumbnail Image Upload on Folder Code
+            $destinationPathThumbnail = public_path('images/users/thumbnail/');
+            $image->resize(100, 100);
+            $image->save($destinationPathThumbnail . $imageName);
+
+            $profile_image = $imageName;
+            $thumbnail = $imageName;
         }
 
         $updated_data = [
@@ -571,7 +580,8 @@ class ClientController extends Controller
             'date_of_birth' => date('Y-m-d', strtotime($request->date_of_birth)),
             'company_enabled' => 0,
             'tax_id' => $request->state_id,
-            'profile_image' => $profile_image
+            'profile_image' => $profile_image,
+            'thumbnail' => $thumbnail
         ];
 
 
@@ -738,16 +748,24 @@ class ClientController extends Controller
         }
 
         $company_logo = $clientCompany->company_logo ?? null;
+        $thumbnail = $clientCompany->thumbnail ?? null;
 
         // Upload the profile image if provided
         if ($request->hasFile('company_logo')) {
-            $file = $request->file('company_logo');
-            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
-            $destinationPath = public_path('images/company/');
-            $file->move($destinationPath, $updatedFilename);
+            $image = Image::read($request->file('company_logo'));
 
-            // Set the company_logo attribute to the new file name
-            $company_logo = $updatedFilename;
+            // Main Image Upload on Folder Code
+            $imageName = time() . rand(0, 999) . '.' . $request->file('company_logo')->getClientOriginalExtension();
+            $destinationPath = public_path('images/company/');
+            $image->save($destinationPath . $imageName);
+
+            // Generate Thumbnail Image Upload on Folder Code
+            $destinationPathThumbnail = public_path('images/company/thumbnail/');
+            $image->resize(100, 100);
+            $image->save($destinationPathThumbnail . $imageName);
+
+            $company_logo = $imageName;
+            $thumbnail = $imageName;
         }
 
 
@@ -766,7 +784,8 @@ class ClientController extends Controller
             'state' => $request->state,
             'country' => $request->country,
             'zip_code' => $request->zip_code,
-            'company_logo' => $company_logo
+            'company_logo' => $company_logo,
+            'thumbnail' => $thumbnail
         ];
 
 

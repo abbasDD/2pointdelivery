@@ -112,7 +112,7 @@ class ClientController extends Controller
         if ($helperInfo) {
             session(['full_name' => $helperInfo->first_name . ' ' . $helperInfo->last_name]);
             // set profile_image
-            session(['profile_image' => asset('images/users/' . $helperInfo->profile_image)]);
+            session(['profile_image' => asset('images/users/thumbnail/' . $helperInfo->thumbnail)]);
         }
 
 
@@ -283,6 +283,7 @@ class ClientController extends Controller
 
         // Set default profile image to null
         $profile_image = $client->profile_image ?? null;
+        $thumbnail = $client->thumbnail ?? null;
 
         // Upload the profile image if provided
         if ($request->hasFile('profile_image')) {
@@ -321,9 +322,9 @@ class ClientController extends Controller
         // Update session data as well for name
 
         session(['full_name' => $client->first_name . ' ' . $client->last_name]);
-        // set profile_image
-        if ($client->profile_image) {
-            session(['profile_image' => asset('images/users/' . $client->profile_image)]);
+        // set thumbnail
+        if ($client->thumbnail) {
+            session(['profile_image' => asset('images/users/thumbnail/' . $client->thumbnail)]);
         }
 
         return redirect()->back()->with('success', 'Profile info updated successfully!');
@@ -381,23 +382,31 @@ class ClientController extends Controller
             return redirect()->back()->with('error', 'Client Company not found');
         } // Set default profile image to null
         $company_logo = $clientCompany->company_logo ?? null;
+        $thumbnail = $clientCompany->thumbnail ?? null;
 
         // Upload the profile image if provided
         if ($request->hasFile('company_logo')) {
-            $file = $request->file('company_logo');
-            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
-            $destinationPath = public_path('images/company/');
-            $file->move($destinationPath, $updatedFilename);
+            $image = Image::read($request->file('company_logo'));
 
-            // Set the company_logo attribute to the new file name
-            $company_logo = $updatedFilename;
+            // Main Image Upload on Folder Code
+            $imageName = time() . rand(0, 999) . '.' . $request->file('company_logo')->getClientOriginalExtension();
+            $destinationPath = public_path('images/company/');
+            $image->save($destinationPath . $imageName);
+
+            // Generate Thumbnail Image Upload on Folder Code
+            $destinationPathThumbnail = public_path('images/company/thumbnail/');
+            $image->resize(100, 100);
+            $image->save($destinationPathThumbnail . $imageName);
+
+            $company_logo = $imageName;
+            $thumbnail = $imageName;
         }
 
         // Remove company_logo as file from request
         $request->request->remove('company_logo');
 
         // Update the client data with company_logo included
-        $clientCompany->update(array_merge($request->all(), ['company_logo' => $company_logo]));
+        $clientCompany->update(array_merge($request->all(), ['company_logo' => $company_logo, 'thumbnail' => $thumbnail]));
 
         // dd($request->all());
 

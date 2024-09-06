@@ -30,11 +30,11 @@
                         @forelse ($admins as $admin)
                             <tr>
                                 <td>{{ $loop->index + 1 }}</td>
-                                <td><img src="{{ isset($admin['profile_image']) && $admin['profile_image'] !== null ? asset('images/users/' . $admin['profile_image']) : asset('images/users/default.png') }}"
+                                <td><img src="{{ isset($admin->thumbnail) && $admin->thumbnail !== null ? asset('images/users/thumbnail/' . $admin['thumbnail']) : asset('images/users/default.png') }}"
                                         width="50px" height="50px"></td>
                                 <td>{{ $admin->first_name }}</td>
                                 <td>{{ $admin->last_name }}</td>
-                                <td>{{ $admin->email }}</td>
+                                <td>{{ $admin->user->email }}</td>
                                 <td>{{ $admin->admin_type }}</td>
                                 <td>
                                     @if ($admin->is_active)

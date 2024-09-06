@@ -21,23 +21,4 @@
         </div>
     </section>
 
-    <script>
-        $(document).ready(function() {
-            $(document).on('click', '.pagination a', function(event) {
-                event.preventDefault();
-                var page = $(this).attr('href').split('page=')[1];
-                fetch_data(page);
-            });
-
-            function fetch_data(page) {
-                $.ajax({
-                    url: "/clients?page=" + page,
-                    success: function(data) {
-                        $('#clientTable').html(data);
-                    }
-                });
-            }
-        });
-    </script>
-
 @endsection

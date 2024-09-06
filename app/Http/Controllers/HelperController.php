@@ -23,6 +23,7 @@ use App\Models\User;
 use App\Models\UserWallet;
 use App\Models\VehicleType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -48,19 +49,19 @@ class HelperController extends Controller
     public function switchToClient()
     {
         // Get user data
-        $user = User::where('id', auth()->user()->id)->first();
+        $user = User::where('id', Auth::user()->id)->first();
         if (!$user) {
             return redirect()->route('index')->with('error', 'User not found');
         }
 
 
         // Get Client data from DB
-        $client = Client::where('user_id', auth()->user()->id)->first();
+        $client = Client::where('user_id', Auth::user()->id)->first();
 
         // If client not found
         if (!$client) {
             // Check if Helper is created with same id
-            $helper = Helper::where('user_id', auth()->user()->id)->first();
+            $helper = Helper::where('user_id', Auth::user()->id)->first();
 
             // If helper is found then duplicate data to client
             if ($helper) {
@@ -70,7 +71,7 @@ class HelperController extends Controller
                 }
 
                 $client = Client::create([
-                    'user_id' => auth()->user()->id,
+                    'user_id' => Auth::user()->id,
                     'company_enabled' => 0,
                     'first_name' => $helper->first_name ?? '',
                     'middle_name' => $helper->middle_name ?? '',
@@ -90,7 +91,7 @@ class HelperController extends Controller
             // If not then create a simple client
             else {
                 $client = Client::create([
-                    'user_id' => auth()->user()->id,
+                    'user_id' => Auth::user()->id,
                 ]);
             }
         }
@@ -100,11 +101,11 @@ class HelperController extends Controller
         session(['login_type' => 'client']);
 
         // Get client first name and last name
-        $clientInfo = Client::where('user_id', auth()->user()->id)->first();
+        $clientInfo = Client::where('user_id', Auth::user()->id)->first();
         if ($clientInfo) {
             session(['full_name' => $clientInfo->first_name . ' ' . $clientInfo->last_name]);
             // set profile_image
-            session(['profile_image' => asset('images/users/' . $clientInfo->profile_image)]);
+            session(['profile_image' => asset('images/users/thumbnail/' . $clientInfo->thumbnail)]);
         }
 
         $user->client_enabled = 1;
@@ -128,12 +129,12 @@ class HelperController extends Controller
 
         $helper_id = 0;
         // Get helper_id from Helper
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
         // No Helper found for this user_id
         if (!$helper) {
             // Create a new Helper
             $helper = new Helper();
-            $helper->user_id = auth()->user()->id;
+            $helper->user_id = Auth::user()->id;
             $helper->save();
             $helper_id = $helper->id;
         }
@@ -141,13 +142,13 @@ class HelperController extends Controller
         $helper_id = $helper->id;
 
         // Calculate helper earnings
-        $helper_earnings = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'helper')->where('type', 'received')->sum('amount');
+        $helper_earnings = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'helper')->where('type', 'received')->sum('amount');
 
         // Statistics
         $satistics = [
-            'total_bookings' => Booking::where('helper_user_id', auth()->user()->id)->count(),
-            'accepted_bookings' => Booking::where('helper_user_id', auth()->user()->id)->where('status', 'accepted')->count(),
-            'cancelled_bookings' => Booking::where('helper_user_id', auth()->user()->id)->where('status', 'cancelled')->count(),
+            'total_bookings' => Booking::where('helper_user_id', Auth::user()->id)->count(),
+            'accepted_bookings' => Booking::where('helper_user_id', Auth::user()->id)->where('status', 'accepted')->count(),
+            'cancelled_bookings' => Booking::where('helper_user_id', Auth::user()->id)->where('status', 'cancelled')->count(),
             'total_earnings' => $helper_earnings,
         ];
 
@@ -168,7 +169,7 @@ class HelperController extends Controller
             ->with('serviceCategory')
             ->where('status', 'pending')
             ->whereIn('booking_type', ['delivery', 'moving'])
-            ->where('client_user_id', '!=', auth()->user()->id)
+            ->where('client_user_id', '!=', Auth::user()->id)
             ->whereIn('service_type_id', $helperServiceIds)
             ->orderBy('bookings.updated_at', 'desc')->get();
 
@@ -194,7 +195,7 @@ class HelperController extends Controller
         // }
 
         // Booking Client Detail
-        // $bookingClient = Client::where('user_id', auth()->user()->id)->first();
+        // $bookingClient = Client::where('user_id', Auth::user()->id)->first();
 
         // Check if helper completed its profile
         $helperUpdated = true;
@@ -210,7 +211,7 @@ class HelperController extends Controller
         }
 
         // Check if vehicle detail completed
-        $helperVehicle = HelperVehicle::where('user_id', auth()->user()->id)->first();
+        $helperVehicle = HelperVehicle::where('user_id', Auth::user()->id)->first();
         if (!$helperVehicle) {
             $helperUpdated = false;
         }
@@ -218,7 +219,7 @@ class HelperController extends Controller
         // Check if profile is company profile
         if ($helper->company_enabled == 1) {
             // Check if company detail completed
-            $companyData = HelperCompany::where('user_id', auth()->user()->id)->first();
+            $companyData = HelperCompany::where('user_id', Auth::user()->id)->first();
 
             if (!$companyData) {
                 $helperUpdated = false;
@@ -244,7 +245,7 @@ class HelperController extends Controller
     public function bookings()
     {
 
-        $bookings = Booking::where('helper_user_id', auth()->user()->id)
+        $bookings = Booking::where('helper_user_id', Auth::user()->id)
             ->with('helper')
             ->with('prioritySetting')
             ->with('serviceType')
@@ -267,7 +268,7 @@ class HelperController extends Controller
         }
 
         $booking->status = 'accepted';
-        $booking->helper_id = auth()->user()->id;
+        $booking->helper_id = Auth::user()->id;
         $booking->save();
 
         return redirect()->back()->with('success', 'Booking accepted successfully!');
@@ -278,13 +279,13 @@ class HelperController extends Controller
     public function requestCompany(Request $request)
     {
         // Check if user exist
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
         if (!$helper) {
             return redirect()->back()->with('error', 'Helper not found');
         }
 
         // Check if helper company already exist  
-        $helperCompany = HelperCompany::where('user_id', auth()->user()->id)->first();
+        $helperCompany = HelperCompany::where('user_id', Auth::user()->id)->first();
         if ($helperCompany) {
             // update the company_enabled to 1
             $helper->company_enabled = 1;
@@ -295,7 +296,7 @@ class HelperController extends Controller
 
         // Create a new helper company
         $helperCompany = new HelperCompany();
-        $helperCompany->user_id = auth()->user()->id;
+        $helperCompany->user_id = Auth::user()->id;
         $helperCompany->helper_id = $helper->id;
         $helperCompany->company_alias = $request->company_alias;
         $helperCompany->legal_name = $request->legal_name;
@@ -307,15 +308,15 @@ class HelperController extends Controller
     public function edit_profile()
     {
         // Get helper data
-        $helperData = Helper::where('user_id', auth()->user()->id)->with('service_types')->first();
+        $helperData = Helper::where('user_id', Auth::user()->id)->with('service_types')->first();
         // dd($helperData);
         // Create a new helper if not found
         if (!$helperData) {
             $helperData = new Helper();
-            $helperData->user_id = auth()->user()->id;
+            $helperData->user_id = Auth::user()->id;
             $helperData->save();
 
-            $helperData = Helper::where('user_id', auth()->user()->id)->first();
+            $helperData = Helper::where('user_id', Auth::user()->id)->first();
         }
 
         // Get helperServices list
@@ -326,7 +327,7 @@ class HelperController extends Controller
         // dd($helperServiceIds);
 
         // Get all social links
-        $socialLinks = SocialLink::where('user_id', auth()->user()->id)->where('user_type', 'helper')->get();
+        $socialLinks = SocialLink::where('user_id', Auth::user()->id)->where('user_type', 'helper')->get();
 
         $social_links = [];
 
@@ -338,14 +339,14 @@ class HelperController extends Controller
         // dd($social_links);
 
         // Get helper company data
-        $helperCompanyData = HelperCompany::where('user_id', auth()->user()->id)->first();
+        $helperCompanyData = HelperCompany::where('user_id', Auth::user()->id)->first();
         if (!$helperCompanyData) {
             $helperCompanyData = new HelperCompany();
-            $helperCompanyData->user_id = auth()->user()->id;
+            $helperCompanyData->user_id = Auth::user()->id;
             $helperCompanyData->helper_id = $helperData->id;
             $helperCompanyData->save();
 
-            $helperCompanyData = HelperCompany::where('user_id', auth()->user()->id)->first();
+            $helperCompanyData = HelperCompany::where('user_id', Auth::user()->id)->first();
         }
 
         // dd($helperCompanyData);
@@ -408,7 +409,7 @@ class HelperController extends Controller
         // dd($request->all());
 
         // Check if user exist
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
 
         if (!$helper) {
             return redirect()->back()->with('error', 'Helper not found');
@@ -417,6 +418,7 @@ class HelperController extends Controller
 
         // Set default profile image to null
         $profile_image = $helper->profile_image ?? null;
+        $thumbnail = $helper->thumbnail ?? null;
 
         // Upload the profile image if provided
         if ($request->hasFile('profile_image')) {
@@ -459,8 +461,8 @@ class HelperController extends Controller
 
         session(['full_name' => $helper->first_name . ' ' . $helper->last_name]);
         // set profile_image
-        if ($helper->profile_image) {
-            session(['profile_image' => asset('images/users/' . $helper->profile_image)]);
+        if ($helper->thumbnail) {
+            session(['profile_image' => asset('images/users/thumbnail/' . $helper->thumbnail)]);
         }
 
 
@@ -481,7 +483,7 @@ class HelperController extends Controller
         ]);
 
         // Check if user exist
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
 
         if (!$helper) {
             return redirect()->back()->with('error', 'Helper not found');
@@ -509,7 +511,7 @@ class HelperController extends Controller
 
 
         // Check if user exist
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
 
         if (!$helper) {
             return redirect()->back()->with('error', 'Helper not found');
@@ -522,7 +524,7 @@ class HelperController extends Controller
             $helperVehicle->update($request->all());
         } else {
             $helperVehicle = new HelperVehicle();
-            $helperVehicle->user_id = auth()->user()->id;
+            $helperVehicle->user_id = Auth::user()->id;
             $helperVehicle->helper_id = $helper->id;
             $helperVehicle->vehicle_type_id = $request->vehicle_type_id;
             $helperVehicle->vehicle_number = $request->vehicle_number;
@@ -542,7 +544,7 @@ class HelperController extends Controller
     {
 
         // Check if user exist
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
 
         if (!$helper) {
             return redirect()->back()->with('error', 'Helper not found');
@@ -550,7 +552,7 @@ class HelperController extends Controller
 
         foreach ($request->all() as $key => $link) {
             $socialLink = SocialLink::where('key', $key)
-                ->where('user_id', auth()->user()->id)
+                ->where('user_id', Auth::user()->id)
                 ->where('user_type', 'helper')
                 ->first();
             if ($socialLink) {
@@ -558,7 +560,7 @@ class HelperController extends Controller
                 $socialLink->save();
             } else {
                 $socialLink = new SocialLink();
-                $socialLink->user_id = auth()->user()->id;
+                $socialLink->user_id = Auth::user()->id;
                 $socialLink->user_type = 'helper';
                 $socialLink->key = $key;
                 $socialLink->link = $link;
@@ -588,29 +590,39 @@ class HelperController extends Controller
         ]);
 
         // Check if user exist
-        $helperCompany = HelperCompany::where('user_id', auth()->user()->id)->first();
+        $helperCompany = HelperCompany::where('user_id', Auth::user()->id)->first();
 
         if (!$helperCompany) {
             return redirect()->back()->with('error', 'Helper Company not found');
-        } // Set default profile image to null
+        }
+
+        // Set default profile image to null
         $company_logo = $helperCompany->company_logo ?? null;
+        $thumbnail = $helperCompany->thumbnail ?? null;
 
         // Upload the profile image if provided
         if ($request->hasFile('company_logo')) {
-            $file = $request->file('company_logo');
-            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
-            $destinationPath = public_path('images/company/');
-            $file->move($destinationPath, $updatedFilename);
+            $image = Image::read($request->file('company_logo'));
 
-            // Set the company_logo attribute to the new file name
-            $company_logo = $updatedFilename;
+            // Main Image Upload on Folder Code
+            $imageName = time() . rand(0, 999) . '.' . $request->file('company_logo')->getClientOriginalExtension();
+            $destinationPath = public_path('images/company/');
+            $image->save($destinationPath . $imageName);
+
+            // Generate Thumbnail Image Upload on Folder Code
+            $destinationPathThumbnail = public_path('images/company/thumbnail/');
+            $image->resize(100, 100);
+            $image->save($destinationPathThumbnail . $imageName);
+
+            $company_logo = $imageName;
+            $thumbnail = $imageName;
         }
 
         // Remove company_logo as file from request
         $request->request->remove('company_logo');
 
         // Update the helper data with company_logo included
-        $helperCompany->update(array_merge($request->all(), ['company_logo' => $company_logo]));
+        $helperCompany->update(array_merge($request->all(), ['company_logo' => $company_logo, 'thumbnail' => $thumbnail]));
 
         // dd($request->all());
 
@@ -636,7 +648,7 @@ class HelperController extends Controller
         }
 
         // Check if user exist
-        $user = User::where('id', auth()->user()->id)->first();
+        $user = User::where('id', Auth::user()->id)->first();
 
         if (!$user) {
             return redirect()->back()->with('error', 'Helper not found');
@@ -717,19 +729,19 @@ class HelperController extends Controller
     {
 
         // Total Earning
-        $statistic['total'] = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'helper')->where('type', 'received')->where('status', 'success')->sum('amount');
+        $statistic['total'] = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'helper')->where('type', 'received')->where('status', 'success')->sum('amount');
 
         // WithdrawnAmount
-        $statistic['withdrawn'] = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'helper')->where('type', 'withdraw')->where('status', 'success')->sum('amount');
+        $statistic['withdrawn'] = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'helper')->where('type', 'withdraw')->where('status', 'success')->sum('amount');
         // Get available balance
         $statistic['available'] = $statistic['total'] - $statistic['withdrawn'];
 
         // Get helper bank accounts
-        $helperBankAccounts = HelperBankAccount::where('user_id', auth()->user()->id)->get();
+        $helperBankAccounts = HelperBankAccount::where('user_id', Auth::user()->id)->get();
 
-        $wallets = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'helper')->get();
+        $wallets = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'helper')->get();
 
-        // dd(auth()->user()->id);
+        // dd(Auth::user()->id);
         return view('helper.wallet.index', compact('statistic', 'helperBankAccounts', 'wallets'));
     }
 
@@ -746,14 +758,14 @@ class HelperController extends Controller
 
 
         // Check if user exist
-        $helper = Helper::where('user_id', auth()->user()->id)->first();
+        $helper = Helper::where('user_id', Auth::user()->id)->first();
         if (!$helper) {
             return redirect()->back()->with('error', 'Helper not found');
         }
 
 
         // Check if bank account already exist
-        $bankAccount = HelperBankAccount::where('user_id', auth()->user()->id)->where('payment_method', $request->payment_method)->first();
+        $bankAccount = HelperBankAccount::where('user_id', Auth::user()->id)->where('payment_method', $request->payment_method)->first();
         if ($bankAccount) {
             return redirect()->back()->with('error', 'Bank account already exist');
         }
@@ -761,7 +773,7 @@ class HelperController extends Controller
 
         // Save bank account
         $bankAccount = new HelperBankAccount();
-        $bankAccount->user_id = auth()->user()->id;
+        $bankAccount->user_id = Auth::user()->id;
         $bankAccount->helper_id = $helper->id;
         $bankAccount->account_name = $request->account_name;
         $bankAccount->account_number = $request->account_number;
@@ -790,13 +802,13 @@ class HelperController extends Controller
         }
 
         // Check if helper added the accounts and approved
-        $helperBankAccounts = HelperBankAccount::where('user_id', auth()->user()->id)->where('is_approved', 1)->get();
+        $helperBankAccounts = HelperBankAccount::where('user_id', Auth::user()->id)->where('is_approved', 1)->get();
         if (!$helperBankAccounts) {
             return redirect()->back()->with('error', 'Please add bank accounts first');
         }
 
         // Get bank account
-        $bankAccount = HelperBankAccount::where('id', $request->bank_account_id)->where('user_id', auth()->user()->id)->first();
+        $bankAccount = HelperBankAccount::where('id', $request->bank_account_id)->where('user_id', Auth::user()->id)->first();
         if (!$bankAccount) {
             return redirect()->back()->with('error', 'Bank account not found');
         }
@@ -806,7 +818,7 @@ class HelperController extends Controller
         }
 
         // Check if withdraw request already exist
-        $withdrawRequest = UserWallet::where('user_id', auth()->user()->id)->where('user_type', 'helper')->where('type', 'withdraw')->where('status', 'pending')->first();
+        $withdrawRequest = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'helper')->where('type', 'withdraw')->where('status', 'pending')->first();
         if ($withdrawRequest) {
             return redirect()->back()->with('error', 'Withdraw request already exist');
         }
@@ -814,7 +826,7 @@ class HelperController extends Controller
 
         // Save withdraw request
         $withdrawRequest = new UserWallet();
-        $withdrawRequest->user_id = auth()->user()->id;
+        $withdrawRequest->user_id = Auth::user()->id;
         $withdrawRequest->user_type = 'helper';
         $withdrawRequest->type = 'withdraw';
         $withdrawRequest->amount = $request->withdraw_amount;

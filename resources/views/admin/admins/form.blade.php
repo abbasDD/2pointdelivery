@@ -9,7 +9,7 @@
             <div class="image-selection">
                 <div class="mx-auto" style="max-width: 150px;">
                     <img id="profile_image_preview"
-                        src="{{ isset($systemSettings['profile_image']) && $systemSettings['profile_image'] !== null ? asset('images/logo/' . $systemSettings['profile_image']) : asset('images/users/default.png') }}"
+                        src="{{ isset($admin['profile_image']) && $admin['profile_image'] !== null ? asset('images/users/' . $admin['profile_image']) : asset('images/users/default.png') }}"
                         alt="profile_image" class="p-3 border w-100 p-3"
                         onclick="document.getElementById('profile_image').click()">
                     <input type="file" name="profile_image" id="profile_image" class="d-none" accept="image/*">
