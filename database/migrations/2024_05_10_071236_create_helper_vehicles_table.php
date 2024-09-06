@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('vehicle_model')->nullable();
             $table->string('vehicle_color')->nullable();
             $table->string('vehicle_year')->nullable();
+            $table->string('vehicle_image')->nullable();
+            $table->string('thumbnail')->nullable();
             $table->boolean('is_active')->default(true);
             $table->boolean('is_approved')->default(false);
             $table->boolean('is_deleted')->default(false);

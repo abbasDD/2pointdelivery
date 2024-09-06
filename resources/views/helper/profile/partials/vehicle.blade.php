@@ -14,6 +14,28 @@
         <form action="{{ route('helper.update.vehicle') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="card-body">
+                {{-- Profile Image --}}
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group mb-3">
+                            <div class="image-selection">
+                                <div class="mx-auto" style="max-width: 150px;">
+                                    <img id="vehicle_image_preview"
+                                        src="{{ isset($vehicleData['vehicle_image']) && $vehicleData['vehicle_image'] !== null ? asset('images/helper_vehicles/' . $vehicleData['vehicle_image']) : asset('images/default.png') }}"
+                                        alt="vehicle_image" class="p-3 border w-100 p-3"
+                                        onclick="document.getElementById('vehicle_image').click()">
+                                    <input type="file" name="vehicle_image" id="vehicle_image" class="d-none"
+                                        accept="image/*">
+                                </div>
+                            </div>
+                            @if ($errors->has('vehicle_image'))
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>Profile Image is required</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
                 {{-- Vehicle Detail --}}
                 <div class="row">
 
@@ -130,7 +152,7 @@
 
 <script>
     // Profile Image JS
-    document.querySelector('#profile_image').addEventListener('change', function(event) {
+    document.querySelector('#vehicle_image').addEventListener('change', function(event) {
         const file = event.target.files[0];
         if (!file.type.startsWith('image/')) {
             alert('Please select an image file.');
@@ -140,7 +162,7 @@
 
         const reader = new FileReader();
         reader.onload = (event) => {
-            document.querySelector('#profile_image_preview').src = event.target.result;
+            document.querySelector('#vehicle_image_preview').src = event.target.result;
         }
 
         reader.readAsDataURL(file);

@@ -29,6 +29,8 @@ class HelperVehicle extends Model
         'vehicle_model',
         'vehicle_color',
         'vehicle_year',
+        'vehicle_image',
+        'thumbnail',
         'is_active',
         'is_approved',
         'is_deleted',

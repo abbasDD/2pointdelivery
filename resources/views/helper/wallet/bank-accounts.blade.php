@@ -60,6 +60,7 @@
                             <option value="" selected disabled>Select Account Type</option>
                             <option value="paypal">Paypal</option>
                             <option value="stripe">Stripe</option>
+                            <option value="interac">Interac</option>
                         </select>
                     </div>
 

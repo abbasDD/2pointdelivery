@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Helper\BookingController;
 use App\Http\Controllers\Helper\ChatController;
 use App\Http\Controllers\Helper\HelperBookingController;
 use App\Http\Controllers\Helper\KycDetailController;

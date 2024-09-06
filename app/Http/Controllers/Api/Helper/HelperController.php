@@ -881,6 +881,7 @@ class HelperController extends Controller
             'vehicle_model' => '',
             'vehicle_color' => '',
             'vehicle_year' => '',
+            'vehicle_image' => asset('images/default.png'),
             'is_approved' => 0
         ];
 
@@ -894,6 +895,7 @@ class HelperController extends Controller
                 'vehicle_model' => $helperVehicle->vehicle_model,
                 'vehicle_color' => $helperVehicle->vehicle_color,
                 'vehicle_year' => $helperVehicle->vehicle_year,
+                'vehicle_image' => $helperVehicle->vehicle_image ? asset('images/helper_vehicles/' . $helperVehicle->vehicle_image) : asset('images/default.png'),
                 'is_approved' => $helperVehicle->is_approved
             ];
         }
@@ -927,7 +929,7 @@ class HelperController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            // 'vehicle_type_id ' => 'required',
+            'vehicle_type_id ' => 'required',
             'vehicle_number' => 'required|string',
             'vehicle_make' => 'required|string',
             'vehicle_model' => 'required|string',
@@ -943,6 +945,16 @@ class HelperController extends Controller
             ], 422);
         }
 
+        // Check if vehicle type exist
+        $vehicleType = VehicleType::where('id', $request->vehicle_type_id)->first();
+        if (!$vehicleType) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vehicle type not found',
+                'errors' => 'Vehicle type not found'
+            ]);
+        }
+
         // If helperVehicle is found, update its attributes
         $helperVehicle = HelperVehicle::where('user_id', Auth::user()->id)->first();
         if (!$helperVehicle) {
@@ -954,6 +966,28 @@ class HelperController extends Controller
             $helperVehicle->save();
         }
 
+        // Set default profile image to null
+        $vehicle_image = $helperVehicle->vehicle_image ?? null;
+        $thumbnail = $helperVehicle->thumbnail ?? null;
+
+        // Upload the profile image if provided
+        if ($request->hasFile('vehicle_image')) {
+            $image = Image::read($request->file('vehicle_image'));
+
+            // Main Image Upload on Folder Code
+            $imageName = time() . rand(0, 999) . '.' . $request->file('vehicle_image')->getClientOriginalExtension();
+            $destinationPath = public_path('images/helper_vehicles/');
+            $image->save($destinationPath . $imageName);
+
+            // Generate Thumbnail Image Upload on Folder Code
+            $destinationPathThumbnail = public_path('images/helper_vehicles/thumbnail/');
+            $image->resize(100, 100);
+            $image->save($destinationPathThumbnail . $imageName);
+
+            $vehicle_image = $imageName;
+            $thumbnail = $imageName;
+        }
+
 
         $updated_data = [
             'vehicle_type_id' => $request->vehicle_type_id,
@@ -961,7 +995,9 @@ class HelperController extends Controller
             'vehicle_make' => $request->vehicle_make,
             'vehicle_model' => $request->vehicle_model,
             'vehicle_color' => $request->vehicle_color,
-            'vehicle_year' => $request->vehicle_year
+            'vehicle_year' => $request->vehicle_year,
+            'vehicle_image' => $vehicle_image,
+            'thumbnail' => $thumbnail
         ];
 
 
@@ -2224,7 +2260,7 @@ class HelperController extends Controller
             'type' => 'withdraw',
             'amount' => $request->amount,
             'note' => $request->reason,
-            'payment_method' => $helperBankAccount->account_type,
+            'payment_method' => $helperBankAccount->payment_method,
             'transaction_id' => $helperBankAccount->account_number,
             'status' => 'pending',
         ]);
@@ -2289,7 +2325,7 @@ class HelperController extends Controller
         $request->validate([
             'account_name' => 'required|string|max:255',
             'account_number' => 'required|string|max:255',
-            'account_type' => 'required|in:paypal,stripe',
+            'payment_method' => 'required|in:paypal,stripe,interac',
         ]);
 
 
@@ -2307,7 +2343,7 @@ class HelperController extends Controller
 
 
         // Check if bank account already exist
-        $bankAccount = HelperBankAccount::where('user_id', Auth::user()->id)->where('account_type', $request->account_type)->first();
+        $bankAccount = HelperBankAccount::where('user_id', Auth::user()->id)->where('payment_method', $request->payment_method)->first();
         if ($bankAccount) {
             return response()->json([
                 'success' => false,
@@ -2325,7 +2361,7 @@ class HelperController extends Controller
         $bankAccount->helper_id = $helper->id;
         $bankAccount->account_name = $request->account_name;
         $bankAccount->account_number = $request->account_number;
-        $bankAccount->account_type = $request->account_type;
+        $bankAccount->payment_method = $request->payment_method;
         $bankAccount->is_approved = 0;
         $bankAccount->save();
 

@@ -502,7 +502,7 @@ class HelperController extends Controller
     {
         // valideate request
         $request->validate([
-            'vehicle_type_id' => 'required|integer',
+            'vehicle_type_id' => 'required|string|max:255',
             'vehicle_number' => 'required|string|max:255',
             'vehicle_make' => 'required|string|max:255',
             'vehicle_model' => 'required|string|max:255',
@@ -510,6 +510,11 @@ class HelperController extends Controller
             'vehicle_year' => 'required|string|max:255',
         ]);
 
+        // Check if vehicle type exist
+        $vehicleType = VehicleType::where('id', $request->vehicle_type_id)->first();
+        if (!$vehicleType) {
+            return redirect()->back()->with('error', 'Vehicle type not found');
+        }
 
         // Check if user exist
         $helper = Helper::where('user_id', Auth::user()->id)->first();
@@ -521,20 +526,43 @@ class HelperController extends Controller
         // Check if Helper Vehicle already exist
         $helperVehicle = HelperVehicle::where('helper_id', $helper->id)->first();
 
-        if ($helperVehicle) {
-            $helperVehicle->update($request->all());
-        } else {
+        if (!$helperVehicle) {
             $helperVehicle = new HelperVehicle();
             $helperVehicle->user_id = Auth::user()->id;
             $helperVehicle->helper_id = $helper->id;
-            $helperVehicle->vehicle_type_id = $request->vehicle_type_id;
-            $helperVehicle->vehicle_number = $request->vehicle_number;
-            $helperVehicle->vehicle_make = $request->vehicle_make;
-            $helperVehicle->vehicle_model = $request->vehicle_model;
-            $helperVehicle->vehicle_color = $request->vehicle_color;
-            $helperVehicle->vehicle_year = $request->vehicle_year;
-            $helperVehicle->save();
         }
+
+        // Set default profile image to null
+        $vehicle_image = $helperVehicle->vehicle_image ?? null;
+        $thumbnail = $helperVehicle->thumbnail ?? null;
+
+        // Upload the profile image if provided
+        if ($request->hasFile('vehicle_image')) {
+            $image = Image::read($request->file('vehicle_image'));
+
+            // Main Image Upload on Folder Code
+            $imageName = time() . rand(0, 999) . '.' . $request->file('vehicle_image')->getClientOriginalExtension();
+            $destinationPath = public_path('images/helper_vehicles/');
+            $image->save($destinationPath . $imageName);
+
+            // Generate Thumbnail Image Upload on Folder Code
+            $destinationPathThumbnail = public_path('images/helper_vehicles/thumbnail/');
+            $image->resize(100, 100);
+            $image->save($destinationPathThumbnail . $imageName);
+
+            $vehicle_image = $imageName;
+            $thumbnail = $imageName;
+        }
+
+        $helperVehicle->vehicle_type_id = $request->vehicle_type_id;
+        $helperVehicle->vehicle_number = $request->vehicle_number;
+        $helperVehicle->vehicle_make = $request->vehicle_make;
+        $helperVehicle->vehicle_model = $request->vehicle_model;
+        $helperVehicle->vehicle_color = $request->vehicle_color;
+        $helperVehicle->vehicle_year = $request->vehicle_year;
+        $helperVehicle->vehicle_image = $vehicle_image;
+        $helperVehicle->thumbnail = $thumbnail;
+        $helperVehicle->save();
 
 
         return redirect()->back()->with('success', 'Vehicle info updated successfully!');
@@ -640,7 +668,7 @@ class HelperController extends Controller
             'confirm_password' => 'required|string|max:255',
         ]);
 
-        if (!Hash::check($request->current_password, auth()->user()->password)) {
+        if (!Hash::check($request->current_password, Auth::user()->password)) {
             return redirect()->back()->with('error', 'Current password does not match');
         }
 
@@ -689,7 +717,7 @@ class HelperController extends Controller
     public function searchUsers(Request $request)
     {
         $search = $request->input('search');
-        $currentUserId = auth()->id(); // Get the ID of the current authenticated user
+        $currentUserId = Auth::user()->id; // Get the ID of the current authenticated user
 
         // Get list of all admins, excluding the current user
         $admins = DB::table('admins')
@@ -754,7 +782,7 @@ class HelperController extends Controller
         $request->validate([
             'account_name' => 'required|string|max:255',
             'account_number' => 'required|string|max:255',
-            'payment_method' => 'required|in:paypal,stripe',
+            'payment_method' => 'required|in:paypal,stripe,interac',
         ]);
 
 
