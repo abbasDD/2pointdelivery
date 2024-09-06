@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Client\AddressBookController;
 use App\Http\Controllers\Api\Client\ClientBookingController;
 use App\Http\Controllers\Api\Client\ClientController;
 use App\Http\Controllers\Api\Client\WalletClientController;
@@ -42,8 +43,8 @@ Route::get('app-details', [PassportAuthController::class, 'appDetails']);
 Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     // Get the authenticated User Data
     Route::get('index', [PassportAuthController::class, 'me']);
-    Route::get('address-book', [ClientController::class, 'getAddressBook']);
-    Route::post('address-book/update', [ClientController::class, 'updateAddressBook']);
+    Route::get('address-book', [AddressBookController::class, 'getAddressBook']);
+    Route::post('address-book/update', [AddressBookController::class, 'updateAddressBook']);
 
     // Get Logged In Client Personal Details
     Route::get('profile', [ClientController::class, 'index']);

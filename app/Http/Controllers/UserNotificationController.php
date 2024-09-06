@@ -107,14 +107,14 @@ class UserNotificationController extends Controller
             case 'helper_status':
                 // helper_status
                 if (session('login_type') == 'helper') {
-                    return redirect()->route('helper.dashboard');
+                    return redirect()->route('helper.index');
                 }
                 return redirect()->back()->with('error', 'Unable to redirect notification');
                 break;
             case 'helper_vehicle_status':
                 // helper_vehicle_status
                 if (session('login_type') == 'helper') {
-                    return redirect()->route('helper.dashboard');
+                    return redirect()->route('helper.index');
                 }
                 return redirect()->back()->with('error', 'Unable to redirect notification');
                 break;

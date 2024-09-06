@@ -101,7 +101,7 @@ class LoginController extends Controller
                 session(['full_name' => $clientInfo->first_name . ' ' . $clientInfo->last_name]);
                 // set profile_image
                 if ($clientInfo->thumbnail) {
-                    session(['profile_image' => asset('images/users/thumbnail/' . $clientInfo->thumbnail)]);
+                    session(['thumbnail' => asset('images/users/thumbnail/' . $clientInfo->thumbnail)]);
                 }
             }
             // dd(route('newBooking'));
@@ -172,7 +172,7 @@ class LoginController extends Controller
                 session(['full_name' => $helperInfo->first_name . ' ' . $helperInfo->last_name]);
                 // set profile_image
                 if ($helperInfo->thumbnail) {
-                    session(['profile_image' => asset('images/users/thumbnail/' . $helperInfo->thumbnail)]);
+                    session(['thumbnail' => asset('images/users/thumbnail/' . $helperInfo->thumbnail)]);
                 }
             }
 
@@ -229,7 +229,7 @@ class LoginController extends Controller
                 session(['full_name' => $adminInfo->first_name . ' ' . $adminInfo->last_name]);
                 // set profile_image
                 if ($adminInfo->thumbnail) {
-                    session(['profile_image' => asset('images/users/thumbnail/' . $adminInfo->thumbnail)]);
+                    session(['thumbnail' => asset('images/users/thumbnail/' . $adminInfo->thumbnail)]);
                 }
             }
 

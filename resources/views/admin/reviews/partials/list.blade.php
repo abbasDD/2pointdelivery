@@ -45,8 +45,7 @@
             </div>
             <div class="modal-body">
                 <p id="statusMessage">
-                    Are you sure you want this review to be {{ $review->is_approved == 1 ? 'Inactive' : 'Active' }} on
-                    Home Page?
+                    Are you sure you want this review to be on Home Page?
                 </p>
             </div>
             <div class="modal-footer">
@@ -65,8 +64,6 @@
 <script>
     function showStatusDialog(id, status) {
         $('#statusModal').modal('show');
-        var baseUrl = "{{ url('admin/service-category/update-status') }}"; // Use `url()` to get the base part
-        // $('#updateStatusLink').attr('href', baseUrl + '/' + id);
 
         // Remove previous click event handler from #updateStatusLink
         $('#updateStatusLink').off('click');

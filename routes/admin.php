@@ -58,6 +58,7 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
     Route::post('/admins/store', [AdminController::class, 'store'])->name('admin.store');
     Route::get('/admins/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
     Route::post('/admins/update', [AdminController::class, 'update'])->name('admin.update');
+    Route::post('/admins/update-status', [AdminController::class, 'updateStatus'])->name('admin.updateStatus');
 
     // Create a route to redirect to user page as per user type
     Route::get('/users/{id}', [AdminController::class, 'showUser'])->name('user.show');

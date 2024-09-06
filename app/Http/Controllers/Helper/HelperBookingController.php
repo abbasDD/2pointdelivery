@@ -599,7 +599,7 @@ class HelperBookingController extends Controller
             UserWallet::create([
                 'user_id' => $booking->helper_user_id,
                 'user_type' => 'helper',
-                'type' => 'received',
+                'type' => 'earned',
                 'amount' => $bookingDelivery->helper_fee,
                 'booking_id' => $booking->id,
                 'note' => 'Payment for booking ID: ' . $booking->id,
@@ -612,15 +612,13 @@ class HelperBookingController extends Controller
         // Add to UserWallet for Moving
         if ($booking->booking_type == 'moving') {
             // Add to wallet of 2 helpers as Moving has 2 helpers
-            $one_helper_fee = $bookingMoving->helper_fee / 2;
-            // make it integer
-            $one_helper_fee = floor($one_helper_fee);
+            $one_helper_fee = $bookingMoving->helper_fee;
 
             // Add to helper_1 wallet
             UserWallet::create([
                 'user_id' => $booking->helper_user_id,
                 'user_type' => 'helper',
-                'type' => 'received',
+                'type' => 'earned',
                 'amount' => $one_helper_fee,
                 'booking_id' => $booking->id,
                 'note' => 'Payment for booking ID: ' . $booking->id,
@@ -632,7 +630,7 @@ class HelperBookingController extends Controller
             UserWallet::create([
                 'user_id' => $booking->helper_user_id2,
                 'user_type' => 'helper',
-                'type' => 'received',
+                'type' => 'earned',
                 'amount' => $one_helper_fee,
                 'booking_id' => $booking->id,
                 'note' => 'Payment for booking ID: ' . $booking->id,

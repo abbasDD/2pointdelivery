@@ -15,7 +15,7 @@ class TeamInvitationController extends Controller
 
     public function getInvitedUsers()
     {
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
         $acceptedInvites = TeamInvitation::where('inviter_id', $user->id)->get();
         // dd($acceptedInvites);
         return view('helper.teams.index', compact('acceptedInvites'));
@@ -82,7 +82,7 @@ class TeamInvitationController extends Controller
     // removeTeamMemeber
     public function removeTeamMemeber($id)
     {
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
         $invitation = TeamInvitation::where('id', $id)->first();
 
         // dd($invitation->invitee_id, $user->id);
@@ -111,7 +111,7 @@ class TeamInvitationController extends Controller
 
     public function switchUser($userId)
     {
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
         $invitation = TeamInvitation::where('invitee_id', $user->id)
             ->where('inviter_id', $userId)
             ->where('status', 'accepted')
@@ -134,7 +134,7 @@ class TeamInvitationController extends Controller
     // Switch  to self user
     public function switchToSelf()
     {
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
         Auth::loginUsingId($user->id);
         return response()->json(['message' => 'Switched user successfully']);
     }
@@ -142,7 +142,7 @@ class TeamInvitationController extends Controller
     // Get list of invitations
     public function invitations()
     {
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
         $invitations = TeamInvitation::where('invitee_id', $user->id)->get();
         // dd($invitations);
         return view('helper.teams.invitations', compact('invitations'));
@@ -175,7 +175,7 @@ class TeamInvitationController extends Controller
     // Get list of accepted invites from other companies
     public function getAcceptedInvites()
     {
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
         $invitations = TeamInvitation::where('invitee_id', $user->id)->where('status', 'accepted')->get();
         // dd($invitations);
         // return view('client.teams.invitations', compact('invitations'));

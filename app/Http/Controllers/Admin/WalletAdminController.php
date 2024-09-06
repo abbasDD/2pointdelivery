@@ -12,7 +12,7 @@ class WalletAdminController extends Controller
     public function index()
     {
         // Get Userwallet Statistics
-        $statistic['total_revenue'] =  UserWallet::where('type', 'received')->where('status', 'success')->sum('amount');
+        $statistic['total_revenue'] =  UserWallet::where('type', 'spend')->where('status', 'success')->sum('amount');
         $statistic['total_payments'] = UserWallet::whereIn('type', ['refund', 'withdraw'])->where('status', 'success')->sum('amount');
         $statistic['total_taxes'] = 0;
         $statistic['total_earnings'] = $statistic['total_revenue'] - $statistic['total_payments'] - $statistic['total_taxes'];
@@ -28,7 +28,7 @@ class WalletAdminController extends Controller
     public function receivedTransaction()
     {
         // refundRequest
-        $wallets = UserWallet::where('type', 'received')->get();
+        $wallets = UserWallet::where('type', 'spend')->get();
 
         return view('admin.wallet.received', compact('wallets'));
     }

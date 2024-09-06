@@ -859,7 +859,7 @@ class BookingController extends Controller
             UserWallet::create([
                 'user_id' => Auth::user()->id,
                 'user_type' => 'client',
-                'type' => 'received',
+                'type' => 'spend',
                 'amount' => $booking->total_price,
                 'booking_id' => $booking->id,
                 'note' => 'Payment for booking ID: ' . $booking->id,
@@ -985,7 +985,7 @@ class BookingController extends Controller
         UserWallet::create([
             'user_id' => Auth::user()->id,
             'user_type' => 'client',
-            'type' => 'received',
+            'type' => 'spend',
             'amount' => $booking->total_price,
             'booking_id' => $booking->id,
             'note' => 'Payment for booking ID: ' . $booking->id,
@@ -1077,7 +1077,7 @@ class BookingController extends Controller
         UserWallet::create([
             'user_id' => Auth::user()->id,
             'user_type' => 'client',
-            'type' => 'received',
+            'type' => 'spend',
             'amount' => $booking->total_price,
             'booking_id' => $booking->id,
             'note' => 'Payment for booking ID: ' . $booking->id,

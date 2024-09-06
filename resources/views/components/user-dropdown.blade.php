@@ -2,7 +2,7 @@
     <p class="nav-link dropdown-toggle mb-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
         aria-expanded="false">
         <img class="user-image d-inline rounded-circle"
-            src="{{ session('profile_image') ?? asset('images/default-user.jpg') }}" width="35" height="35"
+            src="{{ session('thumbnail') ?? asset('images/default-user.jpg') }}" width="35" height="35"
             alt="User"> {{ session('full_name') ?? 'Your Name' }}
     </p>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">

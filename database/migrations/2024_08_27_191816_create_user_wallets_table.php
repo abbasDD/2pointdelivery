@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->enum('user_type', ['client', 'helper'])->default('client');
-            $table->enum('type', ['received', 'withdraw', 'refund'])->default('received');
+            $table->enum('type', ['spend', 'refund', 'earned', 'withdraw'])->default('spend');
             $table->string('booking_id')->nullable();
             $table->string('amount')->default(0);
             $table->string('note')->nullable();

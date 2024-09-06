@@ -24,7 +24,7 @@
                         </td>
                         <td>{{ $wallet->type }}</td>
                         <td>
-                            @if ($wallet->type == 'received')
+                            @if ($wallet->type == 'earned')
                                 <p class="text-success"> +{{ $wallet->amount }}</p>
                             @else
                                 <p class="text-danger"> -{{ $wallet->amount }}</p>

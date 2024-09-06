@@ -48,7 +48,7 @@ class HelperController extends Controller
             ], 401);
         }
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
 
         $userData = [
             'user_id' => $user->id,
@@ -61,6 +61,7 @@ class HelperController extends Controller
             'middle_name' => null,
             'last_name' => null,
             'profile_image' => asset('images/users/default.png'),
+            'thumbnail' => asset('images/users/default.png'),
             'personal_details' => false,
             'address_details' => false,
             'company_details' => false,
@@ -132,7 +133,7 @@ class HelperController extends Controller
             ], 401);
         }
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
 
         // Calculate helper delivery earnings
         $helper_earnings = Booking::where('bookings.helper_user_id', Auth::user()->id)
@@ -249,7 +250,7 @@ class HelperController extends Controller
             ], 401);
         }
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
 
         $userData = [
             'user_id' => $user->id,
@@ -262,6 +263,7 @@ class HelperController extends Controller
             'middle_name' => null,
             'last_name' => null,
             'profile_image' => asset('images/users/default.png'),
+            'thumbnail' => asset('images/users/default.png'),
             'personal_details' => false,
             'address_details' => false,
             'company_details' => false,
@@ -423,7 +425,7 @@ class HelperController extends Controller
         }
 
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
 
         $helper = Helper::where('user_id', Auth::user()->id)->first();
         if (!$helper) {
@@ -574,7 +576,7 @@ class HelperController extends Controller
             'success' => true,
             'message' => 'Helper Profile updated successfully',
             'data' => [
-                'profile_image' => $profile_image ? asset('images/users/' . $profile_image) : asset('images/users/default.png')
+                'profile_image' => $thumbnail ? asset('images/users/thumbnail/' . $thumbnail) : asset('images/users/default.png')
             ]
         ], 200);
     }
@@ -826,7 +828,7 @@ class HelperController extends Controller
         }
 
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
 
         // If helper is found, update its attributes
         $helper = Helper::where('user_id', Auth::user()->id)->first();
@@ -1239,7 +1241,7 @@ class HelperController extends Controller
             ], 401);
         }
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
 
         $acceptedInvites = TeamInvitation::where('inviter_id', Auth::user()->id)->get();
         return response()->json([
@@ -1550,7 +1552,7 @@ class HelperController extends Controller
             ], 401);
         }
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
         $invitations = TeamInvitation::select('invitee_id', 'inviter_id', 'users.email as inviter_email', 'team_invitations.*')
             ->join('users', 'team_invitations.inviter_id', '=', 'users.id')
             ->where('invitee_id', Auth::user()->id)

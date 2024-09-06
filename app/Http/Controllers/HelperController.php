@@ -79,6 +79,7 @@ class HelperController extends Controller
                     'gender' => $helper->gender ?? '',
                     'date_of_birth' => $helper->date_of_birth ?? '',
                     'profile_image' => $helper->profile_image ?? '',
+                    'thumbnail' => $helper->thumbnail ?? '',
                     'phone_no' => $helper->phone_no ?? '',
                     'suite' => $helper->suite ?? '',
                     'street' => $helper->street ?? '',
@@ -105,7 +106,7 @@ class HelperController extends Controller
         if ($clientInfo) {
             session(['full_name' => $clientInfo->first_name . ' ' . $clientInfo->last_name]);
             // set profile_image
-            session(['profile_image' => asset('images/users/thumbnail/' . $clientInfo->thumbnail)]);
+            session(['thumbnail' => asset('images/users/thumbnail/' . $clientInfo->thumbnail)]);
         }
 
         $user->client_enabled = 1;
@@ -142,7 +143,7 @@ class HelperController extends Controller
         $helper_id = $helper->id;
 
         // Calculate helper earnings
-        $helper_earnings = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'helper')->where('type', 'received')->sum('amount');
+        $helper_earnings = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'helper')->where('type', 'earned')->sum('amount');
 
         // Statistics
         $satistics = [
@@ -462,7 +463,7 @@ class HelperController extends Controller
         session(['full_name' => $helper->first_name . ' ' . $helper->last_name]);
         // set profile_image
         if ($helper->thumbnail) {
-            session(['profile_image' => asset('images/users/thumbnail/' . $helper->thumbnail)]);
+            session(['thumbnail' => asset('images/users/thumbnail/' . $helper->thumbnail)]);
         }
 
 
@@ -729,7 +730,7 @@ class HelperController extends Controller
     {
 
         // Total Earning
-        $statistic['total'] = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'helper')->where('type', 'received')->where('status', 'success')->sum('amount');
+        $statistic['total'] = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'helper')->where('type', 'earned')->where('status', 'success')->sum('amount');
 
         // WithdrawnAmount
         $statistic['withdrawn'] = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'helper')->where('type', 'withdraw')->where('status', 'success')->sum('amount');

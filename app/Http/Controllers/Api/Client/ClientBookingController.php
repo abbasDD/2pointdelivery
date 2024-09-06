@@ -1401,6 +1401,7 @@ class ClientBookingController extends Controller
             'phone_no' => '',
             'gender' => '',
             'profile_image' => null,
+            'thumbnail' => null
         ];
         if ($booking->helper_user_id) {
             $helper_user = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image', 'helpers.gender', 'helpers.phone_no')
@@ -1424,6 +1425,7 @@ class ClientBookingController extends Controller
             'phone_no' => '',
             'gender' => '',
             'profile_image' => null,
+            'thumbnail' => null,
         ];
         if ($booking->helper_user_id2) {
             $helper_user2 = User::select('users.email', 'helpers.first_name', 'helpers.last_name', 'helpers.profile_image', 'helpers.gender', 'helpers.phone_no')

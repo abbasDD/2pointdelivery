@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\Client;
 
 use App\Http\Controllers\Controller;
-use App\Models\AddressBook;
 use App\Models\Admin;
 use App\Models\Booking;
 use App\Models\Chat;
@@ -40,7 +39,7 @@ class ClientController extends Controller
             ], 401);
         }
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
         $userData = [
             'user_id' => $user->id,
             'email' => $user->email,
@@ -52,6 +51,7 @@ class ClientController extends Controller
             'middle_name' => null,
             'last_name' => null,
             'profile_image' => asset('images/users/default.png'),
+            'thumbnail' => asset('images/users/default.png'),
             'personal_details' => false,
             'address_details' => false,
             'company_details' => false,
@@ -174,95 +174,7 @@ class ClientController extends Controller
         ], 200);
     }
 
-    // getAddressBook
-    public function getAddressBook(): JsonResponse
-    {
-        // If token is not valid return error
-        if (!Auth::user()) {
-            return response()->json([
-                'success' => false,
-                'statusCode' => 401,
-                'message' => 'Unauthorized.',
-                'errors' => 'Unauthorized',
-            ], 401);
-        }
 
-        // Get kyc details of logged in user
-        $addressBooks = AddressBook::where('user_id', Auth::user()->id)->get();
-
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Address Book fetched successfully',
-            'data' => $addressBooks
-        ], 200);
-    }
-
-    // updateAddressBook
-    public function updateAddressBook(Request $request): JsonResponse
-    {
-        // If token is not valid return error
-        if (!Auth::user()) {
-            return response()->json([
-                'success' => false,
-                'statusCode' => 401,
-                'message' => 'Unauthorized.',
-                'errors' => 'Unauthorized',
-            ], 401);
-        }
-
-        // validate
-        $validator = Validator::make($request->all(), [
-            'id' => 'required',
-            'pickup_address' => 'required',
-            'dropoff_address' => 'required',
-            'pickup_latitude' => 'required',
-            'pickup_longitude' => 'required',
-            'dropoff_latitude' => 'required',
-            'dropoff_longitude' => 'required',
-            'receiver_name' => 'required',
-            'receiver_phone' => 'required',
-            'receiver_email' => 'nullable',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'statusCode' => 422,
-                'message' => 'Validation error',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
-        // Update address book
-        $addressBook = AddressBook::where('user_id', Auth::user()->id)->where('id', $request->id)->first();
-        if (!$addressBook) {
-            return response()->json([
-                'success' => false,
-                'statusCode' => 422,
-                'message' => 'Book not found',
-                'errors' => 'Address Book not found',
-            ]);
-        }
-
-        $addressBook->pickup_address = $request->pickup_address;
-        $addressBook->dropoff_address = $request->dropoff_address;
-        $addressBook->pickup_latitude = $request->pickup_latitude;
-        $addressBook->pickup_longitude = $request->pickup_longitude;
-        $addressBook->dropoff_latitude = $request->dropoff_latitude;
-        $addressBook->dropoff_longitude = $request->dropoff_longitude;
-        $addressBook->receiver_name = $request->receiver_name;
-        $addressBook->receiver_phone = $request->receiver_phone;
-        $addressBook->receiver_email = $request->receiver_email;
-        $addressBook->save();
-
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Address Book updated successfully',
-            'data' => $addressBook
-        ], 200);
-    }
 
     // switchToHelper
     public function switchToHelper(): JsonResponse
@@ -277,7 +189,7 @@ class ClientController extends Controller
             ], 401);
         }
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
 
         $userData = [
             'user_id' => $user->id,
@@ -290,6 +202,7 @@ class ClientController extends Controller
             'middle_name' => null,
             'last_name' => null,
             'profile_image' => asset('images/users/default.png'),
+            'thumbnail' => asset('images/users/default.png'),
             'personal_details' => false,
             'address_details' => false,
             'company_details' => false,
@@ -330,6 +243,7 @@ class ClientController extends Controller
                     'date_of_birth' => $client->date_of_birth ?? '',
                     'tax_id' => $client->tax_id ?? '',
                     'profile_image' => $client->profile_image ?? null,
+                    'thumbnail' => $client->thumbnail ?? null,
                     'phone_no' => $client->phone_no ?? '',
                     'suite' => $client->suite ?? '',
                     'street' => $client->street ?? '',
@@ -455,7 +369,7 @@ class ClientController extends Controller
         }
 
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
 
         if (!$user) {
             return response()->json([
@@ -485,6 +399,7 @@ class ClientController extends Controller
             'date_of_birth' => $client->date_of_birth,
             'email' => $user->email,
             'profile_image' => $client->profile_image ? asset('images/users/' . $client->profile_image) : asset('images/users/default.png'),
+            'thumbnail' => $client->thumbnail ? asset('images/users/thumbnail/' . $client->thumbnail) : asset('images/users/default.png'),
             'state_id' => $client->tax_id
         ];
 
@@ -530,7 +445,7 @@ class ClientController extends Controller
         }
 
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
 
         if (!$user) {
             return response()->json([
@@ -599,7 +514,7 @@ class ClientController extends Controller
             'success' => true,
             'message' => 'Client Profile updated successfully',
             'data' => [
-                'profile_image' => $profile_image ? asset('images/users/' . $profile_image) : asset('images/users/default.png')
+                'profile_image' => $thumbnail ? asset('images/users/thumbnail/' . $thumbnail) : asset('images/users/default.png')
             ]
         ], 200);
     }
@@ -619,7 +534,7 @@ class ClientController extends Controller
         }
 
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
 
         if (!$user) {
             return response()->json([
@@ -716,7 +631,7 @@ class ClientController extends Controller
         }
 
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
 
         if (!$user) {
             return response()->json([
@@ -817,7 +732,7 @@ class ClientController extends Controller
         }
 
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
 
         if (!$user) {
             return response()->json([
@@ -887,7 +802,7 @@ class ClientController extends Controller
         }
 
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
 
         if (!$user) {
             return response()->json([
@@ -956,7 +871,7 @@ class ClientController extends Controller
             ], 422);
         }
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
 
         // Check if old password is correct
         if (!Hash::check($request->old_password, $user->password)) {
@@ -1195,7 +1110,7 @@ class ClientController extends Controller
             ], 401);
         }
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
 
         $acceptedInvites = TeamInvitation::where('inviter_id', $user->id)->get();
         return response()->json([
@@ -1506,7 +1421,7 @@ class ClientController extends Controller
             ], 401);
         }
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
         $invitations = TeamInvitation::select('invitee_id', 'inviter_id', 'users.email as inviter_email', 'team_invitations.*')
             ->join('users', 'team_invitations.inviter_id', '=', 'users.id')
             ->where('invitee_id', $user->id)

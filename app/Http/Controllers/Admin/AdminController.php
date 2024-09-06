@@ -19,8 +19,7 @@ class AdminController extends Controller
     public function index()
     {
         // Get list of all admins
-        $admins = Admin::with('user')
-            ->get();
+        $admins = Admin::with('user')->get();
 
         return view('admin.admins.index', compact('admins'));
     }
@@ -142,7 +141,7 @@ class AdminController extends Controller
             // If admin is the auth user
             if (Auth::user()->id == $admin->user_id) {
                 // set thumbnail to session
-                session(['profile_image' => asset('images/users/thumbnail/' . $thumbnail)]);
+                session(['thumbnail' => asset('images/users/thumbnail/' . $thumbnail)]);
             }
 
             // Optionally, return a success response or do other actions
@@ -151,6 +150,19 @@ class AdminController extends Controller
             // If the admin is not found, handle the error
             return redirect()->back()->with('error', 'Admin not found or not authorized!');
         }
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $admin = Admin::where('id', $request->id)->first();
+
+        $user = User::where('id', $admin->user_id)->first();
+        if ($user) {
+            $user->update(['is_active' => !$user->is_active]);
+            return json_encode(['status' => 'success', 'is_active' => !$user->is_active, 'message' => 'User status updated successfully!']);
+        }
+
+        return json_encode(['status' => 'error', 'message' => 'User not found']);
     }
 
 
@@ -181,7 +193,7 @@ class AdminController extends Controller
     public function searchUsers(Request $request)
     {
         $search = $request->input('search');
-        $currentUserId = auth()->id(); // Get the ID of the current authenticated user
+        $currentUserId = Auth::user()->id; // Get the ID of the current authenticated user
 
         // Get list of all admins, excluding the current user
         $admins = DB::table('admins')

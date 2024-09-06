@@ -26,7 +26,7 @@ class WalletHelperController extends Controller
 
 
         // Total Earning
-        $statistic['total'] = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'helper')->where('type', 'received')->where('status', 'success')->sum('amount');
+        $statistic['total'] = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'helper')->where('type', 'earned')->where('status', 'success')->sum('amount');
 
         // WithdrawnAmount
         $statistic['withdrawn'] = UserWallet::where('user_id', Auth::user()->id)->where('user_type', 'helper')->where('type', 'withdraw')->where('status', 'success')->sum('amount');

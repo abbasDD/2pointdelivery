@@ -123,6 +123,7 @@ class PassportAuthController extends Controller
             'middle_name' => null,
             'last_name' => null,
             'profile_image' => asset('images/users/default.png'),
+            'thumbnail' => asset('images/users/default.png'),
             'personal_details' => false,
             'address_details' => false,
             'company_details' => false,
@@ -241,7 +242,7 @@ class PassportAuthController extends Controller
 
         // Check if user exists
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            $user = Auth::user();
+            $user = User::find(Auth::user()->id);
 
             // Check is user_type is user
 
@@ -289,6 +290,7 @@ class PassportAuthController extends Controller
                 'middle_name' => null,
                 'last_name' => null,
                 'profile_image' => asset('images/users/default.png'),
+                'thumbnail' => asset('images/users/default.png'),
                 'personal_details' => false,
                 'address_details' => false,
                 'company_details' => false,
@@ -426,7 +428,7 @@ class PassportAuthController extends Controller
             ], 401);
         }
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
 
         return response()->json([
             'success' => true,

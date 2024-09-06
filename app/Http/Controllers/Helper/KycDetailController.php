@@ -71,6 +71,7 @@ class KycDetailController extends Controller
         $kycDetail = KycDetail::create([
             'user_id' => auth()->user()->id,
             'type' => 'helper',
+            'kyc_type_id' => $request->kyc_type_id,
         ]);
 
         // Check if front_image exist or not
@@ -105,8 +106,7 @@ class KycDetailController extends Controller
             $kycDetail->back_image = $updatedFilename;
         }
 
-        // Update kyc
-        $kycDetail->kyc_type_id = $request->kyc_type_id;
+        // Update kyc details
         $kycDetail->id_number = $request->id_number;
         $kycDetail->country = $request->country;
         $kycDetail->state = $request->state;

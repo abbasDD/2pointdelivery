@@ -87,6 +87,7 @@ class ClientController extends Controller
                     'gender' => $client->gender ?? '',
                     'date_of_birth' => $client->date_of_birth ?? '',
                     'profile_image' => $client->profile_image ?? '',
+                    'thumbnail' => $client->thumbnail ?? '',
                     'phone_no' => $client->phone_no ?? '',
                     'suite' => $client->suite ?? '',
                     'street' => $client->street ?? '',
@@ -112,7 +113,7 @@ class ClientController extends Controller
         if ($helperInfo) {
             session(['full_name' => $helperInfo->first_name . ' ' . $helperInfo->last_name]);
             // set profile_image
-            session(['profile_image' => asset('images/users/thumbnail/' . $helperInfo->thumbnail)]);
+            session(['thumbnail' => asset('images/users/thumbnail/' . $helperInfo->thumbnail)]);
         }
 
 
@@ -324,7 +325,7 @@ class ClientController extends Controller
         session(['full_name' => $client->first_name . ' ' . $client->last_name]);
         // set thumbnail
         if ($client->thumbnail) {
-            session(['profile_image' => asset('images/users/thumbnail/' . $client->thumbnail)]);
+            session(['thumbnail' => asset('images/users/thumbnail/' . $client->thumbnail)]);
         }
 
         return redirect()->back()->with('success', 'Profile info updated successfully!');

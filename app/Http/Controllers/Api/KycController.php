@@ -19,7 +19,6 @@ class KycController extends Controller
      */
     public function index(): JsonResponse
     {
-
         // If token is not valid return error
         if (!Auth::user()) {
             return response()->json([
@@ -33,15 +32,12 @@ class KycController extends Controller
         // Get kyc details of logged in user
         $kycDetails = KycDetail::with('kycType')->where('user_id', Auth::user()->id)->get();
 
-        $kycDetailList = KycDetailResource::collection($kycDetails);
-
-
         // Return success
         return response()->json([
             'success' => true,
             'statusCode' => 200,
             'message' => 'KYC Details fetched successfully',
-            'data' => $kycDetailList,
+            'data' => KycDetailResource::collection($kycDetails),
         ]);
     }
 
@@ -61,7 +57,6 @@ class KycController extends Controller
 
         // Get kyc types // Get already added Kyc Types
         $existedKycTypes = KycDetail::where('user_id', Auth::user()->id)->pluck('kyc_type_id')->toArray();
-
 
         // Get KYC Types not present in the existedKycTypes array
         $kycTypes = KycType::whereNotIn('id', $existedKycTypes)->get();
