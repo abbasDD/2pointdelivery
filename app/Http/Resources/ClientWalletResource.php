@@ -17,12 +17,16 @@ class ClientWalletResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'user_id' => $this->user_id,
+            'user_type' => $this->user_type,
+            'type' => $this->type,
             'booking_id' => Booking::find($this->booking_id)->booking_uuid ?? 0,
             'amount' => $this->amount,
             'note' => $this->note,
             'payment_method' => $this->payment_method,
             'transaction_id' => $this->transaction_id,
             'status' => $this->status,
+            'paid_at' => $this->paid_at
         ];
     }
 }
