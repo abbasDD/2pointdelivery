@@ -227,7 +227,7 @@ class PassportAuthController extends Controller
                 'statusCode' => 401,
                 'message' => 'unable to find client.',
                 'errors' => 'Unauthorized',
-            ]);
+            ], 401);
         }
 
         // Check
@@ -237,7 +237,7 @@ class PassportAuthController extends Controller
                 'statusCode' => 401,
                 'message' => 'unable to find helper.',
                 'errors' => 'Unauthorized',
-            ]);
+            ], 401);
         }
 
         // Check if user exists
