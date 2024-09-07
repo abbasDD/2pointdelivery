@@ -51,6 +51,7 @@ Route::middleware(['app_language'])->group(function () {
         Route::get('/booking/accept/{id}', [HelperBookingController::class, 'acceptBooking'])->name('booking.accept');
         Route::get('/booking/show/{id}', [HelperBookingController::class, 'show'])->name('booking.show');
         Route::post('/booking/start/', [HelperBookingController::class, 'start'])->name('booking.start');
+        Route::post('/bookings/cancel/', [HelperBookingController::class, 'cancel'])->name('booking.cancel');
         Route::post('/booking/in-transit/', [HelperBookingController::class, 'inTransit'])->name('booking.inTransit');
         Route::post('/booking/complete/', [HelperBookingController::class, 'complete'])->name('booking.complete');
         Route::post('/booking/incomplete/', [HelperBookingController::class, 'incomplete'])->name('booking.incomplete');

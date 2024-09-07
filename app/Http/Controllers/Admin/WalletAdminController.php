@@ -42,6 +42,46 @@ class WalletAdminController extends Controller
         return view('admin.wallet.refund', compact('wallets'));
     }
 
+    // approveRefundRequest
+    public function approveRefundRequest(Request $request)
+    {
+        // Validator
+        $request->validate([
+            'wallet_id' => 'required',
+            'transaction_id' => 'required',
+        ]);
+
+        $wallet = UserWallet::where('id', $request->wallet_id)->where('status', 'pending')->where('type', 'refund')->first();
+        if (!$wallet) {
+            return back()->with('error', 'Wallet Transaction not found!');
+        }
+
+        $wallet->transaction_id = $request->transaction_id;
+        $wallet->status = 'success';
+        $wallet->save();
+
+        return back()->with('success', 'Wallet Transaction approved successfully!');
+    }
+
+    // rejectRefundRequest
+    public function rejectRefundRequest(Request $request)
+    {
+        // Validator
+        $request->validate([
+            'wallet_id' => 'required',
+        ]);
+
+        $wallet = UserWallet::where('id', $request->wallet_id)->where('status', 'pending')->where('type', 'refund')->first();
+        if (!$wallet) {
+            return back()->with('error', 'Wallet Transaction not found!');
+        }
+
+        $wallet->status = 'failed';
+        $wallet->save();
+
+        return back()->with('success', 'Wallet Transaction rejected successfully!');
+    }
+
     // withdrawRequest
     public function withdrawRequest()
     {
@@ -49,5 +89,45 @@ class WalletAdminController extends Controller
         $wallets = UserWallet::where('type', 'withdraw')->get();
 
         return view('admin.wallet.withdraw', compact('wallets'));
+    }
+
+    // approveWithdrawRequest
+    public function approveWithdrawRequest(Request $request)
+    {
+        // Validator
+        $request->validate([
+            'wallet_id' => 'required',
+            'transaction_id' => 'required',
+        ]);
+
+        $wallet = UserWallet::where('id', $request->wallet_id)->where('status', 'pending')->where('type', 'withdraw')->first();
+        if (!$wallet) {
+            return back()->with('error', 'Wallet Transaction not found!');
+        }
+
+        $wallet->transaction_id = $request->transaction_id;
+        $wallet->status = 'success';
+        $wallet->save();
+
+        return back()->with('success', 'Wallet Transaction approved successfully!');
+    }
+
+    // rejectWithdrawRequest
+    public function rejectWithdrawRequest(Request $request)
+    {
+        // Validator
+        $request->validate([
+            'wallet_id' => 'required',
+        ]);
+
+        $wallet = UserWallet::where('id', $request->wallet_id)->where('status', 'pending')->where('type', 'withdraw')->first();
+        if (!$wallet) {
+            return back()->with('error', 'Wallet Transaction not found!');
+        }
+
+        $wallet->status = 'failed';
+        $wallet->save();
+
+        return back()->with('success', 'Wallet Transaction rejected successfully!');
     }
 }

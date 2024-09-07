@@ -686,7 +686,7 @@ class PassportAuthController extends Controller
         $result = $this->fcmService->sendFcmNotification($request->user_id, $request->title, $request->body);
 
         if ($result['success']) {
-            return response()->json(['message' => $result['message'], 'response' => $result['response']]);
+            return response()->json(['message' => $result['message'], 'response' => $result['response']], 200);
         } else {
             return response()->json(['message' => $result['message']], 500);
         }
@@ -751,7 +751,10 @@ class PassportAuthController extends Controller
         $tokenResult = $user->createToken('2PointDeliveryJWTAuthenticationToken');
         $token = $tokenResult->accessToken;
 
-        return response()->json(['token' => $token]);
+        return response()->json([
+            'success' => true,
+            'token' => $token
+        ], 200);
     }
 
     // appDetails

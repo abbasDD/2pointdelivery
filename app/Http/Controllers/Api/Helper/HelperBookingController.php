@@ -298,7 +298,7 @@ class HelperBookingController extends Controller
                 'statusCode' => 422,
                 'message' => 'Admin have not approved your profile.',
                 'errors' => 'Admin have not approved your profile.',
-            ]);
+            ], 422);
         }
 
         // Check for vehicleData
@@ -432,7 +432,7 @@ class HelperBookingController extends Controller
                 'statusCode' => 422,
                 'message' => 'Booking already cancelled.',
                 'errors' => 'Booking already cancelled.',
-            ]);
+            ], 422);
         }
 
         if ($booking->status == 'accepted') {

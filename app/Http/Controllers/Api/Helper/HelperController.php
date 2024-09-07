@@ -952,7 +952,7 @@ class HelperController extends Controller
                 'success' => false,
                 'message' => 'Vehicle type not found',
                 'errors' => 'Vehicle type not found'
-            ]);
+            ], 404);
         }
 
         // If helperVehicle is found, update its attributes
@@ -2219,7 +2219,7 @@ class HelperController extends Controller
                 'statusCode' => 422,
                 'message' => 'Helper bank account not found',
                 'errors' => 'Helper bank account not found'
-            ]);
+            ], 422);
         }
 
         // Get balance of helper
@@ -2251,7 +2251,7 @@ class HelperController extends Controller
                 'statusCode' => 422,
                 'message' => 'Withdraw request already pending',
                 'errors' => 'Withdraw request already pending'
-            ]);
+            ], 422);
         }
 
         $withdrawRequest = UserWallet::create([

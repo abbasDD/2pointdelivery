@@ -80,7 +80,7 @@ class AddressBookController extends Controller
                 'statusCode' => 422,
                 'message' => 'Address Book not found',
                 'errors' => 'Address Book not found',
-            ]);
+            ], 422);
         }
 
         $addressBook->pickup_address = $request->pickup_address;

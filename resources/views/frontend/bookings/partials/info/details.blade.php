@@ -35,12 +35,12 @@
                 <p class="mb-0">Amount to Pay:</p>
                 <h6 class="mb-0">${{ $booking->total_price }}</h6>
             </div>
+            {{-- Payment Method --}}
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <p class="mb-0">Payment Method:</p>
+                <h6 class="mb-0">{{ $bookingPayment->payment_method }}</h6>
+            </div>
         @endif
-        {{-- Payment Method --}}
-        <div class="d-flex align-items-center justify-content-between mb-3">
-            <p class="mb-0">Payment Method:</p>
-            <h6 class="mb-0">{{ $bookingPayment->payment_method }}</h6>
-        </div>
 
         {{-- Incomplete Reason --}}
         @if ($booking->status == 'incomplete')

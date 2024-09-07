@@ -38,7 +38,7 @@ class KycController extends Controller
             'statusCode' => 200,
             'message' => 'KYC Details fetched successfully',
             'data' => KycDetailResource::collection($kycDetails),
-        ]);
+        ], 200);
     }
 
     // kycTypes
@@ -67,7 +67,7 @@ class KycController extends Controller
             'statusCode' => 200,
             'message' => 'KYC Types fetched successfully',
             'data' => $kycTypes,
-        ]);
+        ], 200);
     }
 
     // Add Kyc
@@ -125,7 +125,7 @@ class KycController extends Controller
                 'statusCode' => 422,
                 'message' => 'You have already added this KYC',
                 'errors' => 'You have already added this KYC',
-            ]);
+            ], 422);
         }
 
         // Create new kyc
@@ -187,7 +187,7 @@ class KycController extends Controller
             'statusCode' => 200,
             'message' => 'KYC added successfully',
             'data' => [],
-        ]);
+        ], 200);
     }
 
     // Show KYC
@@ -236,7 +236,7 @@ class KycController extends Controller
             'statusCode' => 200,
             'message' => 'KYC details',
             'data' => $kycDetailID,
-        ]);
+        ], 200);
     }
 
     // Add Kyc
@@ -293,7 +293,7 @@ class KycController extends Controller
                 'statusCode' => 422,
                 'message' => 'Unable to find KYC',
                 'errors' => 'Unable to find KYC',
-            ]);
+            ], 422);
         }
 
         if ($kycDetail->is_verified == 1) {
@@ -302,7 +302,7 @@ class KycController extends Controller
                 'statusCode' => 422,
                 'message' => 'KYC is already approved',
                 'errors' => 'KYC is already approved',
-            ]);
+            ], 422);
         }
 
         // Check if front_image exist or not
@@ -354,6 +354,6 @@ class KycController extends Controller
             'statusCode' => 200,
             'message' => 'KYC data updated successfully',
             'data' => [],
-        ]);
+        ], 200);
     }
 }

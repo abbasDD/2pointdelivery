@@ -22,6 +22,7 @@ use App\Models\VehicleType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Intervention\Image\Laravel\Facades\Image;
 
 class HelperBookingController extends Controller
 {
@@ -358,27 +359,28 @@ class HelperBookingController extends Controller
 
             $signatureStart = null;
 
-
             // Upload booking image
             if ($request->hasFile('start_booking_image')) {
-                $file = $request->file('start_booking_image');
-                $updatedBookingFilename = time() . '.' . $file->getClientOriginalExtension();
-                $destinationPath = public_path('images/bookings/');
-                $file->move($destinationPath, $updatedBookingFilename);
+                $image = Image::read($request->file('start_booking_image'));
 
-                // Set the profile image attribute to the new file name
-                $start_booking_image = $updatedBookingFilename;
+                // Main Image Upload on Folder Code
+                $imageName = time() . rand(0, 999) . '.' . $request->file('start_booking_image')->getClientOriginalExtension();
+                $destinationPath = public_path('images/bookings/');
+                $image->save($destinationPath . $imageName);
+
+                $start_booking_image = $imageName;
             }
 
             // Upload signature start image
             if ($request->hasFile('signatureStart')) {
-                $file = $request->file('signatureStart');
-                $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
-                $destinationPath = public_path('images/bookings/');
-                $file->move($destinationPath, $updatedFilename);
+                $image = Image::read($request->file('signatureStart'));
 
-                // Set the profile image attribute to the new file name
-                $signatureStart = $updatedFilename;
+                // Main Image Upload on Folder Code
+                $imageName = time() . rand(0, 999) . '.' . $request->file('signatureStart')->getClientOriginalExtension();
+                $destinationPath = public_path('images/bookings/');
+                $image->save($destinationPath . $imageName);
+
+                $signatureStart = $imageName;
             }
 
 
@@ -422,6 +424,76 @@ class HelperBookingController extends Controller
         return redirect()->back()->with('error', 'Booking not accepted');
 
         // return view('frontend.bookings.show', compact('booking', 'bookingDelivery', 'helperData', 'clientData'));
+    }
+
+    // Cancel Booking
+    public function cancel(Request $request)
+    {
+        $userId = Auth::user()->id;
+
+        $booking = Booking::where('id', $request->id)
+            ->where(function ($query) use ($userId) {
+                $query->where('helper_user_id', $userId)
+                    ->orWhere('helper_user_id2', $userId);
+            })
+            ->first();
+
+        if (!$booking) {
+            return redirect()->back()->with('error', 'Booking not found');
+        }
+
+        if ($booking->booking_type == 'secureship') {
+            return redirect()->back()->with('error', 'Unable to cancel secure ship booking');
+        }
+
+        if ($booking->status == 'accepted') {
+
+            // Check if booking->booking_type is delivery
+            if ($booking->booking_type == 'delivery') {
+                // Get booking delivery data
+                $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+                if (!$bookingDelivery) {
+                    return redirect()->back()->with('error', 'Booking delivery not found');
+                }
+
+                // Update booking delivery
+                $bookingDelivery->save();
+            }
+
+
+            // Check if booking->booking_type is moving
+            if ($booking->booking_type == 'moving') {
+                // Get booking moving data
+                $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
+                if (!$bookingMoving) {
+                    return redirect()->back()->with('error', 'Booking moving not found');
+                }
+
+                // Update booking moving
+                $bookingMoving->save();
+            }
+
+
+            // Update Booking
+            $booking->status = 'cancelled';
+            $booking->save();
+
+            // Send Notification
+            UserNotification::create([
+                'sender_user_id' => Auth::user()->id,
+                'receiver_user_id' => $booking->client_user_id,
+                'receiver_user_type' => 'client',
+                'reference_id' => $booking->id,
+                'type' => 'booking',
+                'title' => 'Booking is cancelled',
+                'content' => 'Your booking is cancelled by the helper.',
+                'read' => 0
+            ]);
+
+            return redirect()->back()->with('success', 'Booking cancelled successfully!');
+        }
+
+        return redirect()->back()->with('error', 'Booking not accepted');
     }
 
     // inTransit Booking
@@ -552,24 +624,26 @@ class HelperBookingController extends Controller
 
         // Upload booking image
         if ($request->hasFile('complete_booking_image')) {
-            $file = $request->file('complete_booking_image');
-            $updatedBookingFilename = time() . '.' . $file->getClientOriginalExtension();
-            $destinationPath = public_path('images/bookings/');
-            $file->move($destinationPath, $updatedBookingFilename);
+            $image = Image::read($request->file('complete_booking_image'));
 
-            // Set the profile image attribute to the new file name
-            $complete_booking_image = $updatedBookingFilename;
+            // Main Image Upload on Folder Code
+            $imageName = time() . rand(0, 999) . '.' . $request->file('complete_booking_image')->getClientOriginalExtension();
+            $destinationPath = public_path('images/bookings/');
+            $image->save($destinationPath . $imageName);
+
+            $complete_booking_image = $imageName;
         }
 
         // Upload completed signature image
         if ($request->hasFile('signatureCompleted')) {
-            $file = $request->file('signatureCompleted');
-            $updatedFilename = time() . '.' . $file->getClientOriginalExtension();
-            $destinationPath = public_path('images/bookings/');
-            $file->move($destinationPath, $updatedFilename);
+            $image = Image::read($request->file('signatureCompleted'));
 
-            // Set the profile image attribute to the new file name
-            $signatureCompleted = $updatedFilename;
+            // Main Image Upload on Folder Code
+            $imageName = time() . rand(0, 999) . '.' . $request->file('signatureCompleted')->getClientOriginalExtension();
+            $destinationPath = public_path('images/bookings/');
+            $image->save($destinationPath . $imageName);
+
+            $signatureCompleted = $imageName;
         }
 
 

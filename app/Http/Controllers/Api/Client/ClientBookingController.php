@@ -573,7 +573,12 @@ class ClientBookingController extends Controller
             // if unable to create deliveryBooking then rollback new_booking
             if (!$deliveryBooking) {
                 $new_booking->delete();
-                return response()->json(['success' => false, 'data' => 'Unable to create booking']);
+                return response()->json([
+                    'success' => false,
+                    'statusCode' => 500,
+                    'message' => 'Unable to create booking',
+                    'data' => 'Unable to create booking'
+                ], 500);
             }
 
             $bookingPayment = $deliveryBooking;
@@ -602,7 +607,12 @@ class ClientBookingController extends Controller
             // if unable to create movingBooking then rollback new_booking
             if (!$movingBooking) {
                 $new_booking->delete();
-                return response()->json(['success' => false, 'data' => 'Unable to create booking']);
+                return response()->json([
+                    'success' => false,
+                    'statusCode' => 500,
+                    'message' => 'Unable to create booking',
+                    'data' => 'Unable to create booking',
+                ], 500);
             }
 
             $bookingPayment = $movingBooking;
@@ -1561,7 +1571,7 @@ class ClientBookingController extends Controller
                 'statusCode' => 422,
                 'message' => 'Booking already cancelled.',
                 'errors' => 'Booking already cancelled.',
-            ]);
+            ], 422);
         }
 
         if ($booking->status == 'pending') {
@@ -1585,7 +1595,7 @@ class ClientBookingController extends Controller
             'statusCode' => 422,
             'message' => 'Unable to cancel booking.',
             'errors' => 'Unable to cancel booking.',
-        ]);
+        ], 422);
     }
 
     // expired Booking
@@ -1631,7 +1641,7 @@ class ClientBookingController extends Controller
                 'statusCode' => 422,
                 'message' => 'Unable to expire booking.',
                 'errors' => 'Unable to expire booking.',
-            ]);
+            ], 422);
         }
 
         $booking->status = 'expired';

@@ -106,7 +106,7 @@ Route::middleware(['app_language'])->group(function () {
 
         // Wallet
         Route::get('/wallet', [WalletClientController::class, 'index'])->name('wallet');
-        Route::get('/wallet/refund/request', [WalletClientController::class, 'refundRequest'])->name('wallet.refund.request');
+        Route::get('/wallet/refund/request/{booking_id}', [WalletClientController::class, 'refundRequest'])->name('wallet.refund.request');
 
         //Address Book
         Route::get('/address-books', [AddressBookController::class, 'index'])->name('addressBooks');

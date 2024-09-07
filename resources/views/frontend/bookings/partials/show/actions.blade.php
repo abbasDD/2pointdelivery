@@ -32,6 +32,10 @@
             <a onclick="startBooking('{{ $booking->id }}')" class="btn btn-success"><i class="fa fa-bicycle"
                     aria-hidden="true"></i> <span class="d-none d-md-inline"> Start</span></a>
         </div>
+        <div class="">
+            <a onclick="cancelBooking('{{ $booking->id }}')" class="btn btn-danger"><i class="fa fa-times"
+                    aria-hidden="true"></i> <span class="d-none d-md-inline"> Cancel</span></a>
+        </div>
     @endif
     {{-- If auth user is helper and status started then ask to in_transit --}}
     @if (
@@ -60,10 +64,7 @@
         $helperView &&
             auth()->user()->helper_enabled &&
             ($booking->helper_user_id == auth()->user()->id || $booking->helper_user_id2 == auth()->user()->id) &&
-            ($booking->status != 'completed' &&
-                $booking->status != 'incomplete' &&
-                $booking->status != 'cancelled' &&
-                $booking->status != 'pending'))
+            $booking->status == 'in_transit')
         <div class="">
             <a onclick="inCompleteBooking('{{ $booking->id }}')" class="btn btn-danger"><i class="fa fa-xmark"
                     aria-hidden="true"></i> <span class="d-none d-md-inline"> Incomplete</span></a>
@@ -131,6 +132,30 @@
                         <button type="submit" class="btn btn-primary"
                             onclick="startBooking('{{ $booking->id }}')">Start
                             Booking</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Cancel Booking Modal --}}
+    <div class="modal fade" id="cancelBookingModal" tabindex="-1" aria-labelledby="cancelBookingModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cancelBookingModalLabel">Cancel Booking</h5>
+                </div>
+                <form action="{{ route('helper.booking.cancel') }}" method="POST">
+                    <div class="modal-body">
+                        <p>Are you sure you want to cancel this booking?</p>
+                        @csrf
+                        {{-- hidden booking id --}}
+                        <input type="hidden" name="id" value="{{ $booking->id }}">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Yes Cancel</button>
                     </div>
                 </form>
             </div>
@@ -308,10 +333,22 @@
 
 
 <script>
-    // Show Start Booking Modal
-    function startBooking(id) {
-        $('#startBookingModal').modal('show');
-    }
+    @if (
+        $helperView &&
+            auth()->user()->helper_enabled &&
+            ($booking->helper_user_id == auth()->user()->id || $booking->helper_user_id2 == auth()->user()->id) &&
+            $booking->status == 'accepted')
+
+        // Show Start Booking Modal
+        function startBooking(id) {
+            $('#startBookingModal').modal('show');
+        }
+
+        // Show cancel Booking Modal
+        function cancelBooking(id) {
+            $('#cancelBookingModal').modal('show');
+        }
+    @endif
 
     @if (
         $helperView &&

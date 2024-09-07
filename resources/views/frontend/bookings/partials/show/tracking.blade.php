@@ -141,11 +141,13 @@
                         <div class="tracking-content">
                             @if ($booking->status == 'incomplete')
                                 <p class="text-warning">Incomplete</p>
+                                <span>{{ $bookingPayment->incomplete_booking_at ? app('dateHelper')->formatTimestamp($bookingPayment->incomplete_booking_at, config('date_format') ?: 'Y-m-d') : 'N/A' }}</span>
+                                <span>{{ $bookingPayment->incomplete_booking_at ? app('dateHelper')->formatTimestamp($bookingPayment->incomplete_booking_at, config('time_format') ?: 'H:i A') : 'N/A' }}</span>
                             @else
                                 {{ $booking->booking_type == 'delivery' ? 'Receipent Received' : 'Moving Completed' }}
+                                <span>{{ $bookingPayment->complete_booking_at ? app('dateHelper')->formatTimestamp($bookingPayment->complete_booking_at, config('date_format') ?: 'Y-m-d') : 'N/A' }}</span>
+                                <span>{{ $bookingPayment->complete_booking_at ? app('dateHelper')->formatTimestamp($bookingPayment->complete_booking_at, config('time_format') ?: 'H:i A') : 'N/A' }}</span>
                             @endif
-                            <span>{{ $bookingPayment->complete_booking_at ? app('dateHelper')->formatTimestamp($bookingPayment->complete_booking_at, config('date_format') ?: 'Y-m-d') : 'N/A' }}</span>
-                            <span>{{ $bookingPayment->complete_booking_at ? app('dateHelper')->formatTimestamp($bookingPayment->complete_booking_at, config('time_format') ?: 'H:i A') : 'N/A' }}</span>
                         </div>
                     </div>
 

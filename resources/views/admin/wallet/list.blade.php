@@ -24,10 +24,10 @@
                         </td>
                         <td>{{ $wallet->type }}</td>
                         <td>
-                            @if ($wallet->type == 'earned')
-                                <p class="text-success"> +{{ $wallet->amount }}</p>
+                            @if ($wallet->type == 'spend' || $wallet->type == 'earned')
+                                <p class="text-success"> + C${{ $wallet->amount }}</p>
                             @else
-                                <p class="text-danger"> -{{ $wallet->amount }}</p>
+                                <p class="text-danger"> - C${{ $wallet->amount }}</p>
                             @endif
                         </td>
                         <td>{{ $wallet->payment_method }}</td>

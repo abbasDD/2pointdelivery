@@ -70,6 +70,15 @@
                             <i class="fas fa-close"></i>
                         </a>
                     @endif
+
+                    {{-- Refund Request if cancelled --}}
+                    @if ($booking->status == 'cancelled')
+                        <a href="{{ route('client.wallet.refund.request', $booking->id) }}"
+                            class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top"
+                            title="Refund Request">
+                            <i class="fas fa-undo"></i>
+                        </a>
+                    @endif
                 </td>
             </tr>
         @empty
