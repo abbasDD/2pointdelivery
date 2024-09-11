@@ -89,7 +89,7 @@ class NotificationHelper
     }
 
     // storeNotification
-    private function storeNotification($sender_user_id, $receiver_user_id, $receiver_user_type, $notificationType, $reference_id, $title, $content)
+    private static function storeNotification($sender_user_id, $receiver_user_id, $receiver_user_type, $notificationType, $reference_id, $title, $content)
     {
 
         // Store Notification
@@ -106,7 +106,7 @@ class NotificationHelper
     }
 
     // For sending notification
-    private function sendPushNotificationToUser($user_id, $title, $body)
+    private static function sendPushNotificationToUser($user_id, $title, $body)
     {
 
         $user = User::find($user_id);
@@ -159,7 +159,7 @@ class NotificationHelper
 
 
 
-    private function getAccessToken($keyFilePath)
+    private static function getAccessToken($keyFilePath)
     {
         $client = new Client();
         $response = $client->post('https://oauth2.googleapis.com/token', [
@@ -173,7 +173,7 @@ class NotificationHelper
         return $data['access_token'];
     }
 
-    private function generateJwt($keyFilePath)
+    private static function generateJwt($keyFilePath)
     {
         $key = json_decode(file_get_contents($keyFilePath), true);
         $now = time();
@@ -191,9 +191,8 @@ class NotificationHelper
     }
 
 
-    public function sendEmail($templateName, $user, $placeholders = [])
+    public static function sendEmail($templateName, $user, $placeholders = [])
     {
-
 
         $smtpSettings = SmtpSetting::get();
         if ($smtpSettings->isEmpty()) {
