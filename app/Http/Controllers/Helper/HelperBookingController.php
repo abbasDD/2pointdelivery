@@ -458,6 +458,10 @@ class HelperBookingController extends Controller
 
                 // Update booking delivery
                 $bookingDelivery->save();
+
+                // Update Booking
+                $booking->status = 'cancelled';
+                $booking->save();
             }
 
 
@@ -471,12 +475,31 @@ class HelperBookingController extends Controller
 
                 // Update booking moving
                 $bookingMoving->save();
+
+                // Check if both helpers accept the booking
+                if ($booking->helper_user_id !=  null && $booking->helper_user_id2 !=  null) {
+                    // set null to the helper where user_id is auth
+                    if (Auth::user()->id == $booking->helper_user_id) {
+                        $booking->helper_user_id = null;
+                        $booking->save();
+                    }
+
+                    if (Auth::user()->id == $booking->helper_user_id2) {
+                        $booking->helper_user_id2 = null;
+                        $booking->save();
+                    }
+
+                    // Change status to pending
+                    $booking->status = 'pending';
+                    $booking->save();
+
+                    return redirect()->route('helper.bookings')->with('success', 'Booking cancelled successfully!');
+                } else {
+                    // Update Booking
+                    $booking->status = 'cancelled';
+                    $booking->save();
+                }
             }
-
-
-            // Update Booking
-            $booking->status = 'cancelled';
-            $booking->save();
 
             // Send Notification
             UserNotification::create([

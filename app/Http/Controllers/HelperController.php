@@ -16,6 +16,7 @@ use App\Models\HelperBankAccount;
 use App\Models\HelperCompany;
 use App\Models\HelperVehicle;
 use App\Models\Industry;
+use App\Models\KycDetail;
 use App\Models\ServiceType;
 use App\Models\SocialLink;
 use App\Models\State;
@@ -199,23 +200,18 @@ class HelperController extends Controller
         // $bookingClient = Client::where('user_id', Auth::user()->id)->first();
 
         // Check if helper completed its profile
-        $helperUpdated = true;
+        $helperProfileUpdated = true;
 
         // Check if personal detail completed
         if ($helper->first_name == null || $helper->last_name == null) {
-            $helperUpdated = false;
+            $helperProfileUpdated = false;
         }
 
         // Check if address detail completed
         if ($helper->city == null || $helper->state == null || $helper->country == null) {
-            $helperUpdated = false;
+            $helperProfileUpdated = false;
         }
 
-        // Check if vehicle detail completed
-        $helperVehicle = HelperVehicle::where('user_id', Auth::user()->id)->first();
-        if (!$helperVehicle) {
-            $helperUpdated = false;
-        }
 
         // Check if profile is company profile
         if ($helper->company_enabled == 1) {
@@ -232,9 +228,22 @@ class HelperController extends Controller
                 }
             }
         }
+
+        $helperVehicleUpdated = true;
+        // Check if vehicle detail completed
+        $helperVehicle = HelperVehicle::where('user_id', Auth::user()->id)->first();
+        if (!$helperVehicle) {
+            $helperVehicleUpdated = false;
+        }
         // $helperUpdated = false;
 
-        return view('helper.index', compact('helper', 'bookings', 'satistics', 'helperUpdated', 'helperVehicle'));
+        $helperKycUpdated = true;
+        $helperKyc = KycDetail::where('user_id', Auth::user()->id)->first();
+        if (!$helperKyc) {
+            $helperKycUpdated = false;
+        }
+
+        return view('helper.index', compact('helper', 'helperVehicle', 'helperKyc', 'bookings', 'satistics', 'helperProfileUpdated', 'helperVehicleUpdated', 'helperKycUpdated'));
     }
 
 

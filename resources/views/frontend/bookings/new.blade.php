@@ -258,6 +258,7 @@
 
     {{-- Define some javascript variables to be used in JS --}}
     @include('frontend.bookings.js.booking')
+
     {{-- secureship JS --}}
     @include('frontend.bookings.js.secureship')
 

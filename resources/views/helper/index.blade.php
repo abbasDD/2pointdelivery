@@ -6,21 +6,39 @@
 
 
     {{-- Ask user to complete profile --}}
-    @if (!$helperUpdated)
+    @if (!$helperProfileUpdated)
         <div class="alert alert-danger d-flex align-items-center justify-content-between" role="alert">
             <p class="m-0">Your profile is incomplete. Please complete it to accept your first booking.</p>
             <p class="m-0"><a href="{{ route('helper.profile') }}" class="btn btn-primary btn-sm ml-2">Complete</a>
             </p>
         </div>
     @else
-        {{-- Prroval in Progress --}}
-        @if ($helper->is_approved != 1 || $helperVehicle->is_approved != 1)
+        @if (!$helperVehicleUpdated)
             <div class="alert alert-danger d-flex align-items-center justify-content-between" role="alert">
-                <p class="m-0">Admin is reviewing your profile. Please wait.</p>
-                <p class="m-0"><a href="{{ route('helper.chat.admin') }}" class="btn btn-primary btn-sm ml-2">Chat
-                        Admin</a>
+                <p class="m-0">Your vehicle is incomplete. Please complete it to accept your first booking.</p>
+                <p class="m-0"><a href="{{ route('helper.profile') }}" class="btn btn-primary btn-sm ml-2">Complete</a>
                 </p>
             </div>
+        @else
+            @if (!$helperKycUpdated)
+                <div class="alert alert-danger d-flex align-items-center justify-content-between" role="alert">
+                    <p class="m-0">Your kyc is incomplete. Please complete it to accept your first booking.</p>
+                    <p class="m-0"><a href="{{ route('helper.kyc_details') }}"
+                            class="btn btn-primary btn-sm ml-2">Complete</a>
+                    </p>
+                </div>
+            @else
+                {{-- Prroval in Progress --}}
+                @if ($helper->is_approved != 1 || $helperVehicle->is_approved != 1 || $helperKyc->is_verified != 1)
+                    <div class="alert alert-danger d-flex align-items-center justify-content-between" role="alert">
+                        <p class="m-0">Admin is reviewing your profile. Please wait.</p>
+                        <p class="m-0"><a href="{{ route('helper.chat.admin') }}"
+                                class="btn btn-primary btn-sm ml-2">Chat
+                                Admin</a>
+                        </p>
+                    </div>
+                @endif
+            @endif
         @endif
     @endif
     {{-- Overall Statistics  --}}

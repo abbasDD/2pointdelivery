@@ -1,6 +1,6 @@
 {{-- Mover Detail --}}
 
-@if ($booking->helper_user_id || $booking->helper_user_id2)
+@if ($helperData || $helperData2)
     {{-- Delivery Mover Detail  --}}
     <div class="row align-items-center">
         <div class="col-md-6">
@@ -10,7 +10,7 @@
                     <div class="card-body">
                         <div class="d-block d-md-flex align-items-center justify-content-between mb-3">
                             <h5>Mover 01 </h5>
-                            <img src="{{ $helperData->image ? asset('images/users/' . $helperData->image) : asset('images/users/default.png') }}"
+                            <img src="{{ $helperData->thumbnail ? asset('images/users/thumbnail/' . $helperData->thumbnail) : asset('images/users/default.png') }}"
                                 alt="User" width="50">
                         </div>
                         <div class="d-block d-md-flex align-items-center justify-content-between mb-3">
@@ -25,19 +25,6 @@
                             <p class="mb-0">Gender</p>
                             <h6 class="mb-0">{{ $helperData->gender }}</h6>
                         </div>
-
-                        @if (isset($booking->review))
-                            {{-- Rating --}}
-                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                <p class="mb-0">Rating</p>
-                                <h6 class="mb-0">{{ $booking->review->rating }}</h6>
-                            </div>
-                            {{-- Review --}}
-                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                <p class="mb-0">Review</p>
-                                <h6 class="mb-0">{{ $booking->review->review }}</h6>
-                            </div>
-                        @endif
                     </div>
                 </div>
             @endif
@@ -49,7 +36,7 @@
                     <div class="card-body">
                         <div class="d-block d-md-flex align-items-center justify-content-between mb-3">
                             <h5>Mover 02 </h5>
-                            <img src="{{ $helperData2->image ? asset('images/users/' . $helperData2->image) : asset('images/users/default.png') }}"
+                            <img src="{{ $helperData2->thumbnail ? asset('images/users/thumbnail/' . $helperData2->thumbnail) : asset('images/users/default.png') }}"
                                 alt="User" width="50">
                         </div>
                         <div class="d-block d-md-flex align-items-center justify-content-between mb-3">
@@ -65,10 +52,6 @@
                             <h6 class="mb-0">{{ $helperData2->gender }}</h6>
                         </div>
                     </div>
-                </div>
-            @else
-                <div class="text-center">
-                    <h6> Mover 02 have not been assigned </h6>
                 </div>
             @endif
         </div>

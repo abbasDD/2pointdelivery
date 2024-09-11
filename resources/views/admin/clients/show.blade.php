@@ -63,9 +63,9 @@
                                         <h6 class="mb-0">Account</h6>
                                         <p class="mb-0">{{ $client->company_enabled ? 'Company' : 'Individual' }}</p>
                                     </div>
-                                    {{-- Tax ID --}}
+                                    {{-- State ID --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
-                                        <h6 class="mb-0">Tax ID</h6>
+                                        <h6 class="mb-0">State ID</h6>
                                         <p class="mb-0">{{ $client->tax_id ?: '-' }}</p>
                                     </div>
                                     {{-- Suite --}}

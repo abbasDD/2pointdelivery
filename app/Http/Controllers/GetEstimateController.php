@@ -376,9 +376,9 @@ class GetEstimateController extends Controller
         }
 
         // Loop through selectedMovingDetailsID
-        foreach ($selectedMovingDetailsID as $selectedMovingDetailsID) {
+        foreach ($selectedMovingDetailsID as $selectedMovingDetailID) {
             // Get from movingdetails
-            $movingDetails = MovingDetail::where('uuid', $selectedMovingDetailsID)->first();
+            $movingDetails = MovingDetail::where('uuid', $selectedMovingDetailID)->first();
             if (!$movingDetails) {
                 continue;
             }

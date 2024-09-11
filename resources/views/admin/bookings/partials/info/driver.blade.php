@@ -21,7 +21,7 @@
                 </div>
                 <div class="col-sm-4">
                     <div class="text-center">
-                        <img src="{{ $helperData->profile_image ? asset('images/users/' . $helperData->profile_image) : asset('images/users/default.png') }}"
+                        <img src="{{ $helperData->thumbnail ? asset('images/users/thumbnail/' . $helperData->thumbnail) : asset('images/users/default.png') }}"
                             alt="Truck" class="w-100">
                     </div>
                 </div>

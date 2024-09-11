@@ -77,10 +77,10 @@
                                         <h6 class="mb-0">Account</h6>
                                         <p class="mb-0">{{ $helper->company_enabled ? 'Company' : 'Individual' }}</p>
                                     </div>
-                                    {{-- Tax ID --}}
+                                    {{-- Service Badge ID --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">
-                                        <h6 class="mb-0">Tax ID</h6>
-                                        <p class="mb-0">{{ $helper->tax_id ?: '-' }}</p>
+                                        <h6 class="mb-0">Service Badge ID</h6>
+                                        <p class="mb-0">{{ $helper->service_badge_id ?: '-' }}</p>
                                     </div>
                                     {{-- Suite --}}
                                     <div class="d-flex align-items-center justify-content-between mb-3">

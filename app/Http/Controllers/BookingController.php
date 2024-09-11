@@ -25,11 +25,15 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Http\Controllers\GetEstimateController;
 use App\Models\BookingMoving;
+use App\Models\BookingMovingConfig;
+use App\Models\BookingMovingDetail;
 use App\Models\BookingReview;
 use App\Models\BookingSecureship;
 use App\Models\BookingSecureshipPackage;
 use App\Models\DeliveryConfig;
 use App\Models\HelperCompany;
+use App\Models\MovingConfig;
+use App\Models\MovingDetail;
 use App\Models\User;
 use App\Models\UserNotification;
 use App\Models\UserWallet;
@@ -443,10 +447,157 @@ class BookingController extends Controller
             $booking->booking_type = 'moving';
             $booking->save();
 
+            // Create moving config
+            $helper_fee_updated = $this->createBookingMovingConfig($request, $serviceCategory, $booking, $movingBooking);
+
+            // Update helper fee
+            $movingBooking->helper_fee = $helper_fee_updated;
+            $movingBooking->save();
+
+            // Create booking_moving_details
+            $this->createBookingMovingDetails($request, $serviceCategory, $booking, $movingBooking);
+
             return true;
         }
 
         return false;
+    }
+
+    // createBookingMovingConfig
+    public function createBookingMovingConfig($request, $serviceCategory, $booking, $movingBooking)
+    {
+        // Helper fee as per configs
+        $helper_fee = $serviceCategory->helper_fee ?? 0;
+
+        // If no_of_room_enabled for this category then add it to booking moving configs
+        if ($serviceCategory->no_of_room_enabled == 1) {
+            // Get selected no of room id
+            $noOfRoomData = MovingConfig::where('id', $request->selectedNoOfRoomID)->where('type', 'no_of_rooms')->first();
+            if ($noOfRoomData) {
+                //Create booking_moving_configs
+                BookingMovingConfig::create([
+                    'booking_id' => $booking->id,
+                    'booking_moving_id' => $movingBooking->id,
+                    'moving_config_id' => $noOfRoomData->id,
+                    'name' => $noOfRoomData->name,
+                    'type' => 'no_of_rooms',
+                    'price' => $noOfRoomData->price,
+                    'helper_fee' => $noOfRoomData->helper_fee,
+                ]);
+
+                $helper_fee += $noOfRoomData->helper_fee;
+            }
+        }
+
+        // if floor_plan_enabled for this category then add it to booking moving configs
+        if ($serviceCategory->floor_plan_enabled == 1) {
+            // Get selected floor plan id
+            $floorPlanData = MovingConfig::where('id', $request->selectedFloorPlanID)->where('type', 'floor_plan')->first();
+            if ($floorPlanData) {
+                //Create booking_moving_configs
+                BookingMovingConfig::create([
+                    'booking_id' => $booking->id,
+                    'booking_moving_id' => $movingBooking->id,
+                    'moving_config_id' => $floorPlanData->id,
+                    'name' => $floorPlanData->name,
+                    'type' => 'floor_plan',
+                    'price' => $floorPlanData->price,
+                    'helper_fee' => $floorPlanData->helper_fee,
+                ]);
+
+                $helper_fee += $floorPlanData->helper_fee;
+            }
+        }
+
+
+        // if floor_assess_enabled for this category then add it to booking moving configs
+        if ($serviceCategory->floor_assess_enabled == 1) {
+            // Get selected floor assess id
+            $floorAssessData = MovingConfig::where('id', $request->selectedFloorAssessID)->where('type', 'floor_assess')->first();
+            if ($floorAssessData) {
+                //Create booking_moving_configs
+                BookingMovingConfig::create([
+                    'booking_id' => $booking->id,
+                    'booking_moving_id' => $movingBooking->id,
+                    'moving_config_id' => $floorAssessData->id,
+                    'name' => $floorAssessData->name,
+                    'type' => 'floor_assess',
+                    'price' => $floorAssessData->price,
+                    'helper_fee' => $floorAssessData->helper_fee,
+                ]);
+
+                $helper_fee += $floorAssessData->helper_fee;
+            }
+        }
+
+
+        // if job_details_enabled for this category then add it to booking moving configs
+        if ($serviceCategory->job_details_enabled == 1) {
+            // Check if selectedJobDetailsID is array
+            if (is_array($request->selectedJobDetailsID)) {
+                $selectedJobDetailsIDs = $request->selectedJobDetailsID;
+            } else {
+                // Split $selectedFloorAssessID into array
+                $selectedJobDetailsIDs = explode(',', $request->selectedJobDetailsID);
+            }
+
+            // Loop through selectedJobDetailsIDs
+            foreach ($selectedJobDetailsIDs as $selectedJobDetailsID) {
+                // Get selected no of room id
+                $jobDetailsData = MovingConfig::where('uuid', $selectedJobDetailsID)->where('type', 'job_details')->first();
+                if ($jobDetailsData) {
+                    // Create booking_moving_configs
+                    BookingMovingConfig::create([
+                        'booking_id' => $booking->id,
+                        'booking_moving_id' => $movingBooking->id,
+                        'moving_config_id' => $jobDetailsData->id,
+                        'name' => $jobDetailsData->name,
+                        'type' => 'job_details',
+                        'price' => $jobDetailsData->price,
+                        'helper_fee' => $jobDetailsData->helper_fee,
+                    ]);
+
+                    $helper_fee += $jobDetailsData->helper_fee;
+                }
+            }
+        }
+
+        return $helper_fee;
+    }
+
+    // createBookingMovingDetails
+    public function createBookingMovingDetails($request, $booking, $serviceCategory, $movingBooking)
+    {
+        if ($serviceCategory->moving_details_enabled == 0) {
+            return false;
+        }
+
+        // Check if selectedMovingDetailsID is array
+        if (is_array($request->selectedMovingDetailsID)) {
+            $selectedMovingDetailsID = $request->selectedMovingDetailsID;
+        } else {
+            $selectedMovingDetailsID = explode(',', $request->selectedMovingDetailsID);
+        }
+
+        // Loop through selectedMovingDetailsID
+        foreach ($selectedMovingDetailsID as $item) {
+            // Get from movingdetails
+            $movingDetails = MovingDetail::where('uuid', $item)->first();
+            if ($movingDetails) {
+                // Create booking moving details
+                BookingMovingDetail::create([
+                    'booking_id' => $booking->id,
+                    'booking_moving_id' => $movingBooking->id,
+                    'moving_detail_id' => $movingDetails->id,
+                    'name' => $movingDetails->name,
+                    'description' => $movingDetails->description ?? null,
+                    'weight' => $movingDetails->weight,
+                    'volume' => $movingDetails->volume,
+                ]);
+            }
+        }
+
+        return true;
     }
 
     // createSecureshipBooking

@@ -10,7 +10,7 @@
                     <div class="card-body">
                         <div class="d-block d-md-flex align-items-center justify-content-between mb-3">
                             <h5>Mover 01 </h5>
-                            <img src="{{ $helperData->image ? asset('images/users/' . $helperData->image) : asset('images/users/default.png') }}"
+                            <img src="{{ $helperData->thumbnail ? asset('images/users/thumbnail/' . $helperData->thumbnail) : asset('images/users/default.png') }}"
                                 alt="User" width="50">
                         </div>
                         <div class="d-block d-md-flex align-items-center justify-content-between mb-3">
@@ -36,7 +36,7 @@
                     <div class="card-body">
                         <div class="d-block d-md-flex align-items-center justify-content-between mb-3">
                             <h5>Mover 02 </h5>
-                            <img src="{{ $helperData2->image ? asset('images/users/' . $helperData2->image) : asset('images/users/default.png') }}"
+                            <img src="{{ $helperData2->thumbnail ? asset('images/users/thumbnail/' . $helperData2->thumbnail) : asset('images/users/default.png') }}"
                                 alt="User" width="50">
                         </div>
                         <div class="d-block d-md-flex align-items-center justify-content-between mb-3">

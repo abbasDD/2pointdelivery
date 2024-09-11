@@ -20,6 +20,18 @@ use Illuminate\Support\Facades\Route;
 
 //Front End Routes
 
+Route::get('/command', function () {
+
+    // //storage link
+    // // Artisan::call('storage:link'); //This will link storages to public
+
+    // Artisan::call('migrate:fresh --seed'); //This will refresh the complete database and add required data
+    // Artisan::call('migrate'); //This will add new tables to data
+    // Artisan::call('cache:clear');
+    // Artisan::call('config:clear');
+    // Artisan::call('view:clear');
+    // return 'Storage linked successfully!';
+});
 
 // Route::get('/test-email', function () {
 //     Mail::raw('This is a test email.', function ($message) {
