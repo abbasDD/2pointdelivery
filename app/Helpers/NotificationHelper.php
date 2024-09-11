@@ -15,13 +15,6 @@ use Illuminate\Support\Facades\Mail;
 class NotificationHelper
 {
 
-    protected $emailTemplateService;
-
-    public function __construct(EmailTemplateService $emailTemplateService)
-    {
-        $this->emailTemplateService = $emailTemplateService;
-    }
-
     public static function sendNotification($sender_user_id, $receiver_user_id, $receiver_user_type, $notificationType, $reference_id, $title, $content)
     {
         $user = User::where('id', $receiver_user_id)->first();
@@ -59,6 +52,13 @@ class NotificationHelper
                 break;
             case 'kyc_detail':
                 // kyc_detail
+                $placeholders = [
+                    'Customer' => $user->email,
+                    'Company name' => '2 Point Delivery',
+                    'services' => 'premium services',
+                    'Your name' => 'Support Team',
+                ];
+                self::sendEmail('Welcome Email', $user, $placeholders);
                 break;
             case 'user_registered':
                 // user_registered
@@ -217,7 +217,9 @@ class NotificationHelper
             'mail.from.name' => $smtpSettings->where('key', 'smtp_from_name')->first()->value,
         ]);
 
-        $template = $this->emailTemplateService->getTemplate($templateName, $placeholders);
+        $emailTemplateService = new EmailTemplateService();
+
+        $template = $emailTemplateService->getTemplate($templateName, $placeholders);
 
         if (!$template) {
             return false;

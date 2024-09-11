@@ -181,6 +181,9 @@ class KycController extends Controller
 
         $kycDetail->save();
 
+        // Call notificaion helper to send notification
+        app('notificationHelper')->sendNotification(Auth::user()->id, 1, 'admin', 'kyc_detail', $kycDetail->id, 'KYC details added', 'KYC is submitted by client for ' . $kycDetail->kycType->name . ' KYC');
+
         // Response
         return response()->json([
             'success' => true,
