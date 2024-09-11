@@ -75,20 +75,23 @@ class KycDetailController extends Controller
         $kycDetail->is_verified = 1;
         $kycDetail->save();
 
-        // Send Notification
-        UserNotification::create([
-            'sender_user_id' => Auth::user()->id,
-            'receiver_user_id' => $kycDetail->user_id,
-            'receiver_user_type' => $kycDetail->type,
-            'reference_id' => $kycDetail->id,
-            'type' => 'kyc_detail',
-            'title' => 'KYC details approved',
-            'content' => 'Your KYC details has been approved',
-            'read' => 0
-        ]);
+        // Call notificaion helper to send notification
+        app('notificationHelper')->sendNotification(Auth::user()->id, $kycDetail->user_id, $kycDetail->type, 'kyc_detail', $kycDetail->id, 'KYC details approved', 'Your KYC details has been approved');
 
-        // Send push notification
-        $this->fcm->sendPushNotificationToUser($kycDetail->user_id, 'KYC details approved', 'Your KYC details has been approved');
+        // // Send Notification
+        // UserNotification::create([
+        //     'sender_user_id' => Auth::user()->id,
+        //     'receiver_user_id' => $kycDetail->user_id,
+        //     'receiver_user_type' => $kycDetail->type,
+        //     'reference_id' => $kycDetail->id,
+        //     'type' => 'kyc_detail',
+        //     'title' => 'KYC details approved',
+        //     'content' => 'Your KYC details has been approved',
+        //     'read' => 0
+        // ]);
+
+        // // Send push notification
+        // $this->fcm->sendPushNotificationToUser($kycDetail->user_id, 'KYC details approved', 'Your KYC details has been approved');
 
         return redirect()->back()->with('success', 'KYC details approved successfully');
     }
@@ -103,20 +106,24 @@ class KycDetailController extends Controller
         $kycDetail->is_verified = 2;
         $kycDetail->save();
 
-        // Send Notification
-        UserNotification::create([
-            'sender_user_id' => Auth::user()->id,
-            'receiver_user_id' => $kycDetail->user_id,
-            'receiver_user_type' => $kycDetail->type,
-            'reference_id' => $kycDetail->id,
-            'type' => 'kyc_detail',
-            'title' => 'KYC details rejected',
-            'content' => 'Your KYC details has been rejected',
-            'read' => 0
-        ]);
+        // Call notificaion helper to send notification
+        app('notificationHelper')->sendNotification(Auth::user()->id, $kycDetail->user_id, $kycDetail->type, 'kyc_detail', $kycDetail->id, 'KYC details rejected', 'Your KYC details has been rejected');
 
-        // Send push notification
-        $this->fcm->sendPushNotificationToUser($kycDetail->user_id, 'KYC details rejected', 'Your KYC details has been rejected');
+
+        // // Send Notification
+        // UserNotification::create([
+        //     'sender_user_id' => Auth::user()->id,
+        //     'receiver_user_id' => $kycDetail->user_id,
+        //     'receiver_user_type' => $kycDetail->type,
+        //     'reference_id' => $kycDetail->id,
+        //     'type' => 'kyc_detail',
+        //     'title' => 'KYC details rejected',
+        //     'content' => 'Your KYC details has been rejected',
+        //     'read' => 0
+        // ]);
+
+        // // Send push notification
+        // $this->fcm->sendPushNotificationToUser($kycDetail->user_id, 'KYC details rejected', 'Your KYC details has been rejected');
 
         return redirect()->back()->with('success', 'KYC details rejected successfully');
     }

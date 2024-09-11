@@ -59,7 +59,6 @@ class BookingReviewController extends Controller
         $review->save();
 
         // Notification
-        // Notification
         UserNotification::create([
             'sender_user_id' => Auth::user()->id,
             'receiver_user_id' => $review->helper_user_id,
