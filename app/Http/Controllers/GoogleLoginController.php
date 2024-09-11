@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SocialLoginSetting;
 use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
@@ -89,6 +90,24 @@ class GoogleLoginController extends Controller
                         'provider_id' => $socialiteUser->getId(),
                         'password' => null,
                     ]);
+
+
+                    // Send Notification to Admin
+                    UserNotification::create([
+                        'sender_user_id' => null,
+                        'receiver_user_id' => 1,
+                        'reference_id' => $user->id,
+                        'receiver_user_type' => 'admin',
+                        'type' => 'user_registered',
+                        'title' => 'User Registered',
+                        'content' => 'New user has been registered.',
+                        'read' => 0
+                    ]);
+
+
+                    // Send welcome email
+                    $emailTemplateController = app(EmailTemplateController::class);
+                    $emailTemplateController->sendWelcomeEmail($user);
                 }
 
                 // Log in the user

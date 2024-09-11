@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\SmtpSetting;
 use App\Models\User;
 use App\Services\EmailTemplateService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class EmailTemplateController extends Controller
@@ -135,7 +136,6 @@ class EmailTemplateController extends Controller
     public function pushNotificationEmail($user_id, $title, $body)
     {
         $user = User::find($user_id);
-        $email = $user->email;
 
         $smtpSettings = SmtpSetting::get();
         if ($smtpSettings->isEmpty()) {
@@ -158,8 +158,6 @@ class EmailTemplateController extends Controller
             'mail.from.address' => $smtpSettings->where('key', 'smtp_from_email')->first()->value,
             'mail.from.name' => $smtpSettings->where('key', 'smtp_from_name')->first()->value,
         ]);
-
-
 
         Mail::send([], [], function ($message) use ($user, $title, $body) {
             $message->to($user->email)

@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\EmailTemplateController;
 use App\Http\Controllers\FcmController;
 use App\Jobs\SendNotificationsJob;
 use App\Models\AdminPushNotification;
 use App\Models\User;
+use App\Services\EmailTemplateService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Mews\Purifier\Facades\Purifier;
 
 class PushNotificationController extends Controller
 {
@@ -83,6 +87,7 @@ class PushNotificationController extends Controller
     // resend
     public function resend($id)
     {
+
         // Check if id exist in request
         $notification = AdminPushNotification::where('id', $id)->first();
 
@@ -93,13 +98,13 @@ class PushNotificationController extends Controller
         // Determine the users to notify
         switch ($notification->user_id) {
             case 'all':
-                $users = User::where('is_active', 1)->where('fcm_token', '!=', null)->get();
+                $users = User::where('is_active', 1)->get();
                 break;
             case 'helpers':
-                $users = User::where('is_active', 1)->where('helper_enabled', 1)->where('fcm_token', '!=', null)->get();
+                $users = User::where('is_active', 1)->where('helper_enabled', 1)->get();
                 break;
             case 'clients':
-                $users = User::where('is_active', 1)->where('client_enabled', 1)->where('fcm_token', '!=', null)->get();
+                $users = User::where('is_active', 1)->where('client_enabled', 1)->get();
                 break;
             default:
                 $users = User::where('id', $notification->user_id)->get();
@@ -107,7 +112,20 @@ class PushNotificationController extends Controller
         }
 
         // Dispatch job to send notifications
-        SendNotificationsJob::dispatch($users, $notification->title, $notification->body);
+        // SendNotificationsJob::dispatch($users, $notification->title, $notification->body);
+
+        $fcm = new FcmController();
+
+        foreach ($users as $user) {
+
+            if ($user->fcm_token != null) {
+                $fcm->sendPushNotificationToUser($user->id, $notification->title, Purifier::clean($notification->body));
+            }
+            // Send email pushNotificationEmail
+            $emailTemplateService = new EmailTemplateService();
+            $emailTemplateController = new EmailTemplateController($emailTemplateService);
+            $emailTemplateController->pushNotificationEmail($user->id, $notification->title, Purifier::clean($notification->body));
+        }
 
         return redirect()->route('admin.pushNotification')->with('success', 'Notification is being sent in the background');
     }

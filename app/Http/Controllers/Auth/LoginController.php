@@ -87,6 +87,13 @@ class LoginController extends Controller
             ]);
         }
 
+        // Check if password is null
+        if ($user->password == null) {
+            return back()->withErrors([
+                'email' => 'Your account is linked to Third Party. Try using Third Party Login.',
+            ]);
+        }
+
         if (Auth::attempt($credentials, $request->filled('remember'))) {
 
             // Retrieve the intended URL after successful login
@@ -156,6 +163,13 @@ class LoginController extends Controller
         if (!$user->is_active) {
             return back()->withErrors([
                 'email' => 'Your account is inactive. Please contact the administrator.',
+            ]);
+        }
+
+        // Check if password is null
+        if ($user->password == null) {
+            return back()->withErrors([
+                'email' => 'Your account is linked to Third Party. Try using Third Party Login.',
             ]);
         }
 

@@ -130,7 +130,8 @@ class KycController extends Controller
 
         // Create new kyc
         $kycDetail = KycDetail::create([
-            'user_id' => Auth::user()->id
+            'user_id' => Auth::user()->id,
+            'kyc_type_id' => $request->kyc_type_id,
         ]);
 
         // Check if api route has helper in url
@@ -171,7 +172,6 @@ class KycController extends Controller
         }
 
         // Update kyc
-        $kycDetail->kyc_type_id = $request->kyc_type_id;
         $kycDetail->id_number = $request->id_number;
         $kycDetail->country = $request->country;
         $kycDetail->state = $request->state;
