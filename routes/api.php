@@ -132,6 +132,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
 
     // Wallet
     Route::get('wallet', [WalletClientController::class, 'index']);
+    Route::post('wallet/refund/request', [WalletClientController::class, 'postWalletRefundRequest']);
 
     // Logout User
     Route::post('logout', [PassportAuthController::class, 'logout']);

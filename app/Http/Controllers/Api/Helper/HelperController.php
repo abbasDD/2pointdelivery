@@ -65,7 +65,7 @@ class HelperController extends Controller
             'personal_details' => false,
             'address_details' => false,
             'company_details' => false,
-            'is_approved' => 0,
+            'is_approved' => null,
             'is_notified' => 0
         ];
 
@@ -882,7 +882,7 @@ class HelperController extends Controller
             'vehicle_color' => '',
             'vehicle_year' => '',
             'vehicle_image' => asset('images/default.png'),
-            'is_approved' => 0
+            'is_approved' => null
         ];
 
         $helperVehicle = HelperVehicle::where('user_id', Auth::user()->id)->first();
