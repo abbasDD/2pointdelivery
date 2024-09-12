@@ -63,6 +63,9 @@ class WalletClientController extends Controller
         $refund->status = 'pending';
         $refund->save();
 
+        // Call notificaion helper to send notification to admin
+        app('notificationHelper')->sendNotification($refund->user_id, 1, 'admin', 'wallet', $refund->id, 'Refund Request', 'Refund request has been sent!');
+
         return redirect()->back()->with('success', 'Request sent successfully');
     }
 }

@@ -72,17 +72,9 @@ class MessageController extends Controller
         // Make chat read 0
         $chat->update(['is_read' => 0]);
 
-        // Send notification
-        UserNotification::create([
-            'sender_user_id' => Auth::user()->id,
-            'receiver_user_id' => $chat->user1_id == Auth::user()->id ? $chat->user2_id : $chat->user1_id,
-            'receiver_user_type' => 'client',
-            'reference_id' => $request->chat_id,
-            'type' => 'chat',
-            'title' => 'New Message',
-            'content' => 'New message from ' . Auth::user()->first_name . ' ' . Auth::user()->last_name,
-            'read' => 0
-        ]);
+        // Call notificaion client to send notification
+        app('notificationHelper')->sendNotification(Auth::user()->id, $chat->user1_id == Auth::user()->id ? $chat->user2_id : $chat->user1_id, 'client', 'chat', $request->chat_id, 'New Message', 'New message from ' . Auth::user()->first_name . ' ' . Auth::user()->last_name);
+
 
         // Return a json object
         return response()->json(['success' => true, 'data' => $message]);

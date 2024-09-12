@@ -594,8 +594,8 @@ class HelperBookingController extends Controller
         $booking->status = 'started';
         $booking->save();
 
-        // Send push notification
-        $this->fcm->sendPushNotificationToUser($booking->client_user_id, 'Booking Started', 'Your booking has been started');
+        // Call notificaion helper to send notification
+        app('notificationHelper')->sendNotification(null, $booking->client_user_id, 'client', 'booking', $booking->id, 'Booking Started', 'Your booking has been started');
 
         // Return success
         return response()->json([
@@ -697,6 +697,9 @@ class HelperBookingController extends Controller
             // Update Booking
             $booking->status = 'in_transit';
             $booking->save();
+
+            // Call notificaion helper to send notification
+            app('notificationHelper')->sendNotification(Auth::user()->id, $booking->client_user_id, 'client', 'booking', $booking->id, 'Intransit Booking', 'You booking has been in transit');
 
             // Return success
             return response()->json([
@@ -894,6 +897,13 @@ class HelperBookingController extends Controller
                 ]);
             }
 
+            // Call notificaion helper to send notification
+            app('notificationHelper')->sendNotification(Auth::user()->id, $booking->client_user_id, 'client', 'booking', $booking->id, 'New Booking', 'You have successfully created booking for service');
+
+            // Send notification to Admin
+            app('notificationHelper')->sendNotification(null, 1, 'admin', 'booking', $booking->id, 'Completed Booking', 'A completed booking has been created for service');
+
+
             // Return success
             return response()->json([
                 'success' => true,
@@ -1056,6 +1066,9 @@ class HelperBookingController extends Controller
                     'paid_at' => Carbon::now()
                 ]);
             }
+
+            // Call notificaion helper to send notification
+            app('notificationHelper')->sendNotification(Auth::user()->id, $booking->client_user_id, 'client', 'booking', $booking->id, 'Booking Incomplete', 'Your booking is marked as incomplete.', $booking->uuid);
 
             // Return success
             return response()->json([

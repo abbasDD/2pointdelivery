@@ -2010,6 +2010,10 @@ class HelperController extends Controller
             'message' => $request->message,
         ]);
 
+        // Call notificaion client to send notification
+        app('notificationHelper')->sendNotification(Auth::user()->id, $chat->user1_id == Auth::user()->id ? $chat->user2_id : $chat->user1_id, 'helper', 'chat', $request->chat_id, 'New Message', 'New message from ' . Auth::user()->first_name . ' ' . Auth::user()->last_name);
+
+
         // Return a json object
         // return response()->json(['success' => true, 'data' => $message]);
         return response()->json([

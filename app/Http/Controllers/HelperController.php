@@ -873,6 +873,8 @@ class HelperController extends Controller
         $withdrawRequest->transaction_id = $bankAccount->id;
         $withdrawRequest->save();
 
+        // Call notificaion helper to send notification to admin
+        app('notificationHelper')->sendNotification($withdrawRequest->user_id, 1, 'admin', 'wallet', $withdrawRequest->id, 'Withdraw Request', 'Withdraw request has been sent!');
 
         return redirect()->back()->with('success', 'Withdraw request added successfully');
     }

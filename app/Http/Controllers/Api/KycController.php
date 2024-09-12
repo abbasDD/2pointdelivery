@@ -7,6 +7,7 @@ use App\Http\Resources\KycDetailResource;
 use App\Models\KycDetail;
 use App\Models\KycType;
 use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
@@ -181,8 +182,17 @@ class KycController extends Controller
 
         $kycDetail->save();
 
-        // Call notificaion helper to send notification
-        app('notificationHelper')->sendNotification(Auth::user()->id, 1, 'admin', 'kyc_detail', $kycDetail->id, 'KYC details added', 'KYC is submitted by client for ' . $kycDetail->kycType->name . ' KYC');
+        // Send Notification to Admin
+        UserNotification::create([
+            'sender_user_id' => Auth::user()->id,
+            'receiver_user_id' => 1,
+            'receiver_user_type' => 'admin',
+            'reference_id' => $kycDetail->id,
+            'type' => 'kyc_detail',
+            'title' => 'KYC details added',
+            'content' => 'KYC is submitted by ' . Auth::user()->name . ' for ' . $kycDetail->kycType->name . ' KYC',
+            'read' => 0
+        ]);
 
         // Response
         return response()->json([
@@ -350,6 +360,18 @@ class KycController extends Controller
         $kycDetail->is_verified = 0;
 
         $kycDetail->save();
+
+        // Send Notification to Admin
+        UserNotification::create([
+            'sender_user_id' => Auth::user()->id,
+            'receiver_user_id' => 1,
+            'receiver_user_type' => 'admin',
+            'reference_id' => $kycDetail->id,
+            'type' => 'kyc_detail',
+            'title' => 'KYC details updated',
+            'content' => 'KYC is updated by ' . Auth::user()->name . ' for ' . $kycDetail->kycType->name . ' KYC',
+            'read' => 0
+        ]);
 
         // Response
         return response()->json([

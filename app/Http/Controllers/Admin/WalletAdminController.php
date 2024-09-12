@@ -60,6 +60,9 @@ class WalletAdminController extends Controller
         $wallet->status = 'success';
         $wallet->save();
 
+        // Call notificaion client to send notification
+        app('notificationHelper')->sendNotification(1, $wallet->user_id, 'client', 'wallet', $wallet->id, 'Refund Request', 'Your refund request has been approved!');
+
         return back()->with('success', 'Wallet Transaction approved successfully!');
     }
 
@@ -78,6 +81,9 @@ class WalletAdminController extends Controller
 
         $wallet->status = 'failed';
         $wallet->save();
+
+        // Call notificaion client to send notification
+        app('notificationHelper')->sendNotification(1, $wallet->user_id, 'client', 'wallet', $wallet->id, 'Refund Request', 'Your refund request has been rejected!');
 
         return back()->with('success', 'Wallet Transaction rejected successfully!');
     }
@@ -109,6 +115,9 @@ class WalletAdminController extends Controller
         $wallet->status = 'success';
         $wallet->save();
 
+        // Call notificaion client to send notification
+        app('notificationHelper')->sendNotification(1, $wallet->user_id, 'helper', 'wallet', $wallet->id, 'Withdraw Request', 'Your withdraw request has been approved!');
+
         return back()->with('success', 'Wallet Transaction approved successfully!');
     }
 
@@ -127,6 +136,9 @@ class WalletAdminController extends Controller
 
         $wallet->status = 'failed';
         $wallet->save();
+
+        // Call notificaion client to send notification
+        app('notificationHelper')->sendNotification(1, $wallet->user_id, 'helper', 'wallet', $wallet->id, 'Withdraw Request', 'Your withdraw request has been rejected!');
 
         return back()->with('success', 'Wallet Transaction rejected successfully!');
     }

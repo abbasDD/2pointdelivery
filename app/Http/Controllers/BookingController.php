@@ -280,17 +280,6 @@ class BookingController extends Controller
             $addressBook = AddressBook::create($addressBookData);
         }
 
-        // User Notification
-        UserNotification::create([
-            'sender_user_id' => null,
-            'receiver_user_id' => Auth::user()->id,
-            'receiver_user_type' => 'client',
-            'type' => 'booking',
-            'reference_id' => $booking->id,
-            'title' => 'New Booking',
-            'content' => 'You have successfully created booking for ' . $serviceType->name . ' service',
-            'read' => 0
-        ]);
 
         // Response json with success
         return response()->json(['success' => true, 'data' => $booking, 'message' => 'Booking created successfully'], 201);
@@ -1020,17 +1009,18 @@ class BookingController extends Controller
                 'paid_at' => Carbon::now()
             ]);
 
-            // Send notification to user
-            UserNotification::create([
-                'sender_user_id' => null,
-                'receiver_user_id' => Auth::user()->id,
-                'receiver_user_type' => 'client',
-                'type' => 'booking',
-                'reference_id' => $booking->id,
-                'title' => 'Booking Payment',
-                'content' => 'You have successfully paid for your booking',
-                'read' => 0
-            ]);
+            $serviceTypeName = 'Delivery';
+            $serviceType = ServiceType::find($booking->service_type_id);
+            if ($serviceType) {
+                $serviceTypeName = $serviceType->name;
+            }
+
+            // Call notificaion client to send notification
+            app('notificationHelper')->sendNotification(null, Auth::user()->id, 'client', 'booking', $booking->id, 'New Booking', 'You have successfully created booking for ' .  $serviceTypeName . ' service');
+
+            // Send notification to Admin
+            app('notificationHelper')->sendNotification(null, 1, 'admin', 'booking', $booking->id, 'New Booking', 'A new booking has been created for ' .  $serviceTypeName . ' service');
+
 
             // Redirect to booking detail page
             // return redirect()->route('client.booking.show', $booking->id);
@@ -1147,17 +1137,18 @@ class BookingController extends Controller
             'paid_at' => Carbon::now()
         ]);
 
-        // Send notification to user
-        UserNotification::create([
-            'sender_user_id' => null,
-            'receiver_user_id' => Auth::user()->id,
-            'receiver_user_type' => 'client',
-            'type' => 'booking',
-            'reference_id' => $booking->id,
-            'title' => 'Booking Payment',
-            'content' => 'You have successfully paid for your booking',
-            'read' => 0
-        ]);
+        $serviceTypeName = 'Delivery';
+        $serviceType = ServiceType::find($booking->service_type_id);
+        if ($serviceType) {
+            $serviceTypeName = $serviceType->name;
+        }
+
+        // Call notificaion client to send notification
+        app('notificationHelper')->sendNotification(null, Auth::user()->id, 'client', 'booking', $booking->id, 'New Booking', 'You have successfully created booking for ' .  $serviceTypeName . ' service');
+
+        // Send notification to Admin
+        app('notificationHelper')->sendNotification(null, 1, 'admin', 'booking', $booking->id, 'New Booking', 'A new booking has been created for ' .  $serviceTypeName . ' service');
+
 
         // Display a success message to the user.
         // return 'Payment successful!';
@@ -1238,19 +1229,17 @@ class BookingController extends Controller
             'status' => 'pending',
         ]);
 
-        // Send notification to user
+        $serviceTypeName = 'Delivery';
+        $serviceType = ServiceType::find($booking->service_type_id);
+        if ($serviceType) {
+            $serviceTypeName = $serviceType->name;
+        }
 
-        UserNotification::create([
-            'sender_user_id' => null,
-            'receiver_user_id' => Auth::user()->id,
-            'receiver_user_type' => 'client',
-            'type' => 'booking',
-            'reference_id' => $booking->id,
-            'title' => 'Booking Payment',
-            'content' => 'You have successfully paid for your booking',
-            'read' => 0
-        ]);
+        // Call notificaion client to send notification
+        app('notificationHelper')->sendNotification(null, Auth::user()->id, 'client', 'booking', $booking->id, 'New Booking', 'You have successfully created booking for ' .  $serviceTypeName . ' service');
 
+        // Send notification to Admin
+        app('notificationHelper')->sendNotification(null, 1, 'admin', 'booking', $booking->id, 'New Booking', 'A new booking has been created for ' .  $serviceTypeName . ' service');
 
         return response()->json(['success' => true, 'data' => 'Booking paid successfully']);
     }

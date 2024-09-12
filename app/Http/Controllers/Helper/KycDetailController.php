@@ -9,6 +9,7 @@ use App\Models\KycDetail;
 use App\Models\KycType;
 use App\Models\State;
 use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -116,6 +117,18 @@ class KycDetailController extends Controller
         $kycDetail->expiry_date = date('Y-m-d', strtotime($request->expiry_date));
 
         $kycDetail->save();
+
+        // Send Notification to Admin
+        UserNotification::create([
+            'sender_user_id' => Auth::user()->id,
+            'receiver_user_id' => 1,
+            'receiver_user_type' => 'admin',
+            'reference_id' => $kycDetail->id,
+            'type' => 'kyc_detail',
+            'title' => 'KYC details added',
+            'content' => 'KYC is submitted by ' . Auth::user()->name . ' for ' . $kycDetail->kycType->name . ' KYC',
+            'read' => 0
+        ]);
 
         // Redirect to kyc details page
         return redirect()->route('helper.kyc_details')->with('success', 'KYC details added successfully');
@@ -230,6 +243,18 @@ class KycDetailController extends Controller
         $kycDetail->is_verified = 0;
 
         $kycDetail->save();
+
+        // Send Notification to Admin
+        UserNotification::create([
+            'sender_user_id' => Auth::user()->id,
+            'receiver_user_id' => 1,
+            'receiver_user_type' => 'admin',
+            'reference_id' => $kycDetail->id,
+            'type' => 'kyc_detail',
+            'title' => 'KYC details updated',
+            'content' => 'KYC is updated by ' . Auth::user()->name . ' for ' . $kycDetail->kycType->name . ' KYC',
+            'read' => 0
+        ]);
 
         // Redirect to kyc details page
         return redirect()->route('helper.kyc_details')->with('success', 'KYC details updated successfully');

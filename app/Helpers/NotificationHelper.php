@@ -45,20 +45,25 @@ class NotificationHelper
                     'Tracking number' => $booking->uuid,
                     'Your name' => 'Support Team',
                 ];
-                self::sendEmail('Booking Status Email', $user, $placeholders);
+
+                $emailTemplateService = new EmailTemplateService();
+
+                $template = $emailTemplateService->getTemplate('Booking Status Email', $placeholders);
+
+                if (!$template) {
+                    $template['subject'] = 'Booking Status Email';
+                    $template['body'] = 'We have detected that a booking status has changed. Please check the details.';
+                }
+                self::sendEmail($template, $user);
                 break;
             case 'team_invitation':
                 // team_inviation
+                $template['subject'] = 'Team Invitation';
+                $template['body'] = 'A user has invited you to join the team. Please check the details.';
+                self::sendEmail($template, $user);
                 break;
             case 'kyc_detail':
                 // kyc_detail
-                $placeholders = [
-                    'Customer' => $user->email,
-                    'Company name' => '2 Point Delivery',
-                    'services' => 'premium services',
-                    'Your name' => 'Support Team',
-                ];
-                self::sendEmail('Welcome Email', $user, $placeholders);
                 break;
             case 'user_registered':
                 // user_registered
@@ -68,19 +73,47 @@ class NotificationHelper
                     'services' => 'premium services',
                     'Your name' => 'Support Team',
                 ];
-                self::sendEmail('Welcome Email', $user, $placeholders);
+
+                $emailTemplateService = new EmailTemplateService();
+
+                $template = $emailTemplateService->getTemplate('Welcome Email', $placeholders);
+
+                if (!$template) {
+                    $template['subject'] = 'Welcome Email';
+                    $template['body'] = 'Welcome Email';
+                }
+
+                self::sendEmail($template, $user);
                 break;
             case 'helper_status':
                 // helper_status
+                $template['subject'] = 'Helper Status Change';
+                $template['body'] = 'We have detected that the helper status has changed. Please check the details.';
+                self::sendEmail($template, $user);
                 break;
             case 'helper_vehicle_status':
                 // helper_vehicle_status
+                $template['subject'] = 'Helper Vehicle Status Change';
+                $template['body'] = 'We have detected that the helper vehicle status has changed. Please check the details.';
+                self::sendEmail($template, $user);
                 break;
             case 'chat':
                 // chat
+                $template['subject'] = 'Chat';
+                $template['body'] = 'You received a new message.';
+                self::sendEmail($template, $user);
                 break;
             case 'helper_bank_account_status':
                 // helper_bank_account_status
+                $template['subject'] = 'Helper Bank Account Status Change';
+                $template['body'] = 'We have detected that the helper bank account status has changed. Please check the details.';
+                self::sendEmail($template, $user);
+                break;
+            case 'wallet':
+                // wallet
+                $template['subject'] = $title;
+                $template['body'] = $content;
+                self::sendEmail($template, $user);
                 break;
             default:
                 // default
@@ -157,8 +190,6 @@ class NotificationHelper
         }
     }
 
-
-
     private static function getAccessToken($keyFilePath)
     {
         $client = new Client();
@@ -191,7 +222,7 @@ class NotificationHelper
     }
 
 
-    public static function sendEmail($templateName, $user, $placeholders = [])
+    public static function sendEmail($template, $user)
     {
 
         $smtpSettings = SmtpSetting::get();
@@ -216,13 +247,6 @@ class NotificationHelper
             'mail.from.name' => $smtpSettings->where('key', 'smtp_from_name')->first()->value,
         ]);
 
-        $emailTemplateService = new EmailTemplateService();
-
-        $template = $emailTemplateService->getTemplate($templateName, $placeholders);
-
-        if (!$template) {
-            return false;
-        }
 
         Mail::send([], [], function ($message) use ($user, $template) {
             $message->to($user->email)

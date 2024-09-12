@@ -753,9 +753,12 @@ class HelperBookingController extends Controller
             'read' => 0
         ]);
 
-        // Send email
-        $emailTemplateController = app(EmailTemplateController::class);
-        $emailTemplateController->bookingStatusEmail($booking);
+        // Call notificaion helper to send notification
+        app('notificationHelper')->sendNotification(Auth::user()->id, $booking->client_user_id, 'client', 'booking', $booking->id, 'New Booking', 'You have successfully created booking for service');
+
+        // Send notification to Admin
+        app('notificationHelper')->sendNotification(null, 1, 'admin', 'booking', $booking->id, 'Completed Booking', 'A completed booking has been created for service');
+
 
         return redirect()->back()->with('success', 'Booking completed successfully!');
 

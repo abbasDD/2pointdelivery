@@ -134,6 +134,16 @@ class UserNotificationController extends Controller
                 }
                 return redirect()->back()->with('error', 'Unable to redirect notification');
                 break;
+            case 'wallet':
+                // wallet
+                if (session('login_type') == 'admin') {
+                    return redirect()->route('admin.wallet');
+                }
+                if (session('login_type') == 'helper') {
+                    return redirect()->route('helper.wallet');
+                }
+                return redirect()->route('client.wallet');
+                break;
             default:
                 // default
                 return redirect()->back()->with('error', 'Unable to redirect notification');

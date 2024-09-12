@@ -18,6 +18,7 @@ use App\Models\Referral;
 use App\Models\SocialLink;
 use App\Models\State;
 use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -103,6 +104,18 @@ class ClientController extends Controller
                     'user_id' => Auth::user()->id,
                 ]);
             }
+
+            // Send notification to admin 
+            UserNotification::create([
+                'sender_user_id' => Auth::user()->id,
+                'receiver_user_id' => 1,
+                'receiver_user_type' => 'admin',
+                'type' => 'user_registered',
+                'reference_id' => Auth::user()->id,
+                'title' => 'New Helper Created',
+                'content' => 'New helper has been created.',
+                'read' => 0
+            ]);
         }
 
         // Store login_type to Session
