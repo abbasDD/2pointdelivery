@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Mail;
 class NotificationHelper
 {
 
+
     public static function sendNotification($sender_user_id, $receiver_user_id, $receiver_user_type, $notificationType, $reference_id, $title, $content)
     {
         $user = User::where('id', $receiver_user_id)->first();
@@ -25,10 +26,8 @@ class NotificationHelper
         // Store Notification
         self::storeNotification($sender_user_id, $receiver_user_id, $receiver_user_type, $notificationType, $reference_id, $title, $content);
 
-        if ($receiver_user_type != 'admin') {
-            // Send fcm notification
-            self::sendPushNotificationToUser($receiver_user_id, $title, $content);
-        }
+        // Send fcm notification
+        self::sendPushNotificationToUser($receiver_user_id, $title, $content);
 
         // Switch case for $notificationType to send Email
         switch ($notificationType) {

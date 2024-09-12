@@ -15,7 +15,6 @@ class WalletClientController extends Controller
     // wallet index 
     public function index()
     {
-
         // If token is not valid return error
 
         if (!Auth::user()) {
@@ -53,6 +52,17 @@ class WalletClientController extends Controller
     // postWalletRefundRequest
     public function postWalletRefundRequest(Request $request)
     {
+        // If token is not valid return error
+
+        if (!Auth::user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
         $booking_id = $request->booking_id;
 
         // CHeck if booking exist with cancelled status
@@ -61,10 +71,10 @@ class WalletClientController extends Controller
             // return redirect()->back()->with('error', 'Booking not found');
             return response()->json([
                 'success' => false,
-                'statusCode' => 401,
+                'statusCode' => 402,
                 'message' => 'Booking not found',
                 'errors' => 'Booking not found',
-            ], 401);
+            ], 402);
         }
 
         // Check if request already in pending status
@@ -73,10 +83,10 @@ class WalletClientController extends Controller
             // return redirect()->back()->with('error', 'Request already pending');
             return response()->json([
                 'success' => false,
-                'statusCode' => 401,
+                'statusCode' => 402,
                 'message' => 'Request already pending',
                 'errors' => 'Request already pending',
-            ], 401);
+            ], 402);
         }
 
         // Check if exist with success status
@@ -85,10 +95,10 @@ class WalletClientController extends Controller
             // return redirect()->back()->with('error', 'Request already approved');
             return response()->json([
                 'success' => false,
-                'statusCode' => 401,
+                'statusCode' => 402,
                 'message' => 'Request already approved',
                 'errors' => 'Request already approved',
-            ], 401);
+            ], 402);
         }
 
 
