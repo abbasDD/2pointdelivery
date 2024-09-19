@@ -1810,20 +1810,20 @@ class HelperController extends Controller
         if ($user->user_type == 'admin') {
             $userInfo = Admin::select('first_name', 'last_name', 'profile_image')->where('user_id', $user->id)->first();
             // profile_image
-            $userInfo->profile_image = asset('images/users/' . $userInfo->profile_image);
+            $userInfo->profile_image = $userInfo->thumbnail ? asset('images/users/thumbnail/' . $userInfo->thumbnail) : asset('images/users/default.png');
         }
 
         // Get User detail as per user type
         if ($user->client_enabled == 1) {
             $userInfo = Client::select('first_name', 'last_name', 'profile_image')->where('user_id', $user->id)->first();
             // profile_image
-            $userInfo->profile_image = asset('images/users/' . $userInfo->profile_image);
+            $userInfo->profile_image = $userInfo->thumbnail ? asset('images/users/thumbnail/' . $userInfo->thumbnail) : asset('images/users/default.png');
         }
 
         if ($user->helper_enabled == 1) {
             $userInfo = Helper::select('first_name', 'last_name', 'profile_image')->where('user_id', $user->id)->first();
             // profile_image
-            $userInfo->profile_image = asset('images/users/' . $userInfo->profile_image);
+            $userInfo->profile_image = $userInfo->thumbnail ? asset('images/users/thumbnail/' . $userInfo->thumbnail) : asset('images/users/default.png');
         }
 
         // Check chat between users already exists

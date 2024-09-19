@@ -197,6 +197,16 @@ class PassportAuthController extends Controller
             ], 401);
         }
 
+        // Chck if user_type is user
+        if ($user->user_type != 'user') {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'User type is invalid.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
         // Check if user is_deleted
 
         if ($user->is_deleted == 1) {
