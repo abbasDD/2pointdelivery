@@ -37,6 +37,7 @@ use App\Models\MovingDetail;
 use App\Models\User;
 use App\Models\UserNotification;
 use App\Models\UserWallet;
+use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
 {
@@ -556,7 +557,7 @@ class BookingController extends Controller
     }
 
     // createBookingMovingDetails
-    public function createBookingMovingDetails($request, $booking, $serviceCategory, $movingBooking)
+    public function createBookingMovingDetails($request, $new_booking, $serviceCategory, $movingBooking)
     {
         // if ($serviceCategory->moving_details_enabled == 0) {
         //     return false;
@@ -569,6 +570,10 @@ class BookingController extends Controller
             $selectedMovingDetailsIDs = explode(',', $request->selectedMovingDetailsID);
         }
 
+        // Get moving booking
+        $movingBookingUpdated = BookingMoving::find($movingBooking->id);
+        $booking_id = $movingBookingUpdated->booking_id ?? $new_booking->id;
+
         // Loop through selectedMovingDetailsID
         foreach ($selectedMovingDetailsIDs as $item) {
             // Get from movingdetails
@@ -576,7 +581,7 @@ class BookingController extends Controller
             if ($movingDetailItem) {
                 // Create booking moving details
                 BookingMovingDetail::create([
-                    'booking_id' => $booking->id,
+                    'booking_id' => $booking_id,
                     'booking_moving_id' => $movingBooking->id,
                     'moving_detail_id' => $movingDetailItem->id,
                     'name' => $movingDetailItem->name ?? 'name',

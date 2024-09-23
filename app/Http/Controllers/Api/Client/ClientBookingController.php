@@ -624,7 +624,7 @@ class ClientBookingController extends Controller
             $helper_fee_updated = $this->getBookingController->createBookingMovingConfig($request, $serviceCategory, $new_booking, $movingBooking);
 
             // Create booking_moving_details
-            $bookingMovingDetailValue = $this->getBookingController->createBookingMovingDetails($request, $serviceCategory, $new_booking, $movingBooking);
+            $this->getBookingController->createBookingMovingDetails($request, $serviceCategory, $new_booking, $movingBooking);
 
             // Update helper fee
             $movingBooking->helper_fee = $helper_fee_updated;
