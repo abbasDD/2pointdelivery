@@ -30,7 +30,7 @@
             type="button" role="tab" aria-controls="nav-receipent" aria-selected="false">Receipent
         </button>
 
-        {{-- Show driver if type is moving --}}
+        {{-- Show moving details if type is moving --}}
         @if ($booking->booking_type == 'moving')
             {{-- Moving Details --}}
             <button class="nav-link" id="nav-moving-details-tab" data-bs-toggle="tab"
@@ -71,7 +71,7 @@
         {{-- Receipent Detail --}}
         @include('frontend.bookings.partials.info.receipent')
     </div>
-    {{-- Show driver if type is moving --}}
+    {{-- Show moving details if type is moving --}}
     @if ($booking->booking_type == 'moving')
         <div class="tab-pane my-3 fade" id="nav-moving-details" role="tabpanel"
             aria-labelledby="nav-moving-details-tab">

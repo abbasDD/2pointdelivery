@@ -1538,15 +1538,11 @@ class BookingController extends Controller
             $booking->review = $review;
         }
 
-
-
         // booking Moving Configs
-        $booking_configs = BookingMovingConfig::where('booking_id', $booking->id)->get() ?? [];
+        $booking_configs = BookingMovingConfig::where('booking_id', $booking->id)->where('type', 'job_details')->get() ?? [];
 
         // Booking Moving Details
         $booking_moving_details = BookingMovingDetail::where('booking_id', $booking->id)->get() ?? [];
-
-
 
         // dd($vehicleTypeData);
 

@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\BookingDelivery;
 use App\Models\BookingMoving;
+use App\Models\BookingMovingConfig;
+use App\Models\BookingMovingDetail;
 use App\Models\Client;
 use App\Models\Helper;
 use App\Models\HelperVehicle;
@@ -119,9 +121,16 @@ class AdminBookingController extends Controller
         }
 
 
+        // booking Moving Configs
+        $booking_configs = BookingMovingConfig::where('booking_id', $booking->id)->where('type', 'job_details')->get() ?? [];
+
+        // Booking Moving Details
+        $booking_moving_details = BookingMovingDetail::where('booking_id', $booking->id)->get() ?? [];
+
+
         // dd($bookingData);
 
-        return view('admin.bookings.show', compact('booking', 'bookingData', 'helperData', 'helperData2', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'helper2VehicleData'));
+        return view('admin.bookings.show', compact('booking', 'bookingData', 'helperData', 'helperData2', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'helper2VehicleData', 'booking_configs', 'booking_moving_details'));
     }
 
     public function cancel(Request $request)
