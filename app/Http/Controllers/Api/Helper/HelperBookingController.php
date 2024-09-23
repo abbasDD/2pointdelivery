@@ -8,6 +8,8 @@ use App\Http\Controllers\GetEstimateController;
 use App\Models\Booking;
 use App\Models\BookingDelivery;
 use App\Models\BookingMoving;
+use App\Models\BookingMovingConfig;
+use App\Models\BookingMovingDetail;
 use App\Models\BookingReview;
 use App\Models\Helper;
 use App\Models\HelperVehicle;
@@ -223,6 +225,12 @@ class HelperBookingController extends Controller
             $bookingData['booking_review']['rating'] = $booking_review->rating;
             $bookingData['booking_review']['review'] = $booking_review->review;
         }
+
+        // booking Moving Configs
+        $bookingData['booking_configs'] = BookingMovingConfig::where('booking_id', $booking->id)->get() ?? [];
+
+        // Booking Moving Details
+        $bookingData['booking_moving_details'] = BookingMovingDetail::where('booking_id', $booking->id)->get() ?? [];
 
         return response()->json([
             'success' => true,

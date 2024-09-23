@@ -14,7 +14,7 @@
                     </p>
                 </div>
                 {{-- Action buttons --}}
-                @include('frontend.bookings.partials.show.actions')
+                @include('client.bookings.partials.actions')
             </div>
     </section>
 

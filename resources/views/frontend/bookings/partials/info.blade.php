@@ -29,6 +29,15 @@
         <button class="nav-link" id="nav-receipent-tab" data-bs-toggle="tab" data-bs-target="#nav-receipent"
             type="button" role="tab" aria-controls="nav-receipent" aria-selected="false">Receipent
         </button>
+
+        {{-- Show driver if type is moving --}}
+        @if ($booking->booking_type == 'moving')
+            {{-- Moving Details --}}
+            <button class="nav-link" id="nav-moving-details-tab" data-bs-toggle="tab"
+                data-bs-target="#nav-moving-details" type="button" role="tab" aria-controls="nav-moving-details"
+                aria-selected="false">Moving Details
+            </button>
+        @endif
     </div>
 </nav>
 <div class="tab-content" id="nav-tabContent">
@@ -62,4 +71,12 @@
         {{-- Receipent Detail --}}
         @include('frontend.bookings.partials.info.receipent')
     </div>
+    {{-- Show driver if type is moving --}}
+    @if ($booking->booking_type == 'moving')
+        <div class="tab-pane my-3 fade" id="nav-moving-details" role="tabpanel"
+            aria-labelledby="nav-moving-details-tab">
+            {{-- Movers Detail --}}
+            @include('frontend.bookings.partials.info.moving-details')
+        </div>
+    @endif
 </div>

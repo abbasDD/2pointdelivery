@@ -10,6 +10,8 @@ use App\Http\Controllers\GetEstimateController;
 use App\Models\Booking;
 use App\Models\BookingDelivery;
 use App\Models\BookingMoving;
+use App\Models\BookingMovingConfig;
+use App\Models\BookingMovingDetail;
 use App\Models\Client;
 use App\Models\Helper;
 use App\Models\HelperCompany;
@@ -297,7 +299,14 @@ class HelperBookingController extends Controller
 
         // dd($booking);
 
-        return view('helper.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'helperData2', 'clientData', 'vehicleTypeData', 'helper2VehicleData', 'helperVehicleData', 'clientView', 'helperView'));
+        // booking Moving Configs
+        $booking_configs = BookingMovingConfig::where('booking_id', $booking->id)->get() ?? [];
+
+        // Booking Moving Details
+        $booking_moving_details = BookingMovingDetail::where('booking_id', $booking->id)->get() ?? [];
+
+
+        return view('helper.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'helperData2', 'clientData', 'vehicleTypeData', 'helper2VehicleData', 'helperVehicleData', 'clientView', 'helperView', 'booking_configs', 'booking_moving_details'));
     }
 
 

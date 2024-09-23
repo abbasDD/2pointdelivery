@@ -177,7 +177,7 @@
                                     <div class="action">
                                         {{-- <a href="#" class="fs-xxs text-primary">View </a> --}}
                                         <a href="{{ route('admin.user.show', $newRegisteredUser['id']) }}"
-                                            class="btn btn-sm btn-primary">View</a>
+                                            class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>
                                     </div>
                                 </div>
                                 <hr class="mt-1">

@@ -53,7 +53,7 @@ class HomeController extends Controller
         // Statistics
         $statistics = [
             // Bookings Data
-            'total_bookings' => Booking::count(),
+            'total_bookings' => Booking::whereNotIn('status', ['expired'])->count(),
             'successful_bookings' => Booking::where('status', 'completed')->count(),
             'pending_bookings' => Booking::where('status', 'pending')->count(),
             'cancelled_bookings' => Booking::where('status', 'cancelled')->count(),
@@ -87,12 +87,16 @@ class HomeController extends Controller
         // Get deliveryMovingChartData
         $deliveryMovingChartData = $this->getChartData();
 
+        // Check and Mark Booking expired
+        app('bookingHelper')->checkAndMarkBookingExpired();
+
         // Latest Bookings
         $latestBookings = Booking::with('client')
             ->with('prioritySetting')
             ->with('serviceType')
             ->with('serviceCategory')
             // ->where('status', '!=', 'draft') //Where booking status is not draft
+            ->where('status', '!=', 'expired') //Where booking status is not expired
             ->orderBy('bookings.updated_at', 'desc')
             ->latest()->take(5)->get();
         // dd($latestBookings);

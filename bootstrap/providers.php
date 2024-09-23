@@ -8,4 +8,5 @@ return [
     App\Providers\UserInfoProvider::class,
     App\Providers\NotificationProvider::class,
     Barryvdh\DomPDF\ServiceProvider::class,
+    App\Providers\BookingProvider::class,
 ];

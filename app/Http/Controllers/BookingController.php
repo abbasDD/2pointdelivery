@@ -439,12 +439,13 @@ class BookingController extends Controller
             // Create moving config
             $helper_fee_updated = $this->createBookingMovingConfig($request, $serviceCategory, $booking, $movingBooking);
 
+            // Create booking_moving_details
+            $this->createBookingMovingDetails($request, $serviceCategory, $booking, $movingBooking);
+
             // Update helper fee
             $movingBooking->helper_fee = $helper_fee_updated;
             $movingBooking->save();
 
-            // Create booking_moving_details
-            $this->createBookingMovingDetails($request, $serviceCategory, $booking, $movingBooking);
 
             return true;
         }
@@ -557,31 +558,31 @@ class BookingController extends Controller
     // createBookingMovingDetails
     public function createBookingMovingDetails($request, $booking, $serviceCategory, $movingBooking)
     {
-        if ($serviceCategory->moving_details_enabled == 0) {
-            return false;
-        }
+        // if ($serviceCategory->moving_details_enabled == 0) {
+        //     return false;
+        // }
 
         // Check if selectedMovingDetailsID is array
         if (is_array($request->selectedMovingDetailsID)) {
-            $selectedMovingDetailsID = $request->selectedMovingDetailsID;
+            $selectedMovingDetailsIDs = $request->selectedMovingDetailsID;
         } else {
-            $selectedMovingDetailsID = explode(',', $request->selectedMovingDetailsID);
+            $selectedMovingDetailsIDs = explode(',', $request->selectedMovingDetailsID);
         }
 
         // Loop through selectedMovingDetailsID
-        foreach ($selectedMovingDetailsID as $item) {
+        foreach ($selectedMovingDetailsIDs as $item) {
             // Get from movingdetails
-            $movingDetails = MovingDetail::where('uuid', $item)->first();
-            if ($movingDetails) {
+            $movingDetailItem = MovingDetail::where('uuid', $item)->first();
+            if ($movingDetailItem) {
                 // Create booking moving details
                 BookingMovingDetail::create([
                     'booking_id' => $booking->id,
                     'booking_moving_id' => $movingBooking->id,
-                    'moving_detail_id' => $movingDetails->id,
-                    'name' => $movingDetails->name,
-                    'description' => $movingDetails->description ?? null,
-                    'weight' => $movingDetails->weight,
-                    'volume' => $movingDetails->volume,
+                    'moving_detail_id' => $movingDetailItem->id,
+                    'name' => $movingDetailItem->name ?? 'name',
+                    'description' => $movingDetailItem->description ?? null,
+                    'weight' => $movingDetailItem->weight ?? 0,
+                    'volume' => $movingDetailItem->volume ?? 0,
                 ]);
             }
         }
@@ -1533,9 +1534,18 @@ class BookingController extends Controller
         }
 
 
+
+        // booking Moving Configs
+        $booking_configs = BookingMovingConfig::where('booking_id', $booking->id)->get() ?? [];
+
+        // Booking Moving Details
+        $booking_moving_details = BookingMovingDetail::where('booking_id', $booking->id)->get() ?? [];
+
+
+
         // dd($vehicleTypeData);
 
-        return view('client.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'helperData2', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'helper2VehicleData', 'clientView', 'helperView'));
+        return view('client.bookings.show', compact('booking', 'bookingPayment', 'helperData', 'helperData2', 'clientData', 'vehicleTypeData', 'helperVehicleData', 'helper2VehicleData', 'clientView', 'helperView', 'booking_configs', 'booking_moving_details'));
     }
 
     // Generate Booking Invoice
