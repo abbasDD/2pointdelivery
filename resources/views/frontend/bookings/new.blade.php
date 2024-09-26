@@ -65,7 +65,7 @@
                                     <script>
                                         var options = {
                                             componentRestrictions: {
-                                                country: ["ca", "us"]
+                                                country: ["ca"]
                                             }
                                         };
 

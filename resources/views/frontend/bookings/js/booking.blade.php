@@ -80,8 +80,8 @@
     }
 
     // selectedServiceCategoryUuid
-    selectedServiceCategoryUuid =
-        {{ request()->get('serviceCategoryID') ? request()->get('serviceCategoryID') : $serviceCategories[0]->uuid }};
+    var selectedServiceCategoryUuid =
+        "{{ request()->get('serviceCategoryID') ?? ($serviceCategories[0]->uuid ?? '') }}";
 
 
     // Update the categories as per the service type selected

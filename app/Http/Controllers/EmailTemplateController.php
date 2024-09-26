@@ -22,48 +22,53 @@ class EmailTemplateController extends Controller
 
     public function sendWelcomeEmail($customer)
     {
-        $placeholders = [
-            'Customer' => $customer->email,
-            'Company name' => '2 Point Delivery',
-            'services' => 'premium services',
-            'Your name' => 'Support Team',
-        ];
+        try {
+            $placeholders = [
+                'Customer' => $customer->email,
+                'Company name' => '2 Point Delivery',
+                'services' => 'premium services',
+                'Your name' => 'Support Team',
+            ];
 
-        $smtpSettings = SmtpSetting::get();
-        if ($smtpSettings->isEmpty()) {
+            $smtpSettings = SmtpSetting::get();
+            if ($smtpSettings->isEmpty()) {
+                return false;
+            }
+
+            $smtpSettingEnabled = $smtpSettings->where('key', 'smtp_enabled')->first();
+            if ($smtpSettingEnabled->value == 'no') {
+                return false;
+            }
+
+            // Configure mailer with the SMTP settings
+            config([
+                'mail.mailers.smtp.transport' => 'smtp',
+                'mail.mailers.smtp.host' => $smtpSettings->where('key', 'smtp_host')->first()->value ?? '',
+                'mail.mailers.smtp.port' => $smtpSettings->where('key', 'smtp_port')->first()->value ?? 587,
+                'mail.mailers.smtp.encryption' => $smtpSettings->where('key', 'smtp_encryption')->first()->value ?? '',
+                'mail.mailers.smtp.username' => $smtpSettings->where('key', 'smtp_username')->first()->value ?? '',
+                'mail.mailers.smtp.password' => $smtpSettings->where('key', 'smtp_password')->first()->value ?? '',
+                'mail.from.address' => $smtpSettings->where('key', 'smtp_from_email')->first()->value ?? '',
+                'mail.from.name' => $smtpSettings->where('key', 'smtp_from_name')->first()->value ?? '',
+            ]);
+
+            $template = $this->emailTemplateService->getTemplate('Welcome Email', $placeholders);
+
+            if (!$template) {
+                return false;
+            }
+
+            Mail::send([], [], function ($message) use ($customer, $template) {
+                $message->to($customer->email)
+                    ->subject($template['subject'])
+                    ->html($template['body'], 'text/html');
+            });
+
+            return true;
+        } catch (\Exception $e) {
+            // Log::error($e->getMessage());
             return false;
         }
-
-        $smtpSettingEnabled = $smtpSettings->where('key', 'smtp_enabled')->first();
-        if ($smtpSettingEnabled->value == 'no') {
-            return false;
-        }
-
-        // Configure mailer with the SMTP settings
-        config([
-            'mail.mailers.smtp.transport' => 'smtp',
-            'mail.mailers.smtp.host' => $smtpSettings->where('key', 'smtp_host')->first()->value,
-            'mail.mailers.smtp.port' => $smtpSettings->where('key', 'smtp_port')->first()->value,
-            'mail.mailers.smtp.encryption' => $smtpSettings->where('key', 'smtp_encryption')->first()->value,
-            'mail.mailers.smtp.username' => $smtpSettings->where('key', 'smtp_username')->first()->value,
-            'mail.mailers.smtp.password' => $smtpSettings->where('key', 'smtp_password')->first()->value,
-            'mail.from.address' => $smtpSettings->where('key', 'smtp_from_email')->first()->value,
-            'mail.from.name' => $smtpSettings->where('key', 'smtp_from_name')->first()->value,
-        ]);
-
-        $template = $this->emailTemplateService->getTemplate('Welcome Email', $placeholders);
-
-        if (!$template) {
-            return false;
-        }
-
-        Mail::send([], [], function ($message) use ($customer, $template) {
-            $message->to($customer->email)
-                ->subject($template['subject'])
-                ->html($template['body'], 'text/html');
-        });
-
-        return true;
     }
 
 
@@ -105,30 +110,41 @@ class EmailTemplateController extends Controller
         // Configure mailer with the SMTP settings
         config([
             'mail.mailers.smtp.transport' => 'smtp',
-            'mail.mailers.smtp.host' => $smtpSettings->where('key', 'smtp_host')->first()->value,
-            'mail.mailers.smtp.port' => $smtpSettings->where('key', 'smtp_port')->first()->value,
-            'mail.mailers.smtp.encryption' => $smtpSettings->where('key', 'smtp_encryption')->first()->value,
-            'mail.mailers.smtp.username' => $smtpSettings->where('key', 'smtp_username')->first()->value,
-            'mail.mailers.smtp.password' => $smtpSettings->where('key', 'smtp_password')->first()->value,
-            'mail.from.address' => $smtpSettings->where('key', 'smtp_from_email')->first()->value,
-            'mail.from.name' => $smtpSettings->where('key', 'smtp_from_name')->first()->value,
+            'mail.mailers.smtp.host' => $smtpSettings->where('key', 'smtp_host')->first()->value ?? '',
+            'mail.mailers.smtp.port' => $smtpSettings->where('key', 'smtp_port')->first()->value ?? 587,
+            'mail.mailers.smtp.encryption' => $smtpSettings->where('key', 'smtp_encryption')->first()->value ?? '',
+            'mail.mailers.smtp.username' => $smtpSettings->where('key', 'smtp_username')->first()->value ?? '',
+            'mail.mailers.smtp.password' => $smtpSettings->where('key', 'smtp_password')->first()->value ?? '',
+            'mail.from.address' => $smtpSettings->where('key', 'smtp_from_email')->first()->value ?? '',
+            'mail.from.name' => $smtpSettings->where('key', 'smtp_from_name')->first()->value ?? '',
         ]);
 
-        $template = $this->emailTemplateService->getTemplate('Booking Status Email', $placeholders);
+        // if config is invalid then send failed response
 
-        if (!$template) {
+        if (!Mail::hasSwiftMailer()) {
             return false;
         }
 
-        $useremail = $user->email;
+        try {
+            $template = $this->emailTemplateService->getTemplate('Booking Status Email', $placeholders);
 
-        Mail::send([], [], function ($message) use ($template, $useremail) {
-            $message->to($useremail)
-                ->subject($template['subject'])
-                ->html($template['body'], 'text/html');
-        });
+            if (!$template) {
+                return false;
+            }
 
-        return true;
+            $useremail = $user->email;
+
+            Mail::send([], [], function ($message) use ($template, $useremail) {
+                $message->to($useremail)
+                    ->subject($template['subject'])
+                    ->html($template['body'], 'text/html');
+            });
+
+            return true;
+        } catch (\Exception $e) {
+            // Log::error($e->getMessage());
+            return false;
+        }
     }
 
 
@@ -150,21 +166,26 @@ class EmailTemplateController extends Controller
         // Configure mailer with the SMTP settings
         config([
             'mail.mailers.smtp.transport' => 'smtp',
-            'mail.mailers.smtp.host' => $smtpSettings->where('key', 'smtp_host')->first()->value,
-            'mail.mailers.smtp.port' => $smtpSettings->where('key', 'smtp_port')->first()->value,
-            'mail.mailers.smtp.encryption' => $smtpSettings->where('key', 'smtp_encryption')->first()->value,
-            'mail.mailers.smtp.username' => $smtpSettings->where('key', 'smtp_username')->first()->value,
-            'mail.mailers.smtp.password' => $smtpSettings->where('key', 'smtp_password')->first()->value,
-            'mail.from.address' => $smtpSettings->where('key', 'smtp_from_email')->first()->value,
-            'mail.from.name' => $smtpSettings->where('key', 'smtp_from_name')->first()->value,
+            'mail.mailers.smtp.host' => $smtpSettings->where('key', 'smtp_host')->first()->value ?? '',
+            'mail.mailers.smtp.port' => $smtpSettings->where('key', 'smtp_port')->first()->value ?? 587,
+            'mail.mailers.smtp.encryption' => $smtpSettings->where('key', 'smtp_encryption')->first()->value ?? '',
+            'mail.mailers.smtp.username' => $smtpSettings->where('key', 'smtp_username')->first()->value ?? '',
+            'mail.mailers.smtp.password' => $smtpSettings->where('key', 'smtp_password')->first()->value ?? '',
+            'mail.from.address' => $smtpSettings->where('key', 'smtp_from_email')->first()->value ?? '',
+            'mail.from.name' => $smtpSettings->where('key', 'smtp_from_name')->first()->value ?? '',
         ]);
 
-        Mail::send([], [], function ($message) use ($user, $title, $body) {
-            $message->to($user->email)
-                ->subject($title)
-                ->html($body, 'text/html');
-        });
+        try {
+            Mail::send([], [], function ($message) use ($user, $title, $body) {
+                $message->to($user->email)
+                    ->subject($title)
+                    ->html($body, 'text/html');
+            });
 
-        return true;
+            return true;
+        } catch (\Exception $e) {
+            // Log::error($e->getMessage());
+            return false;
+        }
     }
 }

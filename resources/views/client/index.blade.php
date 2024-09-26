@@ -8,7 +8,7 @@
     @if (!$client_updated)
         <div class="alert alert-danger d-flex align-items-center justify-content-between" role="alert">
             <p class="m-0">Your profile is incomplete. Please complete it to book your first service.</p>
-            <p class="m-0"><a href="{{ route('client.profile') }}" class="btn btn-primary ml-2">Complete</a>
+            <p class="m-0"><a href="{{ route('client.profile') }}" class="btn btn-primary btn-sm ml-2">Complete</a>
             </p>
         </div>
     @endif
