@@ -64,7 +64,10 @@
         @endif
         @impersonating($guard = null)
             <hr>
-            <a href="{{ route('impersonate.leave') }}" class="dropdown-item">Leave impersonation</a>
+            <a href="{{ route('impersonate.leave') }}" class="dropdown-item">
+                <i class="fa-solid fa-user-large-slash"></i>
+                Leave impersonation
+            </a>
         @endImpersonating
     </ul>
 </div>

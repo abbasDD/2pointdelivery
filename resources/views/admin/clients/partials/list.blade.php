@@ -40,8 +40,9 @@
                             title="Reset Password"></i></a>
                     {{-- Impersonate --}}
                     @canImpersonate($guard = null)
-                    <a class="btn btn-sm btn-primary"
-                        href="{{ route('impersonate', $client->user->id) }}">Impersonate</a>
+                    <a class="btn btn-sm btn-primary" href="{{ route('impersonate', $client->user->id) }}">
+                        <i class="fa-solid fa-user-secret"></i>
+                    </a>
                     @endCanImpersonate
                 </td>
             </tr>
