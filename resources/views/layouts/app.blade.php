@@ -37,8 +37,6 @@
 
     </main>
 
-    <!-- Chat button component -->
-    <x-chat-button />
 
     {{-- JS Files here --}}
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

@@ -65,11 +65,7 @@
 
     </main>
 
-    <!-- Chat button component -->
-    <x-chat-button />
 
-    <!-- Footer button component -->
-    {{-- <x-frontend.footer /> --}}
     @include('components.frontend.footer')
 
 

@@ -17,6 +17,16 @@
         </li>
         @if (session('login_type') == 'admin')
             <li><a class="dropdown-item" href="{{ route('admin.index') }}"><i class="fa fa-home"></i> Dashboard</a></li>
+            @impersonating($guard = null)
+                {{-- Go to helper dashboard --}}
+                <li><a class="dropdown-item" href="{{ route('helper.index') }}"><i class="fa fa-home"></i> Helper
+                        Dashboard</a>
+                </li>
+                {{-- Go to client dashboard --}}
+                <li><a class="dropdown-item" href="{{ route('client.index') }}"><i class="fa fa-home"></i> Client
+                        Dashboard</a>
+                </li>
+            @endImpersonating
         @else
             @if (session('login_type') == 'helper')
                 <li><a class="dropdown-item" href="{{ route('helper.index') }}"><i class="fa fa-home"></i> Dashboard</a>
@@ -27,7 +37,8 @@
             @else
                 <li><a class="dropdown-item" href="{{ route('client.index') }}"><i class="fa fa-home"></i> Dashboard</a>
                 </li>
-                <li><a class="dropdown-item" href="{{ route('client.profile') }}"><i class="fa fa-user"></i> Profile</a>
+                <li><a class="dropdown-item" href="{{ route('client.profile') }}"><i class="fa fa-user"></i>
+                        Profile</a>
                 </li>
                 <li><a class="dropdown-item" href="#"><i class="fa fa-cog"></i> Settings</a></li>
             @endif
@@ -51,5 +62,9 @@
                 @endif
             </li>
         @endif
+        @impersonating($guard = null)
+            <hr>
+            <a href="{{ route('impersonate.leave') }}" class="dropdown-item">Leave impersonation</a>
+        @endImpersonating
     </ul>
 </div>

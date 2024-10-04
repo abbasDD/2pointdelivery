@@ -76,11 +76,7 @@
         @yield('content')
     </main>
 
-    <!-- Chat button component -->
-    <x-chat-button />
-
-    <!-- Footer button component -->
-    {{-- <x-helper.footer /> --}}
+    {{-- Include Footer --}}
     @include('components.helper.footer')
 
 

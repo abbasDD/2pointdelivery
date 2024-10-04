@@ -9,4 +9,5 @@ return [
     App\Providers\NotificationProvider::class,
     Barryvdh\DomPDF\ServiceProvider::class,
     App\Providers\BookingProvider::class,
+    Lab404\Impersonate\ImpersonateServiceProvider::class,
 ];

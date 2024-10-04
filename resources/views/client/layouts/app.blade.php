@@ -75,12 +75,7 @@
         @yield('content')
     </main>
 
-    <!-- Chat button component -->
-    <x-chat-button />
-
-    <!-- Footer button component -->
-    {{-- <x-client.footer /> --}}
-
+    {{-- Include Footer --}}
     @include('components.client.footer')
 
     <div class="toast-container position-fixed top-0 end-0 p-3 d-none">

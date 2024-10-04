@@ -38,6 +38,11 @@
                     <a class="btn btn-sm btn-primary" onclick="resetPasswordDialog({{ $helper->id }})"><i
                             class="fa-solid fa-lock" data-toggle="tooltip" data-placement="top"
                             title="Reset Password"></i></a>
+                    {{-- Impersonate --}}
+                    @canImpersonate($guard = null)
+                    <a class="btn btn-sm btn-primary"
+                        href="{{ route('impersonate', $helper->user->id) }}">Impersonate</a>
+                    @endCanImpersonate
                 </td>
             </tr>
         @empty

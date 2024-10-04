@@ -45,6 +45,9 @@ Route::get('/command', function () {
 Route::middleware(['app_language'])->group(function () {
 
 
+    // Impersonate Routes
+    Route::impersonate();
+
     //Redirect to Home page as login is valid for user
     // Route::get('/login', [FrontendController::class, 'index'])->name('login');
 

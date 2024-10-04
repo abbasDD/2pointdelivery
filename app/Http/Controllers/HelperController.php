@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Laravel\Facades\Image;
+use Lab404\Impersonate\Impersonate;
 
 class HelperController extends Controller
 {
@@ -99,15 +100,18 @@ class HelperController extends Controller
         }
 
 
-        // Store login_type to Session
-        session(['login_type' => 'client']);
+        // @impersonating($guard = null) 
+        if (!Impersonate::isImpersonating()) {
+            // Store login_type to Session
+            session(['login_type' => 'client']);
 
-        // Get client first name and last name
-        $clientInfo = Client::where('user_id', Auth::user()->id)->first();
-        if ($clientInfo) {
-            session(['full_name' => $clientInfo->first_name . ' ' . $clientInfo->last_name]);
-            // set profile_image
-            session(['thumbnail' => asset('images/users/thumbnail/' . $clientInfo->thumbnail)]);
+            // Get client first name and last name
+            $clientInfo = Client::where('user_id', Auth::user()->id)->first();
+            if ($clientInfo) {
+                session(['full_name' => $clientInfo->first_name . ' ' . $clientInfo->last_name]);
+                // set profile_image
+                session(['thumbnail' => asset('images/users/thumbnail/' . $clientInfo->thumbnail)]);
+            }
         }
 
         $user->client_enabled = 1;
@@ -124,8 +128,11 @@ class HelperController extends Controller
      */
     public function index()
     {
-        // Change session variable login_type to client
-        session(['login_type' => 'helper']);
+        // @impersonating($guard = null) 
+        if (!Impersonate::isImpersonating()) {
+            // Change session variable login_type to client
+            session(['login_type' => 'helper']);
+        }
 
         // dd(session('login_type'));
 
