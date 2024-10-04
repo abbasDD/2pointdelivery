@@ -48,7 +48,7 @@
                     Bookings</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.reviews') }}"><i class="fa fa-dolly"></i>
+                <a class="nav-link" href="{{ route('admin.reviews') }}"><i class="fa-solid fa-star-half-stroke"></i>
                     Reviews</a>
             </li>
 

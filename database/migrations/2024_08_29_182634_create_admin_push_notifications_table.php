@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('user_id')->default('all');
             $table->string('title');
-            $table->text('body');
+            $table->mediumText('body');
             $table->boolean('is_emailed')->default(0);
             $table->timestamps();
         });

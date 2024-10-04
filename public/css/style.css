@@ -1269,6 +1269,11 @@ figure a img {
     margin: 0;
 }
 
+.service-slider .carousel-control-next, .service-slider .carousel-control-prev {
+    width: 2%;
+    background: rgba(0, 0, 0, 0.2);
+}
+
 
 @media (max-width: 767px) {
     .service-slider .carousel-inner .carousel-item>div {

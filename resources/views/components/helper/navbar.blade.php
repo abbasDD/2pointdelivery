@@ -26,9 +26,11 @@
                             @endif
                         </span>
                     </p>
-                    <ul id="notification-list" class="dropdown-menu dropdown-notification"
-                        aria-labelledby="dropdownMenuButton">
+                    <ul class="dropdown-menu dropdown-notification" aria-labelledby="dropdownMenuButton">
+                        <a href="{{ route('user.notifications.read') }}" class="d-flex fs-xxs justify-content-end p-2">Mark
+                            all as read</a>
                         <!-- Notifications will be dynamically loaded here -->
+                        <div id="notification-list"></div>
                     </ul>
                 </div>
 

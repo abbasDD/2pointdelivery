@@ -71,8 +71,8 @@
                         </a>
                     @endif
 
-                    {{-- Refund Request if cancelled --}}
-                    @if ($booking->status == 'cancelled')
+                    {{-- Refund Request if cancelled and payment method is not cod --}}
+                    @if ($booking->status == 'cancelled' && $booking->payment_method != 'cod' && $booking->refunded == 0)
                         <a href="{{ route('client.wallet.refund.request', $booking->id) }}"
                             class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top"
                             title="Refund Request">

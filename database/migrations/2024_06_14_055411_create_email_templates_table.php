@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('slug');
             $table->string('name');
             $table->text('subject');
-            $table->text('body');
+            $table->mediumText('body');
             $table->timestamps();
         });
     }

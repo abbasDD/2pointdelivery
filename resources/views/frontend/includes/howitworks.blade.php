@@ -35,7 +35,7 @@
 
                             {{-- Redirect to New Booking --}}
                             <div class="arrow-button">
-                                <a href="{{ route('newBooking') }}">
+                                <a href="{{ route('services') }}">
                                     <i class="fas fa-long-arrow-alt-right mr-2"></i>
                                     {{ __('frontend.howitworks.step01.button_text') }}
                                 </a>

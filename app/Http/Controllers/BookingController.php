@@ -56,6 +56,7 @@ class BookingController extends Controller
      */
     public function index()
     {
+
         $bookings = Booking::where('client_user_id', Auth::user()->id)
             ->with('client')
             ->with('prioritySetting')
@@ -63,6 +64,7 @@ class BookingController extends Controller
             ->with('serviceCategory')
             ->orderBy('bookings.updated_at', 'desc')->get();
 
+        // Get booking details
         foreach ($bookings as $booking) {
             if ($booking->helper_user_id != NULL) {
                 $booking->helper = Helper::where('user_id', $booking->helper_user_id)->first();
@@ -75,6 +77,24 @@ class BookingController extends Controller
             if ($booking->booking_type == 'delivery') {
                 $booking->delivery = BookingDelivery::where('booking_id', $booking->id)->first();
             }
+
+            // Check the payment_method of booking
+            switch ($booking->booking_type) {
+                case 'moving':
+                    $booking->moving = BookingMoving::where('booking_id', $booking->id)->first() ?? null;
+                    $booking->payment_method = $booking->moving->payment_method ?? null;
+                    break;
+                case 'delivery':
+                    $booking->delivery = BookingDelivery::where('booking_id', $booking->id)->first() ?? null;
+                    $booking->payment_method = $booking->delivery->payment_method ?? null;
+                    break;
+                default:
+                    $booking->payment_method = 'cod';
+                    break;
+            }
+
+            // Check if booking is refunded or not
+            $booking->refunded = UserWallet::where('booking_id', $booking->id)->where('user_id', Auth::user()->id)->where('user_type', 'client')->where('type', 'refund')->first() ? true : false;
         }
 
         return view('client.bookings.index', compact('bookings'));

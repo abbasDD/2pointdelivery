@@ -79,7 +79,23 @@ class PushNotificationController extends Controller
         ]);
 
         // Dispatch job to send notifications
-        SendNotificationsJob::dispatch($users, $request->input('title'), $request->input('body'));
+        // SendNotificationsJob::dispatch($users, $request->input('title'), $request->input('body'));
+        // $fcm = new FcmController();
+
+        // foreach ($users as $user) {
+
+        //     if ($user->fcm_token != null) {
+        //         $fcm->sendPushNotificationToUser($user->id, $request->input('title'), Purifier::clean($request->input('body')));
+        //     }
+        //     // Send email pushNotificationEmail
+        //     $emailTemplateService = new EmailTemplateService();
+        //     $emailTemplateController = new EmailTemplateController($emailTemplateService);
+        //     $emailTemplateController->pushNotificationEmail($user->id, $request->input('title'), Purifier::clean($request->input('body')));
+        // }
+
+
+        // Send exec call
+        $this->sendExecCall($users, $request->input('title'), $request->input('body'));
 
         return redirect()->route('admin.pushNotification')->with('success', 'Notification is being sent in the background');
     }
@@ -114,19 +130,54 @@ class PushNotificationController extends Controller
         // Dispatch job to send notifications
         // SendNotificationsJob::dispatch($users, $notification->title, $notification->body);
 
-        $fcm = new FcmController();
+        // $fcm = new FcmController();
 
-        foreach ($users as $user) {
+        // foreach ($users as $user) {
 
-            if ($user->fcm_token != null) {
-                $fcm->sendPushNotificationToUser($user->id, $notification->title, Purifier::clean($notification->body));
-            }
-            // Send email pushNotificationEmail
-            $emailTemplateService = new EmailTemplateService();
-            $emailTemplateController = new EmailTemplateController($emailTemplateService);
-            $emailTemplateController->pushNotificationEmail($user->id, $notification->title, Purifier::clean($notification->body));
-        }
+        //     if ($user->fcm_token != null) {
+        //         $fcm->sendPushNotificationToUser($user->id, $notification->title, Purifier::clean($notification->body));
+        //     }
+        //     // Send email pushNotificationEmail
+        //     $emailTemplateService = new EmailTemplateService();
+        //     $emailTemplateController = new EmailTemplateController($emailTemplateService);
+        //     $emailTemplateController->pushNotificationEmail($user->id, $notification->title, Purifier::clean($notification->body));
+        // }
+
+        // Send exec call
+        $this->sendExecCall($users, $notification->title, $notification->body);
 
         return redirect()->route('admin.pushNotification')->with('success', 'Notification is being sent in the background');
+    }
+
+    // send using exec call
+    public function sendExecCall($users, $title, $body)
+    {
+        // Email-sending logic written in the same function
+        $code = <<<EOL
+            <?php
+                \$fcm = new FcmController();
+
+                foreach (\$users as \$user) {
+
+                    if (\$user->fcm_token != null) {
+                        \$fcm->sendPushNotificationToUser(\$user->id, \$title, Purifier::clean(\$body));
+                    }
+                    // Send email pushNotificationEmail
+                    \$emailTemplateService = new EmailTemplateService();
+                    \$emailTemplateController = new EmailTemplateController(\$emailTemplateService);
+                    \$emailTemplateController->pushNotificationEmail(\$user->id, \$title, Purifier::clean(\$body));
+                }
+
+                ?>
+            EOL;
+
+        // Save the code as a temporary file
+        $tempFile = tempnam(sys_get_temp_dir(), 'send_emails_') . '.php';
+        file_put_contents($tempFile, $code);
+
+        // Run the temporary file in the background using exec()
+        exec("php $tempFile > /dev/null 2>&1 &");
+
+        return true;
     }
 }
