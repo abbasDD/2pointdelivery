@@ -474,12 +474,16 @@ class HelperController extends Controller
         // Sync services for the vehicle type
         $helper->service_types()->sync($request->services);
 
-        // Update session data as well for name
 
-        session(['full_name' => $helper->first_name . ' ' . $helper->last_name]);
-        // set profile_image
-        if ($helper->thumbnail) {
-            session(['thumbnail' => asset('images/users/thumbnail/' . $helper->thumbnail)]);
+        // @impersonating($guard = null) 
+        if (!Impersonate::isImpersonating()) {
+            // Update session data as well for name
+
+            session(['full_name' => $helper->first_name . ' ' . $helper->last_name]);
+            // set profile_image
+            if ($helper->thumbnail) {
+                session(['thumbnail' => asset('images/users/thumbnail/' . $helper->thumbnail)]);
+            }
         }
 
 

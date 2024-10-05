@@ -340,12 +340,15 @@ class ClientController extends Controller
         // dd($request->all());
 
 
-        // Update session data as well for name
+        // @impersonating($guard = null) 
+        if (!Impersonate::isImpersonating()) {
+            // Update session data as well for name
 
-        session(['full_name' => $client->first_name . ' ' . $client->last_name]);
-        // set thumbnail
-        if ($client->thumbnail) {
-            session(['thumbnail' => asset('images/users/thumbnail/' . $client->thumbnail)]);
+            session(['full_name' => $client->first_name . ' ' . $client->last_name]);
+            // set thumbnail
+            if ($client->thumbnail) {
+                session(['thumbnail' => asset('images/users/thumbnail/' . $client->thumbnail)]);
+            }
         }
 
         return redirect()->back()->with('success', 'Profile info updated successfully!');
