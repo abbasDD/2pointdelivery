@@ -21,7 +21,7 @@
 
 body {
     font-family: "Nunito Sans", sans-serif;
-    font-size: 1rem;
+    font-size: 0.8rem;
 }
 
 /* Generic CSS */
@@ -37,11 +37,11 @@ h1, h2, h3 {
 }
 
 .h6, h6 {
-    font-size: .85rem;
+    font-size: .75rem;
 }
 
 p {
-    font-size: 1rem;
+    font-size: 0.8rem;
     margin-bottom: 10px;
     color: var(--text-gray);
 }
@@ -52,7 +52,7 @@ a {
     -webkit-transition: all 350ms ease-in-out;
     -o-transition: all 350ms ease-in-out;
     transition: all 350ms ease-in-out;
-    font-size: 1rem;
+    font-size: 0.8rem;
 }
 
 a:hover {
@@ -82,7 +82,7 @@ section {
 .form-control {
     padding: 10px 15px;
     /* border: none; */
-    font-size: 1rem;
+    font-size: 0.8rem;
 }
 
 .row {
@@ -137,7 +137,7 @@ section {
 .text-logo {
     color: var(--primary-color) !important;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.8rem;
 }
 
 .text-primary {
@@ -146,6 +146,10 @@ section {
 
 .text-right {
     text-align: right;
+}
+
+.fs-10 {
+    font-size: 10px;
 }
 
 .fs-12 {
@@ -230,7 +234,7 @@ section {
 
 .btn-sm {
     padding: 5px 10px;
-    font-size: 11px;
+    font-size: 10px;
 }
 
 /* ===== Scrollbar CSS ===== */
@@ -311,7 +315,7 @@ section {
     color: var(--primary-color);
     text-decoration: none;
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 0.8rem;
     position: relative;
     text-transform: capitalize;
     -webkit-transition: all 350ms ease-in-out;
@@ -341,7 +345,7 @@ section {
 }
 
 .arrow-button i {
-    font-size: 1rem !important;
+    font-size: 0.8rem !important;
     margin-right: 5px !important;
 }
 
@@ -369,7 +373,7 @@ section {
 
 .heading h2 {
     text-transform: capitalize;
-    font-size: 2rem;
+    font-size: 1.6rem;
     line-height: 3rem;
     margin-bottom: 0;
     font-weight: 500;
@@ -380,7 +384,7 @@ section {
 
 .heading h6 {
     color: var(--primary-color);
-    font-size: 1rem;
+    font-size: 0.8rem;
     font-weight: 500;
     margin-bottom: 0;
     line-height: 1.2rem;
@@ -411,15 +415,15 @@ section {
 }
 
 table thead tr th {
-    font-size: 1rem;
+    font-size: 0.8rem;
 }
 
 table tbody tr td {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
 }
 
 table tbody tr td p {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
 }
 
 .w-30 {
@@ -441,7 +445,7 @@ w-70 {
 
 .navbar-light .navbar-nav .nav-link {
     color: #878787;
-    font-size: 16px;
+    font-size: 14px;
     padding: 10px 20px;
     font-weight: 600;
 }
@@ -535,12 +539,12 @@ w-70 {
 }
 
 #pagehero .content h3 {
-    font-size: 36px;
+    font-size: 30px;
     padding-bottom: 10px;
 }
 
 #pagehero .content p {
-    font-size: 16px;
+    font-size: 0.8rem;
     padding-bottom: 20px;
 }
 
@@ -611,7 +615,7 @@ w-70 {
 }
 
 .counter .counter-icon i {
-    font-size: 3rem;
+    font-size: 2rem;
     margin-bottom: 0.5rem;
 }
 
@@ -623,7 +627,7 @@ w-70 {
 }
 
 .counter .counter-num span, .counter .counter-num p {
-    font-size: 38px;
+    font-size: 32px;
     font-weight: 400;
     line-height: 29px;
     display: inline-block;
@@ -633,7 +637,7 @@ w-70 {
 .counter .counter-name h6 {
     margin-bottom: 0;
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 0.9rem;
     line-height: 29px;
     color: #ffffff;
     text-transform: capitalize;
@@ -661,7 +665,7 @@ w-70 {
 }
 
 .review-form .star-rating label {
-    font-size: 2rem;
+    font-size: 1.6rem;
     color: lightgray;
     cursor: pointer;
 }
@@ -685,12 +689,12 @@ w-70 {
 
 #notification-list .item h5 {
     margin-bottom: 0.5rem;
-    font-size: 1rem;
+    font-size: 0.8rem;
 }
 
 #notification-list .item p {
     margin-bottom: 0;
-    font-size: 0.9rem;
+    font-size: 0.75rem;
 }
 
 .dropdown-notification[data-bs-popper] {
@@ -737,7 +741,7 @@ w-70 {
 .howitworks .card .card-body .icon i::before {
     color: var(--primary-color);
     margin-left: 0;
-    font-size: 200px;
+    font-size: 175px;
     opacity: 0;
     -webkit-transform: translateY(10px);
     -ms-transform: translateY(10px);
@@ -764,13 +768,13 @@ w-70 {
 }
 
 .howitworks .card .card-body .content i {
-    font-size: 3.5rem;
+    font-size: 3rem;
     color: var(--primary-color);
     margin: 2rem 0;
 }
 
 .howitworks .card .card-body .content h4 {
-    font-size: 1.2rem;
+    font-size: 1rem;
     margin-bottom: 0;
 }
 
@@ -792,7 +796,7 @@ w-70 {
 }
 
 .chat-button i {
-    font-size: 24px;
+    font-size: 18px;
 }
 
 .clickable-card {
@@ -865,7 +869,7 @@ figure a img {
 }
 
 .accordion .heading .heading-title {
-    font-size: 24px;
+    font-size: 20px;
     line-height: 29px;
     font-weight: 500;
     color: #1b1a1a;
@@ -898,7 +902,7 @@ figure a img {
 .accordion .card .card-heading a,
 .accordion .card:first-of-type .card-heading a,
 .accordion .card:not(:first-of-type):not(:last-of-type) .card-heading a {
-    font-size: 16px;
+    font-size: 0.8rem;
     color: #222222;
     font-weight: 500;
     text-transform: capitalize;
@@ -924,7 +928,7 @@ figure a img {
     font-family: "Font Awesome 5 Free";
     font-weight: 700;
     content: "\f068";
-    font-size: 11px;
+    font-size: 0.7rem;
     color: var(--primary-color);
 }
 
@@ -940,7 +944,7 @@ figure a img {
 .accordion .card:not(:first-of-type):not(:last-of-type) .card-body {
     color: #9b9b9b;
     padding: 5px 0 0 0;
-    font-size: 15px;
+    font-size: 0.8rem;
     font-weight: 400;
     line-height: 24px;
 }
@@ -1124,7 +1128,7 @@ figure a img {
 
 .chat .chat-header .chat-with {
     font-weight: bold;
-    font-size: 16px;
+    font-size: 0.8rem;
 }
 
 .chat .chat-header .chat-num-messages {
@@ -1134,7 +1138,7 @@ figure a img {
 .chat .chat-header .fa-star {
     float: right;
     color: #D8DADF;
-    font-size: 20px;
+    font-size: 1.2rem;
     margin-top: 12px;
 }
 
@@ -1157,14 +1161,14 @@ figure a img {
     color: var(--gray-color);
     padding-left: 6px;
     margin-bottom: 0;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
 }
 
 .chat .chat-history .message {
     color: white;
     padding: 18px 20px;
     line-height: 26px;
-    font-size: 16px;
+    font-size: 0.8rem;
     border-radius: 7px;
     margin-bottom: 10px;
     width: 80%;
@@ -1206,7 +1210,7 @@ figure a img {
     width: 100%;
     border: none;
     padding: 10px 20px;
-    font-size: 12px;
+    font-size: 0.8rem;
     margin-bottom: 10px;
     border-radius: 0.3rem;
     resize: none;
@@ -1214,7 +1218,7 @@ figure a img {
 
 .chat .chat-message .fa-file-o,
 .chat .chat-message .fa-file-image-o {
-    font-size: 16px;
+    font-size: 0.8rem;
     color: gray;
     cursor: pointer;
 }
@@ -1227,7 +1231,7 @@ figure a img {
 .offline,
 .me {
     margin-right: 3px;
-    font-size: 10px;
+    font-size: 0.7rem;
 }
 
 .online {
@@ -1344,7 +1348,7 @@ figure a img {
 
 .authpage .inner h3 {
     text-transform: uppercase;
-    font-size: 25px;
+    font-size: 20px;
     font-family: "Poppins-SemiBold";
     text-align: center;
     margin-bottom: 28px;
@@ -1382,7 +1386,7 @@ figure a img {
 
 .forgot-password a {
     float: right;
-    font-size: 12px;
+    font-size: 0.8rem;
 }
 
 .authpage .card {
@@ -1396,18 +1400,18 @@ figure a img {
 }
 
 .authpage .card .card-body h3 {
-    font-size: 24px;
+    font-size: 20px;
     margin-bottom: 10px;
 }
 
 .authpage .card .card-body p {
-    font-size: 1rem;
+    font-size: 0.8rem;
     margin-bottom: 20px;
 }
 
 .authpage .card .card-body .forgot-password a {
     float: right;
-    font-size: 12px;
+    font-size: 0.8rem;
 }
 
 .authpage .card .card-body .toggle-password {
@@ -1501,7 +1505,7 @@ footer hr {
 .sidebar .nav-item .nav-link {
     display: inline-table;
     color: var(--gray-color);
-    font-size: 16px;
+    font-size: 0.8rem;
     padding: 10px;
     font-weight: 500;
 }
@@ -1558,7 +1562,7 @@ footer hr {
     border: 1px solid var(--primary-light);
     color: var(--primary-light);
     margin-bottom: 0.5rem;
-    font-size: 1rem;
+    font-size: 0.8rem;
 }
 
 
@@ -1657,7 +1661,7 @@ footer hr {
     padding-left: 35px;
     margin-bottom: 12px;
     cursor: pointer;
-    font-size: 22px;
+    font-size: 18px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -1765,7 +1769,7 @@ footer hr {
 .progressdiv .progressbar li h6 {
     color: var(--gray-color);
     margin-bottom: 5px;
-    font-size: 1rem;
+    font-size: 0.8rem;
     width: 120px;
 }
 
@@ -1777,7 +1781,7 @@ footer hr {
 .progressdiv .progressbar li h5 {
     color: var(--gray-color);
     margin-bottom: 5px;
-    font-size: 1rem;
+    font-size: 0.8rem;
     width: 100px;
 }
 
@@ -1837,7 +1841,7 @@ footer hr {
 
 
     #pagehero .content h3 {
-        font-size: 24px;
+        font-size: 20px;
         padding-bottom: 10px;
     }
 
@@ -1865,7 +1869,7 @@ footer hr {
 @media only screen and (min-width: 768px) and (max-width: 1024px) {
 
     h5 {
-        font-size: 1rem;
+        font-size: 0.8rem;
     }
 
 }
@@ -1875,7 +1879,7 @@ footer hr {
 @media only screen and (max-width: 767px) {
 
     h5 {
-        font-size: 1rem;
+        font-size: 0.8rem;
     }
 
 
@@ -1928,7 +1932,7 @@ body {
 }
 
 .notfound .notfound-404 h1 {
-    font-size: 236px;
+    font-size: 210px;
     font-weight: 200;
     margin: 0;
     color: var(--black);
@@ -1942,7 +1946,7 @@ body {
 }
 
 .notfound .notfound-404 h2 {
-    font-size: 28px;
+    font-size: 22px;
     font-weight: 400;
     text-transform: uppercase;
     color: var(--black);
@@ -1964,7 +1968,7 @@ body {
     text-transform: uppercase;
     padding: 13px 23px;
     background: var(--primary-color);
-    font-size: 18px;
+    font-size: 14px;
     -webkit-transition: .2s all;
     transition: .2s all
 }
@@ -1976,7 +1980,7 @@ body {
 
 @media only screen and (max-width:767px) {
     .notfound .notfound-404 h1 {
-        font-size: 148px
+        font-size: 132px
     }
 }
 
@@ -1987,16 +1991,16 @@ body {
     }
 
     .notfound .notfound-404 h1 {
-        font-size: 86px
+        font-size: 75px
     }
 
     .notfound .notfound-404 h2 {
-        font-size: 16px
+        font-size: 0.8rem
     }
 
     .notfound a {
         padding: 7px 15px;
-        font-size: 1rem
+        font-size: 0.8rem;
     }
 }
 
@@ -2010,7 +2014,7 @@ body {
     border-left: 4px solid var(--primary-color);
     position: relative;
     padding: 2rem 0.5rem 0.5rem 1.5rem;
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     margin-left: 3rem;
     min-height: 5rem;
 }
@@ -2025,7 +2029,7 @@ body {
 
 .tracking .tracking-item .tracking-date span {
     color: var(--gray-color);
-    font-size: 85%;
+    font-size: 75%;
     padding-left: 0.4rem;
 }
 
@@ -2038,7 +2042,7 @@ body {
 .tracking .tracking-item .tracking-content span {
     display: block;
     color: #767676;
-    font-size: 12px;
+    font-size: 0.8rem;
 }
 
 .tracking .tracking-item .tracking-icon {
@@ -2048,7 +2052,7 @@ body {
     height: 1.1rem;
     text-align: center;
     border-radius: 50%;
-    font-size: 1.1rem;
+    font-size: 0.8rem;
     background-color: #fff;
     color: #fff;
 }
@@ -2057,7 +2061,7 @@ body {
     border-left: 4px solid #d6d6d6;
     position: relative;
     padding: 2rem 1.5rem 0.5rem 1.5rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     margin-left: 3rem;
     min-height: 5rem;
 }
@@ -2066,7 +2070,7 @@ body {
     border-left: 4px solid red;
     position: relative;
     padding: 2rem 1.5rem 0.5rem 1.5rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     margin-left: 3rem;
     min-height: 5rem;
 }
@@ -2081,7 +2085,7 @@ body {
 
 .tracking .tracking-item-pending .tracking-date span {
     color: #888;
-    font-size: 85%;
+    font-size: 75%;
     padding-left: 0.4rem;
 }
 
@@ -2094,7 +2098,7 @@ body {
 .tracking .tracking-item-pending .tracking-content span {
     display: block;
     color: #767676;
-    font-size: 12px;
+    font-size: 0.8rem;
 }
 
 .tracking .tracking-item-pending .tracking-icon {
@@ -2105,13 +2109,13 @@ body {
     height: 1.1rem;
     text-align: center;
     border-radius: 50%;
-    font-size: 1.1rem;
+    font-size: 0.8rem;
     color: #d6d6d6;
 }
 
 .tracking .tracking-item-pending .tracking-content {
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.8rem;
 }
 
 .tracking .tracking-item .tracking-icon.status-current {
@@ -2122,17 +2126,17 @@ body {
 
 .tracking .tracking-item .tracking-icon.status-cancelled {
     color: red !important;
-    font-size: 0.6rem;
+    font-size: 0.5rem;
 }
 
 .tracking .tracking-item .tracking-icon.status-intransit {
     color: var(--primary-color);
-    font-size: 0.6rem;
+    font-size: 0.5rem;
 }
 
 .tracking .tracking-item .tracking-icon.status-current {
     color: var(--primary-color);
-    font-size: 0.6rem;
+    font-size: 0.5rem;
 }
 
 @media (min-width: 992px) {
@@ -2179,7 +2183,7 @@ body {
 
 .tracking .tracking-item .tracking-content {
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.8rem;
 }
 
 
@@ -2224,7 +2228,7 @@ body {
     top: 15px;
     right: 35px;
     color: #f1f1f1;
-    font-size: 40px;
+    font-size: 32px;
     font-weight: bold;
 }
 
