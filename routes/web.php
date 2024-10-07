@@ -62,7 +62,7 @@ Route::middleware(['app_language'])->group(function () {
     Route::get('auth/{provider}', [GoogleLoginController::class, 'redirectToProvider'])->name('google.redirect');
     Route::get('auth/{provider}/callback', [GoogleLoginController::class, 'handleProviderCallback'])->name('google.callback');
 
-    // Facebook URL
+    // Apple URL
 
 
     // Home Page

@@ -21,7 +21,11 @@ Route::post('forget-password', [PassportAuthController::class, 'forgetPassword']
 // Route::get('auth/{provider}', [PassportAuthController::class, 'redirectToProvider']);
 // Route::get('auth/{provider}/callback', [PassportAuthController::class, 'handleProviderCallback']);
 
+// Google Login
 Route::post('auth/google', [PassportAuthController::class, 'googleLogin']);
+
+// Apple Login
+Route::post('auth/apple', [PassportAuthController::class, 'appleLogin']);
 
 // Send Notification using FCM
 Route::post('/send-notification', [FcmController::class, 'sendFcmNotification']);

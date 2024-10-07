@@ -775,6 +775,43 @@ class PassportAuthController extends Controller
         ], 200);
     }
 
+    // appleLogin
+    public function appleLogin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'login_type' => 'required|string|in:apple',
+        ]);
+
+        // Check if email already exists in your database
+        if (User::where('email', $request->email)->where('provider_name', 'apple')->exists()) {
+            $user = User::where('email', $request->email)->first();
+        } else {
+
+            // Create new user
+            $user = User::create([
+                'email' => $request->email, // This might be null
+                'provider_name' => 'apple',
+                'provider_id' => $request->email,
+                'password' => null, // No password for social logins
+            ]);
+
+            // Create a Client 
+            $client = new Client();
+            $client->first_name = $request->email;
+            $client->user_id = $user->id;
+            $client->save();
+        }
+
+        // Create token
+        $tokenResult = $user->createToken('2PointDeliveryJWTAuthenticationToken');
+        $token = $tokenResult->accessToken;
+
+        return response()->json([
+            'success' => true,
+            'token' => $token
+        ], 200);
+    }
     // appDetails
 
     public function appDetails(): JsonResponse

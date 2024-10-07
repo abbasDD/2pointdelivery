@@ -40,10 +40,10 @@
                         </div>
                     </div>
                     {{-- Cancelled --}}
-                    @if ($booking->status == 'cancelled')
+                    @if ($booking->status == 'cancelled' || $booking->status == 'expired')
                         <div class="tracking-item tracking-item-cancelled">
                             <div
-                                class="tracking-icon {{ $booking->status == 'cancelled' ? 'status-current status-cancelled' : 'status-cancelled' }}">
+                                class="tracking-icon {{ $booking->status == 'cancelled' || $booking->status == 'expired' ? 'status-current status-cancelled' : 'status-cancelled' }}">
                                 <svg class="svg-inline--fa fa-circle fa-w-16" aria-hidden="true" data-prefix="fas"
                                     data-icon="circle" role="img" xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 512 512" data-fa-i2svg="">
@@ -55,7 +55,8 @@
                             <div class="tracking-date"><img
                                     src="https://raw.githubusercontent.com/shajo/portfolio/a02c5579c3ebe185bb1fc085909c582bf5fad802/delivery.svg"
                                     class="img-responsive" alt="order-placed" /></div>
-                            <div class="tracking-content">Order Cancelled
+                            <div class="tracking-content">Order
+                                {{ $booking->status == 'cancelled' ? 'Cancelled' : 'Expired' }}
                                 <span>{{ $bookingData->updated_at ? app('dateHelper')->formatTimestamp($bookingData->updated_at, config('date_format') ?: 'Y-m-d') : 'N/A' }}</span>
                                 <span>{{ $bookingData->updated_at ? app('dateHelper')->formatTimestamp($bookingData->updated_at, config('time_format') ?: 'H:i A') : 'N/A' }}</span>
                             </div>

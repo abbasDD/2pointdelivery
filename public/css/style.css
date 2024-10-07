@@ -228,8 +228,9 @@ section {
 }
 
 .btn {
-    padding: 10px 25px;
+    padding: 7px 21px;
     border: none;
+    font-size: 0.8rem;
 }
 
 .btn-sm {
@@ -330,7 +331,7 @@ section {
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    height: 50px;
+    height: 40px;
     border-radius: 0.3rem;
     padding-right: 20px;
 }

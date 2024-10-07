@@ -31,7 +31,7 @@
                                         2 Point Delivery
                                     </a>
                                 </h6>
-                                <h2 class="mb-1">CLient Registration</h2>
+                                <h2 class="mb-1">Client Registration</h2>
                                 <p>{{ __('Please enter your details to create account') }}</p>
                             </div>
                         </div>

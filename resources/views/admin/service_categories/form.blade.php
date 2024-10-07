@@ -184,7 +184,7 @@
         {{-- Exta Weight Price --}}
         <div class="col-md-6" id="extra_weight_price_div">
             <div class="form-group mb-3">
-                <label for="extra_weight_price">Base Weight Price</label>
+                <label for="extra_weight_price">Extra Weight Price</label>
                 <div class="input-group">
                     <input type="text"
                         class="form-control input-field @error('extra_weight_price') is-invalid @enderror"

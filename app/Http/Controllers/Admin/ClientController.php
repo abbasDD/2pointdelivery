@@ -96,7 +96,7 @@ class ClientController extends Controller
         } else {
             // If the admin is not found, handle the error
             // For example, return a response indicating the admin was not found
-            return redirect()->back()->with('error', 'CLient not found or not authorized!');
+            return redirect()->back()->with('error', 'Client not found or not authorized!');
         }
     }
 

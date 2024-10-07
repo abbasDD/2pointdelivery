@@ -152,7 +152,7 @@ class FrontendController extends Controller
                 $booking->currentStatus = 4;
                 break;
             case 'expired':
-                $booking->currentStatus = 5;
+                $booking->currentStatus = 1;
                 break;
             default:
                 $booking->currentStatus = 1;

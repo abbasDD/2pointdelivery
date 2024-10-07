@@ -143,17 +143,15 @@
                 {{-- Date of Birth --}}
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <div class="form-group">
-                            <label for="date_of_birth">Date of Birth</label>
-                            <input class="form-control" type="text" id="date_of_birth" name="date_of_birth"
-                                value="{{ old('date_of_birth', isset($clientData->date_of_birth) ? \Carbon\Carbon::parse($clientData->date_of_birth)->format(config('date_format', 'd-m-Y')) : '') }}"
-                                placeholder="Enter Issue Date" required>
-                            @error('date_of_birth')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
+                        <label for="date_of_birth" class="form-label">Date of Birth</label>
+                        <input class="form-control" type="text" id="date_of_birth" name="date_of_birth"
+                            value="{{ old('date_of_birth', isset($clientData->date_of_birth) ? \Carbon\Carbon::parse($clientData->date_of_birth)->format(config('date_format', 'd-m-Y')) : '') }}"
+                            placeholder="Enter Issue Date" required>
+                        @error('date_of_birth')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                         <script>
                             var dateFormat = convertDateFormat("<?php echo config('date_format') ?? 'd-m-Y'; ?>");
 
