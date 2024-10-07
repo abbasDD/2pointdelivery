@@ -783,9 +783,21 @@ class PassportAuthController extends Controller
             'login_type' => 'required|string|in:apple',
         ]);
 
-        // Check if email already exists in your database
-        if (User::where('email', $request->email)->where('provider_name', 'apple')->exists()) {
+        $user_existed = User::where('email', $request->email)->where('provider_name', 'apple')->exists();
+        if ($user_existed) {
             $user = User::where('email', $request->email)->first();
+            $tokenResult = $user->createToken('2PointDeliveryJWTAuthenticationToken');
+            $token = $tokenResult->accessToken;
+            return response()->json([
+                'success' => true,
+                'token' => $token
+            ], 200);
+        }
+
+        // Check if email already exists in your database
+        if (User::where('email', $request->email)->exists()) {
+            // Unable to login
+            return new JsonResponse(['success' => false, 'statusCode' => 422, 'message' => 'Email already exists.'], 422);
         } else {
 
             // Create new user
