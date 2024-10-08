@@ -1578,15 +1578,26 @@ class ClientController extends Controller
                 // Check if user is admin
                 if ($otherUser->user_type == 'admin') {
                     $chat->otherUserInfo = Admin::select('first_name', 'last_name', 'thumbnail')->where('user_id', $otherUser->id)->first();
-                    $chat->otherUserInfo->profile_image = $chat->otherUserInfo->thumbnail ? asset('images/users/thumbnail/' . $chat->otherUserInfo->thumbnail) : asset('images/users/default.png');
+                    if ($chat->otherUserInfo) {
+                        $chat->otherUserInfo->profile_image = $chat->otherUserInfo->thumbnail ? asset('images/users/thumbnail/' . $chat->otherUserInfo->thumbnail) : asset('images/users/default.png');
+                    } else {
+                        $chat->otherUserInfo->profile_image = asset('images/users/default.png');
+                    }
                 } else {
                     if ($otherUser->client_enabled) {
                         $chat->otherUserInfo = Client::select('first_name', 'last_name', 'thumbnail')->where('user_id', $otherUser->id)->first();
-                        // profile_image
-                        $chat->otherUserInfo->profile_image = $chat->otherUserInfo->thumbnail ? asset('images/users/thumbnail/' . $chat->otherUserInfo->thumbnail) : asset('images/users/default.png');
+                        if ($chat->otherUserInfo) {
+                            $chat->otherUserInfo->profile_image = $chat->otherUserInfo->thumbnail ? asset('images/users/thumbnail/' . $chat->otherUserInfo->thumbnail) : asset('images/users/default.png');
+                        } else {
+                            $chat->otherUserInfo->profile_image = asset('images/users/default.png');
+                        }
                     } else {
                         $chat->otherUserInfo = Helper::select('first_name', 'last_name', 'thumbnail')->where('user_id', $otherUser->id)->first();
-                        $chat->otherUserInfo->profile_image = $chat->otherUserInfo->thumbnail ? asset('images/users/thumbnail/' . $chat->otherUserInfo->thumbnail) : asset('images/users/default.png');
+                        if ($chat->otherUserInfo) {
+                            $chat->otherUserInfo->profile_image = $chat->otherUserInfo->thumbnail ? asset('images/users/thumbnail/' . $chat->otherUserInfo->thumbnail) : asset('images/users/default.png');
+                        } else {
+                            $chat->otherUserInfo->profile_image = asset('images/users/default.png');
+                        }
                     }
                 }
             } else {
@@ -1594,14 +1605,26 @@ class ClientController extends Controller
                 // Check if user is admin
                 if ($otherUser->user_type == 'admin') {
                     $chat->otherUserInfo = Admin::select('first_name', 'last_name', 'thumbnail')->where('user_id', $otherUser->id)->first();
-                    $chat->otherUserInfo->profile_image = $chat->otherUserInfo->thumbnail ? asset('images/users/thumbnail/' . $chat->otherUserInfo->thumbnail) : asset('images/users/default.png');
+                    if ($chat->otherUserInfo) {
+                        $chat->otherUserInfo->profile_image = $chat->otherUserInfo->thumbnail ? asset('images/users/thumbnail/' . $chat->otherUserInfo->thumbnail) : asset('images/users/default.png');
+                    } else {
+                        $chat->otherUserInfo->profile_image = asset('images/users/default.png');
+                    }
                 } else {
                     if ($otherUser->client_enabled) {
                         $chat->otherUserInfo = Client::select('first_name', 'last_name', 'thumbnail')->where('user_id', $otherUser->id)->first();
-                        $chat->otherUserInfo->profile_image = $chat->otherUserInfo->thumbnail ? asset('images/users/thumbnail/' . $chat->otherUserInfo->thumbnail) : asset('images/users/default.png');
+                        if ($chat->otherUserInfo) {
+                            $chat->otherUserInfo->profile_image = $chat->otherUserInfo->thumbnail ? asset('images/users/thumbnail/' . $chat->otherUserInfo->thumbnail) : asset('images/users/default.png');
+                        } else {
+                            $chat->otherUserInfo->profile_image = asset('images/users/default.png');
+                        }
                     } else {
                         $chat->otherUserInfo = Helper::select('first_name', 'last_name', 'thumbnail')->where('user_id', $otherUser->id)->first();
-                        $chat->otherUserInfo->profile_image = $chat->otherUserInfo->thumbnail ? asset('images/users/thumbnail/' . $chat->otherUserInfo->thumbnail) : asset('images/users/default.png');
+                        if ($chat->otherUserInfo) {
+                            $chat->otherUserInfo->profile_image = $chat->otherUserInfo->thumbnail ? asset('images/users/thumbnail/' . $chat->otherUserInfo->thumbnail) : asset('images/users/default.png');
+                        } else {
+                            $chat->otherUserInfo->profile_image = asset('images/users/default.png');
+                        }
                     }
                 }
             }
@@ -1861,6 +1884,41 @@ class ClientController extends Controller
             'statusCode' => 200,
             'message' => 'Message sent successfully',
             'data' => $message
+        ], 200);
+    }
+
+
+
+    // adminChat
+    public function adminChat()
+    {
+        // If token is not valid return error
+
+        if (!Auth::user()) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 401,
+                'message' => 'Unauthorized.',
+                'errors' => 'Unauthorized',
+            ], 401);
+        }
+
+        // Check chat between user and admin already exists
+        $chat = Chat::where('user1_id', 1)->where('user2_id', Auth::user()->id)->orWhere('user1_id', Auth::user()->id)->where('user2_id', 1)->first();
+        if (!$chat) {
+            // Createa
+            $chat = new Chat();
+            $chat->user1_id = 1;
+            $chat->user2_id = Auth::user()->id;
+            $chat->save();
+        }
+
+        // return redirect('/client/chats/' . $chat->id);
+        return response()->json([
+            'success' => true,
+            'statusCode' => 200,
+            'message' => 'Admin chat retrieved successfully',
+            'data' => $chat->id
         ], 200);
     }
 

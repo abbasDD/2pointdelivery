@@ -149,6 +149,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'client'], function () {
     Route::post('chat/create', [ClientController::class, 'createChat']);
     Route::get('chat/user/{chat_id}', [ClientController::class, 'getUserChat']);
     Route::post('chat/message/send', [ClientController::class, 'sendMessage']);
+    Route::get('/chat/admin', [HelperController::class, 'adminChat']);
 
     // Client Routes End
 });
@@ -252,6 +253,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'helper'], function () {
     Route::post('chat/create', [HelperController::class, 'createChat']);
     Route::get('chat/user/{chat_id}', [HelperController::class, 'getUserChat']);
     Route::post('chat/message/send', [HelperController::class, 'sendMessage']);
+    Route::get('/chat/admin', [HelperController::class, 'adminChat']);
 
     // Wallet
     Route::get('wallet', [WalletHelperController::class, 'index']);
