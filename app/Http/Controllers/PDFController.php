@@ -8,9 +8,7 @@ use App\Models\BookingMoving;
 use App\Models\Client;
 use App\Models\SystemSetting;
 use App\Models\User;
-use Barryvdh\DomPDF\Facade as PDF;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
-use Barryvdh\DomPDF\PDF as DomPDFPDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 

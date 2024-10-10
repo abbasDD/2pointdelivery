@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\TeamInvitation;
-use App\Http\Requests\StoreTeamInvitationRequest;
-use App\Http\Requests\UpdateTeamInvitationRequest;
 use App\Models\User;
 use App\Models\UserNotification;
 use Illuminate\Http\Request;

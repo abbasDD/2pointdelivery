@@ -9,7 +9,6 @@ use App\Models\Client;
 use App\Models\Helper;
 use App\Models\Message;
 use App\Models\User;
-use App\Models\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

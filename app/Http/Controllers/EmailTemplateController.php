@@ -6,7 +6,6 @@ use App\Models\Client;
 use App\Models\SmtpSetting;
 use App\Models\User;
 use App\Services\EmailTemplateService;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class EmailTemplateController extends Controller

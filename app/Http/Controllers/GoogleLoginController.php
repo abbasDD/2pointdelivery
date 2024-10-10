@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\SocialLoginSetting;
 use App\Models\User;
 use App\Models\UserNotification;
-use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 

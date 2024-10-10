@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\UserWallet;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class WalletClientController extends Controller

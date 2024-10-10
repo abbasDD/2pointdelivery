@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Client;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ClientWalletResource;
-use App\Http\Resources\HelperWalletResource;
 use App\Models\Booking;
 use App\Models\UserWallet;
 use Illuminate\Http\Request;

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\HelperWalletResource;
 use App\Models\HelperBankAccount;
 use App\Models\UserWallet;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class WalletHelperController extends Controller

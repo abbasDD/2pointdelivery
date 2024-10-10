@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Middleware\RedirectIfNotUpdated;
 
 class HomeController extends Controller
 {

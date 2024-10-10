@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\KycDetail;
-use App\Http\Requests\StoreKycDetailRequest;
-use App\Http\Requests\UpdateKycDetailRequest;
-use App\Http\Resources\KycDetailResource;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\KycType;

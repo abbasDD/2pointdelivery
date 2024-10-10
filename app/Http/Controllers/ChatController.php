@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Chat;
-use App\Http\Requests\StoreChatRequest;
-use App\Http\Requests\UpdateChatRequest;
 use App\Models\Admin;
 use App\Models\Client;
 use App\Models\Helper;

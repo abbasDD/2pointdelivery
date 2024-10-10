@@ -24,7 +24,6 @@ use App\Models\UserNotification;
 use App\Models\UserSwitch;
 use App\Models\UserWallet;
 use App\Models\VehicleType;
-use App\Models\WithdrawRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;

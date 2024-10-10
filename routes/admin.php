@@ -4,7 +4,6 @@ use App\Http\Controllers\Admin\AdminBookingController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminReviewController;
 use App\Http\Controllers\Admin\BlogController;
-use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\DeliveryConfigController;
@@ -35,7 +34,6 @@ use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Admin\TaxSettingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\VehicleTypeController;
-use App\Http\Controllers\Admin\WalletAdmin;
 use App\Http\Controllers\Admin\WalletAdminController;
 use App\Http\Controllers\Auth\LoginController;
 
@@ -262,7 +260,6 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(f
         // Social Login
         // Route::get('/smtps', [SmtpSettingController::class, 'index'])->name('smtpSettings');
         Route::post('/smtp/update', [SmtpSettingController::class, 'update'])->name('smtpSetting.update');
-
 
         // End of Settings Prefix Route
     });

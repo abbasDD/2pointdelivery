@@ -49,16 +49,18 @@
         @endif
 
 
-        {{-- Job Details --}}
-        <div class="d-flex align-items-center justify-content-between mb-3">
-            <p class="mb-0">Job Details:</p>
-            <div class="">
-                @forelse ($booking_configs as $booking_config)
-                    <h6 class="mb-0">{{ $booking_config->name }}</h6>
-                @empty
-                    <h6 class="mb-0">N/A</h6>
-                @endforelse
+        @if ($booking->booking_type == 'moving')
+            {{-- Job Details --}}
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <p class="mb-0">Job Details:</p>
+                <div class="">
+                    @forelse ($booking_configs as $booking_config)
+                        <h6 class="mb-0">{{ $booking_config->name }}</h6>
+                    @empty
+                        <h6 class="mb-0">N/A</h6>
+                    @endforelse
+                </div>
             </div>
-        </div>
+        @endif
     </div>
 </div>
