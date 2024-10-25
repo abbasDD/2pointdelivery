@@ -56,6 +56,8 @@ return [
         'btn_text' => 'Get Estimate',
     ],
 
+    'review' => "Review",
+
     // About Us Section
     'about_section' => [
         'heading' => 'About Us',

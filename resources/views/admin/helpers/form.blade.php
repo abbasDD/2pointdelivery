@@ -111,8 +111,8 @@
     <div class="col-md-6">
         <div class="form-group mb-3">
             <label for="date_of_birth">Date of Birth</label>
-            <input type="date" class="form-control @error('date_of_birth') is-invalid @enderror" id="date_of_birth"
-                name="date_of_birth" value="{{ old('date_of_birth', $helper['date_of_birth'] ?? '') }}" required>
+            <input type="date" class="form-control @error('date_of_birth') is-invalid @enderror" name="date_of_birth"
+                value="{{ old('date_of_birth', $helper['date_of_birth'] ?? '') }}" required>
             @error('date_of_birth')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>

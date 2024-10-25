@@ -13,7 +13,7 @@
         <!-- Header -->
         <table style="width: 100%; border-bottom: 2px solid #ddd; margin-bottom: 20px;">
             <tr>
-                <td style="padding: 10px 0; font-size: 20px; font-weight: bold;">Shipping label</td>
+                <td style="padding: 10px 0; font-size: 20px; font-weight: bold;">2 Point Delivery Ltd</td>
                 <td style="text-align: right;">
                     <div style="font-weight: bold;">Order ID</div>
                     <div style="font-size: 24px; font-weight: bold;">{{ $booking->uuid }}</div>
@@ -25,8 +25,8 @@
         <table style="width: 100%; margin-bottom: 20px;">
             <tr>
                 <td style="vertical-align: top;">
-                    <strong>2 Point Delivery:</strong><br>
-                    7551 Mapleford Blvd, Regina, S4Y0C6
+                    <strong>Receiver Name:</strong><br>
+                    {{ $booking->receiver_name }}
                 </td>
             </tr>
         </table>
@@ -66,14 +66,12 @@
         <!-- Product Details -->
         <table style="width: 100%; border: 1px solid #ddd; padding: 10px;">
             <tr style="background-color: #f5f5f5; font-weight: bold;">
-                <td style="width: 10%;">Sr No.</td>
-                <td style="width: 60%;">Delivery Note</td>
-                <td style="width: 30%; text-align: right;">Total Price</td>
+                <td style="width: 30%;">Sr No.</td>
+                <td style="width: 70%;">Delivery Note</td>
             </tr>
             <tr>
                 <td>1</td>
                 <td>{{ $booking->delivery_note ?? '-' }}</td>
-                <td style="text-align: right;">${{ $booking->total_price ?? '-' }}</td>
             </tr>
         </table>
     </div>

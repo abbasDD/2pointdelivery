@@ -41,6 +41,7 @@ return [
     'designed_by' => 'Conçu par',
     'elabdtech' => 'Elabd Technologies',
 
+    'review'=> 'Révision',
     // Header Section
     'header_title' => 'Réservation et déménagement simplifiés : Votre voyage, notre priorité !',
     'header_subtitle' => 'Du premier clic à la destination finale, nous simplifions la réservation et le déménagement. Faites-nous confiance pour gérer votre logistique avec précision et soin, garantissant une expérience fluide et sans stress à chaque étape du processus !',

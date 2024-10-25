@@ -144,8 +144,8 @@
                     <div class="mb-3">
                         <div class="form-group">
                             <label for="date_of_birth">Date of Birth</label>
-                            <input class="form-control" type="text" id="date_of_birth" name="date_of_birth"
-                                value="{{ old('date_of_birth', isset($helperData->date_of_birth) ? \Carbon\Carbon::parse($helperData->date_of_birth)->format(config('date_format', 'd-m-Y')) : '') }}"
+                            <input class="form-control" type="text" name="date_of_birth"
+                                value="{{ old('date_of_birth', isset($helperData->date_of_birth) ? $helperData->date_of_birth : '') }}"
                                 placeholder="Enter Issue Date" required>
                             @error('date_of_birth')
                                 <span class="invalid-feedback" role="alert">

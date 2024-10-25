@@ -20,7 +20,7 @@
                     <a href="{{ route('label', $booking->id) }}" class="btn btn-success" target="_blank"><i
                             class="fa fa-file" aria-hidden="true"></i>
                         <span class="d-none d-md-inline">
-                            Shipping</span></a>
+                            Label</span></a>
                 </div>
             </div>
     </section>
