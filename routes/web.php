@@ -120,7 +120,7 @@ Route::middleware(['app_language'])->group(function () {
     Route::get('/change-language/{lang}', [FrontendController::class, 'changeLanguage'])->name('change-language');
 });
 
-// Generate pdf 
+// Generate pdf
 Route::get('booking-invoice/{booking_id}', [BookingController::class, 'generateInvoice'])->name('invoice.download');
 Route::get('shipping-label/{booking_id}', [BookingController::class, 'generateLabel'])->name('shippinglabel.download');
 
@@ -139,8 +139,8 @@ Route::get('/address/cities/{state_id}', [CityController::class, 'cities'])->nam
 
 // Test a PDF
 Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
-// Route::get('booking-invoice-pdf/{id}', [PDFController::class, 'bookingInvoicePDF']);
-// Route::get('shipping-label-pdf/{id}', [PDFController::class, 'shippingLabelPDF']);
+Route::get('booking-invoice-pdf/{id}', [PDFController::class, 'bookingInvoicePDF'])->name('booking-invoice-pdf');
+Route::get('label/{id}', [PDFController::class, 'downloadLabel'])->name('label');
 
 
 // Upload Trix attachment

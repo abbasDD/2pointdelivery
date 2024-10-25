@@ -1,6 +1,13 @@
 <div class="card mb-3">
-    <div class="card-header">
+    <div class="card-header d-flex align-items-center justify-content-between">
         <h5 class="mb-0">Tracking Order</h5>
+        @if ($booking->status == 'draft' || $booking->status == 'pending')
+            <p class="badge bg-warning">{{ $booking->status }}</p>
+        @elseif ($booking->status == 'accepted' || $booking->status == 'in_transit' || $booking->status == 'completed')
+            <p class="badge bg-success">{{ $booking->status }}</p>
+        @else
+            <p class="badge bg-danger">{{ $booking->status }}</p>
+        @endif
     </div>
     <div class="card-body" style="height: 400px">
         <div id="map" style="height:100%; width:100%;"></div>
@@ -34,9 +41,7 @@
                         strokeWeight: 5
                     }
                 });
-
                 updateRoute();
-
             }
 
             function updateRoute() {

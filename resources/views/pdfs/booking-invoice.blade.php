@@ -168,7 +168,7 @@
             {{-- Service Type --}}
             <tr>
                 <td class="row">{{ $index++ }}</td>
-                <td class="row">Service Type</td>
+                <td class="row">Service</td>
                 <td class="row">{{ $booking->serviceType->name }}</td>
             </tr>
             {{-- Service Category --}}
@@ -180,7 +180,7 @@
             {{-- Total Price --}}
             <tr>
                 <td class="row">{{ $index++ }}</td>
-                <td class="row">Total Price</td>
+                <td class="row">Price</td>
                 <td class="row">${{ $booking->total_price }}</td>
             </tr>
         </table>

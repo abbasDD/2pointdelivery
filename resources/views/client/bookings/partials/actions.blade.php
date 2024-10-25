@@ -23,6 +23,18 @@
                     aria-hidden="true"></i> <span class="d-none d-md-inline"> Review</span></a>
         </div>
     @endif
+
+    <div class="">
+        <a class="btn btn-success" href="{{ route('booking-invoice-pdf', $booking->id) }}" target="_blank"><i
+                class="fa fa-file" aria-hidden="true"></i> <span class="d-none d-md-inline">
+                Invoice</span></a>
+    </div>
+
+    <div class="">
+        <a href="{{ route('label', $booking->id) }}" class="btn btn-success" target="_blank"><i class="fa fa-file"
+                aria-hidden="true"></i> <span class="d-none d-md-inline">
+                Shipping</span></a>
+    </div>
 </div>
 
 {{-- reviewBookingModal --}}

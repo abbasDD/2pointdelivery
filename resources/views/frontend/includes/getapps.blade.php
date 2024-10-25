@@ -21,10 +21,10 @@
                         to manage your needs.</p>
                 </div>
                 <div class="d-md-flex gap-3">
-                    <a href="#" target="_blank">
+                    <a href="https://play.google.com/store/apps/details?id=com.point.delivery" target="_blank">
                         <img src="{{ asset('frontend/images/play-store.png') }}" alt="Play Store" width="150">
                     </a>
-                    <a href="#" target="_blank">
+                    <a href="https://apps.apple.com/us/app/2point-delivery/id6450139295" target="_blank">
                         <img src="{{ asset('frontend/images/app-store.png') }}" alt="App Store" width="150">
                     </a>
                 </div>

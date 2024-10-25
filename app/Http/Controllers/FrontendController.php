@@ -34,7 +34,7 @@ class FrontendController extends Controller
     // Index Page or Front End Home Page
     public function index()
     {
-        // Get all services 
+        // Get all services
         $serviceTypes = ServiceType::where('is_active', 1)
             ->whereHas('serviceCategories', function ($query) {
                 $query->where('is_active', 1);
@@ -42,7 +42,7 @@ class FrontendController extends Controller
             // ->where('type', 'delivery')      // uncomment if you want to use only delivery
             ->get();
 
-        // Testimonials 
+        // Testimonials
         $testimonials = [
             (object) [
                 'id' => 1,
@@ -69,22 +69,22 @@ class FrontendController extends Controller
             $testimonials = [];
             // Loop through reviews
             foreach ($reviews as $review) {
-                $booking  = Booking::where('id', $review->booking_id)->first();
+                $booking = Booking::where('id', $review->booking_id)->first();
                 if (!$booking) {
-                    $review->client_name  = 'John Doe';
+                    $review->client_name = 'John Doe';
                     $review->client_image = 'default.png';
                     $testimonials[] = $review;
                     continue;
                 }
                 $client = Client::where('user_id', $booking->client_user_id)->first();
                 if (!$client) {
-                    $review->client_name  = 'John Doe';
+                    $review->client_name = 'John Doe';
                     $review->client_image = 'default.png';
                     $testimonials[] = $review;
                     continue;
                 }
                 // Store client info
-                $review->client_name  = $client->first_name . ' ' . $client->last_name;
+                $review->client_name = $client->first_name . ' ' . $client->last_name;
                 $review->client_image = $client->profile_image;
                 $testimonials[] = $review;
             }
@@ -377,22 +377,22 @@ class FrontendController extends Controller
             $testimonials = [];
             // Loop through reviews
             foreach ($reviews as $review) {
-                $booking  = Booking::where('id', $review->booking_id)->first();
+                $booking = Booking::where('id', $review->booking_id)->first();
                 if (!$booking) {
-                    $review->client_name  = 'John Doe';
+                    $review->client_name = 'John Doe';
                     $review->client_image = 'default.png';
                     $testimonials[] = $review;
                     continue;
                 }
                 $client = Client::where('user_id', $booking->client_user_id)->first();
                 if (!$client) {
-                    $review->client_name  = 'John Doe';
+                    $review->client_name = 'John Doe';
                     $review->client_image = 'default.png';
                     $testimonials[] = $review;
                     continue;
                 }
                 // Store client info
-                $review->client_name  = $client->first_name . ' ' . $client->last_name;
+                $review->client_name = $client->first_name . ' ' . $client->last_name;
                 $review->client_image = $client->profile_image;
                 $testimonials[] = $review;
             }
@@ -418,7 +418,7 @@ class FrontendController extends Controller
         $frontendSettings = FrontendSetting::where('key', 'terms-and-conditions')->first();
 
         if ($frontendSettings) {
-            $terms_and_conditions =  $frontendSettings->value;
+            $terms_and_conditions = $frontendSettings->value;
         }
 
 
@@ -435,7 +435,7 @@ class FrontendController extends Controller
         $frontendSettings = FrontendSetting::where('key', 'privacy-policy')->first();
 
         if ($frontendSettings) {
-            $privacy_policy =  $frontendSettings->value;
+            $privacy_policy = $frontendSettings->value;
         }
 
         return view('frontend.privacy_policy', compact('privacy_policy'));
@@ -451,7 +451,7 @@ class FrontendController extends Controller
         $frontendSettings = FrontendSetting::where('key', 'cancellation-policy')->first();
 
         if ($frontendSettings) {
-            $cancellation_policy =  $frontendSettings->value;
+            $cancellation_policy = $frontendSettings->value;
         }
 
         return view('frontend.cancellation_policy', compact('cancellation_policy'));
@@ -505,7 +505,7 @@ class FrontendController extends Controller
         }
 
 
-        // Calculate 
+        // Calculate
 
         // Base Price
         $data['base_price'] = $serviceCategory->base_price;
@@ -613,6 +613,12 @@ class FrontendController extends Controller
             // ->where('type', 'delivery')      // uncomment if you want to use only delivery
             ->get();
 
+        // Check if service types exist
+        if ($serviceTypes->isEmpty()) {
+            // Handle the case where no service types are found
+            return redirect()->back()->with('error', 'No active service types found');
+        }
+
         // Check if service type exist
         if (!$serviceType = $serviceTypes->firstWhere('id', $request->serviceType)) {
             // return redirect()->back()->with('error', 'Service Type not found');
@@ -700,7 +706,7 @@ class FrontendController extends Controller
         }
 
 
-        // return view 
+        // return view
         return view('frontend.bookings.new', compact('serviceTypes', 'serviceCategories', 'prioritySettings', 'draftBooking', 'addresses', 'no_of_rooms', 'floor_plans', 'floor_assess', 'job_details', 'movingDetails', 'inusranceEnabled', 'secureshipEnabled', 'secureship_fee_percentage'));
     }
 

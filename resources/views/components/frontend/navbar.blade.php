@@ -31,6 +31,10 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('join-helper') ? 'active' : '' }}"
+                        href="{{ route('testimonials') }}">{{ __('frontend.review') }}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('join-helper') ? 'active' : '' }}"
                         href="{{ route('join_helper') }}">{{ __('frontend.join_as_helper') }}</a>
                 </li>
                 <li class="nav-item dropdown">

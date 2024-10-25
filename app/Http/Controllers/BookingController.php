@@ -324,7 +324,7 @@ class BookingController extends Controller
     private function createDeliveryBooking($request, $booking, $serviceCategory, $booking_type)
     {
         // Get priority_price
-        $priority_price  = 0;
+        $priority_price = 0;
         // Check if priority setting exist
         if (isset($request->priorityID)) {
             $priority_setting = PrioritySetting::find($request->priorityID);
@@ -354,16 +354,16 @@ class BookingController extends Controller
 
         $deliveryBooking = BookingDelivery::create([
             'booking_id' => $booking->id,
-            'distance_price' => number_format((float)$distance_price, 2, '.', ''),
-            'weight_price' => number_format((float)$weight_price, 2, '.', ''),
-            'priority_price' => number_format((float)$priority_price, 2, '.', ''),
-            'service_price' => number_format((float)$service_price, 2, '.', ''),
-            'sub_total' => number_format((float)$sub_total, 2, '.', ''),
-            'vehicle_price' => number_format((float)$vehicle_price, 2, '.', ''),
-            'insurance_price' => number_format((float)$insurance_price, 2, '.', ''), // 'insurance_price'
-            'tax_price' => number_format((float)$tax_price, 2, '.', ''),
-            'helper_fee' => number_format((float)$helper_fee, 2, '.', ''),
-            'total_price' => number_format((float)$amountToPay, 2, '.', ''),
+            'distance_price' => number_format((float) $distance_price, 2, '.', ''),
+            'weight_price' => number_format((float) $weight_price, 2, '.', ''),
+            'priority_price' => number_format((float) $priority_price, 2, '.', ''),
+            'service_price' => number_format((float) $service_price, 2, '.', ''),
+            'sub_total' => number_format((float) $sub_total, 2, '.', ''),
+            'vehicle_price' => number_format((float) $vehicle_price, 2, '.', ''),
+            'insurance_price' => number_format((float) $insurance_price, 2, '.', ''), // 'insurance_price'
+            'tax_price' => number_format((float) $tax_price, 2, '.', ''),
+            'helper_fee' => number_format((float) $helper_fee, 2, '.', ''),
+            'total_price' => number_format((float) $amountToPay, 2, '.', ''),
             'payment_method' => 'cod',
             'payment_status' => 'unpaid',
         ]);
@@ -371,7 +371,7 @@ class BookingController extends Controller
         if ($deliveryBooking) {
 
             // Update booking
-            $booking->total_price = number_format((float)$amountToPay, 2, '.', '');
+            $booking->total_price = number_format((float) $amountToPay, 2, '.', '');
             $booking->booking_type = 'delivery';
             $booking->save();
 
@@ -385,7 +385,7 @@ class BookingController extends Controller
     private function createMovingBooking($request, $booking, $serviceCategory, $booking_type)
     {
         // Get priority_price
-        $priority_price  = 0;
+        $priority_price = 0;
         // Check if priority setting exist
         if (isset($request->priorityID)) {
             $priority_setting = PrioritySetting::find($request->priorityID);
@@ -433,25 +433,25 @@ class BookingController extends Controller
         // Create Booking Payment
         $movingBooking = BookingMoving::create([
             'booking_id' => $booking->id,
-            'service_price' => number_format((float)$service_price, 2, '.', ''),
-            'distance_price' => number_format((float)$distance_price, 2, '.', ''),
-            'floor_assess_price' => number_format((float)$floor_assess_price, 2, '.', ''),
-            'floor_plan_price' => number_format((float)$floor_plan_price, 2, '.', ''),
-            'job_details_price' => number_format((float)$job_details_price, 2, '.', ''),
-            'no_of_room_price' => number_format((float)$no_of_room_price, 2, '.', ''),
-            'priority_price' => number_format((float)$priority_price, 2, '.', ''),
-            'weight_price' => number_format((float)$weight_price, 2, '.', ''),
-            'sub_total' => number_format((float)$sub_total, 2, '.', ''),
-            'tax_price' => number_format((float)$tax_price, 2, '.', ''),
-            'helper_fee' => number_format((float)$helper_fee, 2, '.', ''),
-            'total_price' => number_format((float)$amountToPay, 2, '.', ''),
+            'service_price' => number_format((float) $service_price, 2, '.', ''),
+            'distance_price' => number_format((float) $distance_price, 2, '.', ''),
+            'floor_assess_price' => number_format((float) $floor_assess_price, 2, '.', ''),
+            'floor_plan_price' => number_format((float) $floor_plan_price, 2, '.', ''),
+            'job_details_price' => number_format((float) $job_details_price, 2, '.', ''),
+            'no_of_room_price' => number_format((float) $no_of_room_price, 2, '.', ''),
+            'priority_price' => number_format((float) $priority_price, 2, '.', ''),
+            'weight_price' => number_format((float) $weight_price, 2, '.', ''),
+            'sub_total' => number_format((float) $sub_total, 2, '.', ''),
+            'tax_price' => number_format((float) $tax_price, 2, '.', ''),
+            'helper_fee' => number_format((float) $helper_fee, 2, '.', ''),
+            'total_price' => number_format((float) $amountToPay, 2, '.', ''),
             'payment_method' => 'cod',
             'payment_status' => 'unpaid',
         ]);
 
         if ($movingBooking) {
             // Update booking
-            $booking->total_price = number_format((float)$amountToPay, 2, '.', '');
+            $booking->total_price = number_format((float) $amountToPay, 2, '.', '');
             $booking->booking_type = 'moving';
             $booking->save();
 
@@ -706,7 +706,7 @@ class BookingController extends Controller
 
         if ($secureshipBooking) {
             // Update booking
-            $booking->total_price = number_format((float)($selectedServiceDetail['total'] + $platformCommission), 2, '.', '');
+            $booking->total_price = number_format((float) ($selectedServiceDetail['total'] + $platformCommission), 2, '.', '');
             $booking->booking_type = 'secureship';
             $booking->save();
         }
@@ -741,7 +741,7 @@ class BookingController extends Controller
         }
 
         // Time Left
-        $bookingTimeLeft = (int)(3600 - $timeDifferenceInSeconds);
+        $bookingTimeLeft = (int) (3600 - $timeDifferenceInSeconds);
         // dd($bookingTimeLeft);
         // Convert to minutes and seconds
         // $bookingTimeLeft = (int)($bookingTimeLeft / 60) . ' minutes ' . ($bookingTimeLeft % 60) . ' seconds';
@@ -944,7 +944,7 @@ class BookingController extends Controller
         // dd($payment);
 
         if (isset($payment['name']) && $payment['name'] == 'VALIDATION_ERROR') {
-            return  redirect()->back()->with('error', 'Invalid request - something went wrong');
+            return redirect()->back()->with('error', 'Invalid request - something went wrong');
         }
 
         // Redirect to PayPal for approval
@@ -1006,15 +1006,15 @@ class BookingController extends Controller
 
             // Update booking payment details
             if ($booking->booking_type == 'delivery') {
-                BookingDelivery::where('booking_id', $booking->id)->update(['transaction_id' =>  $paymentDetails['id'], 'payment_status' => 'paid', 'payment_method' => 'paypal', 'payment_at' => Carbon::now()]);
+                BookingDelivery::where('booking_id', $booking->id)->update(['transaction_id' => $paymentDetails['id'], 'payment_status' => 'paid', 'payment_method' => 'paypal', 'payment_at' => Carbon::now()]);
             }
 
             if ($booking->booking_type == 'moving') {
-                BookingMoving::where('booking_id', $booking->id)->update(['transaction_id' =>  $paymentDetails['id'], 'payment_status' => 'paid', 'payment_method' => 'paypal', 'payment_at' => Carbon::now()]);
+                BookingMoving::where('booking_id', $booking->id)->update(['transaction_id' => $paymentDetails['id'], 'payment_status' => 'paid', 'payment_method' => 'paypal', 'payment_at' => Carbon::now()]);
             }
 
             if ($booking->booking_type == 'secureship') {
-                BookingSecureship::where('booking_id', $booking->id)->update(['transaction_id' =>  $paymentDetails['id'], 'payment_status' => 'paid', 'payment_method' => 'stripe', 'payment_at' => Carbon::now()]);
+                BookingSecureship::where('booking_id', $booking->id)->update(['transaction_id' => $paymentDetails['id'], 'payment_status' => 'paid', 'payment_method' => 'stripe', 'payment_at' => Carbon::now()]);
                 // createSecureshipBookingUsingAPI
                 $this->createSecureshipBookingUsingAPI($booking_uuid);
             }
@@ -1040,10 +1040,10 @@ class BookingController extends Controller
             }
 
             // Call notificaion client to send notification
-            app('notificationHelper')->sendNotification(null, Auth::user()->id, 'client', 'booking', $booking->id, 'New Booking', 'You have successfully created booking for ' .  $serviceTypeName . ' service');
+            app('notificationHelper')->sendNotification(null, Auth::user()->id, 'client', 'booking', $booking->id, 'New Booking', 'You have successfully created booking for ' . $serviceTypeName . ' service');
 
             // Send notification to Admin
-            app('notificationHelper')->sendNotification(null, 1, 'admin', 'booking', $booking->id, 'New Booking', 'A new booking has been created for ' .  $serviceTypeName . ' service');
+            app('notificationHelper')->sendNotification(null, 1, 'admin', 'booking', $booking->id, 'New Booking', 'A new booking has been created for ' . $serviceTypeName . ' service');
 
 
             // Redirect to booking detail page
@@ -1134,15 +1134,15 @@ class BookingController extends Controller
 
         // Update booking payment details
         if ($booking->booking_type == 'delivery') {
-            BookingDelivery::where('booking_id', $booking->id)->update(['transaction_id' =>  $charge->id, 'payment_status' => 'paid', 'payment_method' => 'stripe', 'payment_at' => Carbon::now()]);
+            BookingDelivery::where('booking_id', $booking->id)->update(['transaction_id' => $charge->id, 'payment_status' => 'paid', 'payment_method' => 'stripe', 'payment_at' => Carbon::now()]);
         }
 
         if ($booking->booking_type == 'moving') {
-            BookingMoving::where('booking_id', $booking->id)->update(['transaction_id' =>  $charge->id, 'payment_status' => 'paid', 'payment_method' => 'stripe', 'payment_at' => Carbon::now()]);
+            BookingMoving::where('booking_id', $booking->id)->update(['transaction_id' => $charge->id, 'payment_status' => 'paid', 'payment_method' => 'stripe', 'payment_at' => Carbon::now()]);
         }
 
         if ($booking->booking_type == 'secureship') {
-            BookingSecureship::where('booking_id', $booking->id)->update(['transaction_id' =>  $charge->id, 'payment_status' => 'paid', 'payment_method' => 'stripe', 'payment_at' => Carbon::now()]);
+            BookingSecureship::where('booking_id', $booking->id)->update(['transaction_id' => $charge->id, 'payment_status' => 'paid', 'payment_method' => 'stripe', 'payment_at' => Carbon::now()]);
             // createSecureshipBookingUsingAPI
             $this->createSecureshipBookingUsingAPI($booking_uuid);
         }
@@ -1168,10 +1168,10 @@ class BookingController extends Controller
         }
 
         // Call notificaion client to send notification
-        app('notificationHelper')->sendNotification(null, Auth::user()->id, 'client', 'booking', $booking->id, 'New Booking', 'You have successfully created booking for ' .  $serviceTypeName . ' service');
+        app('notificationHelper')->sendNotification(null, Auth::user()->id, 'client', 'booking', $booking->id, 'New Booking', 'You have successfully created booking for ' . $serviceTypeName . ' service');
 
         // Send notification to Admin
-        app('notificationHelper')->sendNotification(null, 1, 'admin', 'booking', $booking->id, 'New Booking', 'A new booking has been created for ' .  $serviceTypeName . ' service');
+        app('notificationHelper')->sendNotification(null, 1, 'admin', 'booking', $booking->id, 'New Booking', 'A new booking has been created for ' . $serviceTypeName . ' service');
 
 
         // Display a success message to the user.
@@ -1260,10 +1260,10 @@ class BookingController extends Controller
         }
 
         // Call notificaion client to send notification
-        app('notificationHelper')->sendNotification(null, Auth::user()->id, 'client', 'booking', $booking->id, 'New Booking', 'You have successfully created booking for ' .  $serviceTypeName . ' service');
+        app('notificationHelper')->sendNotification(null, Auth::user()->id, 'client', 'booking', $booking->id, 'New Booking', 'You have successfully created booking for ' . $serviceTypeName . ' service');
 
         // Send notification to Admin
-        app('notificationHelper')->sendNotification(null, 1, 'admin', 'booking', $booking->id, 'New Booking', 'A new booking has been created for ' .  $serviceTypeName . ' service');
+        app('notificationHelper')->sendNotification(null, 1, 'admin', 'booking', $booking->id, 'New Booking', 'A new booking has been created for ' . $serviceTypeName . ' service');
 
         return response()->json(['success' => true, 'data' => 'Booking paid successfully']);
     }
@@ -1294,13 +1294,13 @@ class BookingController extends Controller
             return [
                 'packageType' => $package->packageType,
                 'userDefinedPackageType' => $package->userDefinedPackageType,
-                'weight' => (float)$package->weight,
+                'weight' => (float) $package->weight,
                 'weightUnits' => $package->weightUnits,
-                'length' => (float)$package->length,
-                'width' => (float)$package->width,
-                'height' => (float)$package->height,
+                'length' => (float) $package->length,
+                'width' => (float) $package->width,
+                'height' => (float) $package->height,
                 'dimUnits' => $package->dimUnits,
-                'insurance' => (float)$package->insurance,
+                'insurance' => (float) $package->insurance,
                 'isAdditionalHandling' => filter_var($package->isAdditionalHandling, FILTER_VALIDATE_BOOLEAN),
                 'signatureOptions' => $package->signatureOptions,
                 'description' => $package->description,

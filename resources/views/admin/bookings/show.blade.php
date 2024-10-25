@@ -4,7 +4,6 @@
 
 @section('content')
 
-
     {{-- Header Section  --}}
     <section class="py-3">
         <div class="container">
@@ -14,17 +13,17 @@
                     <p>Reference No : <span class="text-uppercase">{{ $booking->uuid ? $booking->uuid : '-' }}</span></p>
                 </div>
 
-                @if ($booking->status == 'draft' || $booking->status == 'pending')
-                    <p class="badge bg-warning">{{ $booking->status }}</p>
-                @elseif ($booking->status == 'accepted' || $booking->status == 'in_transit' || $booking->status == 'completed')
-                    <p class="badge bg-success">{{ $booking->status }}</p>
-                @else
-                    <p class="badge bg-danger">{{ $booking->status }}</p>
-                @endif
-
+                <div class="">
+                    <a class="btn btn-success" href="{{ route('booking-invoice-pdf', $booking->id) }}" target="_blank"><i
+                            class="fa fa-file" aria-hidden="true"></i> <span class="d-none d-md-inline">
+                            Invoice</span></a>
+                    <a href="{{ route('label', $booking->id) }}" class="btn btn-success" target="_blank"><i
+                            class="fa fa-file" aria-hidden="true"></i>
+                        <span class="d-none d-md-inline">
+                            Shipping</span></a>
+                </div>
             </div>
     </section>
-
 
     {{-- Order Detail Section  --}}
     <section class="py-3">
@@ -36,7 +35,6 @@
                     <div class="col-md-4">
                         {{-- Load Tracking Status --}}
                         @include('admin.bookings.partials.show.tracking')
-
 
                         {{-- Load Images --}}
                         @include('admin.bookings.partials.show.images')

@@ -1,5 +1,6 @@
 {{-- Action Buttons --}}
 <div class="d-flex gap-2">
+
     {{-- Report an Issue --}}
     @if ($clientView && isset($clientData) && $clientData->user_id == auth()->user()->id)
         <div class="">

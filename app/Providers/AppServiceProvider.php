@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         // Default
-        date_default_timezone_set('UTC');
+         date_default_timezone_set('UTC');
 
         // Check if database has system settings table in it
         if (SystemSetting::count()) {
@@ -47,7 +47,7 @@ class AppServiceProvider extends ServiceProvider
             }
             // Check default timezone
             // dd(date_default_timezone_get());
-        }
+        } 
 
 
 
