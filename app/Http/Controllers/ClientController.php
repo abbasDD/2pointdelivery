@@ -91,7 +91,7 @@ class ClientController extends Controller
                     'phone_no' => $client->phone_no ?? '',
                     'suite' => $client->suite ?? '',
                     'street' => $client->street ?? '',
-                    'city' => $client->city     ?? '',
+                    'city' => $client->city ?? '',
                     'state' => $client->state ?? '',
                     'country' => $client->country ?? '',
                     'zip_code' => $client->zip_code ?? '',
@@ -104,7 +104,7 @@ class ClientController extends Controller
                 ]);
             }
 
-            // Send notification to admin 
+            // Send notification to admin
             UserNotification::create([
                 'sender_user_id' => Auth::user()->id,
                 'receiver_user_id' => 1,
@@ -117,7 +117,7 @@ class ClientController extends Controller
             ]);
         }
 
-        // @impersonating($guard = null) 
+        // @impersonating($guard = null)
         if (!Impersonate::isImpersonating()) {
             // Store login_type to Session
             session(['login_type' => 'helper']);
@@ -148,7 +148,7 @@ class ClientController extends Controller
             return redirect()->back()->with('error', 'Client not found');
         }
 
-        // Check if client company already exist  
+        // Check if client company already exist
         $clientCompany = ClientCompany::where('user_id', Auth::user()->id)->first();
         if ($clientCompany) {
             // update the company_enabled to 1
@@ -176,7 +176,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        // @impersonating($guard = null) 
+        // @impersonating($guard = null)
         if (!Impersonate::isImpersonating()) {
             // Change session variable login_type to client
             session(['login_type' => 'client']);
@@ -263,7 +263,7 @@ class ClientController extends Controller
         $clientStates = State::where('country_id', $clientData->country)->get();
         $clientCities = City::where('state_id', $clientData->state)->get();
 
-        // Address Data 
+        // Address Data
         $addressData = [
             'countries' => $countries,
             'clientStates' => $clientStates,
@@ -338,7 +338,7 @@ class ClientController extends Controller
         // dd($request->all());
 
 
-        // @impersonating($guard = null) 
+        // @impersonating($guard = null)
         if (!Impersonate::isImpersonating()) {
             // Update session data as well for name
 

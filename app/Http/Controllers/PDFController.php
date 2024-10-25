@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\BookingDelivery;
 use App\Models\BookingMoving;
+use App\Models\BookingSecureship;
 use App\Models\Client;
 use App\Models\SystemSetting;
 use App\Models\User;
@@ -64,6 +65,23 @@ class PDFController extends Controller
             return 0;
         }
 
+        $bookingData = null;
+
+        // Getting booking delivery data
+        if ($booking->booking_type == 'delivery') {
+            $bookingData = BookingDelivery::where('booking_id', $booking->id)->first();
+        }
+
+        // get booking moving
+        if ($booking->booking_type == 'moving') {
+            $bookingData = BookingMoving::where('booking_id', $booking->id)->first();
+        }
+
+        // get booking secureship
+        if ($booking->booking_type == 'secureship') {
+            $bookingData = BookingSecureship::where('booking_id', $booking->id)->first();
+        }
+
         // Check if invoice file is null
 
         if (is_null($booking->invoice_file)) {
@@ -117,6 +135,7 @@ class PDFController extends Controller
                 'client_user' => $client_user,
                 'client' => $client,
                 'index' => 1,
+                'bookingData' => $bookingData
             ];
 
             // Generate PDF
