@@ -113,7 +113,7 @@
                     <td style="border: 1px solid #ddd; padding: 8px;">{{ $booking->serviceType->name ?? '-' }}</td>
                     <td style="border: 1px solid #ddd; padding: 8px;">{{ $booking->serviceCategory->name ?? '-' }}</td>
                     <td style="border: 1px solid #ddd; padding: 8px;">
-                        ${{ $booking->serviceCategory->base_price ?? '-' }}</td>
+                        ${{ $bookingData->total_price ?? '-' }}</td>
                 </tr>
             </tbody>
         </table>

@@ -84,87 +84,86 @@ class PDFController extends Controller
 
         // Check if invoice file is null
 
-        if (is_null($booking->invoice_file)) {
+        // if (is_null($booking->invoice_file)) {
 
-            $bookingPayment = [];
-            // Check if booking->booking_type is delivery
-            if ($booking->booking_type == 'delivery') {
-                // Get booking delivery data
-                $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
-                if (!$bookingDelivery) {
-                    return 0;
-                }
-                // Store to $bookingData
-                $bookingPayment = $bookingDelivery;
+        $bookingPayment = [];
+        // Check if booking->booking_type is delivery
+        if ($booking->booking_type == 'delivery') {
+            // Get booking delivery data
+            $bookingDelivery = BookingDelivery::where('booking_id', $booking->id)->first();
+            if (!$bookingDelivery) {
+                return 0;
             }
-
-            // Check if booking->booking_type is moving
-            if ($booking->booking_type == 'moving') {
-                // Get booking moving data
-                $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
-                if (!$bookingMoving) {
-                    return 0;
-                }
-                // Store to $bookingData
-                $bookingPayment = $bookingMoving;
-            }
-
-            if (!$bookingPayment) {
-                return redirect()->back()->with('error', 'No data found');
-            }
-
-            // Get company logo
-            $website_logo = SystemSetting::where('key', 'website_logo')->first();
-            $company_logo = $website_logo ? asset('images/logo/' . $website_logo->value) : asset('images/logo/default.png');
-
-            // Get client details
-            $client_user = User::where('id', $booking->client_user_id)->first();
-            $client = Client::where('user_id', $booking->client_user_id)->first();
-
-            if (!$client_user || !$client) {
-                return redirect()->back()->with('error', 'No data found');
-            }
-
-            // Data for the PDF
-            $data = [
-                'title' => 'Booking Invoice - ' . $booking->uuid,
-                'date' => date('m/d/Y'),
-                'booking' => $booking,
-                'bookingPayment' => $bookingPayment,
-                'company_logo' => $company_logo,
-                'client_user' => $client_user,
-                'client' => $client,
-                'index' => 1,
-                'bookingData' => $bookingData
-            ];
-
-            // Generate PDF
-            $pdf = FacadePdf::loadView('pdfs/booking-invoice', $data);
-
-            // Define the path to save the PDF
-            $path = public_path('pdfs/invoices');
-
-            // Ensure the directory exists
-            if (!File::exists($path)) {
-                File::makeDirectory($path, 0755, true);
-            }
-
-            // Save the PDF to the specified path
-            $fileName = $booking->uuid . '.pdf';
-            $filePath = 'pdfs/invoices/' . $fileName;
-            $pdf->save(public_path($filePath));
-
-            // Update the booking with the file path
-            $booking->update(['invoice_file' => $filePath]);
-
-        } else {
-            // If invoice_file is already set, use the existing file
-            $filePath = $booking->invoice_file;
+            // Store to $bookingData
+            $bookingPayment = $bookingDelivery;
         }
+
+        // Check if booking->booking_type is moving
+        if ($booking->booking_type == 'moving') {
+            // Get booking moving data
+            $bookingMoving = BookingMoving::where('booking_id', $booking->id)->first();
+            if (!$bookingMoving) {
+                return 0;
+            }
+            // Store to $bookingData
+            $bookingPayment = $bookingMoving;
+        }
+
+        if (!$bookingPayment) {
+            return redirect()->back()->with('error', 'No data found');
+        }
+
+        // Get company logo
+        $website_logo = SystemSetting::where('key', 'website_logo')->first();
+        $company_logo = $website_logo ? asset('images/logo/' . $website_logo->value) : asset('images/logo/default.png');
+
+        // Get client details
+        $client_user = User::where('id', $booking->client_user_id)->first();
+        $client = Client::where('user_id', $booking->client_user_id)->first();
+
+        if (!$client_user || !$client) {
+            return redirect()->back()->with('error', 'No data found');
+        }
+
+        // Data for the PDF
+        $data = [
+            'title' => 'Booking Invoice - ' . $booking->uuid,
+            'date' => date('m/d/Y'),
+            'booking' => $booking,
+            'bookingPayment' => $bookingPayment,
+            'company_logo' => $company_logo,
+            'client_user' => $client_user,
+            'client' => $client,
+            'index' => 1,
+            'bookingData' => $bookingData
+        ];
+
+        // Generate PDF
+        $pdf = FacadePdf::loadView('pdfs/booking-invoice', $data);
+
+        // Define the path to save the PDF
+        $path = public_path('pdfs/invoices');
+
+        // Ensure the directory exists
+        if (!File::exists($path)) {
+            File::makeDirectory($path, 0755, true);
+        }
+
+        // Save the PDF to the specified path
+        $fileName = $booking->uuid . '.pdf';
+        $filePath = 'pdfs/invoices/' . $fileName;
+        $pdf->save(public_path($filePath));
+
+        // Update the booking with the file path
+        $booking->update(['invoice_file' => $filePath]);
+
+        // } else {
+        //     // If invoice_file is already set, use the existing file
+        //     $filePath = $booking->invoice_file;
+        // }
 
         // Download the PDF
         return response()->download(public_path($filePath));
-
     }
 
     public function downloadLabel(Request $request)
